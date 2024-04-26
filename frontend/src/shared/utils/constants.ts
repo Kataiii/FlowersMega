@@ -25,3 +25,8 @@ export const ORDER_CALL_PATH = "/order_call";
 export const SEARCH_PATH = "/search/q?=:query";
 export const CATEGORY_PATH = "/category?=:category";
 export const FILTERS_PATH = "/filters?=:filters";
+
+export enum targetA{
+    _blank,
+    _self
+}
