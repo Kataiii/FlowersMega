@@ -1,5 +1,5 @@
 import { Route, Routes, useNavigate } from "react-router";
-import { useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom";
 import App from "../App";
 import Cart from "../pages/cart/ui/Cart";
 import Catalog from "../pages/catalog/ui/Catalog";
@@ -17,7 +17,33 @@ import PaymentDelivery from "../pages/shop_info/ui/payment_and_delivery/PaymentD
 import Politics from "../pages/shop_info/ui/politics/Politics";
 import Modal from "../shared/ui/modal/Modal";
 import Portal from "../shared/ui/portal/Portal";
-import { ABOUT_PATH, AUTH_PATH, CART_PATH, CATALOG_PATH, CHANGE_PASSWORD_PATH, CITIES_PATH, CONTACTS_PATH, DELETE_PROFILE_PATH, EMAIL_PATH, FAST_BUY_PATH, FAVOURITES_PATH, HELP_PATH, HOME_PATH, ORDERS_PATH, ORDER_CALL_PATH, ORDER_SUCCESS_PATH, PAYMENT_DELIVERY_PATH, POLITICS_PATH, PRODUCT_PATH, PROFILE_PATH, RECOVERY_PASSWORD_PATH, REGIST_PATH } from "../shared/utils/constants";
+import { 
+    ABOUT_PATH, 
+    AUTH_PATH, 
+    CART_PATH, 
+    CATALOG_PATH, 
+    CATEGORY_PATH, 
+    CHANGE_PASSWORD_PATH, 
+    CITIES_PATH, 
+    CONTACTS_PATH, 
+    DELETE_PROFILE_PATH, 
+    EMAIL_PATH, 
+    FAST_BUY_PATH, 
+    FAVOURITES_PATH, 
+    FILTERS_PATH, 
+    HELP_PATH, 
+    HOME_PATH, 
+    ORDERS_PATH, 
+    ORDER_CALL_PATH, 
+    ORDER_SUCCESS_PATH, 
+    PAYMENT_DELIVERY_PATH, 
+    POLITICS_PATH, 
+    PRODUCT_PATH, 
+    PROFILE_PATH, 
+    RECOVERY_PASSWORD_PATH, 
+    REGIST_PATH, 
+    SEARCH_PATH
+} from "../shared/utils/constants";
 import Auth from "../widgets/auth/ui/Auth";
 import ChangePassword from "../widgets/changePassword/ui/ChangePassword";
 import Cities from "../widgets/cities/ui/Cities";
@@ -36,9 +62,14 @@ const Router: React.FC = () => {
             <Routes location={previousLocation || location}>
                 <Route path={HOME_PATH} element={<App />}>
                     <Route path={HOME_PATH} element={<Main />} />
-                    {/* TODO как сделать роутинг каталога */}
                     <Route path={CATALOG_PATH} element={<Catalog />}>
-                        
+                        <Route path={`${CATALOG_PATH}${SEARCH_PATH}`} element={<Catalog/>}/>
+                        <Route path={`${CATALOG_PATH}${CATEGORY_PATH}`} element={<Catalog/>}/>
+                        <Route path={`${CATALOG_PATH}${FILTERS_PATH}`} element={<Catalog/>}/>
+                        <Route path={`${CATALOG_PATH}${SEARCH_PATH}${CATEGORY_PATH}`} element={<Catalog/>}/>
+                        <Route path={`${CATALOG_PATH}${SEARCH_PATH}${FILTERS_PATH}`} element={<Catalog/>}/>
+                        <Route path={`${CATALOG_PATH}${CATEGORY_PATH}${FILTERS_PATH}`} element={<Catalog/>}/>
+                        <Route path={`${CATALOG_PATH}${SEARCH_PATH}${CATEGORY_PATH}${FILTERS_PATH}`} element={<Catalog/>}/>
                     </Route>
                     <Route path={`${PRODUCT_PATH}/:name/:size`} element={<Product />} />
                     <Route path={PROFILE_PATH} element={<ProfileMain />}>
