@@ -64,7 +64,9 @@ const Header: React.FC = () => {
                     }
                 </>
             </ContainerLinks>
-            <Button buttonContent="Заказать звонок" clickHandler={() => console.log('Заказать звонок')} />
+            <div style={{width: 'fit-content'}}>
+                <Button buttonContent="Заказать звонок" clickHandler={() => console.log('Заказать звонок')} />
+            </div>
         </Container>
     )
 }

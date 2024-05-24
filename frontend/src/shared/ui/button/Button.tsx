@@ -8,6 +8,7 @@ interface ButtonProps{
 
 const ButtonStyle = styled.button`
     background-color: var(--primary-bg-color);
+    width: 100%;
     color: var(--primary-text-color);
     font-family: 'Inter';
     font-weight: 400;
@@ -15,6 +16,10 @@ const ButtonStyle = styled.button`
     padding: 12px 16px;
     border-radius: 6px;
     border: none;
+
+    &:hover{
+        background-color: var(--primary-bg-color-hover);
+    }
 `
 
 const Button: React.FC<ButtonProps> = ({buttonContent, clickHandler}) => {

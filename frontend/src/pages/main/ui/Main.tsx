@@ -1,6 +1,11 @@
+import Banner from "../../../widgets/banner/Banner";
+
 const Main: React.FC = () => {
     return(
-        <h1>Главная страница</h1>
+        <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
+            <Banner/>
+        </div>
+        
     )
 }
 
