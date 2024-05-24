@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { styled } from "styled-components";
+import { Badge } from 'antd';
 
 const Container = styled.div<{$active?: boolean;}>`
     width: 40px;
@@ -23,15 +24,19 @@ export interface ButtonIconProps{
     clickHandler: () => void;
     activeIcon?: JSX.Element;
     typeEqual?: string;
+    count?: number;
 }
 
-const ButtonIcon: React.FC<ButtonIconProps> = ({icon, activeIcon, clickHandler, typeEqual}) => {
+const ButtonIcon: React.FC<ButtonIconProps> = ({icon, activeIcon, clickHandler, typeEqual, count}) => {
     const locate = useLocation();
 
     return(
-        <Container $active={locate.pathname === typeEqual} onClick={clickHandler}>
-            {(locate.pathname === typeEqual) && activeIcon ? activeIcon : icon}
-        </Container>
+        <Badge count={count} offset={[-40, 0]} color="#73D982">
+            <Container $active={locate.pathname === typeEqual} onClick={clickHandler}>
+                
+                {(locate.pathname === typeEqual) && activeIcon ? activeIcon : icon}
+            </Container>
+        </Badge>
     )
 }
 
