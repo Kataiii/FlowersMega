@@ -4,6 +4,9 @@ import { SequelizeModule } from "@nestjs/sequelize";
 import { CitiesModule } from './cities/cities.module';
 import { UsersModule } from './users/users.module';
 import { FiltersModule } from './filters/filters.module';
+import { ItemsFilterModule } from './items-filter/items-filter.module';
+import { CategoriesModule } from './categories/categories.module';
+import { TypesProductModule } from './types-product/types-product.module';
 
 @Module({
     imports: [
@@ -23,6 +26,9 @@ import { FiltersModule } from './filters/filters.module';
         CitiesModule,
         UsersModule,
         FiltersModule,
+        ItemsFilterModule,
+        CategoriesModule,
+        TypesProductModule,
     ]
 })
 export class AppModule{}
