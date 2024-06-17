@@ -1,5 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { BelongsToMany, Column, DataType, Model, Table } from "sequelize-typescript";
+import { CategoriesProducts } from "src/categories-products/categories_products.model";
+import { Product } from "src/products/products.model";
 
 interface CategoryCreationAttrs{
     name: string;
@@ -14,4 +16,7 @@ export class Category extends Model<Category, CategoryCreationAttrs>{
     @ApiProperty({example: 'Розы', description: 'Name', required: true})
     @Column({type: DataType.STRING, allowNull: false})
     name: string;
+
+    @BelongsToMany(() => Product, () => CategoriesProducts)
+    products: Product[];
 }

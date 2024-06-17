@@ -1,6 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { BelongsToMany, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
 import { Filter } from "src/filters/filters.model";
+import { ProductsItemsFilter } from "src/products-items-filter/products-items-filter.model";
+import { Product } from "src/products/products.model";
 
 interface ItemFilterCreationAttrs{
     name: string;
@@ -21,4 +23,7 @@ export class ItemFilter extends Model<ItemFilter, ItemFilterCreationAttrs>{
     @ApiProperty({example: 1, description: 'Unique identifie filter', required: false})
     @Column({type: DataType.INTEGER, allowNull: true})
     idFilter: number;
+
+    @BelongsToMany(() => Product, () => ProductsItemsFilter)
+    products: Product[];
 }
