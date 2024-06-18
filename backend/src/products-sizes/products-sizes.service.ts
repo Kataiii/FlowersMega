@@ -1,49 +1,71 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { ProductsService } from 'src/products/products.service';
+import { SizesService } from 'src/sizes/sizes.service';
+import { CreateProductSizeDto, CreateProductSizeInfoDto } from './dto/createProductsSizes.dto';
 import { ProductSize } from './products-sizes.model';
 
 @Injectable()
 export class ProductsSizesService {
     constructor(
-        @InjectModel(ProductSize) private productsSizesRepository: typeof ProductSize
+        @InjectModel(ProductSize) private productsSizesRepository: typeof ProductSize,
+        private productsService: ProductsService,
+        private sizesService: SizesService
     ){}
 
-    // async create(dto: CreateProductDto){
-    //     const product = await this.productsRepository.create({
-    //         name: dto.name,
-    //         description: dto.description,
-    //         idTypeProduct: dto.idTypeProduct
-    //     });
-    //     dto.images.forEach( async(item) => {
-    //         await this.imagesService.create({
-    //             idProduct: product.id,
-    //             image: item
-    //         });
-    //     })
-    //     return await this.productsRepository.findOne({where: {id: product.id}, include: [{ all: true}]});
-    // }
+    async create(dto: CreateProductSizeDto | CreateProductSizeInfoDto){
+        if("product" in dto){
+            const product = await this.productsService.create(dto.product);
+            const size = await this.sizesService.create(dto.size);
 
-    // async getAll(){
-    //     const products = await this.productsRepository.findAll({
-    //         order: [["name", "ASC"]],
-    //         include: [{
-    //             model: Image
-    //         }]
-    //     })
-    //     if(products.length === 0) throw new HttpException("Products not fount", HttpStatus.NOT_FOUND);
-    //     return products;
-    // }
+            return await this.productsSizesRepository.create({
+                idProduct: product.id,
+                idSize: size.id,
+                paramsSize: dto.paramsSize,
+                count: dto.count,
+                prise: dto.prise
+            });
+        }
 
-    // async getById(id: number | string){
-    //     const product = await this.productsRepository.findOne(
-    //         {
-    //             where: {id: id}, 
-    //             include: [{
-    //                 model: Image
-    //             }]
-    //         }
-    //     );
-    //     if(product === null) throw new HttpException("Product not found", HttpStatus.NOT_FOUND);
-    //     return product;
-    // }
+        return await this.productsSizesRepository.create(dto);
+    }
+
+    async getAll(){
+        const productsSizes = await this.productsSizesRepository.findAll({
+            order: [["idProduct", "ASC"]],
+            include: [{
+                all: true
+            }]
+        })
+        if(productsSizes.length === 0) throw new HttpException("Products sizes not fount", HttpStatus.NOT_FOUND);
+        return productsSizes;
+    }
+
+    async getById(id: number | string){
+        const productSize = await this.productsSizesRepository.findOne(
+            {
+                where: {id: id}, 
+                include: [{
+                    all: true
+                }]
+            }
+        );
+        if(productSize === null) throw new HttpException("Product size not found", HttpStatus.NOT_FOUND);
+        return productSize;
+    }
+
+    async getByProductId(idProduct: string | number){
+        const productsSizes = await this.productsSizesRepository.findAll(
+            {where: {
+                idProduct: idProduct
+            },
+            order: [["price", "ASC"]],
+            include: [{
+                all: true
+            }]}
+        );
+
+        if(productsSizes === null) throw new HttpException("Products sizes not found", HttpStatus.NOT_FOUND);
+        return productsSizes;
+    }
 }

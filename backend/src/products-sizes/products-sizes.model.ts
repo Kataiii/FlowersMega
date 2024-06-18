@@ -1,5 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, DataType, ForeignKey, Model, Table,  } from "sequelize-typescript";
+import { BelongsToMany, Column, DataType, ForeignKey, Model, Table,  } from "sequelize-typescript";
+import { Order } from "src/order/order.model";
+import { OrderProductSize } from "src/orders-products-sizes/orders-products-sizes.model";
 import { Product } from "src/products/products.model";
 import { Size } from "src/sizes/sizes.model";
 
@@ -38,4 +40,7 @@ export class ProductSize extends Model<ProductSize, ProductSizeCreationAttrs>{
     @ApiProperty({example: 100.00, description: 'Prise of product', required: true})
     @Column({type: DataType.DOUBLE, unique: false, allowNull: false})
     prise: number;
+
+    @BelongsToMany(() => Order, () => OrderProductSize)
+    orders: Order[];
 }

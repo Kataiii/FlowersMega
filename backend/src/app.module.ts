@@ -16,6 +16,10 @@ import * as path from "path";
 import { ProductsItemsFilter } from "./products-items-filter/products-items-filter.model";
 import { CategoriesProducts } from "./categories-products/categories_products.model";
 import { ProductsSizesModule } from './products-sizes/products-sizes.module';
+import { OrderModule } from './order/order.module';
+import { OrdersProductsSizesModule } from './orders-products-sizes/orders-products-sizes.module';
+import { ReviewsModule } from './reviews/reviews.module';
+import { ImagesReviewsModule } from './images-reviews/images-reviews.module';
 
 @Module({
     imports: [
@@ -50,6 +54,10 @@ import { ProductsSizesModule } from './products-sizes/products-sizes.module';
         ImagesModule,
         FilesModule,
         ProductsSizesModule,
+        OrderModule,
+        OrdersProductsSizesModule,
+        ReviewsModule,
+        ImagesReviewsModule,
     ]
 })
 export class AppModule{}

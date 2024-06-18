@@ -9,6 +9,9 @@ import { SizesService } from './sizes.service';
   providers: [SizesService],
   imports: [
     SequelizeModule.forFeature([Size])
+  ],
+  exports: [
+    SizesService
   ]
 })
 export class SizesModule {}

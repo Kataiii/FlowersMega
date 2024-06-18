@@ -28,7 +28,16 @@ export class FilesService {
             file,
             file.originalname.slice(file.originalname.lastIndexOf('.'), file.originalname.length),
             idProduct.toString(),
-            ["prodicts", "images"]
+            ["products", "images"]
+        );
+    }
+
+    async createImageReview(file, idProduct: number){
+        return await this.createFile(
+            file,
+            file.originalname.slice(file.originalname.lastIndexOf('.'), file.originalname.length),
+            idProduct.toString(),
+            ["products", "images_reviews"]
         );
     }
 
