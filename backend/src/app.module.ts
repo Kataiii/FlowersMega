@@ -20,6 +20,8 @@ import { OrderModule } from './order/order.module';
 import { OrdersProductsSizesModule } from './orders-products-sizes/orders-products-sizes.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { ImagesReviewsModule } from './images-reviews/images-reviews.module';
+import { AuthModule } from './auth/auth.module';
+import { TokensModule } from './tokens/tokens.module';
 
 @Module({
     imports: [
@@ -58,6 +60,8 @@ import { ImagesReviewsModule } from './images-reviews/images-reviews.module';
         OrdersProductsSizesModule,
         ReviewsModule,
         ImagesReviewsModule,
+        TokensModule,
+        AuthModule,
     ]
 })
 export class AppModule{}

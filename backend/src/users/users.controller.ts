@@ -1,43 +1,54 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { UsersService } from './users.service';
-import { ResponseDto } from './dto/user.dto';
+import { ResponseDto, UserDto } from './dto/user.dto';
+import { Request } from 'express';
 
 @ApiTags("Users")
 @Controller('users')
 export class UsersController {
     constructor(private userService: UsersService){}
-    //TODO переделать всё на токены и возвращать dto без id
 
     @ApiOperation({summary: 'Create user'})
     @ApiResponse({status: 201, type: ResponseDto})
     @Post()
     async create(@Body() dto: CreateUserDto){
         const user = await this.userService.create(dto);
+        const userDto: UserDto = user;
+        return userDto;
     }
 
     @ApiOperation({summary: 'Get user by id'})
     @ApiResponse({status: 200, type: ResponseDto})
-    @Get("/:id")
-    async getById(@Param("id") id: number){
-        return await this.userService.getById(id);
+    @Get("/user")
+    async getById(@Req() request: Request){
+        const [type, token] = request.headers.authorization.split(' ');
+        const accessToken = type === 'Bearer' ? token : undefined;
+        const payload = await this.userService.checkAccountData(accessToken);
+        const user = await this.userService.getById(payload.id);
+        const userDto: UserDto = user;
+        return userDto;
     }
 
     @ApiOperation({summary: 'Update user'})
     @ApiResponse({status: 200, type: ResponseDto})
     @Patch()
-    async update(@Body() dto: UpdateUserDto){
-        //TODO передавать id из токена
-        return await this.userService.update(dto, 1);
+    async update(@Body() dto: UpdateUserDto, @Req() request: Request){
+        const [type, token] = request.headers.authorization.split(' ');
+        const accessToken = type === 'Bearer' ? token : undefined;
+        const payload = await this.userService.checkAccountData(accessToken);
+        return await this.userService.update(dto, payload.id);
     }
 
     @ApiOperation({summary: 'Delete user'})
     @ApiResponse({status: 200, type: ResponseDto})
     @Delete()
-    async delete(){
-         //TODO передавать id из токена
-        return await this.userService.delete(1);
+    async delete(@Req() request: Request){
+        const [type, token] = request.headers.authorization.split(' ');
+        const accessToken = type === 'Bearer' ? token : undefined;
+        const payload = await this.userService.checkAccountData(accessToken);
+        return await this.userService.delete(payload.id);
     }
 }
