@@ -16,7 +16,7 @@ const injectedRtkApi = api.injectEndpoints({
   }),
   overrideExisting: false,
 });
-export { injectedRtkApi as enhancedApi };
+export { injectedRtkApi as cityApi };
 export type CitiesControllerGetAllApiResponse = /** status 200  */ City[];
 export type CitiesControllerGetAllApiArg = void;
 export type CitiesControllerGetByIdApiResponse = /** status 200  */ City;

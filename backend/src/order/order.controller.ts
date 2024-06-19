@@ -5,7 +5,7 @@ import { Order } from './order.model';
 import { OrderService } from './order.service';
 
 @ApiTags("Orders")
-@Controller('order')
+@Controller('orders')
 export class OrderController {
     constructor(private ordersService : OrderService){}
 

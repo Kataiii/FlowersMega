@@ -1,19 +1,32 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { enhancedApi } from "./city";
+import { categoryApi } from "./category";
+import { cityApi } from "./city";
+import { filterApi } from "./filter";
+import { itemFilterApi } from "./itemFilter";
+import { userApi } from "./user";
 
 const rootReducer = combineReducers({
     // favoritesReducer,
     // cartReducer,
     // credentialReducer,
-    [enhancedApi.reducerPath]: enhancedApi.reducer
+    [cityApi.reducerPath]: cityApi.reducer,
+    [categoryApi.reducerPath]: categoryApi.reducer,
+    // [filterApi.reducerPath]: filterApi.reducer
+    // [itemFilterApi.reducerPath]: itemFilterApi.reducer
+    // [userApi.reducerPath]: userApi.reducer
 });
 
 const setupStore = () => {
     return configureStore({
         reducer: rootReducer,
+        //@ts-ignore
         middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false })
-            .concat(enhancedApi.middleware)
+            .concat({...cityApi.middleware, ...categoryApi.middleware})
+            // .concat(categoryApi.middleware)
+            // .concat(filterApi.middleware)
+            // .concat(itemFilterApi.middleware)
+            // .concat(userApi.middleware)
     });
 }
 

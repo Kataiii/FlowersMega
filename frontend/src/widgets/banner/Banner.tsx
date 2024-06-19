@@ -5,7 +5,7 @@ import Button from "../../shared/ui/button/Button";
 import { CATALOG_PATH } from "../../shared/utils/constants";
 
 const Container = styled.div`
-    position: absolute;
+    position: relative;
     width: 90%;
 `;
 
