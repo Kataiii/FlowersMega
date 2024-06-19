@@ -17,6 +17,10 @@ export class Category extends Model<Category, CategoryCreationAttrs>{
     @Column({type: DataType.STRING, allowNull: false})
     name: string;
 
+    @ApiProperty({example: 'image.png', description: 'url preview', required: false})
+    @Column({type: DataType.STRING, allowNull: true})
+    url?: string;
+
     @BelongsToMany(() => Product, () => CategoriesProducts)
     products: Product[];
 }

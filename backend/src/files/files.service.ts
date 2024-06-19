@@ -46,7 +46,16 @@ export class FilesService {
             file,
             file.originalname.slice(file.originalname.lastIndexOf('.'), file.originalname.length),
             idUser.toString(),
-            ["user"]
+            ["users"]
+        );
+    }
+
+    async createImageCategory(file, idCategoty){
+        return await this.createFile(
+            file,
+            file.originalname.slice(file.originalname.lastIndexOf('.'), file.originalname.length),
+            idCategoty.toString(),
+            ["categories"]
         );
     }
 }

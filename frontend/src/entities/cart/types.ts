@@ -1,0 +1,1 @@
+export type CartProduct<T extends {id: number | string}> = T & {count: number};

@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
+import Footer from "./shared/ui/footer/Footer";
 import Header from "./shared/ui/header/Header";
 import SecondHeader from "./shared/ui/secondHeader/SecondHeader";
 import "./shared/utils/cssConstants.css";
@@ -23,6 +24,7 @@ const App: React.FC = () => {
         <SecondHeader/>
       </ContainerHeaders>
       <Outlet></Outlet>
+      <Footer/>
     </Container>
   )
 }

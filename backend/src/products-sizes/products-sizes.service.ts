@@ -15,7 +15,7 @@ export class ProductsSizesService {
 
     async create(dto: CreateProductSizeDto | CreateProductSizeInfoDto){
         if("product" in dto){
-            const product = await this.productsService.create(dto.product);
+            const product = await this.productsService.create(dto.product, []);
             const size = await this.sizesService.create(dto.size);
 
             return await this.productsSizesRepository.create({

@@ -27,7 +27,11 @@ const injectedRtkApi = api.injectEndpoints({
       ProductsSizesControllerCreateApiResponse,
       ProductsSizesControllerCreateApiArg
     >({
-      query: () => ({ url: `/products-sizes`, method: "POST" }),
+      query: (queryArg) => ({
+        url: `/products-sizes`,
+        method: "POST",
+        body: queryArg.createProductSizeDto,
+      }),
     }),
     productsSizesControllerGetAll: build.query<
       ProductsSizesControllerGetAllApiResponse,
@@ -71,7 +75,9 @@ export type SizesControllerGetByIdApiArg = {
 };
 export type ProductsSizesControllerCreateApiResponse =
   /** status 201  */ ProductSize;
-export type ProductsSizesControllerCreateApiArg = void;
+export type ProductsSizesControllerCreateApiArg = {
+  createProductSizeDto: CreateProductSizeDto;
+};
 export type ProductsSizesControllerGetAllApiResponse =
   /** status 200  */ ProductSize[];
 export type ProductsSizesControllerGetAllApiArg = void;
@@ -103,6 +109,18 @@ export type CreateSizeDto = {
 export type ProductSize = {
   /** Unique identifier */
   id?: number;
+  /** Unique identifier product */
+  idProduct: number;
+  /** Unique identifier size */
+  idSize: number;
+  /** Params for size */
+  paramsSize: string;
+  /** Count of product */
+  count?: number;
+  /** Prise of product */
+  prise: number;
+};
+export type CreateProductSizeDto = {
   /** Unique identifier product */
   idProduct: number;
   /** Unique identifier size */

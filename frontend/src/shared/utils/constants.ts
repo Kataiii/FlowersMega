@@ -26,6 +26,8 @@ export const SEARCH_PATH = "/search/q?=:query";
 export const CATEGORY_PATH = "/category?=:category";
 export const FILTERS_PATH = "/filters?=:filters";
 
+export const API_URL = "http://localhost:5000";
+
 export enum targetA{
     _blank,
     _self

@@ -57,6 +57,10 @@ const config: ConfigFile = {
       filterEndpoints: [/auth/i],
       exportName: 'authApi'
     },
+    './store/categoryProduct.ts': {
+      filterEndpoints: [/categories-products/i],
+      exportName: 'categoryProductApi'
+    },
   },
   hooks: true,
 }

@@ -1,14 +1,22 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { FilesService } from 'src/files/files.service';
 import { Category } from './categories.model';
 import { CreateCategoryDto } from './dto/createCategory.dto';
 
 @Injectable()
 export class CategoriesService {
-    constructor(@InjectModel(Category) private categoryRepository: typeof Category){}
+    constructor(
+        @InjectModel(Category) private categoryRepository: typeof Category,
+        private filesService: FilesService){}
 
-    async create(dto: CreateCategoryDto){
-        return await this.categoryRepository.create(dto);
+    async create(dto: CreateCategoryDto, preview: File){
+        const categoty = await this.categoryRepository.create(dto);
+        const fileName = await this.filesService.createImageCategory(preview, categoty.id);
+        await this.categoryRepository.update({
+            url: fileName
+        }, {where: {id: categoty.id}});
+        return await this.categoryRepository.findOne({where: {id: categoty.id}});
     }
 
     async getAll(){

@@ -12,7 +12,7 @@ export class ProductsSizesController {
     @ApiOperation({summary: 'Create product size'})
     @ApiResponse({status: 201, type: ProductSize})
     @Post()
-    async create(@Body()dto: CreateProductSizeDto | CreateProductSizeInfoDto){
+    async create(@Body()dto: CreateProductSizeDto){
         return await this.productsSizesService.create(dto);
     }
 

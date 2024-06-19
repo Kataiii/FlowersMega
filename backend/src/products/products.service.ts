@@ -12,13 +12,13 @@ export class ProductsService {
         private imagesService: ImagesService
     ){}
 
-    async create(dto: CreateProductDto){
+    async create(dto: CreateProductDto, images: File[]){
         const product = await this.productsRepository.create({
             name: dto.name,
             description: dto.description,
             idTypeProduct: dto.idTypeProduct
         });
-        dto.images.forEach( async(item) => {
+        images.forEach( async(item) => {
             await this.imagesService.create({
                 idProduct: product.id,
                 image: item

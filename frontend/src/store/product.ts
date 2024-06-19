@@ -8,7 +8,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/products`,
         method: "POST",
-        body: queryArg.createProductDto,
+        body: queryArg.body,
       }),
     }),
     productsControllerGetAll: build.query<
@@ -27,7 +27,11 @@ const injectedRtkApi = api.injectEndpoints({
       ProductsSizesControllerCreateApiResponse,
       ProductsSizesControllerCreateApiArg
     >({
-      query: () => ({ url: `/products-sizes`, method: "POST" }),
+      query: (queryArg) => ({
+        url: `/products-sizes`,
+        method: "POST",
+        body: queryArg.createProductSizeDto,
+      }),
     }),
     productsSizesControllerGetAll: build.query<
       ProductsSizesControllerGetAllApiResponse,
@@ -61,13 +65,26 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => ({ url: `/reviews/product/${queryArg.id}` }),
     }),
+    categoriesProductsControllerGetAll: build.query<
+      CategoriesProductsControllerGetAllApiResponse,
+      CategoriesProductsControllerGetAllApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/categories-products/count/${queryArg.id}`,
+      }),
+    }),
   }),
   overrideExisting: false,
 });
 export { injectedRtkApi as productApi };
 export type ProductsControllerCreateApiResponse = /** status 201  */ Product;
 export type ProductsControllerCreateApiArg = {
-  createProductDto: CreateProductDto;
+  body: {
+    name?: string;
+    description?: string;
+    idTypeProduct?: number;
+    files?: Blob[];
+  };
 };
 export type ProductsControllerGetAllApiResponse = /** status 200  */ Product[];
 export type ProductsControllerGetAllApiArg = void;
@@ -77,7 +94,9 @@ export type ProductsControllerGetByIdApiArg = {
 };
 export type ProductsSizesControllerCreateApiResponse =
   /** status 201  */ ProductSize;
-export type ProductsSizesControllerCreateApiArg = void;
+export type ProductsSizesControllerCreateApiArg = {
+  createProductSizeDto: CreateProductSizeDto;
+};
 export type ProductsSizesControllerGetAllApiResponse =
   /** status 200  */ ProductSize[];
 export type ProductsSizesControllerGetAllApiArg = void;
@@ -101,29 +120,36 @@ export type ReviewsControllerGetByProductSizeIdApiResponse =
 export type ReviewsControllerGetByProductSizeIdApiArg = {
   id: number;
 };
+export type CategoriesProductsControllerGetAllApiResponse =
+  /** status 200  */ Number;
+export type CategoriesProductsControllerGetAllApiArg = {
+  id: number;
+};
 export type Product = {
   /** Unique identifier */
-  id?: number;
+  id: number;
   /** Name product */
   name: string;
   /** Description product */
-  description: string;
-  /** Unique identifier type product */
-  idTypeProduct: number;
-};
-export type CreateProductDto = {
-  /** Name product */
-  name: string;
-  /** Description product */
-  description: string;
-  /** Images files for product */
-  images: any[];
+  description?: string;
   /** Unique identifier type product */
   idTypeProduct: number;
 };
 export type ProductSize = {
   /** Unique identifier */
-  id?: number;
+  id: number;
+  /** Unique identifier product */
+  idProduct: number;
+  /** Unique identifier size */
+  idSize: number;
+  /** Params for size */
+  paramsSize: string;
+  /** Count of product */
+  count?: number;
+  /** Prise of product */
+  prise: number;
+};
+export type CreateProductSizeDto = {
   /** Unique identifier product */
   idProduct: number;
   /** Unique identifier size */
@@ -157,6 +183,7 @@ export type Review = {
   /** Unique identifier product size */
   idProductSize: number;
 };
+export type Number = {};
 export const {
   useProductsControllerCreateMutation,
   useProductsControllerGetAllQuery,
@@ -167,4 +194,5 @@ export const {
   useProductsSizesControllerGetByProductIdQuery,
   useOrdersProductsSizesControllerGetByIdQuery,
   useReviewsControllerGetByProductSizeIdQuery,
+  useCategoriesProductsControllerGetAllQuery,
 } = injectedRtkApi;

@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateProductDto } from './dto/createProduct.dto';
 import { Product } from './products.model';
 import { ProductsService } from './products.service';
@@ -11,9 +12,28 @@ export class ProductsController {
 
     @ApiOperation({summary: 'Create product'})
     @ApiResponse({status: 201, type: Product})
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        schema: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' },
+            description: { type: 'string' },
+            idTypeProduct: { type: 'number' },
+            files: {
+              type: 'array',
+              items: {
+                type: 'string',
+                format: 'binary',
+              }
+            },
+          },
+        },
+      })
+    @UseInterceptors(FilesInterceptor('files'))
     @Post()
-    async create(@Body()dto: CreateProductDto){
-        return await this.productsService.create(dto);
+    async create(@Body()dto: CreateProductDto, @UploadedFiles() files){
+        return await this.productsService.create(dto, files);
     }
 
     @ApiOperation({summary: 'Get all products'})

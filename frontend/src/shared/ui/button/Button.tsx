@@ -6,7 +6,7 @@ interface ButtonProps{
     clickHandler: () => void;
 }
 
-const ButtonStyle = styled.button`
+export const ButtonStyle = styled.button`
     background-color: var(--primary-bg-color);
     width: 100%;
     color: var(--primary-text-color);

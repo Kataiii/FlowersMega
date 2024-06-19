@@ -23,9 +23,9 @@ export class Product extends Model<Product, ProductCreationAttrs>{
     @Column({type: DataType.STRING, allowNull: false})
     name: string;
 
-    @ApiProperty({example: 'Описание про продукт...', description: 'Description product', required: true})
-    @Column({type: DataType.STRING, allowNull: false})
-    description: string;
+    @ApiProperty({example: 'Описание про продукт...', description: 'Description product', required: false})
+    @Column({type: DataType.TEXT, allowNull: true})
+    description?: string;
 
     @HasMany(() => Image, "idProduct")
     images: Image[];

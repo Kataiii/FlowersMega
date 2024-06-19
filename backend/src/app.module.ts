@@ -22,6 +22,7 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { ImagesReviewsModule } from './images-reviews/images-reviews.module';
 import { AuthModule } from './auth/auth.module';
 import { TokensModule } from './tokens/tokens.module';
+import { CategoriesProductsModule } from './categories-products/categories-products.module';
 
 @Module({
     imports: [
@@ -62,6 +63,7 @@ import { TokensModule } from './tokens/tokens.module';
         ImagesReviewsModule,
         TokensModule,
         AuthModule,
+        CategoriesProductsModule,
     ]
 })
 export class AppModule{}

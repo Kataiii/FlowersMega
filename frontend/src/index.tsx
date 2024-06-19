@@ -3,6 +3,8 @@ import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import Router from './routing/Router';
 import { ConfigProvider } from 'antd';
+import { Provider } from 'react-redux';
+import { store } from './store/store';
 
 const root = ReactDOM.createRoot(
 	document.getElementById('root') as HTMLElement
@@ -24,8 +26,10 @@ root.render(
 				}
 			}
 		}}>
-		<BrowserRouter>
-			<Router />
-		</BrowserRouter>
+		<Provider store={store}>
+			<BrowserRouter>
+				<Router />
+			</BrowserRouter>
+		</Provider>
 	</ConfigProvider>
 );
