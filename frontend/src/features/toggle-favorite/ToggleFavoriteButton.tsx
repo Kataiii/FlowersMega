@@ -27,7 +27,7 @@ export const ToggleFavoritesButton: React.FC<AddToFavoritesButtonProps> = ({ ite
             onClick={toggleFavorite}
             style={{
                 fontSize: 20,
-                color: isFavorite ? 'greenyellow' : 'black'
+                color: isFavorite ? '#FF749F' : '#1A2030'
             }} />
     );
 }

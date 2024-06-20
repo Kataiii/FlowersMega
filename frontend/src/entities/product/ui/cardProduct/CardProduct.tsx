@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import { styled } from "styled-components";
-import { API_URL } from "../../../../shared/utils/constants";
+import { API_URL, PRODUCT_PATH } from "../../../../shared/utils/constants";
 import { Product, ProductSize, useProductsControllerGetByIdQuery } from "../../../../store/product";
 import { Size, useSizesControllerGetByIdQuery } from "../../../../store/size";
 import AddCart from "../../../../shared/assets/add_cart.svg";
 import Cursor from "../../../../shared/assets/cursor.svg";
+import { useNavigate } from "react-router-dom";
 
 type CardProductProps = {
     product: Product & { productSize: ProductSize, size?: Size };
@@ -53,14 +54,15 @@ const ButtonColor = styled.button`
 `
 
 const CardProduct: React.FC<CardProductProps> = ({ product, addToCartButton, addToFavorites }) => {
+    const navigate = useNavigate();
 
     return (
-        <div style={{ width: '286px', borderRadius: "14px", padding: "8px", backgroundColor: "var(--block-bg-color)", display: "flex", flexDirection: "column", gap: "16px" }}>
+        <div style={{ width: '286px', borderRadius: "14px", padding: "8px", backgroundColor: "var(--block-bg-color)", display: "flex", flexDirection: "column", gap: "16px", position: "relative" }}>
 
             {/* @ts-ignore */}
-            <img style={{ width: "270px", height: "270px", borderRadius: "6px" }} src={`${API_URL}/products/images/${product?.id}/${product?.images[0].url}`} alt={product?.name} />
+            <img style={{ width: "270px", height: "270px", borderRadius: "6px", cursor: "pointer"}} src={`${API_URL}/products/images/${product?.id}/${product?.images[0].url}`} onClick={() => navigate(`${PRODUCT_PATH}/${product.name}/${product.size?.name}`)} alt={product?.name} />
             <div>
-                <p>Отзывы</p>
+                {/* <p>Отзывы</p> */}
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -75,6 +77,9 @@ const CardProduct: React.FC<CardProductProps> = ({ product, addToCartButton, add
                         В 1 клик
                     </ButtonColor>
                 </div>
+            </div>
+            <div style={{position: "absolute", top: 15, right: 15}}>
+                {addToFavorites}
             </div>
         </div>
     )

@@ -18,7 +18,7 @@ export const SmartProductCard: React.FC<SmartProductCardProps> = ({ size }) => {
         ? <p>Загрузка</p>
         : <CardProduct
             product={{...data!, productSize: size, size: responseSize.data }}
-            addToCartButton={<AddToCartButton product={size} />}
+            addToCartButton={<AddToCartButton product={{...size, product: data!}} />}
             addToFavorites={<ToggleFavoritesButton item={size} />}
         />
 }

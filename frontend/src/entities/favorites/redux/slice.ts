@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { createAction, createEntityAdapter, createSlice, createSelector } from "@reduxjs/toolkit";
 import { RootState } from "@reduxjs/toolkit/query";
 import { Product, ProductSize } from "../../../store/product";

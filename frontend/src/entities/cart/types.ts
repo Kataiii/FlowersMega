@@ -1,1 +1,4 @@
-export type CartProduct<T extends {id: number | string}> = T & {count: number};
+
+import { Product, ProductSize } from "../../store/product";
+
+export type CartProduct = ProductSize & {count: number, product: Product};
