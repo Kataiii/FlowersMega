@@ -1,7 +1,7 @@
 import { styled } from "styled-components";
 import "../../utils/cssConstants.css"
 
-interface ButtonProps{
+export interface ButtonProps{
     buttonContent: string;
     clickHandler: () => void;
 }

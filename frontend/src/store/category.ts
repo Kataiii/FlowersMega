@@ -23,6 +23,14 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => ({ url: `/categories/${queryArg.id}` }),
     }),
+    categoriesControllerGetPagination: build.query<
+      CategoriesControllerGetPaginationApiResponse,
+      CategoriesControllerGetPaginationApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/categories/pagination/${queryArg.page}/${queryArg.limit}`,
+      }),
+    }),
     categoriesProductsControllerGetAll: build.query<
       CategoriesProductsControllerGetAllApiResponse,
       CategoriesProductsControllerGetAllApiArg
@@ -50,6 +58,12 @@ export type CategoriesControllerGetByIdApiResponse =
 export type CategoriesControllerGetByIdApiArg = {
   id: number;
 };
+export type CategoriesControllerGetPaginationApiResponse =
+  /** status 200  */ GetPaginationDto;
+export type CategoriesControllerGetPaginationApiArg = {
+  page: number;
+  limit: number;
+};
 export type CategoriesProductsControllerGetAllApiResponse =
   /** status 200  */ Number;
 export type CategoriesProductsControllerGetAllApiArg = {
@@ -63,10 +77,17 @@ export type Category = {
   /** url preview */
   url?: string;
 };
+export type GetPaginationDto = {
+  /** Count all categories */
+  count: number;
+  /** Categories with pagination */
+  categories: Category[];
+};
 export type Number = {};
 export const {
   useCategoriesControllerCreateMutation,
   useCategoriesControllerGetAllQuery,
   useCategoriesControllerGetByIdQuery,
+  useCategoriesControllerGetPaginationQuery,
   useCategoriesProductsControllerGetAllQuery,
 } = injectedRtkApi;

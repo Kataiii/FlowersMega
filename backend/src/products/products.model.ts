@@ -15,7 +15,7 @@ interface ProductCreationAttrs{
 
 @Table({tableName: 'products', createdAt: true, updatedAt: true})
 export class Product extends Model<Product, ProductCreationAttrs>{
-    @ApiProperty({example: 1, description: 'Unique identifier', required: false})
+    @ApiProperty({example: 1, description: 'Unique identifier', required: true})
     @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true})
     id: number;
 
@@ -26,6 +26,10 @@ export class Product extends Model<Product, ProductCreationAttrs>{
     @ApiProperty({example: 'Описание про продукт...', description: 'Description product', required: false})
     @Column({type: DataType.TEXT, allowNull: true})
     description?: string;
+
+    @ApiProperty({example: 'Розы, аваланж', description: 'Structure product', required: true})
+    @Column({type: DataType.TEXT, allowNull: true})
+    structure: string;
 
     @HasMany(() => Image, "idProduct")
     images: Image[];

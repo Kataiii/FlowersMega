@@ -32,4 +32,16 @@ export class CategoriesService {
         if(category === null) throw new HttpException("Category not found", HttpStatus.NOT_FOUND);
         return category;
     }
+
+    async getAllCountAndPagination(page: number, limit: number){
+        const count = (await this.categoryRepository.findAndCountAll()).count;
+        const categories = await this.categoryRepository.findAll({
+            limit: limit,
+            offset: (page - 1) * limit
+        })
+        return {
+            count: count,
+            categories: categories
+        };
+    }
 }

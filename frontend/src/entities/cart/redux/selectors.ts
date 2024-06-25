@@ -11,6 +11,7 @@ export const selectTotalCount = createSelector(
 
 export const isInCartSelector = createSelector(
     [
+        //@ts-ignore
         (state: RootState, itemWithId: Pick<ProductSize, 'id'>) => cartSelectors.selectById(state, itemWithId.id)
     ],
     (item) => item != null

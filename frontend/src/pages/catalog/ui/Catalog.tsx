@@ -10,6 +10,7 @@ const Catalog: React.FC = () => {
         <div style={{ display: "flex", justifyContent: "center", padding: "25px 0" }}>
             <Container>
                 <h1 style={{ fontFamily: "Inter", fontSize: 32, fontWeight: 600, color: "var(--secondary-text-color)" }}>Каталог</h1>
+                
                 <div style={{ display: "flex", gap: "18px", flexWrap: "wrap" }}>
                     {
                         isLoading

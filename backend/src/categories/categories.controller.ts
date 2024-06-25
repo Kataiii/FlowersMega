@@ -5,6 +5,7 @@ import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestj
 import { Category } from './categories.model';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/createCategory.dto';
+import { GetPaginationDto } from './dto/getPagination.dto';
 
 @ApiTags("Categories")
 @Controller('categories')
@@ -46,5 +47,12 @@ export class CategoriesController {
     @Get("/:id")
     async getById(@Param("id") id: number){
         return await this.categoriesService.getById(id);
+    }
+
+    @ApiOperation({summary: 'Get categories with pagination'})
+    @ApiResponse({status: 200, type: GetPaginationDto})
+    @Get('/pagination/:page/:limit')
+    async getPagination(@Param("page") page: number, @Param("limit") limit: number){
+        return await this.categoriesService.getAllCountAndPagination(page, limit);
     }
 }

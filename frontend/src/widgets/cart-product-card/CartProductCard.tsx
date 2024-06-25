@@ -26,7 +26,7 @@ export const CartProductCard: React.FC<CartProductCardProps> = ({ product }) => 
                     <div style={{fontFamily: "Inter", fontWeight: 400, fontSize: 16, color: "var(--unactive-text-color)"}}>Размер букета: {product.paramsSize}</div>
                 </div>
             </div>
-            <CartCountController id={product.id} />
+            <CartCountController id={product.id ?? -1} />
             <div style={{display: "flex", gap: 8, padding: "0 8px", alignItems: "center"}}>
                 <div style={{display: "flex", gap: 5, alignItems: "center"}}>
                     <p style={{fontFamily: "Inter", fontSize: 15, fontWeight: 400, color: "var(--secondary-text-color)"}}>{product.prise.toLocaleString()} ₽ × {product.count} шт. = </p>

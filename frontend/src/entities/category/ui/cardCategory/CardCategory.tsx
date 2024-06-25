@@ -5,13 +5,14 @@ import { useCategoriesProductsControllerGetAllQuery } from "../../../../store/pr
 
 type CardCategoryProps = {
     category: Category;
+    clickHandler: () => void;
 }
 
-const CardCategory: React.FC<CardCategoryProps> = ({category}) => {
+const CardCategory: React.FC<CardCategoryProps> = ({category, clickHandler}) => {
     const {isLoading, data} = useCategoriesProductsControllerGetAllQuery({id: category.id ?? -1});
 
     return(
-        <div style={{cursor: "pointer", width: "154px", boxShadow: "0px 0px 2px 0px #EEB2CE", backgroundColor: "var(--block-bg-color)", borderRadius: "6px", padding: "10px 8px", display: "flex", flexDirection: "column", gap: "10px"}}>
+        <div onClick={clickHandler} style={{cursor: "pointer", width: "154px", boxShadow: "0px 0px 2px 0px #EEB2CE", backgroundColor: "var(--block-bg-color)", borderRadius: "6px", padding: "10px 8px", display: "flex", flexDirection: "column", gap: "10px"}}>
             <img style={{width: '138px', height: '124px', borderRadius: '6px'}} src={`${API_URL}/categories/${category.id}/${category.url}`} alt={category.name}/>
             <p style={{textAlign: "center", fontFamily: 'Inter', fontWeight: 600, fontSize: '16px', color: 'var(--secondary-text-color)'}}>{category.name}</p>
             <p style={{textAlign: "center", fontFamily: 'Inter', fontWeight: 600, fontSize: "10px", color: "#0000004D"}}>{ isLoading ? "Загрузка..." : `${data === 0 ? " " : data + " " + Numerals.numeralsProducts(Number(data))}`}</p>

@@ -132,12 +132,14 @@ export type Product = {
   name: string;
   /** Description product */
   description?: string;
+  /** Structure product */
+  structure: string;
   /** Unique identifier type product */
   idTypeProduct: number;
 };
 export type ProductSize = {
   /** Unique identifier */
-  id: number;
+  id?: number;
   /** Unique identifier product */
   idProduct: number;
   /** Unique identifier size */
