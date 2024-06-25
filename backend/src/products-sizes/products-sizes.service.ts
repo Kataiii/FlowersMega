@@ -41,6 +41,18 @@ export class ProductsSizesService {
         return productsSizes;
     }
 
+    async getAllWithPagination(page: number, limit: number){
+        const count = (await this.productsSizesRepository.findAndCountAll()).count;
+        const productsSizes = await this.productsSizesRepository.findAll({
+            limit: limit,
+            offset: (page - 1) * limit
+        });
+        return {
+            count: count,
+            productsSizes: productsSizes
+        };
+    }
+
     async getById(id: number | string){
         const productSize = await this.productsSizesRepository.findOne(
             {

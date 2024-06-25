@@ -23,7 +23,7 @@ export const ORDER_SUCCESS_PATH = "/order_success";
 export const ORDER_CALL_PATH = "/order_call";
 
 export const SEARCH_PATH = "/search/q?=:query";
-export const CATEGORY_PATH = "/category?=:category";
+export const CATEGORY_PATH = "/category";
 export const FILTERS_PATH = "/filters?=:filters";
 
 export const API_URL = "http://localhost:5000";

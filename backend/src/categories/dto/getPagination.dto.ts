@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Category } from "../categories.model";
 
-export class GetPaginationDto{
+export class GetPaginationCategoriesDto{
     @ApiProperty({example: 100, description: 'Count all categories', required: true})
     readonly count : number;
 

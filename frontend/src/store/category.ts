@@ -59,7 +59,7 @@ export type CategoriesControllerGetByIdApiArg = {
   id: number;
 };
 export type CategoriesControllerGetPaginationApiResponse =
-  /** status 200  */ GetPaginationDto;
+  /** status 200  */ GetPaginationCategoriesDto;
 export type CategoriesControllerGetPaginationApiArg = {
   page: number;
   limit: number;
@@ -77,7 +77,7 @@ export type Category = {
   /** url preview */
   url?: string;
 };
-export type GetPaginationDto = {
+export type GetPaginationCategoriesDto = {
   /** Count all categories */
   count: number;
   /** Categories with pagination */

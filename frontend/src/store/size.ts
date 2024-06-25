@@ -39,6 +39,14 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: () => ({ url: `/products-sizes` }),
     }),
+    productsSizesControllerGetPagination: build.query<
+      ProductsSizesControllerGetPaginationApiResponse,
+      ProductsSizesControllerGetPaginationApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/products-sizes/pagination/${queryArg.page}/${queryArg.limit}`,
+      }),
+    }),
     productsSizesControllerGetById: build.query<
       ProductsSizesControllerGetByIdApiResponse,
       ProductsSizesControllerGetByIdApiArg
@@ -81,6 +89,12 @@ export type ProductsSizesControllerCreateApiArg = {
 export type ProductsSizesControllerGetAllApiResponse =
   /** status 200  */ ProductSize[];
 export type ProductsSizesControllerGetAllApiArg = void;
+export type ProductsSizesControllerGetPaginationApiResponse =
+  /** status 200  */ GetPaginationProductSizeDto;
+export type ProductsSizesControllerGetPaginationApiArg = {
+  page: number;
+  limit: number;
+};
 export type ProductsSizesControllerGetByIdApiResponse =
   /** status 200  */ ProductSize;
 export type ProductsSizesControllerGetByIdApiArg = {
@@ -132,6 +146,12 @@ export type CreateProductSizeDto = {
   /** Prise of product */
   prise: number;
 };
+export type GetPaginationProductSizeDto = {
+  /** Count all products */
+  count: number;
+  /** Products with pagination */
+  productsSizes: ProductSize[];
+};
 export type OrderProductSize = {
   /** Unique identifier */
   id?: number;
@@ -148,6 +168,7 @@ export const {
   useSizesControllerGetByIdQuery,
   useProductsSizesControllerCreateMutation,
   useProductsSizesControllerGetAllQuery,
+  useProductsSizesControllerGetPaginationQuery,
   useProductsSizesControllerGetByIdQuery,
   useProductsSizesControllerGetByProductIdQuery,
   useOrdersProductsSizesControllerGetByIdQuery,

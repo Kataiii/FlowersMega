@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { createSearchParams, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import CardCategory from "../../entities/category/ui/cardCategory/CardCategory";
 import SecondaryButton from "../../shared/ui/button/SecondaryButton";
@@ -69,7 +69,12 @@ const BlockCategories: React.FC = () => {
                         <ContainerCategories>
                         {
                             data && categories.map((item, index) => {
-                                return <CardCategory key={`categories-${index}`} category={item} clickHandler={() => navigate(`${CATALOG_PATH}/category?=${item.name}`)}/>
+                                return <CardCategory key={`categories-${index}`} category={item} clickHandler={() => navigate({
+                                    pathname: `${CATALOG_PATH}${CATEGORY_PATH}`,
+                                    search: createSearchParams({
+                                        category: item.name
+                                    }).toString()
+                                })}/>
                             })
                         }
                         </ContainerCategories>
