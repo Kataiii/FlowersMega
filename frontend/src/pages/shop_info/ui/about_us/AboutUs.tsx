@@ -1,18 +1,8 @@
-import { styled } from "styled-components";
 import Container from "../../../../shared/ui/containerMain/ContainerMain"
+import { Title } from "../../../../shared/ui/forAdditionalPages/Title";
+import { Text } from "../../../../shared/ui/forAdditionalPages/Content";
 import { PHONE } from "../../../../shared/utils/constants";
 
-const Title = styled.h2`
-    font-family: "Inter";
-    font-weight: 600;
-    font-size: 32px;
-    color: var(--secondary-text-color);
-`;
-
-const Text = styled(Title)`
-    font-weight: 400;
-    font-size: 16px;
-`;
 
 const AboutUs: React.FC = () => {
     return(
