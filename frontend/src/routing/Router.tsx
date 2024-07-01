@@ -6,6 +6,7 @@ import Catalog from "../pages/catalog/ui/Catalog";
 import Error from "../pages/error/ui/Error";
 import Favourites from "../pages/favourites/ui/Favourites";
 import Main from "../pages/main/ui/Main";
+import OrderCall from "../pages/orderCall/OrderCall";
 import Product from "../pages/product/ui/Product";
 import Orders from "../pages/profile/ui/Orders";
 import Profile from "../pages/profile/ui/Profile";
@@ -16,6 +17,7 @@ import Help from "../pages/shop_info/ui/help/Help";
 import PaymentDelivery from "../pages/shop_info/ui/payment_and_delivery/PaymentDelivery";
 import Politics from "../pages/shop_info/ui/politics/Politics";
 import Modal from "../shared/ui/modal/Modal";
+import ModalRoute from "../shared/ui/modalRoute/ModalRoute";
 import Portal from "../shared/ui/portal/Portal";
 import { 
     ABOUT_PATH, 
@@ -85,7 +87,7 @@ const Router: React.FC = () => {
                     <Route path={POLITICS_PATH} element={<Politics />} />
                     <Route path="*" element={<Error />} />
                 </Route>
-
+            </Routes>
                 {
                     previousLocation && (
                         <Routes>
@@ -106,17 +108,13 @@ const Router: React.FC = () => {
                                     content="Мы свяжемся с вами в кротчайшее время"
                                     buttonContent="Вернуться на главную"
                                     clickHandler={() => navigate(HOME_PATH)} />
-                            } />} />
-                            <Route path={ORDER_CALL_PATH} element={<Portal children={
-                                <Modal title="Ваша заявка принята"
-                                    content="Мы свяжемся с вами в кротчайшее время"
-                                    buttonContent="Вернуться на главную"
-                                    clickHandler={() => navigate(HOME_PATH)} />
-                            } />} />
+                            } />} /> 
+                            <Route path={ORDER_CALL_PATH} element={<ModalRoute prevLocation={previousLocation}>
+                                <OrderCall/>
+                            </ModalRoute>} />
                         </Routes>
                     )
                 }
-            </Routes>
         </>
     )
 }

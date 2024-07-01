@@ -2,8 +2,8 @@ import { styled } from "styled-components";
 import Button from "../button/Button";
 import Logo from "../../assets/logo.svg";
 import "../../utils/cssConstants.css";
-import { useNavigate } from "react-router-dom";
-import { ABOUT_PATH, CONTACTS_PATH, HELP_PATH, HOME_PATH, PAYMENT_DELIVERY_PATH, targetA } from "../../utils/constants";
+import { Link as LinkRRD, useLocation, useNavigate } from "react-router-dom";
+import { ABOUT_PATH, CONTACTS_PATH, HELP_PATH, HOME_PATH, ORDER_CALL_PATH, PAYMENT_DELIVERY_PATH, targetA } from "../../utils/constants";
 import { useMemo } from "react";
 import Link, { LinkProps } from "../link/Link";
 
@@ -28,6 +28,7 @@ const LogoStyle = styled.img`
 
 const Header: React.FC = () => {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const links = useMemo<LinkProps[]>(() => [
         {
@@ -65,7 +66,9 @@ const Header: React.FC = () => {
                 </>
             </ContainerLinks>
             <div style={{width: 'fit-content'}}>
-                <Button buttonContent="Заказать звонок" clickHandler={() => console.log('Заказать звонок')} />
+                <LinkRRD to={ORDER_CALL_PATH} state={{ previousLocation: location }}>
+                    <Button buttonContent="Заказать звонок" clickHandler={() => {}} />
+                </LinkRRD>
             </div>
         </Container>
     )
