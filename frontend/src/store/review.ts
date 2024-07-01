@@ -8,7 +8,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/reviews`,
         method: "POST",
-        body: queryArg.createReviewDto,
+        body: queryArg.body,
       }),
     }),
     reviewsControllerGetAll: build.query<
@@ -29,13 +29,28 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => ({ url: `/reviews/product/${queryArg.id}` }),
     }),
+    reviewsControllerGetAllWithPagination: build.query<
+      ReviewsControllerGetAllWithPaginationApiResponse,
+      ReviewsControllerGetAllWithPaginationApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/reviews/pagination/${queryArg.page}/${queryArg.limit}`,
+      }),
+    }),
   }),
   overrideExisting: false,
 });
 export { injectedRtkApi as reviewApi };
 export type ReviewsControllerCreateApiResponse = /** status 201  */ Review;
 export type ReviewsControllerCreateApiArg = {
-  createReviewDto: CreateReviewDto;
+  body: {
+    rating?: number;
+    comment?: string;
+    idUser?: number;
+    idProductSize?: number;
+    firstname?: string;
+    files?: Blob[];
+  };
 };
 export type ReviewsControllerGetAllApiResponse = /** status 200  */ Review[];
 export type ReviewsControllerGetAllApiArg = void;
@@ -48,6 +63,12 @@ export type ReviewsControllerGetByProductSizeIdApiResponse =
 export type ReviewsControllerGetByProductSizeIdApiArg = {
   id: number;
 };
+export type ReviewsControllerGetAllWithPaginationApiResponse =
+  /** status 200  */ GetPaginationFullReviewDto;
+export type ReviewsControllerGetAllWithPaginationApiArg = {
+  page: number;
+  limit: number;
+};
 export type Review = {
   /** Unique identifier */
   id?: number;
@@ -57,24 +78,63 @@ export type Review = {
   comment?: string;
   /** Unique identifier user */
   idUser?: number;
+  /** Name user */
+  firstname?: string;
   /** Unique identifier product size */
   idProductSize: number;
 };
-export type CreateReviewDto = {
+export type ImageReview = {
+  /** Unique identifier */
+  id?: number;
+  /** Url to image */
+  url: string;
+  /** Unique identifier review */
+  idReview?: number;
+};
+export type Product = {
+  /** Unique identifier */
+  id: number;
+  /** Name product */
+  name: string;
+  /** Description product */
+  description?: string;
+  /** Structure product */
+  structure: string;
+  /** Unique identifier type product */
+  idTypeProduct: number;
+};
+export type FullReviewDto = {
+  /** Unique identifier */
+  id: number;
   /** Rating of product */
   rating: number;
   /** Comment of product */
   comment?: string;
   /** Unique identifier user */
   idUser?: number;
+  /** Name user */
+  firstname?: string;
   /** Unique identifier product size */
   idProductSize: number;
-  /** Images files for reviews */
-  images?: any[];
+  /** Create date */
+  createdAt: string;
+  /** Update date */
+  updatedAt: string;
+  /** Update date */
+  images: ImageReview[];
+  /** Product */
+  product: Product;
+};
+export type GetPaginationFullReviewDto = {
+  /** Count all reviews */
+  count: number;
+  /** Reviews with pagination */
+  reviews: FullReviewDto[];
 };
 export const {
   useReviewsControllerCreateMutation,
   useReviewsControllerGetAllQuery,
   useReviewsControllerGetByIdQuery,
   useReviewsControllerGetByProductSizeIdQuery,
+  useReviewsControllerGetAllWithPaginationQuery,
 } = injectedRtkApi;

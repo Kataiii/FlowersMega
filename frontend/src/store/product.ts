@@ -202,6 +202,8 @@ export type Review = {
   comment?: string;
   /** Unique identifier user */
   idUser?: number;
+  /** Name user */
+  firstname?: string;
   /** Unique identifier product size */
   idProductSize: number;
 };

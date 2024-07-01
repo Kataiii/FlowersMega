@@ -6,6 +6,7 @@ import { Size, useSizesControllerGetByIdQuery } from "../../../../store/size";
 import AddCart from "../../../../shared/assets/add_cart.svg";
 import Cursor from "../../../../shared/assets/cursor.svg";
 import { useNavigate } from "react-router-dom";
+import { Rate } from "antd";
 
 type CardProductProps = {
     product: Product & { productSize: ProductSize, size?: Size };
@@ -62,7 +63,7 @@ const CardProduct: React.FC<CardProductProps> = ({ product, addToCartButton, add
             {/* @ts-ignore */}
             <img style={{ width: "270px", height: "270px", borderRadius: "6px", cursor: "pointer"}} src={`${API_URL}/products/images/${product?.id}/${product?.images[0].url}`} onClick={() => navigate(`${PRODUCT_PATH}/${product.name}/${product.size?.name}`)} alt={product?.name} />
             <div>
-                {/* <p>Отзывы</p> */}
+                {/* <Rate style={{ color: "var(--primary-bg-color)" }} value={review.rating} disabled/> */}
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>

@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
+import { Column, DataType, ForeignKey, HasMany, HasOne, Model, Table } from "sequelize-typescript";
 import { ImageReview } from "src/images-reviews/images-reviews.model";
+import { ProductSize } from "src/products-sizes/products-sizes.model";
 import { User } from "src/users/users.model";
 
 interface ReviewCreationAttrs{
@@ -8,6 +9,7 @@ interface ReviewCreationAttrs{
     comment?: string;
     idUser?: number;
     idProductSize: number;
+    firstname: string;
 }
 
 @Table({tableName: 'reviews', createdAt: true, updatedAt: true})
@@ -29,8 +31,13 @@ export class Review extends Model<Review, ReviewCreationAttrs>{
     @ForeignKey(() => User)
     idUser?: number;
 
+    @ApiProperty({example: "Елена", description: 'Name user', required: false})
+    @Column({type: DataType.STRING, allowNull: false})
+    firstname: string;
+
     @ApiProperty({example: 1, description: 'Unique identifier product size', required: true})
     @Column({type: DataType.INTEGER, allowNull: false})
+    @ForeignKey(() => ProductSize)
     idProductSize: number;
 
     @HasMany(() => ImageReview, "idReview")

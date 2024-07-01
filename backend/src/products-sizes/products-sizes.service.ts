@@ -10,7 +10,7 @@ export class ProductsSizesService {
     constructor(
         @InjectModel(ProductSize) private productsSizesRepository: typeof ProductSize,
         private productsService: ProductsService,
-        private sizesService: SizesService
+        private sizesService: SizesService,
     ){}
 
     async create(dto: CreateProductSizeDto | CreateProductSizeInfoDto){

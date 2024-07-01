@@ -1,6 +1,10 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { GetPaginationFullReviewDto } from './dto/createPagination.dto';
 import { CreateReviewDto } from './dto/createReviews.dto';
+import { FullReviewDto } from './dto/fullReview.dto';
+import { StaticticReviews } from './dto/statisticByProductSizeId.dto';
 import { Review } from './reviews.model';
 import { ReviewsService } from './reviews.service';
 
@@ -9,11 +13,33 @@ import { ReviewsService } from './reviews.service';
 export class ReviewsController {
     constructor(private reviewsService : ReviewsService){}
 
+
     @ApiOperation({summary: 'Create review'})
     @ApiResponse({status: 201, type: Review})
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        schema: {
+          type: 'object',
+          properties: {
+            rating: { type: 'number' },
+            comment: { type: 'string' },
+            idUser: { type: 'number' },
+            idProductSize: {type: 'number'},
+            firstname: {type: 'string'},
+            files: {
+              type: 'array',
+              items: {
+                type: 'string',
+                format: 'binary',
+              }
+            },
+          },
+        },
+      })
+    @UseInterceptors(FilesInterceptor('files'))
     @Post()
-    async create(@Body()dto: CreateReviewDto){
-        return await this.reviewsService.create(dto);
+    async create(@Body()dto: CreateReviewDto, @UploadedFiles() files){
+        return await this.reviewsService.create(dto, files);
     }
 
     @ApiOperation({summary: 'Get all reviews'})
@@ -38,5 +64,20 @@ export class ReviewsController {
     @Get("/product/:id")
     async getByProductSizeId(@Param("id") id: number){
         return await this.reviewsService.getByProductSizeId(id);
+    }
+
+    @ApiOperation({summary: 'Get all reviews with pagination'})
+    @ApiResponse({status: 200, type: GetPaginationFullReviewDto})
+    @ApiResponse({status: 404, description: "Reviews not fount"})
+    @Get("/pagination/:page/:limit")
+    async getAllWithPagination(@Param("page") page: number, @Param("limit") limit: number){
+        return await this.reviewsService.getReviewsAllWithPagination(page, limit);
+    }
+
+    @ApiOperation({summary: 'Get statistic reviews by project'})
+    @ApiResponse({status: 200, type: StaticticReviews})
+    @Get("/statistic/:id")
+    async getStaticticByProductSizeId(@Param("id") id: number){
+      return await this.reviewsService.getStaticticByProductSizeId(id);
     }
 }

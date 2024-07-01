@@ -10,9 +10,9 @@ export class CreateReviewDto{
     @ApiProperty({example: 1, description: 'Unique identifier user', required: false})
     idUser?: number;
 
+    @ApiProperty({example: "Елена", description: 'Name user', required: false})
+    firstname: string;
+
     @ApiProperty({example: 1, description: 'Unique identifier product size', required: true})
     idProductSize: number;
-
-    @ApiProperty({description: 'Images files for reviews', required: false, format: 'file', isArray: true})
-    images?: File[];
 }

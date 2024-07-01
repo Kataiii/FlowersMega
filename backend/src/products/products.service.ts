@@ -43,7 +43,7 @@ export class ProductsService {
             {
                 where: {id: id}, 
                 include: [{
-                    model: Image
+                    all: true
                 }]
             }
         );
