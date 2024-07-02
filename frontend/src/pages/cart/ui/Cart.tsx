@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { cartSelectors, selectTotalCount } from "../../../entities/cart/redux/selectors";
 import Button from "../../../shared/ui/button/Button";
 import Container from "../../../shared/ui/containerMain/ContainerMain";
-import { CATALOG_PATH } from "../../../shared/utils/constants";
+import { CART_ORDER_PATH, CATALOG_PATH } from "../../../shared/utils/constants";
 import { useAppSelector } from "../../../store/store";
 import { CartProductCard } from "../../../widgets/cart-product-card/CartProductCard";
 
@@ -16,6 +16,10 @@ const Cart: React.FC = () => {
         () => productsInCart.map(p => p.count * (p.prise ?? 0)).reduce((prev, curr) => prev + curr, 0),
         [productsInCart]
     )
+
+    const orderHandler = () => {
+        navigate(CART_ORDER_PATH);
+    }
 
     return (
         <Container style={{ margin: "0 auto", flexGrow: 3, padding: "35px 0" }}>
@@ -62,7 +66,7 @@ const Cart: React.FC = () => {
                                         </div>
                                     </div>
                                     <div style={{ width: "40%", margin: "0 auto" }}>
-                                        <Button buttonContent={"Оформить заказ"} clickHandler={() => console.log("Оформление заказа")} />
+                                        <Button buttonContent={"Оформить заказ"} clickHandler={orderHandler} />
                                     </div>
                                 </div>
                             </div>

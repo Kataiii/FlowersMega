@@ -2,6 +2,7 @@ import { Route, Routes, useNavigate } from "react-router";
 import { useLocation } from "react-router-dom";
 import App from "../App";
 import Cart from "../pages/cart/ui/Cart";
+import CartOrder from "../pages/cart/ui/CartOrder";
 import Catalog from "../pages/catalog/ui/Catalog";
 import Error from "../pages/error/ui/Error";
 import Favourites from "../pages/favourites/ui/Favourites";
@@ -22,6 +23,7 @@ import Portal from "../shared/ui/portal/Portal";
 import { 
     ABOUT_PATH, 
     AUTH_PATH, 
+    CART_ORDER_PATH, 
     CART_PATH, 
     CATALOG_PATH, 
     CATEGORY_PATH, 
@@ -78,7 +80,8 @@ const Router: React.FC = () => {
                         <Route path={PROFILE_PATH} element={<Profile />} />
                         <Route path={ORDERS_PATH} element={<Orders />} />
                     </Route>
-                    <Route path={CART_PATH} element={<Cart />} />
+                    <Route path={CART_PATH} element={<Cart />}/>
+                    <Route path={CART_ORDER_PATH} element={<CartOrder />} />
                     <Route path={FAVOURITES_PATH} element={<Favourites />} />
                     <Route path={PAYMENT_DELIVERY_PATH} element={<PaymentDelivery />} />
                     <Route path={ABOUT_PATH} element={<AboutUs />} />

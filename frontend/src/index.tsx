@@ -2,9 +2,10 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import Router from './routing/Router';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, Spin } from 'antd';
 import { Provider } from 'react-redux';
-import { store } from './store/store';
+import { persistor, store } from './store/store';
+import { PersistGate } from 'redux-persist/integration/react';
 
 const root = ReactDOM.createRoot(
 	document.getElementById('root') as HTMLElement
@@ -27,9 +28,11 @@ root.render(
 			}
 		}}>
 		<Provider store={store}>
-			<BrowserRouter>
-				<Router />
-			</BrowserRouter>
+			<PersistGate persistor={persistor} loading={<Spin></Spin>}>
+				<BrowserRouter>
+					<Router />
+				</BrowserRouter>
+			</PersistGate>
 		</Provider>
 	</ConfigProvider>
 );

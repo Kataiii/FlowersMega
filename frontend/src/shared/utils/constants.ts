@@ -4,6 +4,7 @@ export const PRODUCT_PATH = "/product";
 export const PROFILE_PATH = "/profile";
 export const ORDERS_PATH = "/profile/orders";
 export const CART_PATH = "/cart";
+export const CART_ORDER_PATH = "/cart/order";
 export const FAVOURITES_PATH = "/favourites";
 export const PAYMENT_DELIVERY_PATH = "/payment_and_delivery";
 export const ABOUT_PATH = "/about_us";
