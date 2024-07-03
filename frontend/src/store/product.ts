@@ -59,12 +59,20 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => ({ url: `/products-sizes/product/${queryArg.id}` }),
     }),
-    ordersProductsSizesControllerGetById: build.query<
-      OrdersProductsSizesControllerGetByIdApiResponse,
-      OrdersProductsSizesControllerGetByIdApiArg
+    productsSizesControllerGetProductSizeForCardById: build.query<
+      ProductsSizesControllerGetProductSizeForCardByIdApiResponse,
+      ProductsSizesControllerGetProductSizeForCardByIdApiArg
     >({
       query: (queryArg) => ({
-        url: `/orders-products-sizes/order/${queryArg.id}`,
+        url: `/products-sizes/full-product/${queryArg.id}`,
+      }),
+    }),
+    productsSizesControllerGetByCategotyIdWithPagination: build.query<
+      ProductsSizesControllerGetByCategotyIdWithPaginationApiResponse,
+      ProductsSizesControllerGetByCategotyIdWithPaginationApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/products-sizes/full-products-cards/${queryArg.page}/${queryArg.limit}`,
       }),
     }),
     reviewsControllerGetByProductSizeId: build.query<
@@ -72,6 +80,20 @@ const injectedRtkApi = api.injectEndpoints({
       ReviewsControllerGetByProductSizeIdApiArg
     >({
       query: (queryArg) => ({ url: `/reviews/product/${queryArg.id}` }),
+    }),
+    reviewsControllerGetStaticticByProductSizeId: build.query<
+      ReviewsControllerGetStaticticByProductSizeIdApiResponse,
+      ReviewsControllerGetStaticticByProductSizeIdApiArg
+    >({
+      query: (queryArg) => ({ url: `/reviews/statistic/${queryArg.id}` }),
+    }),
+    ordersProductsSizesControllerGetById: build.query<
+      OrdersProductsSizesControllerGetByIdApiResponse,
+      OrdersProductsSizesControllerGetByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/orders-products-sizes/order/${queryArg.id}`,
+      }),
     }),
     categoriesProductsControllerGetAll: build.query<
       CategoriesProductsControllerGetAllApiResponse,
@@ -124,14 +146,30 @@ export type ProductsSizesControllerGetByProductIdApiResponse =
 export type ProductsSizesControllerGetByProductIdApiArg = {
   id: number;
 };
-export type OrdersProductsSizesControllerGetByIdApiResponse =
-  /** status 200  */ OrderProductSize[];
-export type OrdersProductsSizesControllerGetByIdApiArg = {
+export type ProductsSizesControllerGetProductSizeForCardByIdApiResponse =
+  /** status 200  */ FullProductSizeDto;
+export type ProductsSizesControllerGetProductSizeForCardByIdApiArg = {
   id: number;
+};
+export type ProductsSizesControllerGetByCategotyIdWithPaginationApiResponse =
+  /** status 200  */ FullProductSizeDto[];
+export type ProductsSizesControllerGetByCategotyIdWithPaginationApiArg = {
+  page: number;
+  limit: number;
 };
 export type ReviewsControllerGetByProductSizeIdApiResponse =
   /** status 200  */ Review[];
 export type ReviewsControllerGetByProductSizeIdApiArg = {
+  id: number;
+};
+export type ReviewsControllerGetStaticticByProductSizeIdApiResponse =
+  /** status 200  */ StaticticReviews;
+export type ReviewsControllerGetStaticticByProductSizeIdApiArg = {
+  id: number;
+};
+export type OrdersProductsSizesControllerGetByIdApiResponse =
+  /** status 200  */ OrderProductSize[];
+export type OrdersProductsSizesControllerGetByIdApiArg = {
   id: number;
 };
 export type CategoriesProductsControllerGetAllApiResponse =
@@ -183,15 +221,63 @@ export type GetPaginationProductSizeDto = {
   /** Products with pagination */
   productsSizes: ProductSize[];
 };
-export type OrderProductSize = {
+export type Size = {
   /** Unique identifier */
   id?: number;
-  /** Count of products sizes */
+  /** Name */
+  name: string;
+};
+export type Image = {
+  /** Unique identifier */
+  id?: number;
+  /** Url to image */
+  url: string;
+  /** Unique identifier product */
+  idProduct?: number;
+};
+export type ItemFilter = {
+  /** Unique identifier */
+  id?: number;
+  /** Name */
+  name: string;
+  /** Unique identifie filter */
+  idFilter?: number;
+};
+export type Category = {
+  /** Unique identifier */
+  id?: number;
+  /** Name */
+  name: string;
+  /** url preview */
+  url?: string;
+};
+export type ProductCardInfoDto = {
+  /** Name product */
+  name: string;
+  /** Unique identifier type product */
+  idTypeProduct: number;
+  /** Image preview product */
+  image: Image;
+  /** Array of tags filters */
+  filters: ItemFilter[];
+  /** Array of categories */
+  categories: Category[];
+};
+export type StaticticReviews = {
+  /** Count reviews */
   count: number;
-  /** Unique identifier product size */
-  idProductSize: number;
-  /** Unique identifier order */
-  idOrder: number;
+  /** Average rating */
+  averageRating: number;
+};
+export type FullProductSizeDto = {
+  /** Product size */
+  productSize: ProductSize;
+  /** Size */
+  size: Size;
+  /** Product info for card */
+  product: ProductCardInfoDto;
+  /** Statistics reviews */
+  reviewsInfo?: StaticticReviews;
 };
 export type Review = {
   /** Unique identifier */
@@ -207,6 +293,16 @@ export type Review = {
   /** Unique identifier product size */
   idProductSize: number;
 };
+export type OrderProductSize = {
+  /** Unique identifier */
+  id?: number;
+  /** Count of products sizes */
+  count: number;
+  /** Unique identifier product size */
+  idProductSize: number;
+  /** Unique identifier order */
+  idOrder: number;
+};
 export type Number = {};
 export const {
   useProductsControllerCreateMutation,
@@ -217,7 +313,10 @@ export const {
   useProductsSizesControllerGetPaginationQuery,
   useProductsSizesControllerGetByIdQuery,
   useProductsSizesControllerGetByProductIdQuery,
-  useOrdersProductsSizesControllerGetByIdQuery,
+  useProductsSizesControllerGetProductSizeForCardByIdQuery,
+  useProductsSizesControllerGetByCategotyIdWithPaginationQuery,
   useReviewsControllerGetByProductSizeIdQuery,
+  useReviewsControllerGetStaticticByProductSizeIdQuery,
+  useOrdersProductsSizesControllerGetByIdQuery,
   useCategoriesProductsControllerGetAllQuery,
 } = injectedRtkApi;

@@ -1,6 +1,14 @@
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { styled } from "styled-components";
+import { selectActiveCity } from "../../entities/city/redux/selectors";
+import { addCity } from "../../entities/city/redux/slice";
+import CityPanel from "../../entities/city/ui/cityPanel/CityPanel";
 import { ReactComponent as LocationIcon } from "../../shared/assets/location.svg";
+import ModalEmpty from "../../shared/ui/modalEmpty/ModalEmpty";
 import PrimaryText from "../../shared/ui/primaryText/PrimaryText";
+import { useCitiesControllerGetByNameQuery } from "../../store/city";
+import { useAppDispatch, useAppSelector } from "../../store/store";
 
 const Container = styled.div`
     background-color: var(--block-bg-color);
@@ -13,16 +21,29 @@ const Container = styled.div`
     gap: 6px;
 `;
 
-type LocationProps = {
-    cityName: string;
-}
 
-const Location: React.FC<LocationProps> = ({cityName}) => {
+const Location: React.FC = () => {
+    const dispatch = useAppDispatch();
+    const [ isOpen, setIsOpen ] = useState<boolean>(false);
+    const activeCity = useAppSelector(selectActiveCity);
+    const { isLoading, data } = useCitiesControllerGetByNameQuery({name: "Москва"});
+
+    useEffect(() => {
+        if(!isLoading && activeCity === null){
+            dispatch(addCity(data ?? null));
+        }
+    }, [isLoading]);
+
     return(
-        <Container>
-            <LocationIcon/>
-            <PrimaryText>{cityName}</PrimaryText>
-        </Container>
+        <>
+            <Container onClick={() => setIsOpen(true)}>
+                <LocationIcon/>
+                <PrimaryText>{isLoading ? "Загрузка..." : activeCity?.name}</PrimaryText>
+            </Container>
+            <ModalEmpty isOpen={isOpen} setIsOpen={setIsOpen}>
+                <CityPanel activeCity={activeCity}/>
+            </ModalEmpty>
+        </>
     )
 }
 

@@ -19,4 +19,10 @@ export class CitiesService {
         if(city === null) throw new HttpException("City not found", HttpStatus.NOT_FOUND);
         return city;
     }
+
+    async getByName(name: string){
+        const city = await this.cityRepository.findOne({where: {name: name}});
+        if(city === null) throw new HttpException("City not found", HttpStatus.NOT_FOUND);
+        return city;
+    }
 }

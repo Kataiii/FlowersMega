@@ -23,4 +23,12 @@ export class CitiesController {
     async getById(@Param("id") id: number){
         return await this.citiesService.getById(id);
     }
+
+    @ApiOperation({summary: 'Get city by name'})
+    @ApiResponse({status: 200, type: City})
+    @ApiResponse({status: 404, description: "City not fount"})
+    @Get("/name/:name")
+    async getByName(@Param("name") name: string){
+        return await this.citiesService.getByName(name);
+    }
 }

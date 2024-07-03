@@ -13,6 +13,12 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => ({ url: `/cities/${queryArg.id}` }),
     }),
+    citiesControllerGetByName: build.query<
+      CitiesControllerGetByNameApiResponse,
+      CitiesControllerGetByNameApiArg
+    >({
+      query: (queryArg) => ({ url: `/cities/name/${queryArg.name}` }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -23,13 +29,18 @@ export type CitiesControllerGetByIdApiResponse = /** status 200  */ City;
 export type CitiesControllerGetByIdApiArg = {
   id: number;
 };
+export type CitiesControllerGetByNameApiResponse = /** status 200  */ City;
+export type CitiesControllerGetByNameApiArg = {
+  name: string;
+};
 export type City = {
   /** Unique identifier */
-  id?: number;
+  id: number;
   /** Name */
   name: string;
 };
 export const {
   useCitiesControllerGetAllQuery,
   useCitiesControllerGetByIdQuery,
+  useCitiesControllerGetByNameQuery,
 } = injectedRtkApi;

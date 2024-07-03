@@ -59,7 +59,7 @@ const SecondHeader: React.FC = () => {
     return (
         <Container>
             <Catalog />
-            <Location cityName="Москва" />
+            <Location/>
             <Search
                 prefix={<SearchIcon />}
                 placeholder="Поиск"

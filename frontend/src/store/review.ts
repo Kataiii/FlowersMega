@@ -37,6 +37,12 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/reviews/pagination/${queryArg.page}/${queryArg.limit}`,
       }),
     }),
+    reviewsControllerGetStaticticByProductSizeId: build.query<
+      ReviewsControllerGetStaticticByProductSizeIdApiResponse,
+      ReviewsControllerGetStaticticByProductSizeIdApiArg
+    >({
+      query: (queryArg) => ({ url: `/reviews/statistic/${queryArg.id}` }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -68,6 +74,11 @@ export type ReviewsControllerGetAllWithPaginationApiResponse =
 export type ReviewsControllerGetAllWithPaginationApiArg = {
   page: number;
   limit: number;
+};
+export type ReviewsControllerGetStaticticByProductSizeIdApiResponse =
+  /** status 200  */ StaticticReviews;
+export type ReviewsControllerGetStaticticByProductSizeIdApiArg = {
+  id: number;
 };
 export type Review = {
   /** Unique identifier */
@@ -131,10 +142,17 @@ export type GetPaginationFullReviewDto = {
   /** Reviews with pagination */
   reviews: FullReviewDto[];
 };
+export type StaticticReviews = {
+  /** Count reviews */
+  count: number;
+  /** Average rating */
+  averageRating: number;
+};
 export const {
   useReviewsControllerCreateMutation,
   useReviewsControllerGetAllQuery,
   useReviewsControllerGetByIdQuery,
   useReviewsControllerGetByProductSizeIdQuery,
   useReviewsControllerGetAllWithPaginationQuery,
+  useReviewsControllerGetStaticticByProductSizeIdQuery,
 } = injectedRtkApi;
