@@ -35,3 +35,18 @@ export enum targetA{
     _blank,
     _self
 }
+
+export const mapBreads = new Map<string, string>([
+    ["/", "Главная"],
+    [CATALOG_PATH, "Каталог"],
+    [PROFILE_PATH, "Личный кабинет"],
+    [ORDERS_PATH, "Заказы"],
+    [CART_PATH, "Корзина"],
+    [CART_ORDER_PATH, "Оформить заказ"],
+    [FAVOURITES_PATH, "Избранное"],
+    [PAYMENT_DELIVERY_PATH, "Оплата и доставка"],
+    [ABOUT_PATH, "О нас"],
+    [CONTACTS_PATH, "Контакты"],
+    [HELP_PATH, "Помощь"],
+    [POLITICS_PATH, "Политика конфиденциальности"]
+])
