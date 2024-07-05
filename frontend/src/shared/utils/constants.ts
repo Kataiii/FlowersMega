@@ -50,4 +50,4 @@ export const mapBreads = new Map<string, string>([
     [CONTACTS_PATH, "Контакты"],
     [HELP_PATH, "Помощь"],
     [POLITICS_PATH, "Политика конфиденциальности"]
-])
+]);
