@@ -30,6 +30,7 @@ export const FILTERS_PATH = "/filters?=:filters";
 export const API_URL = "http://localhost:5000";
 
 export const PHONE = "8 800 000 00 00";
+export const EMAIL = "info@flowersmega.ru";
 
 export enum targetA{
     _blank,

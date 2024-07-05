@@ -1,4 +1,4 @@
-import { ABOUT_PATH, CATALOG_PATH, CONTACTS_PATH, HELP_PATH, HOME_PATH, PAYMENT_DELIVERY_PATH, PHONE, targetA } from "../../utils/constants";
+import { ABOUT_PATH, CATALOG_PATH, CONTACTS_PATH, EMAIL, HELP_PATH, HOME_PATH, PAYMENT_DELIVERY_PATH, PHONE, targetA } from "../../utils/constants";
 import Container from "../containerMain/ContainerMain";
 import Link from "../link/Link";
 import Logo from "../../assets/logo.svg";
@@ -23,7 +23,7 @@ const Footer: React.FC = () => {
                             </div>
                             <div style={{display: "flex", gap: "8px", alignItems: "center"}}>
                                 <img src={Mail} alt="mail"/>
-                                <p style={{fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0}}>info@flowers-mega.ru</p>
+                                <p style={{fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0}}>{EMAIL}</p>
                             </div>
                         </div>
 
