@@ -7,6 +7,7 @@ import 'dayjs/locale/ru';
 import { useState } from "react";
 import TextArea from "antd/es/input/TextArea";
 import CityInput from "../../entities/city/ui/cityInput/CityInput";
+import { errorMessageEmail, regExEmail } from "../../shared/utils/validationConstants";
 
 const TitleForm = styled.h4`
     font-family: "Inter";
@@ -67,7 +68,7 @@ const FormOrder: React.FC = () => {
                     <div style={{ display: "flex", gap: 15 }}>
                         <Form.Item style={{marginBottom: 8, flexGrow: 1}} label="Ваш E-mail" name="emailCustomer" rules={[
                             { required: true, message: "Введите почту" },
-                            { pattern: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/, message: "Некорректно введена почта" }
+                            { pattern: regExEmail, message: errorMessageEmail }
                         ]}>
                             <Input placeholder="mail@mail.ru" />
                         </Form.Item>

@@ -55,6 +55,7 @@ import DeleteProfile from "../widgets/deleteProfile/ui/deleteProfile";
 import FastBuy from "../widgets/fastBuy/ui/FastBuy";
 import RecoveryPassword from "../widgets/recoveryPassword/ui/RecoveryPassword";
 import Regist from "../widgets/regist/ui/Regist";
+import { AuthGuard } from "./guards/AuthGuard";
 
 const Router: React.FC = () => {
     const location = useLocation();
@@ -76,10 +77,14 @@ const Router: React.FC = () => {
                         <Route path={`${CATALOG_PATH}${SEARCH_PATH}${CATEGORY_PATH}${FILTERS_PATH}`} element={<Catalog/>}/>
                     </Route>
                     <Route path={`${PRODUCT_PATH}/:name/:size`} element={<Product />} />
-                    <Route path={PROFILE_PATH} element={<ProfileMain />}>
-                        <Route path={PROFILE_PATH} element={<Profile />} />
-                        <Route path={ORDERS_PATH} element={<Orders />} />
-                    </Route>
+                    {/* <Route path={PROFILE_PATH} element={<AuthGuard/>}> */}
+                        <Route path={PROFILE_PATH} element={<AuthGuard>
+                            <ProfileMain/>
+                        </AuthGuard>}>
+                            <Route path={''} element={<Profile />} />
+                            <Route path={ORDERS_PATH} element={<Orders />} />
+                        </Route>
+                    {/* </Route> */}
                     <Route path={CART_PATH} element={<Cart />}/>
                     <Route path={CART_ORDER_PATH} element={<CartOrder />} />
                     <Route path={FAVOURITES_PATH} element={<Favourites />} />
@@ -94,9 +99,15 @@ const Router: React.FC = () => {
                 {
                     previousLocation && (
                         <Routes>
-                            <Route path={REGIST_PATH} element={<Portal children={<Regist />} />} />
-                            <Route path={AUTH_PATH} element={<Portal children={<Auth />} />} />
-                            <Route path={RECOVERY_PASSWORD_PATH} element={<Portal children={<RecoveryPassword />} />} />
+                            <Route path={REGIST_PATH} element={<ModalRoute prevLocation={previousLocation}>
+                                <Regist />
+                            </ModalRoute> } />
+                            <Route path={AUTH_PATH} element={<ModalRoute prevLocation={HOME_PATH}>
+                                <Auth/>
+                            </ModalRoute>} />
+                            <Route path={RECOVERY_PASSWORD_PATH} element={<ModalRoute prevLocation={previousLocation}>
+                                <RecoveryPassword />
+                            </ModalRoute>} />
                             <Route path={EMAIL_PATH} element={<Portal children={<Portal children={
                                 <Modal title="Новый пароль был выслан на ваш E-mail"
                                     buttonContent="Вернуться на главную"
