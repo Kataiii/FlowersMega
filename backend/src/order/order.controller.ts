@@ -37,6 +37,7 @@ export class OrderController {
     @ApiResponse({status: 404, description: "Orders not found"})
     @Get("/user/:id")
     async getByUserId(@Param("id") id: number){
+        //TODO переделать под accessToken?
         return await this.ordersService.getByUserId(id);
     }
 }

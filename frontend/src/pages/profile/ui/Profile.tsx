@@ -3,23 +3,13 @@ import PhoneInput from "react-phone-input-2";
 import { styled } from "styled-components";
 import { Title } from "../../../shared/ui/forAdditionalPages/Title";
 import Error from "../../../shared/assets/no-image.png";
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
 import ModalEmpty from "../../../shared/ui/modalEmpty/ModalEmpty";
 import LoadPhoto from "../../../widgets/loadPhoto/LoadPhoto";
 import TryPhoto from "../../../widgets/loadPhoto/TryPhoto";
 import { errorMessageEmail, regExEmail } from "../../../shared/utils/validationConstants";
-
-const Button = styled.button<{ $primary?: boolean; }>`
-    font-family: "Inter";
-    font-weight: 400;
-    font-size: 16px;
-    color: var(--primary-text-color);
-    background-color: ${props => props.$primary ? "var(--primary-bg-color)" : "var(--secondary-bg-color)"};
-    padding: 12px 16px;
-    border-radius: 6px;
-    border: none;
-    margin: 0;
-`;
+import Button from "../../../shared/ui/button/Button";
+import SecondaryButton from "../../../shared/ui/button/SecondaryButton";
 
 const ButtonPhoto = styled.h5`
     cursor: pointer;
@@ -37,7 +27,9 @@ const Profile: React.FC = () => {
         <div style={{ width: "100%" }}>
             <div style={{ width: "100%", padding: 35, borderBottom: "1px solid #F5EFF5", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <Title style={{ fontSize: 24 }}>Личные данные</Title>
-                <Button>Изменить</Button>
+                <div style={{width: 200}}>
+                    <Button buttonContent="Изменить" clickHandler={() => console.log("Изменить")}/>
+                </div>
             </div>
             <div style={{ width: "100%", padding: "35px 70px" }}>
                 <Form layout="vertical"
@@ -81,6 +73,15 @@ const Profile: React.FC = () => {
                             ]}>
                                 <Input placeholder="mail@mail.ru" />
                             </Form.Item>
+                        </div>
+
+                        <div style={{display: "flex", gap: 15, paddingTop: 25}}>
+                            <div style={{flexGrow: 1}}>
+                                <Button buttonContent="Изменить пароль" clickHandler={() => console.log("Изменить пароль")}/>
+                            </div>
+                            <div style={{flexGrow: 1}}>
+                                <SecondaryButton buttonContent="Удалить профиль" clickHandler={() => console.log("Удалить профиль")}/>
+                            </div>
                         </div>
                     </div>
                 </Form>

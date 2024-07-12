@@ -25,6 +25,10 @@ const config: ConfigFile = {
       filterEndpoints: [/categories/i],
       exportName: 'categoryApi'
     },
+    './store/order.ts': {
+      filterEndpoints: [/orders/i],
+      exportName: 'orderApi'
+    },
     './store/typeProduct.ts': {
       filterEndpoints: [/types-product/i],
       exportName: 'typeProductApi'
@@ -40,10 +44,6 @@ const config: ConfigFile = {
     './store/productSize.ts': {
       filterEndpoints: [/products-sizes/i],
       exportName: 'productSizeApi'
-    },
-    './store/order.ts': {
-      filterEndpoints: [/orders/i],
-      exportName: 'orderApi'
     },
     './store/orderProductSize.ts': {
       filterEndpoints: [/orders-products-sizes/i],

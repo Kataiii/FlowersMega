@@ -1,21 +1,27 @@
 import { Checkbox, ConfigProvider, Form, Input } from "antd";
 import { Content } from "antd/es/layout/layout";
 import { useLocation, useNavigate } from "react-router-dom";
+import { loginThunk } from "../../../entities/credential/redux/asyncThunk";
 import Button from "../../../shared/ui/button/Button";
 import SecondaryButton from "../../../shared/ui/button/SecondaryButton";
 import TextButton from "../../../shared/ui/button/TextButton";
 import { Title } from "../../../shared/ui/forAdditionalPages/Title";
-import { HOME_PATH, RECOVERY_PASSWORD_PATH, REGIST_PATH } from "../../../shared/utils/constants";
+import { HOME_PATH, PROFILE_PATH, RECOVERY_PASSWORD_PATH, REGIST_PATH } from "../../../shared/utils/constants";
 import { errorMessageEmail, regExEmail } from "../../../shared/utils/validationConstants";
+import { AuthDto } from "../../../store/auth";
+import { useAppDispatch } from "../../../store/store";
 
 const Auth: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [form] = Form.useForm();
 
-    const onFinish = (values: any) => {
-        //TODO запрос и переход в кабинет
+    const dispatch = useAppDispatch();
+
+    const onFinish = async (values: AuthDto) => {
         console.log(values);
+        dispatch(loginThunk(values));
+        // navigate(PROFILE_PATH);
     };
 
     return (
@@ -80,7 +86,7 @@ const Auth: React.FC = () => {
                 </div>
 
                 <div style={{ display: "flex", gap: 10, justifyContent: "space-between", alignItems: "center" }}>
-                    <Form.Item style={{margin: 0}} name="remember" initialValue={true} valuePropName="checked">
+                    <Form.Item style={{margin: 0}} name="rememberMe" initialValue={true} valuePropName="checked">
                         <Checkbox><Content style={{color: "var(--secondary-text-color)", fontSize: 16}}>Запомнить меня</Content></Checkbox>
                     </Form.Item>
 

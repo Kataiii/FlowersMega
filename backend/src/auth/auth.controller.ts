@@ -27,7 +27,7 @@ export class AuthController {
     @ApiOperation({summary: 'Registration in system'})
     @ApiResponse({ status: 200, type: AuthResponseDto})
     @ApiResponse({status: 400, description: 'Such an account already exists'})
-    @Post('/register/user')
+    @Post('/register')
     async registerUser(@Body() dto: RegistDto,  @Ip() ip, @Res({ passthrough: true }) response: Response){
         let tokens = await this.authService.register(dto, ip);
         response.cookie('refreshToken', tokens.refreshToken, {maxAge: 30*24*60*60*1000, httpOnly: true});
@@ -45,7 +45,7 @@ export class AuthController {
 
     @ApiOperation({summary: 'Refresh token'})
     @ApiResponse({status: 200, type: AuthResponseDto})
-    @Get('/refresh')
+    @Post('/refresh')
     async refresh(@Req() request: Request, @Ip() ip){
         const refresh = request.cookies;
         let refreshToken = stringify(refresh);
@@ -58,7 +58,7 @@ export class AuthController {
     }
 
     @ApiOperation({summary: 'Recovery password, send letter'})
-    @ApiResponse({status: 200, type: AuthResponseDto})
+    @ApiResponse({status: 200})
     @Post('/recovery')
     async recoveryPassword(@Body() dto:RecoveryDto){
         return await this.authService.recoveryPassword(dto.email);

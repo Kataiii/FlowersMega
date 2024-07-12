@@ -4,6 +4,7 @@ import { PersistConfig, persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/es/storage";
 import { cartReducer } from "../entities/cart/redux/slice";
 import { cityReducer } from "../entities/city/redux/slice";
+import { credentialReducer } from "../entities/credential/redux/slice";
 import { favoritesReducer } from "../entities/favorites/redux/slice";
 import { categoryApi } from "./category";
 import { categoryProductApi } from "./categoryProduct";
@@ -26,7 +27,7 @@ const persistConfig: PersistConfig<RootState> = {
 }
 
 const rootReducer = combineReducers({
-    // credentialReducer,
+    credentialReducer,
     cityReducer,
     cartReducer,
     favoritesReducer,

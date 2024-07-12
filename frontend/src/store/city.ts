@@ -35,7 +35,7 @@ export type CitiesControllerGetByNameApiArg = {
 };
 export type City = {
   /** Unique identifier */
-  id: number;
+  id?: number;
   /** Name */
   name: string;
 };
