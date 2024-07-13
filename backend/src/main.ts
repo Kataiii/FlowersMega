@@ -4,7 +4,7 @@ import { SwaggerModule } from "@nestjs/swagger/dist";
 import { AppModule } from "./app.module";
 import * as fs from "fs";
 // import { JwtAuthGuard } from "./auth/guards/jwt-auth.guard";
-// import * as cookieParser from 'cookie-parser';
+import * as cookieParser from "cookie-parser";
 
 async function start() {
     const PORT = process.env.PORT || 5000;
@@ -28,7 +28,7 @@ async function start() {
 
     // const reflector = app.get(Reflector);
     // app.useGlobalGuards(new JwtAuthGuard(reflector));
-    // app.use(cookieParser());
+    app.use(cookieParser());
     app.enableCors(corsOptions)
     await app.listen(PORT, () => console.log(`Server start on port = ${PORT}`))
 }

@@ -6,7 +6,9 @@ export type Credential = {
     accessToken: string;
 }
 
-export type CredentailState = Credential & {
+export type CredentailState = {
+    user: ResponseDto | null;
+    accessToken: string | null;
     isAuth: boolean;
     loginStatus: RequestStatus,
     registerStatus: RequestStatus

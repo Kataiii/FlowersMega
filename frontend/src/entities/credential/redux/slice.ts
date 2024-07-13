@@ -9,7 +9,7 @@ export const logOut = createAction('logOut');
 
 const initialState: CredentailState = {
     user: null,
-    accessToken: "",
+    accessToken: null,
     isAuth: false,
     loginStatus: RequestStatus.NEVER,
     registerStatus: RequestStatus.NEVER
@@ -24,9 +24,12 @@ const credentialSlice = createSlice({
             state.loginStatus = RequestStatus.LOADING;
         }),
         builder.addCase(loginThunk.fulfilled, (state, action) => {
+            const payload = action.payload;
+            console.log(payload);
             state.loginStatus = RequestStatus.SUCCESSFUL;
-            state.accessToken = action.payload.accessToken ?? '';
-            state.user = action.payload.user;
+            state.accessToken = payload.accessToken ?? null;
+            console.log(payload.user);
+            state.user = payload.user ?? null;
             state.isAuth = true;
         }),
         builder.addCase(registThunk.pending, state => {
@@ -35,20 +38,20 @@ const credentialSlice = createSlice({
         builder.addCase(registThunk.fulfilled, (state, action) => {            
             state.registerStatus = RequestStatus.SUCCESSFUL;
             state.accessToken = action.payload.accessToken ?? null;
+            state.user = action.payload.user ?? null;
+            state.isAuth = true;
+        }),
+        builder.addCase(logoutThunk.fulfilled, (state) => {
+            state.token = "";
+            state.isAuth = false;
+            state.user = null;
+        }),
+        builder.addCase(refreshThunk.fulfilled, (state, action) => {
+            state.loginStatus = RequestStatus.SUCCESSFUL;
+            state.accessToken = action.payload.accessToken ?? '';
             state.user = action.payload.user;
             state.isAuth = true;
         })
-        // builder.addCase(logoutThunk, (state, action) => {
-        //     state.token = "";
-        //     state.isAuth = false;
-        //     state.user = null;
-        // }),
-        // builder.addCase(refreshThunk, (state, action) => {
-        //     state.loginStatus = RequestStatus.SUCCESSFUL;
-        //     state.accessToken = action.payload.accessToken ?? '';
-        //     state.user = action.payload.user;
-        //     state.isAuth = true;
-        // })
     }
 })
 

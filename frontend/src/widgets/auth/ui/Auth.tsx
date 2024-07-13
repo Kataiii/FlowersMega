@@ -1,15 +1,17 @@
 import { Checkbox, ConfigProvider, Form, Input } from "antd";
 import { Content } from "antd/es/layout/layout";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { loginThunk } from "../../../entities/credential/redux/asyncThunk";
+import { selectAuth } from "../../../entities/credential/redux/selectors";
 import Button from "../../../shared/ui/button/Button";
 import SecondaryButton from "../../../shared/ui/button/SecondaryButton";
 import TextButton from "../../../shared/ui/button/TextButton";
 import { Title } from "../../../shared/ui/forAdditionalPages/Title";
-import { HOME_PATH, PROFILE_PATH, RECOVERY_PASSWORD_PATH, REGIST_PATH } from "../../../shared/utils/constants";
+import { PROFILE_PATH, RECOVERY_PASSWORD_PATH, REGIST_PATH } from "../../../shared/utils/constants";
 import { errorMessageEmail, regExEmail } from "../../../shared/utils/validationConstants";
 import { AuthDto } from "../../../store/auth";
-import { useAppDispatch } from "../../../store/store";
+import { useAppDispatch, useAppSelector } from "../../../store/store";
 
 const Auth: React.FC = () => {
     const navigate = useNavigate();
@@ -17,12 +19,15 @@ const Auth: React.FC = () => {
     const [form] = Form.useForm();
 
     const dispatch = useAppDispatch();
+    const isAuth = useAppSelector(selectAuth);
 
     const onFinish = async (values: AuthDto) => {
-        console.log(values);
         dispatch(loginThunk(values));
-        // navigate(PROFILE_PATH);
     };
+
+    useEffect(() => {
+        if (isAuth) navigate(PROFILE_PATH);
+    }, [isAuth])
 
     return (
         <ConfigProvider

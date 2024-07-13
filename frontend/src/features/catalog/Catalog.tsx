@@ -18,11 +18,13 @@ const Container = styled.div`
     }
 `;
 
+type CatalogProps = {
+    clickHandler: () => void;
+}
 
-
-const Catalog: React.FC = () => {
+const Catalog: React.FC<CatalogProps> = ({clickHandler}) => {
     return(
-        <Container>
+        <Container onClick={clickHandler}>
             <PrimaryText>Каталог</PrimaryText>
             <CatalogIcon/>
         </Container>

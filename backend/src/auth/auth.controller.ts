@@ -37,6 +37,7 @@ export class AuthController {
     @ApiOperation({summary: 'Log out of the system'})
     @Post('/logout')
     async logout(@Req() request: Request, @Res({passthrough: true}) response: Response){
+        //TODO нет токена - разобраться с этим
         let refreshToken = request.cookies;
         const token = await this.authService.logout(refreshToken);
         response.clearCookie('refreshToken');

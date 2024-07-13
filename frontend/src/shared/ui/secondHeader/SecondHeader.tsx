@@ -6,6 +6,8 @@ import Location from "../../../features/location/Location";
 import { CartButton } from "../../../entities/cart/ui/CartButton";
 import { FavoriteButton } from "../../../entities/favorites/ui/FavoritesButtn";
 import ProfileButton from "../../../entities/credential/ui/ProfileButton";
+import { useState } from "react";
+import CatalogPanel from "../../../features/catalog/CatalogPanel";
 
 const Container = styled.div`
     width: 90%;
@@ -17,6 +19,7 @@ const Container = styled.div`
     gap: 30px;
     margin: 0 auto;
     border-radius: 6px;
+    position: relative;
 `;
 
 const { Search } = Input;
@@ -26,9 +29,11 @@ const { Search } = Input;
 //location? - React.Eleemtn (Саму кнопку смены локации в features, также можно глобально хранить локацию в entities)
 //Catalog?: React.Element - аналогично с Search
 const SecondHeader: React.FC = () => {
+    const [ isOpen, setIsOpen ] = useState<boolean>(false);
+
     return (
         <Container>
-            <Catalog />
+            <Catalog clickHandler={() => setIsOpen(true)}/>
             <Location/>
             <Search
                 prefix={<SearchIcon />}
@@ -47,6 +52,12 @@ const SecondHeader: React.FC = () => {
                     ]
                 }
             </div>
+
+            {
+                isOpen
+                ?   <CatalogPanel/>
+                :   null
+            }
         </Container>
     )
 }

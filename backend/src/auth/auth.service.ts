@@ -7,6 +7,7 @@ import * as jwt from 'jsonwebtoken';
 import { User } from 'src/users/users.model';
 import { UserDto } from 'src/users/dto/user.dto';
 import { RegistDto } from './dto/regist.dto';
+import { PayloadToken } from './dto/payloadToken.dto';
 
 @Injectable()
 export class AuthService {
@@ -53,7 +54,7 @@ export class AuthService {
     }
 
     private async generateToken(user: User){
-        const payload = {email: user.email, id: user.id}
+        const payload: PayloadToken = {email: user.email, id: user.id}
         const tokenAccess = await jwt.sign(payload, process.env.PRIVATE_KEY, {expiresIn: '15m'});
         return tokenAccess;
     }

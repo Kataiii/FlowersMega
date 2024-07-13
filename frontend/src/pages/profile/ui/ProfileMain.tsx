@@ -1,5 +1,5 @@
-import { Button, Image } from "antd";
-import { useMemo, useState } from "react";
+import { Image } from "antd";
+import { useEffect, useMemo } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import Container from "../../../shared/ui/containerMain/ContainerMain";
 import { Text } from "../../../shared/ui/forAdditionalPages/Content";
@@ -7,12 +7,28 @@ import Error from "../../../shared/assets/no-image.png";
 import { ReactComponent as Profile } from "../../../shared/assets/profile.svg";
 import { ReactComponent as Cart } from "../../../shared/assets/cart.svg";
 import { ReactComponent as Exit } from "../../../shared/assets/exit.svg";
-import ButtonWithIcon, { ButtonWithIconProps } from "../../../shared/ui/button/ButtonWithIcon";
-import { ORDERS_PATH, PROFILE_PATH } from "../../../shared/utils/constants";
+import ButtonWithIcon from "../../../shared/ui/button/ButtonWithIcon";
+import { HOME_PATH, ORDERS_PATH, PROFILE_PATH } from "../../../shared/utils/constants";
+import { useAppDispatch, useAppSelector } from "../../../store/store";
+import { selectAuth, selectUser } from "../../../entities/credential/redux/selectors";
+import { logoutThunk } from "../../../entities/credential/redux/asyncThunk";
 
 const ProfileMain: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
+
+    const user = useAppSelector(selectUser);
+    const isAuth = useAppSelector(selectAuth);
+
+    const dispatch = useAppDispatch();
+
+    const logout = async() => {
+        dispatch(logoutThunk());
+    }
+
+    useEffect(() => {
+        if (!isAuth) navigate(HOME_PATH);
+    }, [isAuth]);
 
     const buttonItems = useMemo(() => [
         {
@@ -32,9 +48,9 @@ const ProfileMain: React.FC = () => {
         {
             content: "Выход",
             icon: <Exit fill="#FFFFFF" />,
-            onCLick: () => console.log('Выход'),
+            onCLick: logout,
         }
-    ], [])
+    ], []);
 
     return (
         <Container style={{ margin: "0 auto", flexGrow: 3, paddingBottom: 20}}>
@@ -58,7 +74,7 @@ const ProfileMain: React.FC = () => {
                             height={64}
                             style={{borderRadius: 32}}
                             fallback={Error}/>
-                        <Text>ФИО</Text>
+                        <Text>{user?.firstname ?? ""}</Text>
                     </div>
                     <div style={{
                         display: "flex",
