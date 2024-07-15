@@ -26,7 +26,7 @@ export class UsersService {
 
     async update(dto: UpdateUserDto, id: number){
         const idUser = await this.userRepository.update(dto, {where: {id}});
-        const user = await this.userRepository.findOne({where: {id: idUser}});
+        const user = await this.userRepository.findOne({where: {id: id}});
         const userDto: UserDto = user;
         return userDto;
     }

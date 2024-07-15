@@ -2,9 +2,10 @@
 import { createAction, createSlice } from "@reduxjs/toolkit";
 import { CredentailState } from "../../../@types/credentialType";
 import { RequestStatus } from "../../../@types/requestStatus";
+import { ResponseDto } from "../../../store/user";
 import { loginThunk, registThunk, logoutThunk, refreshThunk } from "./asyncThunk";
 
-export const addCredentials = createAction<Credential>('addCredentials');
+export const addCredentialsUser = createAction<ResponseDto>('addCredentialsUser');
 export const logOut = createAction('logOut');
 
 const initialState: CredentailState = {
@@ -20,6 +21,9 @@ const credentialSlice = createSlice({
     initialState: initialState,
     reducers: {},
     extraReducers: (builder) => {
+        builder.addCase(addCredentialsUser, (state, action) => {
+            state.user = action.payload;
+        }),
         builder.addCase(loginThunk.pending, state => {
             state.loginStatus = RequestStatus.LOADING;
         }),

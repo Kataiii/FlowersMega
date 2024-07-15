@@ -5,6 +5,7 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 import { UsersService } from './users.service';
 import { ResponseDto, UserDto } from './dto/user.dto';
 import { Request } from 'express';
+import { ExtractToken } from 'src/utils/ExtractToken';
 
 @ApiTags("Users")
 @Controller('users')
@@ -36,10 +37,8 @@ export class UsersController {
     @ApiResponse({status: 200, type: ResponseDto})
     @Patch()
     async update(@Body() dto: UpdateUserDto, @Req() request: Request){
-        const [type, token] = request.headers.authorization.split(' ');
-        const accessToken = type === 'Bearer' ? token : undefined;
-        const payload = await this.userService.checkAccountData(accessToken);
-        return await this.userService.update(dto, payload.id);
+        const response = await ExtractToken.checkAccessToken(ExtractToken.extractTokenFromHeader(request));
+        return await this.userService.update(dto, response.id);
     }
 
     @ApiOperation({summary: 'Delete user'})

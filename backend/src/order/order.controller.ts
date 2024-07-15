@@ -1,8 +1,10 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateOrderDto } from './dto/createOder.dto';
 import { Order } from './order.model';
 import { OrderService } from './order.service';
+import { Request } from 'express';
+import { ExtractToken } from 'src/utils/ExtractToken';
 
 @ApiTags("Orders")
 @Controller('orders')
@@ -24,20 +26,20 @@ export class OrderController {
         return await this.ordersService.getAll();
     }
 
+    @ApiOperation({summary: 'Get orders by user id'})
+    @ApiResponse({status: 200, type: [Order]})
+    @ApiResponse({status: 404, description: "Orders not found"})
+    @Get("/user")
+    async getByUserId(@Req() request: Request){
+        const response = await ExtractToken.checkAccessToken(ExtractToken.extractTokenFromHeader(request));
+        return await this.ordersService.getByUserId(response.id);
+    }
+
     @ApiOperation({summary: 'Get order by id'})
     @ApiResponse({status: 200, type: Order})
     @ApiResponse({status: 404, description: "Order not fount"})
     @Get("/:id")
     async getById(@Param("id") id: number){
         return await this.ordersService.getById(id);
-    }
-
-    @ApiOperation({summary: 'Get orders by user id'})
-    @ApiResponse({status: 200, type: [Order]})
-    @ApiResponse({status: 404, description: "Orders not found"})
-    @Get("/user/:id")
-    async getByUserId(@Param("id") id: number){
-        //TODO переделать под accessToken?
-        return await this.ordersService.getByUserId(id);
     }
 }
