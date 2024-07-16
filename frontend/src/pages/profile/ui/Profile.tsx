@@ -28,7 +28,7 @@ const Profile: React.FC = () => {
             </ModalEmpty>
 
             <ModalEmpty isOpen={isOpenPassword} setIsOpen={() => setIsOpenPassword(false)}>
-                <ChangePassword/>
+                <ChangePassword closeHandler={() => setIsOpenPassword(false)}/>
             </ModalEmpty>
         </div>
     )

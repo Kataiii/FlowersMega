@@ -7,6 +7,9 @@ import { Request, Response } from 'express';
 import { RegistDto } from './dto/regist.dto';
 import {stringify} from 'flatted';
 import { RecoveryDto } from './dto/recovery.dto';
+import { ChangePasswordDto } from './dto/changePassword.dto';
+import { ResponseDto } from 'src/users/dto/user.dto';
+import { ExtractToken } from 'src/utils/ExtractToken';
 
 
 @ApiTags('Auth')
@@ -63,5 +66,13 @@ export class AuthController {
     @Post('/recovery')
     async recoveryPassword(@Body() dto:RecoveryDto){
         return await this.authService.recoveryPassword(dto.email);
+    }
+
+    @ApiOperation({ summary: "Change password" })
+    @ApiResponse({status: 200, type: ResponseDto})
+    @Post("/change-password")
+    async changePassword(@Body() dto: ChangePasswordDto, @Req() request: Request){
+        const response = await ExtractToken.checkAccessToken(ExtractToken.extractTokenFromHeader(request));
+        return await this.authService.changePassword(dto, response.email, response.id);
     }
 }

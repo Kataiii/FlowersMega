@@ -1,3 +1,4 @@
+import { PasswordForm } from "../features/change-password/ChangePassword";
 import { emptyApi as api } from "./emptyApi";
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -43,6 +44,16 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.recoveryDto,
       }),
     }),
+    authControllerChangePassword: build.mutation<
+      AuthControllerChangePasswordApiResponse,
+      AuthControllerCgangePasswordApiArg
+    >({
+      query: (queryArgs) => ({
+        url: `/auth/change-password`,
+        method: "POST",
+        body: queryArgs.changePasswordDto
+      }),
+    })
   }),
   overrideExisting: false,
 });
@@ -66,6 +77,11 @@ export type AuthControllerRecoveryPasswordApiResponse =
 export type AuthControllerRecoveryPasswordApiArg = {
   recoveryDto: RecoveryDto;
 };
+export type AuthControllerChangePasswordApiResponse = /** status 200  */ ResponseDto;
+export type AuthControllerCgangePasswordApiArg = { 
+  changePasswordDto: PasswordForm;
+};
+
 export type ResponseDto = {
   /** Surname */
   surname?: string;
@@ -124,4 +140,5 @@ export const {
   useAuthControllerLogoutMutation,
   useAuthControllerRefreshQuery,
   useAuthControllerRecoveryPasswordMutation,
+  useAuthControllerChangePasswordMutation,
 } = injectedRtkApi;

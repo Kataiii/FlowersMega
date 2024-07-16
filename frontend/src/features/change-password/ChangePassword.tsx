@@ -1,21 +1,28 @@
 import { ConfigProvider, Form, Input } from "antd"
 import { RuleObject } from "antd/es/form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../shared/ui/button/Button"
+import { Text } from "../../shared/ui/forAdditionalPages/Content";
 import { Title } from "../../shared/ui/forAdditionalPages/Title"
+import { useAuthControllerChangePasswordMutation } from "../../store/auth";
 
-type PasswordForm = {
+export type PasswordForm = {
     prevPassword: string;
     nextPassword: string;
     repeatNextPassword: string; 
 }
 
-const ChangePassword: React.FC = () => {
+type ChangePasswordDto = {
+    closeHandler: () => void;
+}
+
+const ChangePassword: React.FC<ChangePasswordDto> = ({closeHandler}) => {
     const [form] = Form.useForm();
     const [ nextPassword, setNextPassword ] = useState<string>("");
+    const [changePassword, {isLoading, isError, error, data, isSuccess}] = useAuthControllerChangePasswordMutation();
 
     const finishHandler = (values: PasswordForm) => {
-        console.log(values);
+        changePassword({changePasswordDto: values});
     }
 
     const validationPassword = (rule: RuleObject, value: any, callback: (error?: string | undefined) => void) => {
@@ -25,6 +32,12 @@ const ChangePassword: React.FC = () => {
         }
         callback("Нет совпадения");
     }
+
+    useEffect(() => {
+        // if(isError){
+        //     form.
+        // }
+    }, [isError]);
 
     return(
         <ConfigProvider
@@ -58,6 +71,11 @@ const ChangePassword: React.FC = () => {
                 gap: 24
             }}>
                 <Title style={{fontSize: 24}}>Смена пароля</Title>
+                {
+                    isError 
+                    ?   <Text style={{color: "var(--error)"}}>Ошибка изменения пароля, проверьте правильность заполненных данных</Text>
+                    :   null
+                }
                 <Form
                     style={{
                         display: "flex",
@@ -69,7 +87,10 @@ const ChangePassword: React.FC = () => {
                     name="control-hooks"
                     requiredMark={false}
                     onFinish={finishHandler}>
-                    <Form.Item style={{margin: 0}} label="Текущий пароль" name="prevPassword" rules={[{ required: true, message: "Введите текущий пароль" }]}>
+                    <Form.Item validateStatus={isError ? "error": "success"} style={{margin: 0}} label="Текущий пароль" name="prevPassword" 
+                        rules={[
+                            { required: true, message: "Введите текущий пароль" }
+                        ]}>
                         <Input.Password placeholder="Текущий пароль..." />
                     </Form.Item>
 

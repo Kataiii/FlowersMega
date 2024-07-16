@@ -8,6 +8,7 @@ import { User } from 'src/users/users.model';
 import { UserDto } from 'src/users/dto/user.dto';
 import { RegistDto } from './dto/regist.dto';
 import { PayloadToken } from './dto/payloadToken.dto';
+import { ChangePasswordDto } from './dto/changePassword.dto';
 
 @Injectable()
 export class AuthService {
@@ -111,5 +112,13 @@ export class AuthService {
             // return await this.recoveryLinksService.create(account.id);
         }
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    
+    async changePassword(dto: ChangePasswordDto, email: string, id: number){
+        const user = await this.validateUser({ email: email, password: dto.prevPassword, rememberMe: false });
+        if(dto.nextPassword !== dto.repeatNextPassword) throw new HttpException("Пароли не совпадают", HttpStatus.BAD_REQUEST);
+        const newPassword = await bcryptjs.hash(dto.nextPassword, 10);
+        const newUser = await this.usersService.update({password: newPassword}, id);
+        return newUser;
     }
 }
