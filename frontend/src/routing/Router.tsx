@@ -29,7 +29,6 @@ import {
     CATEGORY_PATH, 
     CITIES_PATH, 
     CONTACTS_PATH, 
-    DELETE_PROFILE_PATH, 
     EMAIL_PATH, 
     FAST_BUY_PATH, 
     FAVOURITES_PATH, 
@@ -49,7 +48,6 @@ import {
 } from "../shared/utils/constants";
 import Auth from "../widgets/auth/ui/Auth";
 import Cities from "../widgets/cities/ui/Cities";
-import DeleteProfile from "../widgets/deleteProfile/ui/deleteProfile";
 import FastBuy from "../widgets/fastBuy/ui/FastBuy";
 import RecoveryPassword from "../widgets/recoveryPassword/ui/RecoveryPassword";
 import Regist from "../widgets/regist/ui/Regist";
@@ -113,7 +111,6 @@ const Router: React.FC = () => {
                             } />} />} />
                             <Route path={CITIES_PATH} element={<Portal children={<Cities />} />} />
                             <Route path={FAST_BUY_PATH} element={<Portal children={<FastBuy />} />} />
-                            <Route path={DELETE_PROFILE_PATH} element={<Portal children={<DeleteProfile />} />} />
                             <Route path={ORDER_SUCCESS_PATH} element={<Portal children={
                                 <Modal title="Ваш заказ принят"
                                     content="Мы свяжемся с вами в кротчайшее время"

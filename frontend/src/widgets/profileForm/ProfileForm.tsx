@@ -32,9 +32,10 @@ type FormValues = {
 type ProfileFormProps = {
     buttonLoadPhoto: React.ReactElement;
     buttonChangePassword: React.ReactElement;
+    buttonDeleteProfile: React.ReactElement;
 }
 
-const ProfileForm: React.FC<ProfileFormProps> = ({buttonLoadPhoto, buttonChangePassword}) => {
+const ProfileForm: React.FC<ProfileFormProps> = ({buttonLoadPhoto, buttonChangePassword, buttonDeleteProfile}) => {
     const [ formDisable, setFormDisable ] = useState<boolean>(true);
     const user = useAppSelector(selectUser);
     const [form] = Form.useForm();
@@ -124,7 +125,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({buttonLoadPhoto, buttonChangeP
                                 { buttonChangePassword }
                             </div>
                             <div style={{ flexGrow: 1 }}>
-                                <SecondaryButton buttonContent="Удалить профиль" clickHandler={() => console.log("Удалить профиль")} />
+                                { buttonDeleteProfile }
                             </div>
                         </div>
                     </div>

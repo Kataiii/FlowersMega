@@ -18,7 +18,6 @@ export const RECOVERY_PASSWORD_PATH = "/recovery_password";
 export const EMAIL_PATH = "/email";
 export const CITIES_PATH = "/cities";
 export const FAST_BUY_PATH = "/fast_buy";
-export const DELETE_PROFILE_PATH = "/delete_profile";
 export const ORDER_SUCCESS_PATH = "/order_success";
 export const ORDER_CALL_PATH = "/order_call";
 
