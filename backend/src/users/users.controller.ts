@@ -1,11 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { UsersService } from './users.service';
 import { ResponseDto, UserDto } from './dto/user.dto';
 import { Request } from 'express';
 import { ExtractToken } from 'src/utils/ExtractToken';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags("Users")
 @Controller('users')
@@ -39,6 +40,27 @@ export class UsersController {
     async update(@Body() dto: UpdateUserDto, @Req() request: Request){
         const response = await ExtractToken.checkAccessToken(ExtractToken.extractTokenFromHeader(request));
         return await this.userService.update(dto, response.id);
+    }
+
+    @ApiOperation({summary: 'Update avatar user'})
+    @ApiResponse({status: 200, type: ResponseDto})
+    @Post("/avatar")
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        schema: {
+          type: 'object',
+          properties: {
+            file: {
+              type: 'string',
+              format: 'binary',
+            },
+          },
+        },
+      })
+    @UseInterceptors(FileInterceptor('file'))
+    async updateAvatar(@UploadedFile('file') file, @Req() request: Request){
+        const response = await ExtractToken.checkAccessToken(ExtractToken.extractTokenFromHeader(request));
+        return await this.userService.updateAvatar(response.id, file);
     }
 
     @ApiOperation({summary: 'Delete user'})

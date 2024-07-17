@@ -8,7 +8,7 @@ import { ReactComponent as Profile } from "../../../shared/assets/profile.svg";
 import { ReactComponent as Cart } from "../../../shared/assets/cart.svg";
 import { ReactComponent as Exit } from "../../../shared/assets/exit.svg";
 import ButtonWithIcon from "../../../shared/ui/button/ButtonWithIcon";
-import { HOME_PATH, ORDERS_PATH, PROFILE_PATH } from "../../../shared/utils/constants";
+import { API_URL, HOME_PATH, ORDERS_PATH, PROFILE_PATH } from "../../../shared/utils/constants";
 import { useAppDispatch, useAppSelector } from "../../../store/store";
 import { selectAuth, selectUser } from "../../../entities/credential/redux/selectors";
 import { logoutThunk } from "../../../entities/credential/redux/asyncThunk";
@@ -70,6 +70,7 @@ const ProfileMain: React.FC = () => {
                         alignItems: "center"
                     }}>
                         <Image 
+                            src={`${API_URL}/users/${user?.urlAvatar}`}
                             width={64}
                             height={64}
                             style={{borderRadius: 32}}

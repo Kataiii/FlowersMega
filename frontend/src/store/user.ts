@@ -33,6 +33,17 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: () => ({ url: `/users/user` }),
     }),
+    usersControllerUpdateAvatar: build.mutation<
+      UsersControllerUpdateAvatarApiResponse,
+      UsersControllerUpdateAvatarApiArg
+    >({
+      query: (queryArgs) => ({
+        url: `/users/avatar`,
+        method: "PATCH",
+        formData: true,
+        body: queryArgs
+      })
+    })
   }),
   overrideExisting: false,
 });
@@ -45,6 +56,10 @@ export type UsersControllerUpdateApiResponse = /** status 200  */ ResponseDto;
 export type UsersControllerUpdateApiArg = {
   updateUserDto: UpdateUserDto;
 };
+export type UsersControllerUpdateAvatarApiResponse = /** status 200 */ ResponseDto;
+export type UsersControllerUpdateAvatarApiArg = {
+  file: File | null;
+}
 export type UsersControllerDeleteApiResponse = /** status 200  */ ResponseDto;
 export type UsersControllerDeleteApiArg = void;
 export type UsersControllerGetByIdApiResponse = /** status 200  */ ResponseDto;
@@ -104,4 +119,5 @@ export const {
   useUsersControllerUpdateMutation,
   useUsersControllerDeleteMutation,
   useUsersControllerGetByIdQuery,
+  useUsersControllerUpdateAvatarMutation,
 } = injectedRtkApi;

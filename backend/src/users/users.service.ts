@@ -6,11 +6,13 @@ import { UserDto } from './dto/user.dto';
 import { User } from './users.model';
 import * as jwt from 'jsonwebtoken';
 import { AuthService } from '../auth/auth.service';
+import { FilesService } from 'src/files/files.service';
 
 @Injectable()
 export class UsersService {
     constructor(
-        @InjectModel(User) private userRepository: typeof User
+        @InjectModel(User) private userRepository: typeof User,
+        private filesService: FilesService
     ){}
 
     async create(dto: CreateUserDto){
@@ -28,6 +30,21 @@ export class UsersService {
         const idUser = await this.userRepository.update(dto, {where: {id}});
         const user = await this.userRepository.findOne({where: {id: id}});
         const userDto: UserDto = user;
+        return userDto;
+    }
+
+    async updateAvatar(idUser: number, file?: File | null){
+        const user = await this.userRepository.findOne({where: {id: idUser}});
+        if(user.urlAvatar !== undefined) await this.filesService.deleteAvatar(user.urlAvatar, idUser);
+        let fileName;
+        if(file !== undefined) {
+            fileName = await this.filesService.createAvatar(file, idUser);
+        }
+
+        await this.userRepository.update({urlAvatar: file === null ? null : fileName}, {where: {id: idUser}});
+
+        const userDto: UserDto = user;
+        userDto.urlAvatar = fileName;
         return userDto;
     }
 

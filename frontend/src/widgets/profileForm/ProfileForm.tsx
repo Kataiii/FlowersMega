@@ -11,6 +11,7 @@ import Error from "../../shared/assets/no-image.png";
 import PhoneInput from "react-phone-input-2";
 import { errorMessageEmail, regExEmail } from "../../shared/utils/validationConstants";
 import SecondaryButton from "../../shared/ui/button/SecondaryButton";
+import { API_URL } from "../../shared/utils/constants";
 
 const ChangeButtonForm = styled(ButtonStyle)<{ $primary?: boolean; }>`
   background-color: ${props => props.$primary ? "var(--primary-bg-color)" : "var(--secondary-bg-color)"};
@@ -72,6 +73,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({buttonLoadPhoto, buttonChangeP
 
                     <div style={{ display: "flex", flexDirection: "column", gap: 20, alignItems: "center", justifyContent: "center" }}>
                         <Image
+                            src={`${API_URL}/users/${user?.urlAvatar}`}
                             width={120}
                             height={120}
                             style={{ borderRadius: 64 }}

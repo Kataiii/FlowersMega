@@ -2,6 +2,7 @@ import { useState } from "react";
 import { styled } from "styled-components";
 import ChangePassword from "../../../features/change-password/ChangePassword";
 import Button from "../../../shared/ui/button/Button";
+import { Title } from "../../../shared/ui/forAdditionalPages/Title";
 import ModalEmpty from "../../../shared/ui/modalEmpty/ModalEmpty";
 import TryPhoto from "../../../widgets/loadPhoto/TryPhoto";
 import ProfileForm from "../../../widgets/profileForm/ProfileForm";
@@ -24,7 +25,10 @@ const Profile: React.FC = () => {
                 buttonLoadPhoto={<ButtonPhoto onClick={() => setIsOpenPhoto(true)}>Изменить</ButtonPhoto>}
                 buttonChangePassword={<Button buttonContent="Изменить пароль" clickHandler={() => setIsOpenPassword(true)}/>}/>
             <ModalEmpty isOpen={isOpenPhoto} setIsOpen={() => setIsOpenPhoto(false)}>
-                <TryPhoto/>
+                <>
+                    <Title style={{fontSize: 24}}>Загрузите аватар</Title>
+                    <TryPhoto/>
+                </>
             </ModalEmpty>
 
             <ModalEmpty isOpen={isOpenPassword} setIsOpen={() => setIsOpenPassword(false)}>

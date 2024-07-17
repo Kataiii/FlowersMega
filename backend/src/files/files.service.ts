@@ -45,8 +45,8 @@ export class FilesService {
         return await this.createFile(
             file,
             file.originalname.slice(file.originalname.lastIndexOf('.'), file.originalname.length),
-            idUser.toString(),
-            ["users"]
+            "users",
+            []
         );
     }
 
@@ -57,5 +57,12 @@ export class FilesService {
             idCategoty.toString(),
             ["categories"]
         );
+    }
+
+    async deleteAvatar(fileName: string, idUser: number){
+        const filePath = path.resolve(__dirname, '..', '..', 'static', 'users', fileName);
+        return await fs.unlink(filePath, (error) => {
+            if(error) console.log(error);
+        });
     }
 }
