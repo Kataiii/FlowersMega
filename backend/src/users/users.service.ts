@@ -35,7 +35,9 @@ export class UsersService {
 
     async updateAvatar(idUser: number, file?: File | null){
         const user = await this.userRepository.findOne({where: {id: idUser}});
-        if(user.urlAvatar !== undefined) await this.filesService.deleteAvatar(user.urlAvatar, idUser);
+        if(user.urlAvatar !== undefined && user.urlAvatar !== null) {
+            await this.filesService.deleteAvatar(user.urlAvatar, idUser);
+        }
         let fileName;
         if(file !== undefined) {
             fileName = await this.filesService.createAvatar(file, idUser);

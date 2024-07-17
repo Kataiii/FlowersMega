@@ -95,7 +95,7 @@ const Router: React.FC = () => {
                 {
                     previousLocation && (
                         <Routes>
-                            <Route path={REGIST_PATH} element={<ModalRoute prevLocation={previousLocation}>
+                            <Route path={REGIST_PATH} element={<ModalRoute prevLocation={HOME_PATH}>
                                 <Regist />
                             </ModalRoute> } />
                             <Route path={AUTH_PATH} element={<ModalRoute prevLocation={HOME_PATH}>

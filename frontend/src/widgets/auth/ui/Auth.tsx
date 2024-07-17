@@ -8,7 +8,7 @@ import Button from "../../../shared/ui/button/Button";
 import SecondaryButton from "../../../shared/ui/button/SecondaryButton";
 import TextButton from "../../../shared/ui/button/TextButton";
 import { Title } from "../../../shared/ui/forAdditionalPages/Title";
-import { PROFILE_PATH, RECOVERY_PASSWORD_PATH, REGIST_PATH } from "../../../shared/utils/constants";
+import { HOME_PATH, PROFILE_PATH, RECOVERY_PASSWORD_PATH, REGIST_PATH } from "../../../shared/utils/constants";
 import { errorMessageEmail, regExEmail } from "../../../shared/utils/validationConstants";
 import { AuthDto } from "../../../store/auth";
 import { useAppDispatch, useAppSelector } from "../../../store/store";
@@ -100,7 +100,7 @@ const Auth: React.FC = () => {
 
                 <div style={{display: "flex", gap: 30, justifyContent: "space-between", alignItems: "center"}}>
                     <div style={{flexGrow: 1}}>
-                        <SecondaryButton buttonContent={"Зарегистрироваться"} clickHandler={() => navigate(REGIST_PATH, {state: {previousLocation: location}})}/>
+                        <SecondaryButton buttonContent={"Зарегистрироваться"} clickHandler={() => navigate(REGIST_PATH, {state: {previousLocation: HOME_PATH}})}/>
                     </div>
 
                     <Form.Item style={{flexGrow: 1, margin: 0}}>
