@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { ProductsSizesModule } from 'src/products-sizes/products-sizes.module';
 import { FiltersController } from './filters.controller';
 import { Filter } from './filters.model';
 import { FiltersService } from './filters.service';
@@ -8,7 +9,8 @@ import { FiltersService } from './filters.service';
   controllers: [FiltersController],
   providers: [FiltersService],
   imports: [
-    SequelizeModule.forFeature([Filter])
+    SequelizeModule.forFeature([Filter]),
+    ProductsSizesModule
   ]
 })
 export class FiltersModule {}

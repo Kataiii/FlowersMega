@@ -3,20 +3,13 @@ import { styled } from "styled-components";
 import Container from "../../../../shared/ui/containerMain/ContainerMain"
 import { Title } from "../../../../shared/ui/forAdditionalPages/Title";
 import { HelpBlocks } from "../../../../shared/utils/helpConstants";
-import Arrow from "../../../../shared/assets/arrow.svg";
+import { ReactComponent as Arrow } from "../../../../shared/assets/arrow.svg";
 
 const TitleHelpItem = styled.h5`
     font-family: "Inter";
     font-weight: 600;
     font-size: 24px;
     color: var(--secondary-text-color);
-`;
-
-const ArrowUp = styled.img`
-`;
-
-const ArrowDown = styled(ArrowUp)`
-    transform: rotate(180deg);
 `;
 
 const Help: React.FC = () => {
@@ -47,7 +40,7 @@ const Help: React.FC = () => {
                                     >
                                         <Collapse 
                                             style={{ fontWeight: 600}}
-                                            expandIcon={({ isActive }) => isActive ? <ArrowUp src={Arrow} alt="arrow-up"/> : <ArrowDown src={Arrow} alt="arrow-down"/>} items={item.helpItems}/>
+                                            expandIcon={({ isActive }) => isActive ? <Arrow fill="#73D982" alt="arrow-up"/> : <Arrow style={{transform: "rotate(180deg)"}} fill="#73D982" alt="arrow-down"/>} items={item.helpItems}/>
                                     </ConfigProvider>
                                 }
                                 </>

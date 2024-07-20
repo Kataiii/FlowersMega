@@ -71,7 +71,7 @@ export class ProductsSizesService {
             {where: {
                 idProduct: idProduct
             },
-            order: [["price", "ASC"]],
+            order: [["prise", "ASC"]],
             include: [{
                 all: true
             }]}
@@ -79,5 +79,12 @@ export class ProductsSizesService {
 
         if(productsSizes === null) throw new HttpException("Products sizes not found", HttpStatus.NOT_FOUND);
         return productsSizes;
+    }
+
+    async getMaxPrice(){
+        const productSize = await this.productsSizesRepository.findAll({
+            order: [['prise', 'DESC']]
+        });
+        return productSize[0].prise;
     }
 }

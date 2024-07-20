@@ -1,4 +1,5 @@
 import { emptyApi as api } from "./emptyApi";
+import { ItemFilter } from "./product";
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     filtersControllerCreate: build.mutation<
@@ -23,6 +24,14 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => ({ url: `/filters/${queryArg.id}` }),
     }),
+    filtersControllerGetAllWithMaxPrice: build.query<
+      FiltersControllerHetAllWithMaxPriceApiResponse,
+      FiltersControllerHetAllWithMaxPriceApiArg
+    >({
+      query: () => ({
+        url: `/filters/filters-with-price`
+      })
+    })
   }),
   overrideExisting: false,
 });
@@ -31,17 +40,29 @@ export type FiltersControllerCreateApiResponse = /** status 201  */ Filter;
 export type FiltersControllerCreateApiArg = {
   createFilterDto: CreateFilterDto;
 };
-export type FiltersControllerGetAllApiResponse = /** status 200  */ Filter[];
+export type FiltersControllerGetAllApiResponse = /** status 200  */ FilterWithItems[];
 export type FiltersControllerGetAllApiArg = void;
 export type FiltersControllerGetByIdApiResponse = /** status 200  */ City;
 export type FiltersControllerGetByIdApiArg = {
   id: number;
 };
+export type FiltersControllerHetAllWithMaxPriceApiResponse = {
+  maxPrice: number;
+  filters: FilterWithItems[];
+}
+export type FiltersControllerHetAllWithMaxPriceApiArg = void;
 export type Filter = {
   /** Unique identifier */
   id?: number;
   /** Name */
   name: string;
+};
+export type FilterWithItems = {
+  /** Unique identifier */
+  id?: number;
+  /** Name */
+  name: string;
+  items: ItemFilter[];
 };
 export type CreateFilterDto = {
   /** Name filter */
@@ -57,4 +78,5 @@ export const {
   useFiltersControllerCreateMutation,
   useFiltersControllerGetAllQuery,
   useFiltersControllerGetByIdQuery,
+  useFiltersControllerGetAllWithMaxPriceQuery,
 } = injectedRtkApi;

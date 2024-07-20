@@ -6,8 +6,9 @@ import Location from "../../../features/location/Location";
 import { CartButton } from "../../../entities/cart/ui/CartButton";
 import { FavoriteButton } from "../../../entities/favorites/ui/FavoritesButtn";
 import ProfileButton from "../../../entities/credential/ui/ProfileButton";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import CatalogPanel from "../../../features/catalog/CatalogPanel";
+import { useOutsideClick } from "../../utils/hooks/useOutsideClick";
 
 const Container = styled.div`
     width: 90%;
@@ -30,10 +31,12 @@ const { Search } = Input;
 //Catalog?: React.Element - аналогично с Search
 const SecondHeader: React.FC = () => {
     const [ isOpen, setIsOpen ] = useState<boolean>(false);
+    const divContainer = useRef<HTMLDivElement>(null);
+    useOutsideClick(divContainer, () => setIsOpen(false));
 
     return (
-        <Container>
-            <Catalog clickHandler={() => setIsOpen(true)}/>
+        <Container ref={divContainer}>
+            <Catalog clickHandler={() => setIsOpen(isOpen => !isOpen)}/>
             <Location/>
             <Search
                 prefix={<SearchIcon />}

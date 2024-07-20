@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { City } from 'src/cities/cities.model';
 import { CreateFilterDto } from './dto/createFilter.dto';
+import { FiltersMaxPriceDto } from './dto/filtersAndMaxPrice.dto';
 import { Filter } from './filters.model';
 import { FiltersService } from './filters.service';
 
@@ -23,6 +24,13 @@ export class FiltersController {
     @Get()
     async getAll(){
         return await this.filtersService.getAll();
+    }
+
+    @ApiOperation({summary: 'Get all filters and max price'})
+    @ApiResponse({status: 200, type: FiltersMaxPriceDto})
+    @Get('/filters-with-price')
+    async getFiltersWithMaxPrice(){
+        return await this.filtersService.getAllFIltersWithMAxPrice();
     }
 
     @ApiOperation({summary: 'Get filter by id'})

@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
+import { ItemFilter } from "src/items-filter/items-filter.model";
 
 interface FilterCreationAttrs{
     name: string;
@@ -14,4 +15,7 @@ export class Filter extends Model<Filter, FilterCreationAttrs>{
     @ApiProperty({example: 'Размер', description: 'Name', required: true})
     @Column({type: DataType.STRING, allowNull: false})
     name: string;
+
+    @HasMany(() => ItemFilter)
+    items: ItemFilter[];
 }
