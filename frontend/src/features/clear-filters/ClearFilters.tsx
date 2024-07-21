@@ -1,4 +1,6 @@
 import { styled } from "styled-components";
+import { addMaxPrice, addMinPrice, deleteAllFromFilters } from "../../entities/filter/redux/slice";
+import { useAppDispatch } from "../../store/store";
 
 const Button = styled.button`
     font-family: "Inter";
@@ -11,9 +13,21 @@ const Button = styled.button`
     cursor: pointer;
 `;
 
-const ClearFilters: React.FC = () => {
+type ClearFiltersProps = {
+    maxPrice: number;
+};
+
+const ClearFilters: React.FC<ClearFiltersProps> = ({maxPrice}) => {
+    const dispatch = useAppDispatch();
+
+    const clickHandler = () => {
+        dispatch(addMinPrice(0));
+        dispatch(addMaxPrice(maxPrice));
+        dispatch(deleteAllFromFilters());
+    }
+
     return(
-        <Button>Сбросить всё</Button>
+        <Button onClick={clickHandler}>Сбросить всё</Button>
     );
 }
 
