@@ -41,7 +41,7 @@ export const mapBreads = new Map<string, string>([
     [PROFILE_PATH, "Личный кабинет"],
     [ORDERS_PATH, "Заказы"],
     [CART_PATH, "Корзина"],
-    [CART_ORDER_PATH, "Оформить заказ"],
+    ['/order', "Оформить заказ"],
     [FAVOURITES_PATH, "Избранное"],
     [PAYMENT_DELIVERY_PATH, "Оплата и доставка"],
     [ABOUT_PATH, "О нас"],
