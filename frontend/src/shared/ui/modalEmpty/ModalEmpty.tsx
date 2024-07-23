@@ -2,13 +2,13 @@ import { Modal } from "antd";
 import Portal from "../portal/Portal";
 import { ReactComponent as CloseIcon } from "../../../shared/assets/closeModal.svg";
 
-type CityModalProps = {
+type ModalEmptyProps = {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
     children: JSX.Element;
 };
 
-const ModalEmpty: React.FC<CityModalProps> = ({ isOpen, setIsOpen, children }) => {
+const ModalEmpty: React.FC<ModalEmptyProps> = ({ isOpen, setIsOpen, children }) => {
     return (
         <Portal>
             <Modal

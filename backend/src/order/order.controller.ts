@@ -14,7 +14,19 @@ export class OrderController {
     @ApiOperation({summary: 'Create order'})
     @ApiResponse({status: 201, type: Order})
     @Post()
-    async create(@Body()dto: CreateOrderDto){
+    async create(@Body()dto: CreateOrderDto, @Req() request: Request){
+        try{
+            const response = await ExtractToken.checkAccessToken(ExtractToken.extractTokenFromHeader(request));
+            dto.idUser = response.id;
+        }
+        catch(e){}
+        const arrayDate = String(dto.dateDelivery).split('.');
+        dto.dateDelivery = new Date(Number(arrayDate[2]), Number(arrayDate[1]), Number(arrayDate[0]));
+        console.log(String(dto.dateOrder.toLocaleString()));
+        const arrayDateOrder = String(dto.dateDelivery.toLocaleString()).split(',').join('.').split(':').join('.').split('.');
+        console.log(arrayDateOrder);
+        dto.dateOrder = new Date(Number(arrayDateOrder[2]), Number(arrayDateOrder[1]), Number(arrayDateOrder[0]), Number(arrayDateOrder[3]),  Number(arrayDateOrder[4]),  Number(arrayDateOrder[5]));
+        console.log(dto.dateOrder);
         return await this.ordersService.create(dto);
     }
 
