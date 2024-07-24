@@ -23,6 +23,11 @@ import { ImagesReviewsModule } from './images-reviews/images-reviews.module';
 import { AuthModule } from './auth/auth.module';
 import { TokensModule } from './tokens/tokens.module';
 import { CategoriesProductsModule } from './categories-products/categories-products.module';
+import { TelegrafModule } from "nestjs-telegraf";
+import { TgBotModule } from './tg-bot/tg-bot.module';
+import * as LocalSession from "telegraf-session-local";
+
+const sessions = new LocalSession();
 
 @Module({
     imports: [
@@ -32,6 +37,10 @@ import { CategoriesProductsModule } from './categories-products/categories-produ
         ServeStaticModule.forRoot({
             rootPath: path.resolve(__dirname, '..', 'static'),
             exclude: ['/(.*)']
+        }),
+        TelegrafModule.forRoot({
+            middlewares: [sessions.middleware()],
+            token: process.env.TOKEN_BOT
         }),
         SequelizeModule.forRoot({
             dialect: 'postgres',
@@ -64,6 +73,7 @@ import { CategoriesProductsModule } from './categories-products/categories-produ
         TokensModule,
         AuthModule,
         CategoriesProductsModule,
+        TgBotModule,
     ]
 })
 export class AppModule{}
