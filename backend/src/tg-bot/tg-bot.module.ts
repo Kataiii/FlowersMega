@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
-import { TgBotUpdate } from './tg-bot.update';
 import { TgBotController } from './tg-bot.controller';
+import { TgBotService } from './tg-bot.service';
 
 @Module({
-    providers: [TgBotUpdate],
-    controllers: [TgBotController]
+    providers: [TgBotService],
+    controllers: [TgBotController],
+    exports: [
+        TgBotService
+    ]
 })
 export class TgBotModule {}

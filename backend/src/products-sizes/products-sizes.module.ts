@@ -18,7 +18,8 @@ import { ReviewsModule } from 'src/reviews/reviews.module';
     forwardRef(() => ReviewsModule)
   ],
   exports: [
-    ProductsSizesService
+    ProductsSizesService,
+    ProductsSizesFullService
   ]
 })
 export class ProductsSizesModule {}

@@ -1,11 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
-import { TgBotUpdate } from './tg-bot.update';
+import { TgBotService } from './tg-bot.service';
 
 @Controller('tg-bot')
 export class TgBotController {
-    constructor(private tgBotUpdate: TgBotUpdate){}
+    constructor(private tgBotService: TgBotService){}
 
     @Get('/test')
     async test(){
+        this.tgBotService.sendMessage("Добрый день, тест tg-bota");
     }
 }
