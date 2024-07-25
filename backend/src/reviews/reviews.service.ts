@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Phone } from 'nestjs-telegraf';
 import { ImagesReviewsService } from 'src/images-reviews/images-reviews.service';
 import { ProductsSizesService } from 'src/products-sizes/products-sizes.service';
 import { ProductsService } from 'src/products/products.service';
@@ -22,14 +23,17 @@ export class ReviewsService {
             comment: dto.comment, 
             idUser: dto.idUser,
             idProductSize: dto.idProductSize,
-            firstname: dto.firstname
+            firstname: dto.firstname,
+            phone: dto.phone
         });
-        files.forEach( async(item) => {
-            await this.imagesReviewsService.create({
-                idReview: review.id,
-                image: item
-            });
-        })
+        if(files !== undefined){
+            files.forEach( async(item) => {
+                await this.imagesReviewsService.create({
+                    idReview: review.id,
+                    image: item
+                });
+            })
+        }
         return await this.reviewsRepository.findOne({where: {id: review.id}, include: [{ all: true}]});
     }
 
@@ -111,6 +115,23 @@ export class ReviewsService {
         return {
             count: reviews.count,
             averageRating: averageRating / reviews.count
+        }
+    }
+
+    async getRewiewsWithStatisticByProductId(id: number, limit: number, page: number){
+        const {count, averageRating} = await this.getStaticticByProductSizeId(id);
+        const reviews = await this.reviewsRepository.findAll({
+            where: {idProductSize: id},
+            limit: limit,
+            offset: (page - 1) * limit,
+            include: [{all: true}]
+        })
+
+        const fullReview: FullReviewDto[] = await Promise.all(reviews.map(async(item) => await this.convertReview(item)));
+        return {
+            count: count,
+            averageRating: averageRating,
+            reviews: reviews
         }
     }
 }

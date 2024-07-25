@@ -13,6 +13,9 @@ export class CreateReviewDto{
     @ApiProperty({example: "Елена", description: 'Name user', required: false})
     firstname: string;
 
+    @ApiProperty({example: "7XXXXXXXXXX", description: 'Phone user', required: false})
+    phone: string;
+
     @ApiProperty({example: 1, description: 'Unique identifier product size', required: true})
     idProductSize: number;
 }

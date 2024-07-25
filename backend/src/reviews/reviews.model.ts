@@ -10,6 +10,7 @@ interface ReviewCreationAttrs{
     idUser?: number;
     idProductSize: number;
     firstname: string;
+    phone: string;
 }
 
 @Table({tableName: 'reviews', createdAt: true, updatedAt: true})
@@ -34,6 +35,10 @@ export class Review extends Model<Review, ReviewCreationAttrs>{
     @ApiProperty({example: "Елена", description: 'Name user', required: false})
     @Column({type: DataType.STRING, allowNull: false})
     firstname: string;
+
+    @ApiProperty({example: "7XXXXXXXXXX", description: 'Phone user', required: true})
+    @Column({type: DataType.STRING, allowNull: false})
+    phone: string;
 
     @ApiProperty({example: 1, description: 'Unique identifier product size', required: true})
     @Column({type: DataType.INTEGER, allowNull: false})

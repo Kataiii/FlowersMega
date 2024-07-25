@@ -4,6 +4,7 @@ import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestj
 import { GetPaginationFullReviewDto } from './dto/createPagination.dto';
 import { CreateReviewDto } from './dto/createReviews.dto';
 import { FullReviewDto } from './dto/fullReview.dto';
+import { ReviewsProductSizeDto } from './dto/reviewsProductsSize.dto';
 import { StaticticReviews } from './dto/statisticByProductSizeId.dto';
 import { Review } from './reviews.model';
 import { ReviewsService } from './reviews.service';
@@ -26,6 +27,7 @@ export class ReviewsController {
             idUser: { type: 'number' },
             idProductSize: {type: 'number'},
             firstname: {type: 'string'},
+            phone: {type: 'string'},
             files: {
               type: 'array',
               items: {
@@ -39,6 +41,7 @@ export class ReviewsController {
     @UseInterceptors(FilesInterceptor('files'))
     @Post()
     async create(@Body()dto: CreateReviewDto, @UploadedFiles() files){
+      console.log(files);
         return await this.reviewsService.create(dto, files);
     }
 
@@ -48,6 +51,16 @@ export class ReviewsController {
     @Get()
     async getAll(){
         return await this.reviewsService.getAll();
+    }
+
+    @ApiOperation({summary: 'Get reviews statistic by product size id'})
+    @ApiResponse({status: 200, type: ReviewsProductSizeDto})
+    @Get("/reviews-product-size/:id/:limit/:page")
+    async getReviewsProductSize(
+      @Param("id") id: number,
+      @Param("limit") limit: number,
+      @Param("page") page: number){
+        return await this.reviewsService.getRewiewsWithStatisticByProductId(id, limit, page);
     }
 
     @ApiOperation({summary: 'Get review by id'})

@@ -9,7 +9,7 @@ import { styled } from "styled-components";
 import SlideReviews from "../../entities/review/ui/slideReviews/SlideReviews";
 import { CarouselRef } from "antd/es/carousel";
 
-const ArrowNext = styled.img`
+export const ArrowNext = styled.img`
     width: 50px;
     height: 50px;
     position: absolute;
@@ -20,7 +20,7 @@ const ArrowNext = styled.img`
     cursor: pointer;
 `;
 
-const ArrowPrev = styled(ArrowNext)`
+export const ArrowPrev = styled(ArrowNext)`
     left: 0;
     transform: translate(-50%, 0) rotate(0); 
 `;

@@ -16,8 +16,6 @@ const Product: React.FC = () => {
     const { isLoading, data } = useProductsControllerGetByIdQuery({ id: idProduct });
     const productSize = useProductsSizesControllerGetByProductIdAndSizeIdQuery({idProduct: idProduct, idSize: idSize});
 
-    console.log(productSize.data);
-
     return (
         <>
             {
@@ -30,7 +28,7 @@ const Product: React.FC = () => {
                         <GaleryPhotoProduct product={data}/>
                         <DescriptionProduct product={{...data!, productSize: productSize.data!}}/>
                     </div>
-                    <BlockReviewProduct/>
+                    <BlockReviewProduct idProductSize={productSize.data?.id ?? -1}/>
                 </Container>
             </div>
             }

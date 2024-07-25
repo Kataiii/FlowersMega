@@ -43,6 +43,14 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => ({ url: `/reviews/statistic/${queryArg.id}` }),
     }),
+    reviewsProductSizeControllerGetByProductId: build.query<
+      ReviewsProductSizeControllerGetByProductIdApiResponse,
+      ReviewsProductSizeControllerGetByProductIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/reviews/reviews-product-size/${queryArg.productSizeId}/${queryArg.limit}/${queryArg.page}`
+      })
+    })
   }),
   overrideExisting: false,
 });
@@ -54,6 +62,7 @@ export type ReviewsControllerCreateApiArg = {
     comment?: string;
     idUser?: number;
     idProductSize?: number;
+    phone: string;
     firstname?: string;
     files?: Blob[];
   };
@@ -75,6 +84,16 @@ export type ReviewsControllerGetAllWithPaginationApiArg = {
   page: number;
   limit: number;
 };
+export type ReviewsProductSizeControllerGetByProductIdApiResponse = {
+  count: number;
+  averageRating: number;
+  reviews: FullReviewDto[];
+}
+export type ReviewsProductSizeControllerGetByProductIdApiArg = {
+  productSizeId: number;
+  limit: number;
+  page: number;
+}
 export type ReviewsControllerGetStaticticByProductSizeIdApiResponse =
   /** status 200  */ StaticticReviews;
 export type ReviewsControllerGetStaticticByProductSizeIdApiArg = {
@@ -155,4 +174,5 @@ export const {
   useReviewsControllerGetByProductSizeIdQuery,
   useReviewsControllerGetAllWithPaginationQuery,
   useReviewsControllerGetStaticticByProductSizeIdQuery,
+  useReviewsProductSizeControllerGetByProductIdQuery,
 } = injectedRtkApi;
