@@ -48,6 +48,7 @@ export class ProductsSizesFullService {
     }
 
     async getProductsSizesForCardPagination(page: number, limit: number){
+        const count = await this.productsSizesRepository.findAndCountAll();
         const products = await this.productsSizesRepository.findAll({
             limit: limit,
             offset: (page - 1) * limit
@@ -62,6 +63,9 @@ export class ProductsSizesFullService {
             }
         }));
 
-        return productsCardInfo;
+        return {
+            count: count,
+            products: productsCardInfo
+        }
     }
 }

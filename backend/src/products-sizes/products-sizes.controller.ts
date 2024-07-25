@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AllSizesDto } from './dto/allSizes.dto';
 import { CreateProductSizeDto, CreateProductSizeInfoDto } from './dto/createProductsSizes.dto';
 import { FullProductSizeDto } from './dto/fullProductsSizes.dto';
 import { GetPaginationProductSizeDto } from './dto/getPagination.dto';
@@ -35,6 +36,20 @@ export class ProductsSizesController {
     @Get('/pagination/:page/:limit')
     async getPagination(@Param("page") page: number, @Param("limit") limit: number){
         return await this.productsSizesService.getAllWithPagination(page, limit);
+    }
+
+    @ApiOperation({summary: 'Get all sizes by product id'})
+    @ApiResponse({status: 200, type: AllSizesDto})
+    @Get('/all-sizes/:id')
+    async getAllSizesByProductId(@Param("id") id: number){
+        return await this.productsSizesService.getWithAllSizes(id);
+    }
+    
+    @ApiOperation({summary: "Get product size by product id and size id"})
+    @ApiResponse({status: 200, type: ProductSize})
+    @Get("/product-size/:idProduct/:idSize")
+    async getByProductIdAndSizeId(@Param("idProduct") idProduct: number, @Param("idSize") idSize: number){
+        return await this.productsSizesService.getBySizeIdByProductId(idSize, idProduct);
     }
 
     @ApiOperation({summary: 'Get product size by id'})

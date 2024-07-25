@@ -5,13 +5,13 @@ import { Product, ProductSize } from "../../../store/product";
 
 
 export const addFavorite = createAction<ProductSize>('addFavorite');
-export const deleteFavorite = createAction<Pick<ProductSize, 'id'>>('deleteFavorite');
+export const deleteFavorite = createAction<Pick< ProductSize, 'id'>>('deleteFavorite');
 
 
 
 
 export const favoritesEntitiyAdapter = createEntityAdapter({
-    selectId: (e: ProductSize) => e.id
+    selectId: (e:  FullProductSizeDto) => e.id
 })
 
 const favoriteSlice = createSlice({

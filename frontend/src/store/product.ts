@@ -103,6 +103,22 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/categories-products/count/${queryArg.id}`,
       }),
     }),
+    productsSizesControllerGetAllSizesByProductId: build.query<
+      ProductsSizesControllerGetAllSizesByProductIdApiResponse,
+      ProductsSizesControllerGetAllSizesByProductIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/products-sizes/all-sizes/${queryArg.id}`
+      })
+    }),
+    productsSizesControllerGetByProductIdAndSizeId: build.query<
+      ProductsSizesControllerGetByProductIdAndSizeIdApiResponse,
+      ProductsSizesControllerGetByProductIdAndSizeIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/products-sizes/product-size/${queryArg.idProduct}/${queryArg.idSize}`
+      })
+    })
   }),
   overrideExisting: false,
 });
@@ -127,6 +143,18 @@ export type ProductsSizesControllerCreateApiResponse =
 export type ProductsSizesControllerCreateApiArg = {
   createProductSizeDto: CreateProductSizeDto;
 };
+export type ProductsSizesControllerGetAllSizesByProductIdApiResponse = {
+  productsSizes: ProductSize[];
+  sizes: Size[];
+}
+export type ProductsSizesControllerGetAllSizesByProductIdApiArg = {
+  id:number;
+}
+export type ProductsSizesControllerGetByProductIdAndSizeIdApiResponse = ProductSize;
+export type ProductsSizesControllerGetByProductIdAndSizeIdApiArg = {
+  idProduct: number;
+  idSize: number;
+}
 export type ProductsSizesControllerGetAllApiResponse =
   /** status 200  */ ProductSize[];
 export type ProductsSizesControllerGetAllApiArg = void;
@@ -151,8 +179,11 @@ export type ProductsSizesControllerGetProductSizeForCardByIdApiResponse =
 export type ProductsSizesControllerGetProductSizeForCardByIdApiArg = {
   id: number;
 };
-export type ProductsSizesControllerGetByCategotyIdWithPaginationApiResponse =
-  /** status 200  */ FullProductSizeDto[];
+export type ProductsSizesControllerGetByCategotyIdWithPaginationApiResponse ={
+  count: number;
+  products: FullProductSizeDto[];
+}
+  /** status 200  */
 export type ProductsSizesControllerGetByCategotyIdWithPaginationApiArg = {
   page: number;
   limit: number;
@@ -313,10 +344,12 @@ export const {
   useProductsSizesControllerGetPaginationQuery,
   useProductsSizesControllerGetByIdQuery,
   useProductsSizesControllerGetByProductIdQuery,
+  useProductsSizesControllerGetAllSizesByProductIdQuery,
   useProductsSizesControllerGetProductSizeForCardByIdQuery,
   useProductsSizesControllerGetByCategotyIdWithPaginationQuery,
   useReviewsControllerGetByProductSizeIdQuery,
   useReviewsControllerGetStaticticByProductSizeIdQuery,
   useOrdersProductsSizesControllerGetByIdQuery,
   useCategoriesProductsControllerGetAllQuery,
+  useProductsSizesControllerGetByProductIdAndSizeIdQuery,
 } = injectedRtkApi;

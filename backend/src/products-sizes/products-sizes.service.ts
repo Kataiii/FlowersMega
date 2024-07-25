@@ -71,10 +71,8 @@ export class ProductsSizesService {
             {where: {
                 idProduct: idProduct
             },
-            order: [["prise", "ASC"]],
-            include: [{
-                all: true
-            }]}
+            order: [["prise", "ASC"]]
+            }
         );
 
         if(productsSizes === null) throw new HttpException("Products sizes not found", HttpStatus.NOT_FOUND);
@@ -86,5 +84,27 @@ export class ProductsSizesService {
             order: [['prise', 'DESC']]
         });
         return productSize[0].prise;
+    }
+
+    async getWithAllSizes(id: number | string){
+        const productSizes = await this.getByProductId(id);
+        const sizes = await Promise.all(productSizes.map(async(item) => {
+            return await this.sizesService.getById(item.idSize);
+        }));
+        return {
+            productsSizes: productSizes,
+            sizes: sizes
+        }
+    }
+
+    async getBySizeIdByProductId(idSize: number, idProduct: number){
+        const productSize = await this.productsSizesRepository.findOne({
+            where: {
+                idProduct: idProduct,
+                idSize: idSize
+            }
+        });
+
+        return productSize;
     }
 }

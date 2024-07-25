@@ -24,7 +24,7 @@ const Favourites: React.FC = () => {
                     :   <div style={{display: "flex", gap: 15, flexWrap: "wrap"}}>
                         {
                             productsFavorite.map((item, index) => {
-                                return <SmartProductCard key={index} size={item} />
+                                return <SmartProductCard key={index} product={item} />
                             })
                         }
                         </div>

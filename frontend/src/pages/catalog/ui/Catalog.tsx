@@ -1,11 +1,12 @@
 import Container from "../../../shared/ui/containerMain/ContainerMain";
-import { useProductsSizesControllerGetAllQuery } from "../../../store/product";
+import { useProductsSizesControllerGetAllQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery } from "../../../store/product";
 import FiltersPanel from "../../../widgets/filtersPanel/FiltersPanel";
 import FiltersTags from "../../../widgets/filtersTags/FiltersTags";
 import { SmartProductCard } from "../../../widgets/product/SmartProductCart";
 
 const Catalog: React.FC = () => {
-    const { isLoading, data } = useProductsSizesControllerGetAllQuery();
+    // const { isLoading, data } = useProductsSizesControllerGetAllQuery();
+    const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({limit: 25, page: 1});
 
     return (
         <div style={{ display: "flex", justifyContent: "center", padding: "25px 0" }}>
@@ -19,8 +20,8 @@ const Catalog: React.FC = () => {
                             {
                                 isLoading
                                     ? <p>Загрузка...</p>
-                                    : data && data.map((item, index) => {
-                                        return <SmartProductCard key={index} size={item} />
+                                    : data && data.products.map((item, index) => {
+                                        return <SmartProductCard key={index} product={item} />
                                     })
                             }
                         </div>

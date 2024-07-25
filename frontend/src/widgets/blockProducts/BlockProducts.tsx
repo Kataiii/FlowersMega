@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 import SecondaryButton from "../../shared/ui/button/SecondaryButton";
 import Container from "../../shared/ui/containerMain/ContainerMain";
 import TitleSection from "../../shared/ui/titleSection/TitleSection";
-import { ProductSize, useProductsSizesControllerGetPaginationQuery } from "../../store/product";
+import { FullProductSizeDto, ProductSize, useProductsSizesControllerGetByCategotyIdWithPaginationQuery, useProductsSizesControllerGetPaginationQuery } from "../../store/product";
 import { SmartProductCard } from "../product/SmartProductCart";
 
 const Wrapper = styled.div`
@@ -17,12 +17,12 @@ const Wrapper = styled.div`
 
 const BlockProducts: React.FC = () => {
     const [page,setPage] = useState<number>(1);
-    const [productsSizes, setProductSizes] = useState<ProductSize[]>([]);
-    const {isLoading, data} = useProductsSizesControllerGetPaginationQuery({page: page, limit: 6});
+    const [productsSizes, setProductSizes] = useState<FullProductSizeDto[]>([]);
+    const {isLoading, data} = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({page: page, limit: 6});
 
     useEffect(() => {
         if(!isLoading){
-            setProductSizes(data?.productsSizes ?? []);
+            setProductSizes(data?.products ?? []);
         }
     }, [isLoading]);
 
@@ -31,7 +31,7 @@ const BlockProducts: React.FC = () => {
         if(page <= allPages){
             setPage(page => page + 1);
             if(!isLoading){
-                setProductSizes([...productsSizes, ...data?.productsSizes ?? []]);
+                setProductSizes([...productsSizes, ...data?.products ?? []]);
             }
         }
     }
@@ -45,7 +45,7 @@ const BlockProducts: React.FC = () => {
                     isLoading
                     ? <p>Загрузка...</p>
                     : data && productsSizes.map((item, index) => {
-                        return <SmartProductCard key={`productSizes-${index}`} size={item} />
+                        return <SmartProductCard key={`productSizes-${index}`} product={item} />
                     })
                 }
                 </div>

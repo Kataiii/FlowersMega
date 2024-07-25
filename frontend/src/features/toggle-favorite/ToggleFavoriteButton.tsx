@@ -1,7 +1,7 @@
 import { HeartOutlined } from "@ant-design/icons";
 import { isFavoriteSelector } from "../../entities/favorites/redux/selectors";
 import { deleteFavorite, addFavorite } from "../../entities/favorites/redux/slice";
-import { Product, ProductSize } from "../../store/product";
+import { FullProductSizeDto, ProductSize } from "../../store/product";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 
 
