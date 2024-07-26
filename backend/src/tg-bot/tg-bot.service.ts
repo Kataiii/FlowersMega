@@ -1,5 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { TelegramService } from "nestjs-telegram";
+import { OrderCallDto } from "./dto/orderCall.dto";
 const TelegramBot = require('node-telegram-bot-api');
 
 
@@ -24,5 +25,17 @@ export class TgBotService {
         this.bot.sendMessage(this.chatId, messageText)
             .then(() => console.log('Message sent successfully'))
             .catch(err => console.error('Error sending message:', err));
+    }
+
+    sendOrderCallMessage = (dto: OrderCallDto): void => {
+        this.sendMessage(
+            `
+ЗАКАЗ ЗВОНКА
+
+ЗАКАЗЧИК
+Имя заказчика: ${dto.name}
+Телефон заказчика: ${dto.phone}
+            `
+        );
     }
 }
