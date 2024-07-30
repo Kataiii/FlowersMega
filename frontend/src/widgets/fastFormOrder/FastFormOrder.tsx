@@ -11,16 +11,14 @@ import { useAppSelector } from "../../store/store";
 import { selectUser } from "../../entities/credential/redux/selectors";
 import Button from "../../shared/ui/button/Button";
 import { selectActiveCity } from "../../entities/city/redux/selectors";
-import styles from "./FormOrder.module.css";
+import styles from "../formOrder/FormOrder.module.css";
 import Transforms from "../../shared/utils/transforms";
-import { ItemOrder, OrdersControllerCreateApiArg, useOrdersControllerCreateMutation } from "../../store/order";
-import { cartSelectors } from "../../entities/cart/redux/selectors";
-import OrderEmpty from "../../entities/order/ui/OrderEmpty";
+import { OrdersControllerCreateApiArg, useOrdersControllerCreateMutation } from "../../store/order";
 import ModalEmpty from "../../shared/ui/modalEmpty/ModalEmpty";
 import { useNavigate } from "react-router-dom";
 import { CATALOG_PATH } from "../../shared/utils/constants";
 import { useDispatch } from "react-redux";
-import { deleteAllFromCart } from "../../entities/cart/redux/slice";
+import { CartProduct } from "../../entities/cart/types";
 
 const TitleForm = styled.h4`
     font-family: "Inter";
@@ -50,7 +48,11 @@ type FormValues = {
     startTimeDelivery: any;
 }
 
-const FormOrder: React.FC = () => {
+type FastFormOrderProps = {
+    item: CartProduct;
+}
+
+const FastFormOrder: React.FC<FastFormOrderProps> = ({item}) => {
     const [isRecipientCustomer, setIsRecipientCustomer] = useState<boolean>(false);
     const [isExsistingCity, setIsExsistingCity] = useState<boolean>(true);
     const [createOrder, { isSuccess }] = useOrdersControllerCreateMutation();
@@ -59,12 +61,6 @@ const FormOrder: React.FC = () => {
     const [ isOpen, setIsOpen ] = useState<boolean>(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
-    const productsInCart = useAppSelector(cartSelectors.selectAll);
-    const totalCost = useMemo(
-        () => productsInCart.map(p => p.count * (p.prise ?? 0)).reduce((prev, curr) => prev + curr, 0),
-        [productsInCart]
-    )
 
     const [form] = Form.useForm();
 
@@ -81,7 +77,7 @@ const FormOrder: React.FC = () => {
                 name: '',
                 dateOrder: new Date().toLocaleString(),
                 dateDelivery: tryValues.dateDelivery,
-                cost: totalCost,
+                cost: item.prise,
                 nameCustomer: tryValues.nameCustomer,
                 emailCustomer: tryValues.emailCustomer,
                 phoneCustomer: tryValues.phoneCustomer,
@@ -101,24 +97,21 @@ const FormOrder: React.FC = () => {
                 startTimeDelivery: tryValues.startTimeDelivery,
                 endTimeDelivery: tryValues.endTimeDelivery,
                 comment: tryValues.comment, 
-                itemsOrder: productsInCart.map(item => {
-                    return {
-                        count: item.count,
-                        product: {
-                            id: item.id,
-                            idProduct: item.idProduct,
-                            idSize: item.idSize,
-                            paramsSize: item.paramsSize,
-                            count:  item.count,
-                            prise: item.prise
-                        }
-                    } as ItemOrder
-                })
+                itemsOrder: [
+                    {count: 1,
+                    product: {
+                        id: item.id,
+                        idProduct: item.idProduct,
+                        idSize: item.idSize,
+                        paramsSize: item.paramsSize,
+                        count:  1,
+                        prise: item.prise
+                    }}
+                ]
             }
         }
 
         createOrder(dto);
-        dispatch(deleteAllFromCart());
     };
 
     const changeRecepientCustomer: CheckboxProps['onChange'] = (e) => {
@@ -371,4 +364,4 @@ const FormOrder: React.FC = () => {
     )
 }
 
-export default FormOrder;
+export default FastFormOrder;

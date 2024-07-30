@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { API_URL, PRODUCT_PATH } from "../../../../shared/utils/constants";
 import { FullProductSizeDto, Product, ProductSize, useProductsControllerGetByIdQuery } from "../../../../store/product";
@@ -6,8 +6,13 @@ import { Size, useSizesControllerGetByIdQuery } from "../../../../store/size";
 import AddCart from "../../../../shared/assets/add_cart.svg";
 import Cursor from "../../../../shared/assets/cursor.svg";
 import { useNavigate } from "react-router-dom";
-import { Rate } from "antd";
+import { Image, Rate } from "antd";
 import { Numerals } from "../../../../shared/utils/numerals";
+import ModalEmpty from "../../../../shared/ui/modalEmpty/ModalEmpty";
+import FormOrder from "../../../../widgets/formOrder/FormOrder";
+import { Title } from "../../../../shared/ui/forAdditionalPages/Title";
+import { Text } from "../../../../shared/ui/forAdditionalPages/Content";
+import FastFormOrder from "../../../../widgets/fastFormOrder/FastFormOrder";
 
 type CardProductProps = {
     product: FullProductSizeDto,
@@ -57,7 +62,7 @@ const ButtonColor = styled.button`
 
 const CardProduct: React.FC<CardProductProps> = ({ product, addToCartButton, addToFavorites }) => {
     const navigate = useNavigate();
-
+    const [ isOpen, setIsOpen ] = useState<boolean>(false);
     console.log(product);
 
     return (
@@ -76,7 +81,7 @@ const CardProduct: React.FC<CardProductProps> = ({ product, addToCartButton, add
                 <p style={{ fontFamily: 'Inter', fontWeight: 600, fontSize: "24px", color: "var(--secondary-text-color)", margin: 0 }}>{product.productSize.prise.toLocaleString()} ₽</p>
                 <div style={{ display: "flex", justifyContent: "space-between", gap: "10px" }}>
                     {addToCartButton}
-                    <ButtonColor>
+                    <ButtonColor onClick={() => setIsOpen(true)}>
                         <img src={Cursor} alt="cursor" />
                         В 1 клик
                     </ButtonColor>
@@ -85,6 +90,22 @@ const CardProduct: React.FC<CardProductProps> = ({ product, addToCartButton, add
             <div style={{position: "absolute", top: 15, right: 15}}>
                 {addToFavorites}
             </div>
+            <ModalEmpty isOpen={isOpen} setIsOpen={() => setIsOpen(false)} >
+                <>
+                    <Title style={{fontSize: 24, margin: 0}}>Быстрый заказ</Title>
+                    <Text style={{fontWeight: 400, fontSize: 14, color: "var(--text-modal)", margin: 0}}>для позиции</Text>
+                    <div style={{margin: "15px 0 0",display: 'flex', gap: 24, alignItems: "center", border: "1px solid var(--primary-bg-color)", width: "100%", borderRadius: 4, padding: 8}}>
+                        <Image 
+                            width={30}
+                            height={30}
+                            style={{borderRadius: 4}}
+                            src={`${API_URL}/products/images/${product?.productSize.idProduct}/${product?.product.image.url}`
+                            }/>
+                            <Title style={{fontWeight: 700, fontSize: 16, color: "var(--primary-bg-color)"}}>{product.product.name} {`(${product.size.name})`}</Title>
+                    </div>
+                    <FastFormOrder item={{...product.productSize, count: 1, product: {...product.product, id: product.productSize.idProduct, structure: ""}}}/>
+                </>
+            </ModalEmpty>
         </div>
     )
 }
