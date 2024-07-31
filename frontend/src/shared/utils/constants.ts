@@ -25,6 +25,13 @@ export const SEARCH_PATH = "/search/q?=:query";
 export const CATEGORY_PATH = "/category";
 export const FILTERS_PATH = "/filters?=:filters";
 
+export const ADMIN_PATH = "/admin";
+export const ADMIN_ORDER_PATH = "/admin/order/:id";
+export const ADMIN_PRODUCTS_PATH = "/admin/products";
+export const ADMIN_PRODUCT_PATH = "/admin/product/:id";
+export const ADMIN_REVIEWS_PATH = "/admin/reviews";
+export const ADMIN_REVIEW_PATH = "/admin/review/:id";
+
 export const API_URL = "http://localhost:5000";
 
 export const PHONE = "8 800 000 00 00";

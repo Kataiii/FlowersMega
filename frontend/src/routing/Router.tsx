@@ -7,6 +7,12 @@ import Catalog from "../pages/catalog/ui/Catalog";
 import Error from "../pages/error/ui/Error";
 import Favourites from "../pages/favourites/ui/Favourites";
 import Main from "../pages/main/ui/Main";
+import {default as AdminMain} from "../pages/admin/ui/main/Main";
+import {default as AdminOrders} from "../pages/admin/ui/orders/Orders";
+import {default as AdminProducts} from "../pages/admin/ui/products/Products";
+import {default as AdminReviews} from "../pages/admin/ui/reviews/Reviews";
+import {default as AdminProduct} from "../pages/admin/ui/products/Product";
+import Order from "../pages/admin/ui/orders/Order";
 import OrderCall from "../pages/orderCall/OrderCall";
 import Product from "../pages/product/ui/Product";
 import Orders from "../pages/profile/ui/Orders";
@@ -22,6 +28,12 @@ import ModalRoute from "../shared/ui/modalRoute/ModalRoute";
 import Portal from "../shared/ui/portal/Portal";
 import { 
     ABOUT_PATH, 
+    ADMIN_ORDER_PATH, 
+    ADMIN_PATH, 
+    ADMIN_PRODUCTS_PATH, 
+    ADMIN_PRODUCT_PATH, 
+    ADMIN_REVIEWS_PATH, 
+    ADMIN_REVIEW_PATH, 
     AUTH_PATH, 
     CART_ORDER_PATH, 
     CART_PATH, 
@@ -52,6 +64,8 @@ import FastBuy from "../widgets/fastBuy/ui/FastBuy";
 import RecoveryPassword from "../widgets/recoveryPassword/ui/RecoveryPassword";
 import Regist from "../widgets/regist/ui/Regist";
 import { AuthGuard } from "./guards/AuthGuard";
+import { RoleGuard } from "./guards/RoleGuard";
+import Review from "../pages/admin/ui/reviews/Review";
 
 const Router: React.FC = () => {
     const location = useLocation();
@@ -89,6 +103,13 @@ const Router: React.FC = () => {
                     <Route path={CONTACTS_PATH} element={<Contacts />} />
                     <Route path={HELP_PATH} element={<Help />} />
                     <Route path={POLITICS_PATH} element={<Politics />} />
+                    <Route path={ADMIN_PATH} element={<RoleGuard>
+                            <AdminMain/>
+                        </RoleGuard>}>
+                        <Route path={''} element={<AdminOrders/>}/>
+                        <Route path={ADMIN_PRODUCTS_PATH} element={<AdminProducts/>}/>
+                        <Route path={ADMIN_REVIEWS_PATH} element={<AdminReviews/>}/>
+                    </Route>
                     <Route path="*" element={<Error />} />
                 </Route>
             </Routes>
@@ -120,6 +141,15 @@ const Router: React.FC = () => {
                             <Route path={ORDER_CALL_PATH} element={<ModalRoute prevLocation={previousLocation}>
                                 <OrderCall/>
                             </ModalRoute>} />
+                            <Route path={ADMIN_ORDER_PATH} element={<ModalRoute prevLocation={previousLocation}>
+                                <Order/>
+                            </ModalRoute>}/>
+                            <Route path={ADMIN_PRODUCT_PATH} element={<ModalRoute prevLocation={previousLocation}>
+                                <AdminProduct/>
+                            </ModalRoute>}/>
+                            <Route path={ADMIN_REVIEW_PATH} element={<ModalRoute prevLocation={previousLocation}>
+                                <Review/>
+                            </ModalRoute>}/>
                         </Routes>
                     )
                 }
