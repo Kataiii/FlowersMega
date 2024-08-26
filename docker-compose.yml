@@ -1,0 +1,17 @@
+services:
+  pg_database:
+    container_name: pg_database
+    image: flowers_mega
+    build: ./database
+    env_file: backend/.development.env
+    ports:
+      - "5432:5432"
+    networks:
+      - docker-network
+    volumes:
+      - data:/var/lib/postresql/data
+networks:
+  docker-network:
+    driver: bridge
+volumes:
+  data:

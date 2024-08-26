@@ -10,7 +10,6 @@ import "./shared/utils/cssConstants.css";
 
 const Container = styled.div`
   background-color: var(--main-bg-color);
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   min-height: 100vh;

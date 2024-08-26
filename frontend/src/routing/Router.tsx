@@ -75,6 +75,13 @@ const Router: React.FC = () => {
     return (
         <>
             <Routes location={previousLocation || location}>
+                <Route path={ADMIN_PATH} element={<RoleGuard>
+                            <AdminMain/>
+                        </RoleGuard>}>
+                        <Route path={''} element={<AdminOrders/>}/>
+                        <Route path={ADMIN_PRODUCTS_PATH} element={<AdminProducts/>}/>
+                        <Route path={ADMIN_REVIEWS_PATH} element={<AdminReviews/>}/>
+                </Route>
                 <Route path={HOME_PATH} element={<App />}>
                     <Route path={HOME_PATH} element={<Main />} />
                     <Route path={CATALOG_PATH} element={<Catalog />}>
@@ -103,13 +110,6 @@ const Router: React.FC = () => {
                     <Route path={CONTACTS_PATH} element={<Contacts />} />
                     <Route path={HELP_PATH} element={<Help />} />
                     <Route path={POLITICS_PATH} element={<Politics />} />
-                    <Route path={ADMIN_PATH} element={<RoleGuard>
-                            <AdminMain/>
-                        </RoleGuard>}>
-                        <Route path={''} element={<AdminOrders/>}/>
-                        <Route path={ADMIN_PRODUCTS_PATH} element={<AdminProducts/>}/>
-                        <Route path={ADMIN_REVIEWS_PATH} element={<AdminReviews/>}/>
-                    </Route>
                     <Route path="*" element={<Error />} />
                 </Route>
             </Routes>

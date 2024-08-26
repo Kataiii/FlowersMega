@@ -1,4 +1,3 @@
-import { Navigate } from "react-router-dom";
 import Forbidden from "../../pages/admin/ui/forbidden/Forbidden";
 
 type RoleGuardProps = {
