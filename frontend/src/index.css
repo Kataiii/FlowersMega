@@ -1,5 +1,27 @@
-*{
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+
+  div::-webkit-scrollbar {}
+
+  div::-webkit-scrollbar-track {
+    background: #F5EFF5;
+    border-radius: 8px;
+  }
+
+  div::-webkit-scrollbar-thumb {
+    background-color: #FF749F;
+    border-radius: 8px;
+  }
+
+  div::-webkit-scrollbar-thumb:hover {
+    background: #FF558A;
+
+  }
+
+  div::-webkit-scrollbar {
+    height: 9px;
+    width: 5px;
+  }
 }
