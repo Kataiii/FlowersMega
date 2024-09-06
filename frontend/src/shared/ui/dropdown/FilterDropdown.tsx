@@ -7,7 +7,12 @@ interface FilterTag {
     tags: string[];
 }
 
-const FilterComponent: React.FC = () => {
+interface FilterDropdownProps {
+    disabled?: boolean;
+    onChange?: (filters: FilterTag[]) => void;
+}
+
+const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange }) => {
     const [filters, setFilters] = useState<FilterTag[]>([]);
     const [activeFilter, setActiveFilter] = useState<string | null>(null);
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -36,6 +41,7 @@ const FilterComponent: React.FC = () => {
     const handleTagChange = (checked: boolean, tag: string) => {
         if (activeFilter) {
             const filterIndex = filters.findIndex(f => f.filter === activeFilter);
+
             if (filterIndex !== -1) {
                 const updatedFilters = [...filters];
                 if (checked) {
@@ -44,9 +50,13 @@ const FilterComponent: React.FC = () => {
                     updatedFilters[filterIndex].tags = updatedFilters[filterIndex].tags.filter(t => t !== tag);
                 }
                 setFilters(updatedFilters);
+                if (onChange) onChange(updatedFilters)
+
             } else if (checked) {
                 setFilters([...filters, { filter: activeFilter, tags: [tag] }]);
+                if (onChange) onChange([...filters, { filter: activeFilter, tags: [tag] }])
             }
+
         }
     };
 
@@ -84,21 +94,21 @@ const FilterComponent: React.FC = () => {
         : [];
 
     const mainMenu = (
-        <div style={{ padding: "8px", backgroundColor: "#fff", border: "1px solid #d9d9d9", borderRadius: "8px" }}>
+        <div style={{ padding: "8px", backgroundColor: "#fff", border: "1px solid var(--primary-bg-color)", borderRadius: "8px" }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                 <Input
                     placeholder="Поиск..."
                     value={searchValue}
                     onChange={handleSearch}
-                    style={{ width: "135px" }}
+                    style={{ width: "155px" }}
                     onClick={(e) => e.stopPropagation()}
                 />
-                <Button
+                {/* <Button
                     type="link"
                     icon={<CloseOutlined />}
                     onClick={handleCloseMenu}
                     style={{ color: "#ff4d4f" }}
-                />
+                /> */}
             </div>
             <Button
                 type="link"
@@ -107,9 +117,9 @@ const FilterComponent: React.FC = () => {
                     e.stopPropagation();
                     handleAddFilter();
                 }}
-                style={{ marginBottom: "8px", color: "#ff4d4f" }}
+                style={{ marginBottom: "8px", color: "var(--primary-bg-color)" }}
             >
-                Создать категорию
+                Создать фильтр
             </Button>
             <Menu
                 items={filteredAvailableFilters.map(filter => ({
@@ -123,14 +133,23 @@ const FilterComponent: React.FC = () => {
 
     const tagMenu = activeFilter && (
         <div style={{ padding: "8px", backgroundColor: "#fff", border: "1px solid #d9d9d9", borderRadius: "8px" }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <Input
-                    placeholder="Поиск тегов..."
-                    value={searchValue}
-                    onChange={handleSearch}
-                    style={{ width: "135px" }}
-                    onClick={(e) => e.stopPropagation()}
-                />
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', flexDirection: "column" }}>
+                <div>
+                    <Input
+                        placeholder="Поиск тегов..."
+                        value={searchValue}
+                        onChange={handleSearch}
+                        style={{ width: "135px" }}
+                        onClick={(e) => e.stopPropagation()}
+                    />
+                    <Button
+                        type="link"
+                        icon={<CloseOutlined />}
+                        onClick={handleCloseMenu}
+                        style={{ color: "var(--primary-bg-color)" }}
+                    />
+                </div>
+
                 <Button
                     type="link"
                     icon={<PlusOutlined />}
@@ -138,16 +157,11 @@ const FilterComponent: React.FC = () => {
                         e.stopPropagation();
                         handleAddTag();
                     }}
-                    style={{ marginLeft: '8px', color: "#ff4d4f" }}
+                    style={{ marginLeft: '8px', color: "var(--primary-bg-color)" }}
                 >
                     Добавить тег
                 </Button>
-                <Button
-                    type="link"
-                    icon={<CloseOutlined />}
-                    onClick={handleCloseMenu}
-                    style={{ color: "#ff4d4f" }}
-                />
+
             </div>
             <Menu
                 items={filteredTags.map(tag => ({
@@ -189,9 +203,10 @@ const FilterComponent: React.FC = () => {
                 open={dropdownOpen || !!activeFilter}
                 onOpenChange={(flag) => setDropdownOpen(flag)}
                 dropdownRender={menu => activeFilter ? tagMenu : mainMenu}
+                disabled={disabled}
             >
-                <Button icon={<PlusOutlined />} onClick={() => setDropdownOpen(!dropdownOpen)}>
-                    Добавить фильтр
+                <Button type="primary" onClick={() => setDropdownOpen(!dropdownOpen)}>
+                    Добавить фильтр {dropdownOpen ? <CloseOutlined /> : <PlusOutlined />}
                 </Button>
             </Dropdown>
 

@@ -1,13 +1,19 @@
 import React, { useState } from "react";
 import { Select, Input, Button } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import { useProductsSizesControllerGetAllQuery } from "../../../store/product";
 
 const { Option } = Select;
 
 const sizes = ["Малый", "Средний", "Большой", "Огромный", "Эксклюзивный"];
 
-const TypeDropdown: React.FC = () => {
+interface TypeDropdownProps {
+    onChange?: (value: string) => void;
+    value?: string;
+    style?: React.CSSProperties;
+}
+
+const TypeDropdown: React.FC<TypeDropdownProps> = ({ onChange, value }) => {
     const { isLoading, data } = useProductsSizesControllerGetAllQuery();
     const [searchValue, setSearchValue] = useState<string>("");
     const [items, setItems] = useState<string[]>(sizes);
@@ -31,13 +37,16 @@ const TypeDropdown: React.FC = () => {
         size.toLowerCase().includes(searchValue.toLowerCase())
     );
 
+
     return (
         <Select
             showSearch
             allowClear
             placeholder="Выберите размер"
+            value={value}
             style={{ width: 200 }}
             onSearch={handleSearch}
+            onChange={onChange}
             dropdownRender={(menu) => (
                 <>
                     <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", padding: 8 }}>
@@ -48,10 +57,15 @@ const TypeDropdown: React.FC = () => {
                         />
                         <Button
                             type="text"
-                            icon={<PlusOutlined />}
                             onClick={handleAddSize}
+                            style={
+                                {
+                                    margin: "5px 0",
+                                    color: "var(--primary-bg-color)"
+                                }
+                            }
                         >
-                            Добавить
+                            Добавить <PlusOutlined />
                         </Button>
                     </div>
                     {menu}
@@ -60,7 +74,7 @@ const TypeDropdown: React.FC = () => {
         >
             {filteredItems.map((size) => (
                 <Option key={size} value={size}>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         {size}
                         <Button
                             type="link"
@@ -70,7 +84,7 @@ const TypeDropdown: React.FC = () => {
                                 handleRemoveSize(size);
                             }}
                         >
-                            X
+                            <CloseOutlined />
                         </Button>
                     </div>
                 </Option>

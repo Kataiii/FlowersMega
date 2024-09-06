@@ -128,13 +128,13 @@ const Orders: React.FC = () => {
             padding: "5px",
           }}
         >
-            <Space.Compact size="large" block>
+          <Space.Compact size="large" block>
             <Input
               placeholder="Поиск по ID"
               value={searchId}
               onChange={(e) => setSearchId(e.target.value)}
             />
-            <Button icon={<SearchOutlined />}>Найти</Button>
+            <Button type="primary" icon={<SearchOutlined />}>Найти</Button>
           </Space.Compact>
         </div>
         <div
@@ -151,7 +151,7 @@ const Orders: React.FC = () => {
             Сортировать по
           </p>
           <Select
-            
+            allowClear
             style={{
               width: 150,
               height: 25,
