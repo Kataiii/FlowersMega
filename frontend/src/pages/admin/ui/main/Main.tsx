@@ -65,6 +65,7 @@ const Main: React.FC = () => {
           Table: {
             cellFontSize: 16,
             headerColor: "var(--primary-review-text)",
+            headerBg: "--block-bg-color",
           },
           Button: {
             colorPrimaryText: "var(--primary-text-color)",

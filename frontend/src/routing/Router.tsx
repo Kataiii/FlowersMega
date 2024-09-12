@@ -147,7 +147,7 @@ const Router: React.FC = () => {
                         <Route path={ADMIN_PRODUCT_PATH} element={<ModalRoute prevLocation={previousLocation} width="800px">
                             <AdminProduct />
                         </ModalRoute>} />
-                        <Route path={ADMIN_REVIEW_PATH} element={<ModalRoute prevLocation={previousLocation}>
+                        <Route path={ADMIN_REVIEW_PATH} element={<ModalRoute prevLocation={previousLocation} width="815px">
                             <Review />
                         </ModalRoute>} />
                     </Routes>

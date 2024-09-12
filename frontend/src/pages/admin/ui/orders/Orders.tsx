@@ -2,17 +2,24 @@ import { Alert, Button, Flex, Input, Select, Space, Spin, Table } from "antd";
 import Container from "../../../../shared/ui/containerMain/ContainerMain";
 import { Order, useOrdersControllerGetAllQuery } from "../../../../store/order";
 import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import OrderContainer from "../../../../shared/ui/orderContainer/OrderContainer";
 
 const Orders: React.FC = () => {
-  const { isLoading, data } = useOrdersControllerGetAllQuery();
+  const { isLoading, data: initialData } = useOrdersControllerGetAllQuery();
   const [sortOrder, setSortOrder] = useState<string>("");
   const [searchId, setSearchId] = useState<string>("");
   const navigate = useNavigate();
   const locate = useLocation();
+  const [orders, setOrders] = useState<Order[]>([]);
+
+  useEffect(() => {
+    if (initialData) {
+      setOrders(initialData);
+    }
+  }, [initialData]);
 
   const columns = [
     {
@@ -49,8 +56,7 @@ const Orders: React.FC = () => {
   ];
 
   const dataSource = useMemo(() => {
-    if (!data) return [];
-    return data.map((order, index) => ({
+    return orders.map((order, index) => ({
       key: index,
       orderId: order.id,
       customer: order.nameCustomer,
@@ -61,20 +67,14 @@ const Orders: React.FC = () => {
         <Button
           block
           type="primary"
-          onClick={() =>
-            navigate(`/admin/order/${order.id}`, {
-              state: { previousLocation: locate.pathname },
-            })
-          }
-          style={{
-            width: "50%",
-          }}
+          onClick={() => navigate(`/admin/order/${order.id}`, { state: { previousLocation: locate.pathname } })}
+          style={{ width: "50%" }}
         >
           Подробнее
         </Button>
       ),
     }));
-  }, [data, navigate, locate]);
+  }, [orders, navigate, locate]);
 
   const filteredData = useMemo(() => {
     if (!searchId) return dataSource;

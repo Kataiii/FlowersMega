@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import Container from "../../../../shared/ui/containerMain/ContainerMain";
-import { useProductsControllerGetByIdQuery } from "../../../../store/product";
+import { useProductsControllerGetByIdQuery, useProductsSizesControllerGetAllSizesByProductIdQuery, useProductsSizesControllerGetByIdQuery, useProductsSizesControllerGetByProductIdQuery } from "../../../../store/product";
 import { Flex, Spin, Image, Input, Select, Dropdown, Space, Form, Button } from "antd";
 import { CloseOutlined, DownOutlined, LoadingOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { styled } from "styled-components"
@@ -16,6 +16,10 @@ import VariationsBlock from "../../../../shared/ui/variations/VariationsBlock";
 import { ignore } from "antd/es/theme/useToken";
 import LoaderPhoto from "../../../../shared/ui/loaderPhoto/LoaderPhoto";
 import ts from "typescript";
+import { FilterWithItems, useFiltersControllerGetAllQuery } from "../../../../store/filter";
+import { useCategoriesControllerGetAllQuery } from "../../../../store/category";
+import { useProductsSizesControllerGetByCategotyIdWithPaginationQuery, useProductsSizesControllerGetProductSizeForCardByIdQuery } from "../../../../store/size";
+import Item from "antd/es/list/Item";
 
 export const StyledForm = styled(Form)`
   .ant-form-item {
@@ -67,8 +71,14 @@ const Product: React.FC = () => {
     const [variations, setVariations] = useState<any[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<{ name: string; photo: string }[]>([]);
     const [filters, setFilters] = useState<any[]>([]);
+    const { data: sizeData, isLoading: sizeDataLoading } = useProductsSizesControllerGetAllSizesByProductIdQuery({ id: Number(id) });
+    const { data: filtersData, isLoading: filtersLoading } = useFiltersControllerGetAllQuery();
+    const { data: categories, isLoading: categoriesLoading } = useCategoriesControllerGetAllQuery();
+    const { data: productSizes, isLoading: sizesLoading } = useProductsSizesControllerGetProductSizeForCardByIdQuery({ id: Number(id) });
+    const { data: productVariations, isLoading: productVariationsLoading } = useProductsSizesControllerGetByProductIdQuery({ id: Number(id) });
 
     const handleFormFinish = (values: any) => {
+
         const formData = {
             name: values.name,
             type: values.type,
@@ -76,12 +86,15 @@ const Product: React.FC = () => {
             structure: values.structure,
             // @ts-ignore
             photo: data?.images?.[0]?.url ? data?.images?.[0] : "",
-            variations,
+            productSize: variations,
             categories: selectedCategories,
             filters: filters,
+            updatedAt: values.updatedAt,
         };
-
+        console.log("Filters state:", filters);
         console.log("Form values:", formData);
+        const jsonString = JSON.stringify(formData)
+        console.log(jsonString);
     };
 
     const handleCategoryChange = (newCategories: { name: string; photo: string }[]) => {
@@ -97,10 +110,35 @@ const Product: React.FC = () => {
     };
 
     useEffect(() => {
+        if (productSizes && productVariations) {
+
+            const { product } = productSizes;
+            setSelectedCategories(product.categories.map(category => ({
+                name: category.name,
+                photo: "category.image "
+            })));
+            setFilters(product.filters.map(filter => ({
+                id: filter.id,
+                name: filter.name
+            })));
+
+            const variations = productVariations.flatMap(variation => ({
+                idSize: variation.idSize,
+                prise: variation.prise,
+                paramsSize: variation.paramsSize,
+            }));
+
+            setVariations(variations);
+            console.log(selectedCategories);
+            // setVariations(productVariations.);
+        }
+    }, [productSizes, productVariations]);
+
+    useEffect(() => {
         {
             data ? setDisabled(true) : setDisabled(false);
         }
-    }, [data, form]);
+    }, [data]);
 
     return (
         <Container>
@@ -214,7 +252,7 @@ const Product: React.FC = () => {
                     <Form.Item label={<ValueText>Состав</ValueText>} name="structure" style={{ margin: "5px 0" }}>
                         <Input disabled={disabled} style={{ width: "760px" }} />
                     </Form.Item>
-                    <Form.Item label={<ValueText>Вариации</ValueText>} name="variations" style={{ margin: "5px 0" }}>
+                    <Form.Item label={<ValueText>Вариации</ValueText>} name="productSize" style={{ margin: "5px 0" }}>
                         <div
                             style={{
                                 width: "760px",
@@ -226,9 +264,14 @@ const Product: React.FC = () => {
                                 padding: "8px",
                             }}
                         >
-                            <VariationsBlock onVariationsChange={setVariations} disabled={disabled} />
+                            <VariationsBlock
+                                value={variations}
+                                onVariationsChange={(newVariations) => setVariations(newVariations)}
+                                disabled={disabled}
+                            />
                         </div>
                     </Form.Item>
+
                     <Form.Item label={<ValueText>Категории</ValueText>} name="categories" style={{ margin: "10px 0" }}>
                         <div
                             style={{
@@ -246,6 +289,9 @@ const Product: React.FC = () => {
                                 value={selectedCategories}
                                 onChange={handleCategoryChange}
                                 disabled={disabled}
+                                name="Добавить категорию"
+                                showAddButton={true}
+                                data={categories}
                             />
                         </div>
                     </Form.Item>
@@ -261,7 +307,7 @@ const Product: React.FC = () => {
                                 padding: "2.5px",
                             }}
                         >
-                            <FilterDropdown onChange={handleFilterChange} disabled={disabled} />
+                            <FilterDropdown data={filtersData} onChange={handleFilterChange} disabled={disabled} />
                         </div>
                     </Form.Item>
 
@@ -269,7 +315,10 @@ const Product: React.FC = () => {
                         {data ? (
                             <>
                                 {disabled ? (
-                                    <Button onClick={handleEdit}>Редактировать</Button>
+                                    <Button onClick={() => {
+                                        handleEdit();
+                                        console.log({ selectedCategories, filters })
+                                    }}>Редактировать</Button>
                                 ) : (
                                     <Button type="primary" htmlType="submit">
                                         Сохранить изменения
@@ -280,7 +329,9 @@ const Product: React.FC = () => {
                                 </Button>
                             </>
                         ) : (
-                            <Button type="primary" htmlType="submit">
+                            <Button onClick={() => {
+                                console.log(productSizes)
+                            }} type="primary" htmlType="submit">
                                 Сохранить изменения
                             </Button>
                         )}

@@ -1,19 +1,28 @@
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Variation from "./Variation";
 
 interface Props {
     onVariationsChange: (variations: any[]) => void,
     disabled?: boolean
+    value?: any[];
 }
 
-const VariationsBlock: React.FC<Props> = ({ onVariationsChange, disabled }) => {
+const VariationsBlock: React.FC<Props> = ({ onVariationsChange, disabled, value = [] }) => {
 
     const [variations, setVariations] = useState<any[]>([]);
 
+    useEffect(() => {
+        setVariations(value);
+    }, [value])
+
+    // useEffect(() => {
+    //     onVariationsChange(variations);
+    // }, [variations]);
+
     const handleAddVariation = () => {
-        const newVariation = { size: '', price: '', detail: '' };
+        const newVariation = {};
         const updatedVariations = [...variations, newVariation];
         setVariations(updatedVariations);
         onVariationsChange(updatedVariations);
@@ -39,6 +48,7 @@ const VariationsBlock: React.FC<Props> = ({ onVariationsChange, disabled }) => {
                 {variations.map((variation, index) => (
                     <Variation
                         key={index}
+                        disabled={disabled}
                         variation={variation}
                         onChange={(updatedVariation) => handleChangeVariation(index, updatedVariation)}
                         onRemove={() => handleRemoveVariation(index)}

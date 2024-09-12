@@ -95,7 +95,11 @@ const Order: React.FC = () => {
                 </Text>
               </div>
             </div>
-            <div>
+            <div style={{
+              maxHeight: "250px",
+              overflowY: "auto",
+              overflowX: "hidden",
+            }}>
               {
                 data?.itemsOrder.map((item, index) => {
                   return <CardOrderProduct key={`card-order-product-${index}`} orderItem={item} />

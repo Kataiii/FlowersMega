@@ -1,43 +1,58 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { PlusOutlined, CloseOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Input, Modal, Upload } from "antd";
-
-const categories = ["Съедобные букеты", "Орхидеи", "Розы", "Тюльпаны", "Гладиолусы"];
+import { ItemFilter } from "../../../store/product";
 
 interface CategoryDropdownProps {
-  value?: { name: string; photo: string }[];
+  value?: { id?: number; name: string; photo: string }[];
   disabled?: boolean;
-  onChange?: (value: { name: string; photo: string }[]) => void;
+  onChange?: (value: { id?: number; name: string; photo: string }[]) => void;
   style?: React.CSSProperties;
+  name?: string;
+  data?: (Category | ItemFilter)[];
+  showAddButton?: boolean;
 }
 
-const CategoryDropdown: React.FC<CategoryDropdownProps> = ({ disabled, value = [], onChange, style }) => {
-  const [searchValue, setSearchValue] = useState<string>("");
-  const [items, setItems] = useState<string[]>(categories);
-  const [selectedCategories, setSelectedCategories] = useState<{ name: string; photo: string }[]>(value);
-  const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
-  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+export type Category = {
+  id?: number;
+  name: string;
+  url?: string;
+};
 
+const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
+  showAddButton = false,
+  data = [],
+  name,
+  disabled,
+  value = [],
+  onChange,
+  style,
+}) => {
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [items, setItems] = useState<{ id?: number; name: string }[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<{ id?: number; name: string; photo: string }[]>(value);
+  const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
+  const [hoveredItem, setHoveredItem] = useState<number | null>(null);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [newCategoryName, setNewCategoryName] = useState<string>("");
   const [fileList, setFileList] = useState<any[]>([]);
+
+  const formattedItems = data.map((item) => ({
+    id: item.id,
+    name: item.name,
+  }));
+
+  useEffect(() => {
+    setItems(formattedItems);
+  }, [data]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
   };
 
-  // const handleAddCategory = () => {
-  //   if (newCategoryName && !items.includes(newCategoryName)) {
-  //     setItems([...items, newCategoryName]);
-  //     setNewCategoryName("");
-  //     setFileList([]);
-  //     setIsModalVisible(false);
-  //   }
-  // };
   const handleAddCategory = () => {
-    if (newCategoryName && !items.includes(newCategoryName) && fileList.length > 0) {
+    if (newCategoryName && !items.some(item => item.name === newCategoryName) && fileList.length > 0) {
       const newCategory = { name: newCategoryName, photo: URL.createObjectURL(fileList[0].originFileObj) };
-      setItems([...items, newCategoryName]);
       const newSelectedCategories = [...selectedCategories, newCategory];
       setSelectedCategories(newSelectedCategories);
       if (onChange) {
@@ -49,57 +64,36 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({ disabled, value = [
     }
   };
 
-  const handleRemoveItem = (categoryToRemove: string) => {
-    setItems([...items.filter((item) => item !== categoryToRemove)]);
+  const handleRemoveItem = (categoryId: number) => {
+    setItems(items.filter((item) => item.id !== categoryId));
   };
 
-  // const handleRemoveCategory = (categoryToRemove: string) => {
-  //   setSelectedCategories(selectedCategories.filter((item) => item !== categoryToRemove));
-  // };
-  const handleRemoveCategory = (categoryToRemove: string) => {
-    const newSelectedCategories = selectedCategories.filter((item) => item.name !== categoryToRemove);
+  const handleRemoveCategory = (categoryId: number) => {
+    const newSelectedCategories = selectedCategories.filter((item) => item.id !== categoryId);
     setSelectedCategories(newSelectedCategories);
     if (onChange) {
       onChange(newSelectedCategories);
     }
   };
 
-  // const handleSelectCategory = (value: string) => {
-  //   if (!selectedCategories.includes(value)) {
-  //     const newSelectedCategories = [...selectedCategories, value];
-  //     setSelectedCategories(newSelectedCategories);
-  //     if (onChange) {
-  //       onChange(newSelectedCategories);
-  //     }
-  //   } else {
-  //     const newSelectedCategories = selectedCategories.filter((item) => item !== value);
-  //     setSelectedCategories(newSelectedCategories);
-  //     if (onChange) {
-  //       onChange(newSelectedCategories);
-  //     }
-  //   }
-  // };
-
-
-  const handleSelectCategory = (value: string) => {
-    const existingCategory = selectedCategories.find((item) => item.name === value);
+  const handleSelectCategory = (category: Category) => {
+    const existingCategory = selectedCategories.find((item) => item.id === category.id);
     if (!existingCategory) {
-      const newCategory = { name: value, photo: "" };
+      const newCategory = { id: category.id, name: category.name, photo: category.url || "" };
       const newSelectedCategories = [...selectedCategories, newCategory];
       setSelectedCategories(newSelectedCategories);
       if (onChange) {
         onChange(newSelectedCategories);
       }
     } else {
-      handleRemoveCategory(value);
+      handleRemoveCategory(category.id!);
     }
   };
 
+  const filteredItems = items.filter((item) => item.name.toLowerCase().includes(searchValue.toLowerCase()));
 
-  const filteredItems = items.filter((item) => item.toLowerCase().includes(searchValue.toLowerCase()));
   const handleUploadChange = (info: any) => {
     setFileList(info.fileList);
-    if (onChange) onChange(fileList);
   };
 
   return (
@@ -130,17 +124,20 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({ disabled, value = [
               style={{ marginBottom: "8px", width: "234px" }}
               onClick={(e) => e.stopPropagation()}
             />
-            <Button
-              type="link"
-              icon={<PlusOutlined />}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsModalVisible(true);
-              }}
-              style={{ marginBottom: "8px", color: "var(--primary-bg-color)" }}
-            >
-              Создать категорию
-            </Button>
+            {showAddButton && (
+              <Button
+                type="link"
+                icon={<PlusOutlined />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsModalVisible(true);
+                  setDropdownVisible(false);
+                }}
+                style={{ marginBottom: "8px", color: "var(--primary-bg-color)" }}
+              >
+                Создать категорию
+              </Button>
+            )}
             <div
               style={{
                 width: "234px",
@@ -155,7 +152,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({ disabled, value = [
             >
               {filteredItems.map((item) => (
                 <div
-                  key={item}
+                  key={item.id}
                   style={{
                     display: "flex",
                     padding: "1px",
@@ -165,24 +162,24 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({ disabled, value = [
                 >
                   <div
                     onClick={() => handleSelectCategory(item)}
-                    onMouseEnter={() => setHoveredItem(item)}
+                    onMouseEnter={() => setHoveredItem(item.id!)}
                     onMouseLeave={() => setHoveredItem(null)}
                     style={{
                       padding: "8px",
                       cursor: "pointer",
                       display: "flex",
                       width: "100%",
-                      backgroundColor: selectedCategories.find((cat) => cat.name === item)
+                      backgroundColor: selectedCategories.find((cat) => cat.id === item.id)
                         ? "var(--primary-bg-color)"
-                        : item === hoveredItem
+                        : item.id === hoveredItem
                           ? "var(--primary-bg-color-hover)"
                           : "transparent",
                       borderRight: "1px solid #f0f0f0",
                     }}
                   >
-                    {item}
+                    {item.name}
                   </div>
-                  <CloseOutlined style={{ paddingLeft: "3px" }} onClick={() => handleRemoveItem(item)} />
+                  <CloseOutlined style={{ paddingLeft: "3px" }} onClick={() => handleRemoveItem(item.id!)} />
                 </div>
               ))}
             </div>
@@ -190,7 +187,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({ disabled, value = [
         }
       >
         <Button type="primary">
-          Добавить категорию {dropdownVisible ? <CloseOutlined /> : <PlusOutlined />}
+          {name} {dropdownVisible ? <CloseOutlined /> : <PlusOutlined />}
         </Button>
       </Dropdown>
 
@@ -211,7 +208,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({ disabled, value = [
       >
         {selectedCategories.map((category) => (
           <div
-            key={category.name}
+            key={category.id}
             style={{
               display: "flex",
               alignItems: "center",
@@ -225,7 +222,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({ disabled, value = [
           >
             {category.name}
             <CloseOutlined
-              onClick={() => handleRemoveCategory(category.name)}
+              onClick={() => handleRemoveCategory(category.id!)}
               style={{ marginLeft: "8px", cursor: "pointer" }}
             />
           </div>

@@ -1,49 +1,52 @@
-import { Form, Input, Select } from "antd"
-import { StyledForm, ValueText } from "../../../pages/admin/ui/products/Product"
-import TypeDropdown from "../dropdown/TypeDropdown"
-import { CloseOutlined } from "@ant-design/icons"
+import { Button, Form, Input, Select } from "antd";
+import { StyledForm, ValueText } from "../../../pages/admin/ui/products/Product";
+import TypeDropdown from "../dropdown/TypeDropdown";
+import { CloseOutlined } from "@ant-design/icons";
+import { ProductSize, Size } from "../../../store/product";
 
 const { Option } = Select;
 
 interface VariationProps {
-    variation: any;
+    variation: ProductSize;
+    data?: Size[];
     onRemove: () => void;
-    onChange: (updatedVariation: any) => void;
+    onChange: (updatedVariation: ProductSize) => void;
+    disabled?: boolean;
 }
 
-const Variation: React.FC<VariationProps> = ({ variation, onRemove, onChange }) => {
+
+const Variation: React.FC<VariationProps> = ({ variation, onRemove, onChange, disabled }) => {
 
     const handleSizeChange = (value: string) => {
-        onChange({ ...variation, size: value });
+        onChange({ ...variation, idSize: Number(value) });
     };
 
     const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onChange({ ...variation, price: e.target.value });
+        onChange({ ...variation, prise: Number(e.target.value) });
     };
 
     const handleDetailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onChange({ ...variation, detail: e.target.value });
+        onChange({ ...variation, paramsSize: e.target.value });
     };
 
+
+
     return (
-        <div style={
-            {
-                width: "730px",
-                height: "140px",
-                display: "flex",
-                flexDirection: "column",
-                border: "1px solid var(--main-bg-color)",
-                borderRadius: "4px",
-                marginBottom: "8px"
-            }
-        }>
+        <div style={{
+            width: "730px",
+            height: "140px",
+            display: "flex",
+            flexDirection: "column",
+            border: "1px solid var(--main-bg-color)",
+            borderRadius: "4px",
+            marginBottom: "8px"
+        }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <StyledForm.Item
                     label={
                         <ValueText>
                             Размер
                         </ValueText>
-
                     }
                     style={{
                         margin: "0 0 5px 8px",
@@ -51,49 +54,61 @@ const Variation: React.FC<VariationProps> = ({ variation, onRemove, onChange }) 
                     }}
                 >
                     <TypeDropdown
-                        value={variation.size}
+                        value={variation.idSize?.toString()}
                         onChange={handleSizeChange}
-                        style={{ width: 150 }}
-                    />
+                        disabled={disabled}
+                        style={{ width: 150 }} />
                 </StyledForm.Item>
                 <Form.Item
                     label={
                         <ValueText>
                             Цена
                         </ValueText>
-
                     }
                     style={{
                         margin: "0 0 5px 8px",
-
                     }}
                 >
-                    <Input onKeyPress={(event) => {
-                        if (!/[0-9]/.test(event.key)) {
-                            event.preventDefault();
-                        }
-                    }} value={variation.price}
+                    <Input
+                        type="number"
+                        disabled={disabled}
+                        value={variation.prise}
                         placeholder="Введите стоимость товара в рублях..."
-                        style={{ width: "490px" }} onChange={handlePriceChange}></Input>
+                        style={{ width: "480px" }}
+                        onChange={handlePriceChange}
+                        onKeyPress={(event) => {
+                            if (!/[0-9]/.test(event.key)) {
+                                event.preventDefault();
+                            }
+                        }}
+                    />
                 </Form.Item>
-                <CloseOutlined onClick={() => onRemove()} style={{ margin: "5px 5px", backgroundColor: "var(--primary-bg-color)", borderRadius: "5px", padding: "2px", height: "15px", width: "15px" }} />
+                <Button icon={<CloseOutlined />} iconPosition="end" onClick={onRemove} disabled={disabled} style={{ marginTop: "5px", marginRight: "5px", backgroundColor: "var(--primary-bg-color)", borderRadius: "5px", padding: "10px", height: "15px", width: "15px" }}>
+                    {/* <CloseOutlined style={{ padding: "0", marginRight: "10" }} onClick={onRemove} /> */}
+
+                </Button>
+
             </div>
             <Form.Item
                 label={
                     <ValueText>
                         Уточнение для размера
                     </ValueText>
-
                 }
                 style={{
                     margin: "0 0 5px 8px",
                 }}
             >
-                <Input value={variation.detail} placeholder="Введите уточняющее описание размера..." style={{ width: "700px" }} onChange={handleDetailChange}  ></Input>
+                <Input
+                    value={variation.paramsSize}
+                    disabled={disabled}
+                    placeholder="Введите уточняющее описание размера..."
+                    style={{ width: "700px" }}
+                    onChange={handleDetailChange}
+                />
             </Form.Item>
-
         </div>
-    )
-}
+    );
+};
 
 export default Variation;

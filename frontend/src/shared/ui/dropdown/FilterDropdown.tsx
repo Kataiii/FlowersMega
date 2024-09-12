@@ -1,67 +1,67 @@
 import React, { useState } from 'react';
 import { Dropdown, Button, Input, Menu, Checkbox } from 'antd';
 import { PlusOutlined, EditOutlined, CloseOutlined } from '@ant-design/icons';
+import { FilterWithItems } from '../../../store/filter';
+import { ItemFilter } from '../../../store/product';
 
 interface FilterTag {
-    filter: string;
-    tags: string[];
+    filter: FilterWithItems;
+    tags: ItemFilter[];
 }
 
 interface FilterDropdownProps {
     disabled?: boolean;
     onChange?: (filters: FilterTag[]) => void;
+    data?: FilterWithItems[];
 }
 
-const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange }) => {
+const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, data }) => {
     const [filters, setFilters] = useState<FilterTag[]>([]);
-    const [activeFilter, setActiveFilter] = useState<string | null>(null);
+    const [activeFilter, setActiveFilter] = useState<FilterWithItems | null>(null);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [searchValue, setSearchValue] = useState('');
-    const [availableFilters, setAvailableFilters] = useState<string[]>(['Цветы', 'Стиль', 'Кому', 'Повод']);
-    const [tagOptions, setTagOptions] = useState<{ [key: string]: string[] }>({
-        'Кому': ['Маме', 'Девушке', 'Сестре', 'Подруге', 'Учительнице']
-    });
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(e.target.value);
     };
 
     const handleAddFilter = () => {
-        if (searchValue && !availableFilters.includes(searchValue)) {
-            setAvailableFilters([...availableFilters, searchValue]);
+        if (searchValue && data && !data.some(f => f.name === searchValue)) {
+            const newFilter: FilterWithItems = { name: searchValue, items: [] };
+            setFilters([...filters, { filter: newFilter, tags: [] }]);
             setSearchValue('');
         }
     };
 
-    const handleSelectFilter = (filter: string) => {
+    const handleSelectFilter = (filter: FilterWithItems) => {
         setActiveFilter(filter);
         setSearchValue('');
     };
 
-    const handleTagChange = (checked: boolean, tag: string) => {
+    const handleTagChange = (checked: boolean, tag: ItemFilter) => {
         if (activeFilter) {
-            const filterIndex = filters.findIndex(f => f.filter === activeFilter);
+            const filterIndex = filters.findIndex(f => f.filter.name === activeFilter.name);
 
             if (filterIndex !== -1) {
                 const updatedFilters = [...filters];
                 if (checked) {
                     updatedFilters[filterIndex].tags.push(tag);
                 } else {
-                    updatedFilters[filterIndex].tags = updatedFilters[filterIndex].tags.filter(t => t !== tag);
+                    updatedFilters[filterIndex].tags = updatedFilters[filterIndex].tags.filter(t => t.id !== tag.id);
                 }
                 setFilters(updatedFilters);
-                if (onChange) onChange(updatedFilters)
+                if (onChange) onChange(updatedFilters);
 
             } else if (checked) {
                 setFilters([...filters, { filter: activeFilter, tags: [tag] }]);
-                if (onChange) onChange([...filters, { filter: activeFilter, tags: [tag] }])
+                if (onChange) onChange([...filters, { filter: activeFilter, tags: [tag] }]);
             }
 
         }
     };
 
-    const handleRemoveFilter = (filter: string) => {
-        setFilters(filters.filter(f => f.filter !== filter));
+    const handleRemoveFilter = (filter: FilterWithItems) => {
+        setFilters(filters.filter(f => f.filter.name !== filter.name));
         if (filter === activeFilter) {
             setActiveFilter(null);
         }
@@ -76,22 +76,21 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange }) 
     };
 
     const handleAddTag = () => {
-        if (activeFilter && searchValue && !tagOptions[activeFilter]?.includes(searchValue)) {
-            setTagOptions({
-                ...tagOptions,
-                [activeFilter]: [...(tagOptions[activeFilter] || []), searchValue]
-            });
+        if (activeFilter && searchValue && !activeFilter.items.some(item => item.name === searchValue)) {
+            const newTag: ItemFilter = { id: parseInt(`${activeFilter.name}-${searchValue}`, 10), name: searchValue };
+            const updatedFilter = { ...activeFilter, items: [...activeFilter.items, newTag] };
+            setFilters([...filters, { filter: updatedFilter, tags: [newTag] }]);
             setSearchValue('');
         }
     };
 
-    const filteredAvailableFilters = availableFilters.filter((filter) =>
-        filter.toLowerCase().includes(searchValue.toLowerCase())
-    );
+    const filteredAvailableFilters = data ? data.filter((filter) =>
+        filter.name.toLowerCase().includes(searchValue.toLowerCase())
+    ) : [];
 
-    const filteredTags = activeFilter && tagOptions[activeFilter]
-        ? tagOptions[activeFilter].filter((tag) => tag.toLowerCase().includes(searchValue.toLowerCase()))
-        : [];
+    const filteredTags = activeFilter?.items.filter((tag) =>
+        tag.name.toLowerCase().includes(searchValue.toLowerCase())
+    ) || [];
 
     const mainMenu = (
         <div style={{ padding: "8px", backgroundColor: "#fff", border: "1px solid var(--primary-bg-color)", borderRadius: "8px" }}>
@@ -103,12 +102,6 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange }) 
                     style={{ width: "155px" }}
                     onClick={(e) => e.stopPropagation()}
                 />
-                {/* <Button
-                    type="link"
-                    icon={<CloseOutlined />}
-                    onClick={handleCloseMenu}
-                    style={{ color: "#ff4d4f" }}
-                /> */}
             </div>
             <Button
                 type="link"
@@ -123,8 +116,8 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange }) 
             </Button>
             <Menu
                 items={filteredAvailableFilters.map(filter => ({
-                    key: filter,
-                    label: filter,
+                    key: filter.name,
+                    label: filter.name,
                     onClick: () => handleSelectFilter(filter)
                 }))}
             />
@@ -163,19 +156,18 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange }) 
                 </Button>
 
             </div>
-            <Menu
-                items={filteredTags.map(tag => ({
-                    key: tag,
-                    label: (
+            <Menu>
+                {filteredTags.map(tag => (
+                    <Menu.Item key={tag.id}>
                         <Checkbox
-                            checked={filters.find(f => f.filter === activeFilter)?.tags.includes(tag) || false}
+                            checked={filters.find(f => f.filter.name === activeFilter.name)?.tags.some(t => t.id === tag.id) || false}
                             onChange={(e) => handleTagChange(e.target.checked, tag)}
                         >
-                            {tag}
+                            {tag.name}
                         </Checkbox>
-                    )
-                }))}
-            />
+                    </Menu.Item>
+                ))}
+            </Menu>
         </div>
     );
 
@@ -183,21 +175,24 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange }) 
         <div style={{ display: "flex", alignItems: "start" }}>
             <Dropdown
                 menu={{
-                    items: activeFilter ? filteredTags.map(tag => ({
-                        key: tag,
-                        label: (
-                            <Checkbox
-                                checked={filters.find(f => f.filter === activeFilter)?.tags.includes(tag) || false}
-                                onChange={(e) => handleTagChange(e.target.checked, tag)}
-                            >
-                                {tag}
-                            </Checkbox>
-                        )
-                    })) : filteredAvailableFilters.map(filter => ({
-                        key: filter,
-                        label: filter,
-                        onClick: () => handleSelectFilter(filter)
-                    }))
+                    items: activeFilter
+                        ? filteredTags.map(tag => ({
+                            key: tag.id?.toString(),
+                            label: (
+                                <Checkbox
+                                    checked={filters.find(f => f.filter.name === activeFilter.name)?.tags.some(t => t.id === tag.id) || false}
+                                    onChange={(e) => handleTagChange(e.target.checked, tag)}
+                                >
+                                    {tag.name}
+                                </Checkbox>
+                            ),
+                            type: 'group',
+                        }))
+                        : filteredAvailableFilters.map(filter => ({
+                            key: filter.name,
+                            label: filter.name,
+                            onClick: () => handleSelectFilter(filter),
+                        })),
                 }}
                 trigger={['click']}
                 open={dropdownOpen || !!activeFilter}
@@ -210,10 +205,11 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange }) 
                 </Button>
             </Dropdown>
 
+
             <div style={{ marginLeft: '10px', display: "flex", flexDirection: "row", gap: "8px", overflowX: "auto", overflowY: "hidden", scrollbarWidth: "thin", scrollbarColor: "pink" }}>
                 {filters.map((filterObj) => (
                     <div
-                        key={filterObj.filter}
+                        key={filterObj.filter.name}
                         style={{
                             display: 'flex',
                             alignItems: 'center',
@@ -227,9 +223,9 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange }) 
                             margin: '2px 0',
                         }}
                     >
-                        <span>{filterObj.filter}:</span>
+                        <span>{filterObj.filter.name}:</span>
                         <span style={{ marginLeft: '8px', border: "1px solid #1890ff", borderRadius: '4px', padding: '2px 4px', backgroundColor: '#fff', color: '#1890ff' }}>
-                            {filterObj.tags.join(', ')}
+                            {filterObj.tags.map(tag => tag.name).join(', ')}
                         </span>
                         <EditOutlined
                             style={{ marginLeft: '8px', cursor: 'pointer' }}

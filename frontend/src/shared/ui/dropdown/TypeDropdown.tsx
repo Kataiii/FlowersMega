@@ -1,49 +1,53 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Select, Input, Button } from "antd";
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
-import { useProductsSizesControllerGetAllQuery } from "../../../store/product";
+import { Size, useSizesControllerGetAllQuery } from "../../../store/size";
 
 const { Option } = Select;
-
-const sizes = ["Малый", "Средний", "Большой", "Огромный", "Эксклюзивный"];
 
 interface TypeDropdownProps {
     onChange?: (value: string) => void;
     value?: string;
     style?: React.CSSProperties;
+    disabled?: boolean;
 }
 
-const TypeDropdown: React.FC<TypeDropdownProps> = ({ onChange, value }) => {
-    const { isLoading, data } = useProductsSizesControllerGetAllQuery();
+const TypeDropdown: React.FC<TypeDropdownProps> = ({ onChange, value, disabled }) => {
+    const { data: sizeData } = useSizesControllerGetAllQuery();
     const [searchValue, setSearchValue] = useState<string>("");
-    const [items, setItems] = useState<string[]>(sizes);
+    const [items, setItems] = useState<Size[]>([]);
+
+    useEffect(() => {
+        if (sizeData) {
+            setItems(sizeData);
+        }
+    }, [sizeData]);
 
     const handleSearch = (value: string) => {
         setSearchValue(value);
     };
 
     const handleAddSize = () => {
-        if (searchValue && !items.includes(searchValue)) {
-            setItems([...items, searchValue]);
+        if (searchValue && !items.some(size => size.name === searchValue)) {
+            setItems([...items, { name: searchValue }]);
             setSearchValue("");
         }
     };
 
-    const handleRemoveSize = (sizeToRemove: string) => {
-        setItems(items.filter((item) => item !== sizeToRemove));
+    const handleRemoveSize = (sizeToRemove: Size) => {
+        setItems(items.filter((item) => item.name !== sizeToRemove.name));
     };
 
     const filteredItems = items.filter((size) =>
-        size.toLowerCase().includes(searchValue.toLowerCase())
+        size.name.toLowerCase().includes(searchValue.toLowerCase())
     );
-
 
     return (
         <Select
             showSearch
-            allowClear
             placeholder="Выберите размер"
             value={value}
+            disabled={disabled}
             style={{ width: 200 }}
             onSearch={handleSearch}
             onChange={onChange}
@@ -58,12 +62,10 @@ const TypeDropdown: React.FC<TypeDropdownProps> = ({ onChange, value }) => {
                         <Button
                             type="text"
                             onClick={handleAddSize}
-                            style={
-                                {
-                                    margin: "5px 0",
-                                    color: "var(--primary-bg-color)"
-                                }
-                            }
+                            style={{
+                                margin: "5px 0",
+                                color: "var(--primary-bg-color)"
+                            }}
                         >
                             Добавить <PlusOutlined />
                         </Button>
@@ -73,19 +75,21 @@ const TypeDropdown: React.FC<TypeDropdownProps> = ({ onChange, value }) => {
             )}
         >
             {filteredItems.map((size) => (
-                <Option key={size} value={size}>
+                <Option key={size.id} value={size.id?.toString()}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        {size}
-                        <Button
-                            type="link"
-                            danger
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleRemoveSize(size);
-                            }}
-                        >
-                            <CloseOutlined />
-                        </Button>
+                        {size.name}
+                        {value !== size.id?.toString() && (
+                            <Button
+                                type="link"
+                                danger
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleRemoveSize(size);
+                                }}
+                            >
+                                <CloseOutlined />
+                            </Button>
+                        )}
                     </div>
                 </Option>
             ))}
