@@ -1,11 +1,13 @@
-import { Body, Controller, Get, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetPaginationFullReviewDto } from './dto/createPagination.dto';
 import { CreateReviewDto } from './dto/createReviews.dto';
+import { DeleteReviewDto } from './dto/deleteReview.dto';
 import { FullReviewDto } from './dto/fullReview.dto';
 import { ReviewsProductSizeDto } from './dto/reviewsProductsSize.dto';
 import { StaticticReviews } from './dto/statisticByProductSizeId.dto';
+import { UpdateReviewDto } from './dto/updateReview.dto';
 import { Review } from './reviews.model';
 import { ReviewsService } from './reviews.service';
 
@@ -92,5 +94,19 @@ export class ReviewsController {
     @Get("/statistic/:id")
     async getStaticticByProductSizeId(@Param("id") id: number){
       return await this.reviewsService.getStaticticByProductSizeId(id);
+    }
+
+    @ApiOperation({summary: "Update status item"})
+    @ApiResponse({status: 200, type: Review})
+    @Patch()
+    async update(@Body() dto: UpdateReviewDto){
+        return await this.reviewsService.update(dto);
+    }
+
+    @ApiOperation({summary: 'Delete review by id'})
+    @ApiResponse({status: 200})
+    @Delete()
+    async delete(@Body() dto: DeleteReviewDto){
+        return await this.reviewsService.delete(dto.id);
     }
 }

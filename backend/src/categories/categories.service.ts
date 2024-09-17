@@ -12,7 +12,7 @@ export class CategoriesService {
 
     async create(dto: CreateCategoryDto, preview: File){
         const categoty = await this.categoryRepository.create(dto);
-        const fileName = await this.filesService.createImageCategory(preview, categoty.id);
+        const fileName = await this.filesService.createImageCategory(preview);
         await this.categoryRepository.update({
             url: fileName
         }, {where: {id: categoty.id}});

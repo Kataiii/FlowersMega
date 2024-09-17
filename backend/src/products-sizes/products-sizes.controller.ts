@@ -82,4 +82,12 @@ export class ProductsSizesController {
     async getByCategotyIdWithPagination(@Param("page") page: number, @Param("limit") limit: number){
         return await this.productsSizesFullService.getProductsSizesForCardPagination(page, limit);
     }
+
+    @ApiOperation({summary: 'Get product with products size with pagination'})
+    @ApiResponse({status: 200, type: [FullProductSizeDto]})
+    @ApiResponse({status: 404, description: "Products sizes not fount"})
+    @Get("/products-with-pagination/:page/:limit")
+    async getProductWithProductSizeWithPagination(@Param("page") page: number, @Param("limit") limit: number){
+        return await this.productsSizesFullService.getProductsWithPagination(page, limit);
+    }
 }

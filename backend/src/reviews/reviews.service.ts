@@ -6,6 +6,7 @@ import { ProductsSizesService } from 'src/products-sizes/products-sizes.service'
 import { ProductsService } from 'src/products/products.service';
 import { CreateReviewDto } from './dto/createReviews.dto';
 import { FullReviewDto } from './dto/fullReview.dto';
+import { UpdateReviewDto } from './dto/updateReview.dto';
 import { Review } from './reviews.model';
 
 @Injectable()
@@ -133,5 +134,16 @@ export class ReviewsService {
             averageRating: averageRating,
             reviews: reviews
         }
+    }
+
+    async update(dto: UpdateReviewDto){
+        const response = await this.reviewsRepository.update(dto, {where: {id: dto.id}});
+        return await this.reviewsRepository.findOne({where: {id: dto.id}}); 
+    }
+
+    async delete(id: number){
+        const review = await this.reviewsRepository.findOne({where: {id: id}});
+        const idReview = await this.reviewsRepository.destroy({where: {id: id}});
+        return review;
     }
 }

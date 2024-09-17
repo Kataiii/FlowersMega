@@ -9,6 +9,9 @@ import { ItemsFilterService } from './items-filter.service';
   providers: [ItemsFilterService],
   imports: [
     SequelizeModule.forFeature([ItemFilter])
+  ],
+  exports: [
+    ItemsFilterService
   ]
 })
 export class ItemsFilterModule {}

@@ -50,4 +50,13 @@ export class ProductsService {
         if(product === null) throw new HttpException("Product not found", HttpStatus.NOT_FOUND);
         return product;
     }
+
+    async getCountAndPagination(page: number, limit: number){
+        const count = (await this.productsRepository.findAndCountAll()).count;
+        const products = await this.productsRepository.findAll({
+            limit: limit,
+            offset: (page - 1) * limit
+        });
+        return {count: count, products: products};
+    }
 }

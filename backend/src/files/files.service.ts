@@ -50,12 +50,12 @@ export class FilesService {
         );
     }
 
-    async createImageCategory(file, idCategoty){
+    async createImageCategory(file){
         return await this.createFile(
             file,
             file.originalname.slice(file.originalname.lastIndexOf('.'), file.originalname.length),
-            idCategoty.toString(),
-            ["categories"]
+            "categories",
+            []
         );
     }
 
