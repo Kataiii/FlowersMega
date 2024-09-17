@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useCallback } from "react";
-import { Button, Input, Select, Space } from "antd";
+import { Button, Input, Pagination, Select, Space } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useProductsControllerGetAllQuery } from "../../../../store/product";
+import { useProductsControllerGetAllQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery } from "../../../../store/product";
 import Container from "../../../../shared/ui/containerMain/ContainerMain";
 import { PlusCircleOutlined, SearchOutlined } from "@ant-design/icons";
 import OrderContainer from "../../../../shared/ui/orderContainer/OrderContainer";
@@ -9,17 +9,44 @@ import CategoryDropdown from "../../../../shared/ui/dropdown/CategoryDropdown";
 import { useFiltersControllerGetAllQuery } from "../../../../store/filter";
 import { useCategoriesControllerGetAllQuery } from "../../../../store/category";
 import ProductAdminCard from "../../../../widgets/ProductAdminCard/ProductAdminCard";
+import { useTypesProductControllerGetAllQuery } from "../../../../store/typeProduct";
+import { styled } from "styled-components";
+import { SortText } from "../orders/Orders";
+
+export const NamePage = styled.p`
+    font-family: "Inter UI", sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+`
+
+export const NameContainer = styled.p`
+    font-family: "Inter UI", sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+`
+
+export const ButtonText = styled.p`
+    font-family: "Inter UI", sans-serif;
+    font-weight: 700;
+    font-size: 14;
+    
+`
+
 
 const Products: React.FC = () => {
     const navigate = useNavigate();
     const locate = useLocation();
-    const { isLoading, data: products } = useProductsControllerGetAllQuery();
+    // const { isLoading, data: products } = useProductsControllerGetAllQuery();
     const [sortOrder, setSortOrder] = useState<string>("");
     const [searchId, setSearchId] = useState<string>("");
     const [categories, setCategories] = useState<string[]>([]);
     const [filters, setFilters] = useState<string[]>([]);
+    const [page, setPage] = useState<number>(1);
+    const [pageSize, setPageSize] = useState<number>(2);
     const { data: filtersData } = useFiltersControllerGetAllQuery();
     const { data: categoriesData } = useCategoriesControllerGetAllQuery();
+    const { data: productType } = useTypesProductControllerGetAllQuery();
+    const { data: productSizedPag } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ page: page, limit: pageSize });
 
     const handleCategoriesAndFiltersChange = useCallback((categories: string[], filters: string[]) => {
         setCategories(categories);
@@ -27,15 +54,15 @@ const Products: React.FC = () => {
     }, []);
 
     const productData = useMemo(() => {
-        if (!products) return [];
-        return products.map((product) => ({
+        if (!productSizedPag) return [];
+        return productSizedPag.products.map((product) => ({
             ...product
         }));
-    }, [products]);
+    }, [productSizedPag]);
 
     const filteredData = useMemo(() => {
         if (!searchId) return productData;
-        return productData.filter(product => product.name.toString().includes(searchId));
+        return productData.filter(product => product.product.name.toString().includes(searchId));
     }, [searchId, productData]);
 
     const sortedData = useMemo(() => {
@@ -52,19 +79,37 @@ const Products: React.FC = () => {
         }
     }, [filteredData, sortOrder]);
 
-    if (isLoading) return <div>Loading...</div>;
+    const handlePageChange = (newPage: number, newPageSize?: number) => {
+        setPage(newPage);
+        if (newPageSize) {
+            setPageSize(newPageSize);
+        }
+    };
+
+    // if (isLoading) return <div>Loading...</div>;
 
     return (
         <Container style={{ backgroundColor: "var(--main-bg-color)" }}>
-            <h1 style={{ display: "flex", margin: "16px 0 0 16px" }}>Товары</h1>
+            <div style={{ display: "flex", margin: "16px 0 0 16px" }}>
+                <NamePage>
+                    Товары
+                </NamePage>
+            </div>
             <OrderContainer>
-                <h2 style={{ display: "flex", margin: "8px" }}>База заказов</h2>
+                <div style={{ display: "flex", margin: "8px" }}>
+                    <NameContainer>
+                        База товаров
+                    </NameContainer>
+                </div>
                 <Button
                     shape="round"
                     type="primary"
                     onClick={() => navigate(`/admin/product/${null}`, { state: { previousLocation: locate.pathname } })}
                 >
-                    Добавить товар <PlusCircleOutlined />
+                    <ButtonText>
+                        Добавить товар <PlusCircleOutlined />
+                    </ButtonText>
+
                 </Button>
                 <div style={{ border: "1px solid var(--primary-bg-color)", borderRadius: "10px", padding: "5px" }}>
                     <Space.Compact size="large" block>
@@ -73,7 +118,7 @@ const Products: React.FC = () => {
                             value={searchId}
                             onChange={(e) => setSearchId(e.target.value)}
                         />
-                        <Button type="primary" icon={<SearchOutlined />}>Найти</Button>
+                        <Button style={{ width: "150px" }} type="primary" > <ButtonText style={{ display: "inline" }}>Найти</ButtonText> <SearchOutlined /> </Button>
                     </Space.Compact>
                     <div style={{ display: "flex", flexDirection: "column", padding: "8px 8px 8px 0", gap: "8px" }}>
                         <CategoryDropdown name="Категории" data={categoriesData} showAddButton={true} />
@@ -81,7 +126,11 @@ const Products: React.FC = () => {
                     </div>
                 </div>
                 <div style={{ display: "flex" }}>
-                    <p style={{ color: "var(--secondary-bg-color)", marginRight: "10px" }}>Сортировать по</p>
+                    <div style={{ color: "var(--secondary-bg-color)", marginRight: "10px", paddingTop: "5px" }}>
+                        <SortText>
+                            Сортировать по
+                        </SortText>
+                    </div>
                     <Select
                         allowClear
                         style={{ width: 150, height: 25 }}
@@ -95,16 +144,21 @@ const Products: React.FC = () => {
                     />
                 </div>
                 <div style={{ display: "flex", flexDirection: "row", gap: "8px", flexWrap: "wrap" }}>
-                    {sortedData.map((product) => (
+                    {sortedData.map((product, index) => (
                         <ProductAdminCard
-                            key={product.id}
-                            id={product.id}
-                            name={product.name}
-                            type={product.idTypeProduct}
+                            key={product.productSize.id}
+                            id={product.productSize.idProduct}
+                            name={product.product.name}
+                            type={productType?.find((type) => product.product.idTypeProduct === type.id)?.name}
                             onCategoriesAndFiltersChange={handleCategoriesAndFiltersChange}
                         />
                     ))}
                 </div>
+                {/* @ts-ignore */}
+                <Pagination current={page} pageSize={pageSize} total={productSizedPag?.count.count || 0} onChange={handlePageChange} style={{ marginTop: "16px", textAlign: "center" }} />
+                <>
+                    {console.log('Total count:', productSizedPag)}
+                </>
             </OrderContainer>
         </Container>
     );

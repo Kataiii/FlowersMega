@@ -1,5 +1,5 @@
 import { PlusCircleOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Input, Rate, Select, Space, Image } from "antd";
+import { Button, Input, Rate, Select, Space, Image, Pagination } from "antd";
 import OrderContainer from "../../../../shared/ui/orderContainer/OrderContainer";
 import Container from "../../../../shared/ui/containerMain/ContainerMain";
 import { useEffect, useMemo, useState } from "react";
@@ -7,12 +7,16 @@ import { useReviewsControllerGetAllQuery, useReviewsControllerGetAllWithPaginati
 import { useLocation, useNavigate } from "react-router-dom";
 import { API_URL } from "../../../../shared/utils/constants"
 import ReviewAdminCard from "../../../../widgets/ReviewAdminCard/ReviewAdminCard";
+import { NameContainer, NamePage } from "../products/Products";
+import { SortText } from "../orders/Orders";
 
 
 const Reviews: React.FC = () => {
     const [searchId, setSearchId] = useState<string>("");
     const [sortOrder, setSortOrder] = useState<string>("");
-    const { data: reviews } = useReviewsControllerGetAllWithPaginationQuery({ page: 1, limit: 10 });
+    const [page, setPage] = useState<number>(1);
+    const [pageSize, setPageSize] = useState<number>(2);
+    const { data: reviews } = useReviewsControllerGetAllWithPaginationQuery({ page: page, limit: pageSize });
 
     const reviewData = useMemo(() => {
         if (!reviews) return [];
@@ -46,11 +50,26 @@ const Reviews: React.FC = () => {
         }
     }, [filteredData, sortOrder]);
 
+    const handlePageChange = (newPage: number, newPageSize?: number) => {
+        setPage(newPage);
+        if (newPageSize) {
+            setPageSize(newPageSize);
+        }
+    };
+
     return (
         <Container style={{ backgroundColor: "var(--main-bg-color)" }}>
-            <h1 style={{ display: "flex", margin: "16px 0 0 16px" }}>Отзывы</h1>
+            <h1 style={{ display: "flex", margin: "16px 0 0 16px" }}>
+                <NamePage>
+                    Отзывы
+                </NamePage>
+            </h1>
             <OrderContainer>
-                <h2 style={{ display: "flex", margin: "8px" }}>База заказов</h2>
+                <div style={{ display: "flex", margin: "8px" }}>
+                    <NameContainer>
+                        База отзывов
+                    </NameContainer>
+                </div>
 
                 <div style={{ border: "1px solid var(--primary-bg-color)", borderRadius: "10px", padding: "5px" }}>
                     <Space.Compact size="large" block>
@@ -64,7 +83,11 @@ const Reviews: React.FC = () => {
                 </div>
 
                 <div style={{ display: "flex" }}>
-                    <p style={{ color: "var(--secondary-bg-color)", marginRight: "10px" }}>Сортировать по</p>
+                    <div style={{ color: "var(--secondary-bg-color)", marginRight: "10px", paddingTop: "5px" }}>
+                        <SortText>
+                            Сортировать по
+                        </SortText>
+                    </div>
                     <Select
                         allowClear
                         style={{ width: 150, height: 25 }}
@@ -85,8 +108,9 @@ const Reviews: React.FC = () => {
                         <ReviewAdminCard key={review.id} review={review} />
                     ))}
                 </div>
-
+                <Pagination style={{ marginTop: "16px", textAlign: "center" }} current={page} total={reviews?.count || 0} pageSize={pageSize} onChange={handlePageChange} />
             </OrderContainer>
+            {/* <Pagination current={page} total={productSizedPag?.count || 0} pageSize={pageSize} onChange={handlePageChange} /> */}
         </Container>
     );
 };

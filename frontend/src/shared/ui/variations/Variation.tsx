@@ -1,8 +1,9 @@
 import { Button, Form, Input, Select } from "antd";
 import { StyledForm, ValueText } from "../../../pages/admin/ui/products/Product";
-import TypeDropdown from "../dropdown/TypeDropdown";
+import TypeDropdown from "../dropdown/SizeDropdown";
 import { CloseOutlined } from "@ant-design/icons";
 import { ProductSize, Size } from "../../../store/product";
+import SizeDropdown from "../dropdown/SizeDropdown";
 
 const { Option } = Select;
 
@@ -53,7 +54,7 @@ const Variation: React.FC<VariationProps> = ({ variation, onRemove, onChange, di
                         padding: "0"
                     }}
                 >
-                    <TypeDropdown
+                    <SizeDropdown
                         value={variation.idSize?.toString()}
                         onChange={handleSizeChange}
                         disabled={disabled}

@@ -31,13 +31,14 @@ export const ADMIN_PRODUCTS_PATH = "/admin/products";
 export const ADMIN_PRODUCT_PATH = "/admin/product/:id";
 export const ADMIN_REVIEWS_PATH = "/admin/reviews";
 export const ADMIN_REVIEW_PATH = "/admin/review/:id";
+export const ADMIN_LOGIN = "/admin/login";
 
 export const API_URL = "http://localhost:5000";
 
 export const PHONE = "8 800 000 00 00";
 export const EMAIL = "info@flowersmega.ru";
 
-export enum targetA{
+export enum targetA {
     _blank,
     _self
 }

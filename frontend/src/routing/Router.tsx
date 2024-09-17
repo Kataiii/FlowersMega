@@ -28,6 +28,7 @@ import ModalRoute from "../shared/ui/modalRoute/ModalRoute";
 import Portal from "../shared/ui/portal/Portal";
 import {
     ABOUT_PATH,
+    ADMIN_LOGIN,
     ADMIN_ORDER_PATH,
     ADMIN_PATH,
     ADMIN_PRODUCTS_PATH,
@@ -66,6 +67,7 @@ import Regist from "../widgets/regist/ui/Regist";
 import { AuthGuard } from "./guards/AuthGuard";
 import { RoleGuard } from "./guards/RoleGuard";
 import Review from "../pages/admin/ui/reviews/Review";
+import Login from "../pages/admin/ui/login/Login";
 
 const Router: React.FC = () => {
     const location = useLocation();
@@ -82,6 +84,7 @@ const Router: React.FC = () => {
                     <Route path={ADMIN_PRODUCTS_PATH} element={<AdminProducts />} />
                     <Route path={ADMIN_REVIEWS_PATH} element={<AdminReviews />} />
                 </Route>
+                <Route path={ADMIN_LOGIN} element={<Login />} />
                 <Route path={HOME_PATH} element={<App />}>
                     <Route path={HOME_PATH} element={<Main />} />
                     <Route path={CATALOG_PATH} element={<Catalog />}>

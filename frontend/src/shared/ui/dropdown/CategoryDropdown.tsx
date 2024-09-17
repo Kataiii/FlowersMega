@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { PlusOutlined, CloseOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Input, Modal, Upload } from "antd";
 import { ItemFilter } from "../../../store/product";
+import { ButtonText } from "../../../pages/admin/ui/products/Products";
 
 interface CategoryDropdownProps {
   value?: { id?: number; name: string; photo: string }[];
@@ -187,7 +188,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
         }
       >
         <Button type="primary">
-          {name} {dropdownVisible ? <CloseOutlined /> : <PlusOutlined />}
+          {<ButtonText style={{ display: "inline" }}>{name}</ButtonText>} {dropdownVisible ? <CloseOutlined /> : <PlusOutlined />}
         </Button>
       </Dropdown>
 

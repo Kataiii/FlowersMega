@@ -2,6 +2,7 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useState, useEffect } from "react";
 import Variation from "./Variation";
+import { ButtonText } from "../../../pages/admin/ui/products/Products";
 
 interface Props {
     onVariationsChange: (variations: any[]) => void,
@@ -56,7 +57,7 @@ const VariationsBlock: React.FC<Props> = ({ onVariationsChange, disabled, value 
                 ))}
             </div>
             <Button disabled={disabled} onClick={handleAddVariation}>
-                Добавить вариацию <PlusCircleOutlined style={{ color: "var(--primary-bg)" }} />
+                <ButtonText>Добавить вариацию <PlusCircleOutlined style={{ color: "var(--primary-bg)" }} /></ButtonText>
             </Button>
         </div>
     );

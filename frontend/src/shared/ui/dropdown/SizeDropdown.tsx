@@ -5,14 +5,14 @@ import { Size, useSizesControllerGetAllQuery } from "../../../store/size";
 
 const { Option } = Select;
 
-interface TypeDropdownProps {
+interface SizeDropdownProps {
     onChange?: (value: string) => void;
     value?: string;
     style?: React.CSSProperties;
     disabled?: boolean;
 }
 
-const TypeDropdown: React.FC<TypeDropdownProps> = ({ onChange, value, disabled }) => {
+const SizeDropdown: React.FC<SizeDropdownProps> = ({ onChange, value, disabled }) => {
     const { data: sizeData } = useSizesControllerGetAllQuery();
     const [searchValue, setSearchValue] = useState<string>("");
     const [items, setItems] = useState<Size[]>([]);
@@ -97,4 +97,4 @@ const TypeDropdown: React.FC<TypeDropdownProps> = ({ onChange, value, disabled }
     );
 };
 
-export default TypeDropdown;
+export default SizeDropdown;

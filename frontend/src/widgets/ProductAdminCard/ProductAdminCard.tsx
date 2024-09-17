@@ -5,11 +5,28 @@ import { Numerals } from "../../shared/utils/numerals";
 import { API_URL } from "../../shared/utils/constants";
 import { useMemo, useState } from "react";
 import { useProductsSizesControllerGetProductSizeForCardByIdQuery, useSizesControllerGetAllQuery } from "../../store/size";
+import { ButtonText } from "../../pages/admin/ui/products/Products";
+import { styled } from "styled-components";
+
+
+export const CardTextHeader = styled.p`
+    font-family: "Inter UI", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+`
+
+export const CardTypeTextHeader = styled.p`
+    font-family: "Inter", sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    cololor: var(--primary-text-color);
+`
+
 
 interface ProductAdminCardProps {
     id?: number;
     name?: string;
-    type?: number;
+    type?: string;
     onCategoriesAndFiltersChange?: (categories: string[], filters: string[]) => void;
 }
 
@@ -93,8 +110,8 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
                         <Image style={{ width: "32px", height: "32px", borderRadius: "6px" }} src={`${API_URL}/products/images/${data?.id}/${data?.images?.[0]?.url}`}
                         />
                         <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-                            <div>{name}</div>
-                            <div>Тип: {type}</div>
+                            <div><CardTextHeader>{name}</CardTextHeader></div>
+                            <div><CardTypeTextHeader>Тип: {type}</CardTypeTextHeader></div>
                         </div>
                     </div>
 
@@ -105,7 +122,10 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
                             navigate(`/admin/product/${id}`, { state: { previousLocation: locate.pathname } });
                         }}
                     >
-                        Редактировать
+                        <ButtonText>
+                            Редактировать
+                        </ButtonText>
+
                     </Button>
 
                     <Button
@@ -113,9 +133,12 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
                         type="primary"
                         onClick={() => setIsExpanded(!isExpanded)}
                     >
-                        {productSizes && productSizes.length > 0
-                            ? `${productSizes.length} ${Numerals.numeralsSizes(productSizes.length)}`
-                            : "Нет"}
+                        <ButtonText>
+                            {productSizes && productSizes.length > 0
+                                ? `${productSizes.length} ${Numerals.numeralsSizes(productSizes.length)}`
+                                : "Нет"}
+                        </ButtonText>
+
                     </Button>
                 </div>
 

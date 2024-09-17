@@ -3,6 +3,7 @@ import { Dropdown, Button, Input, Menu, Checkbox } from 'antd';
 import { PlusOutlined, EditOutlined, CloseOutlined } from '@ant-design/icons';
 import { FilterWithItems } from '../../../store/filter';
 import { ItemFilter } from '../../../store/product';
+import { ButtonText } from '../../../pages/admin/ui/products/Products';
 
 interface FilterTag {
     filter: FilterWithItems;
@@ -201,7 +202,7 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
                 disabled={disabled}
             >
                 <Button type="primary" onClick={() => setDropdownOpen(!dropdownOpen)}>
-                    Добавить фильтр {dropdownOpen ? <CloseOutlined /> : <PlusOutlined />}
+                    <ButtonText>Добавить фильтр {dropdownOpen ? <CloseOutlined /> : <PlusOutlined />}</ButtonText>
                 </Button>
             </Dropdown>
 

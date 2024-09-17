@@ -6,7 +6,7 @@ import { CloseOutlined, DownOutlined, LoadingOutlined, PlusCircleOutlined } from
 import { styled } from "styled-components"
 import { API_URL } from "../../../../shared/utils/constants"
 import { MenuProps } from "antd/lib";
-import TypeDropdown from "../../../../shared/ui/dropdown/TypeDropdown";
+import TypeDropdown from "../../../../shared/ui/dropdown/SizeDropdown";
 import { useEffect, useState } from "react";
 import TextArea from "antd/es/input/TextArea";
 import CategoryDropdown from "../../../../shared/ui/dropdown/CategoryDropdown";
@@ -20,6 +20,8 @@ import { FilterWithItems, useFiltersControllerGetAllQuery } from "../../../../st
 import { useCategoriesControllerGetAllQuery } from "../../../../store/category";
 import { useProductsSizesControllerGetByCategotyIdWithPaginationQuery, useProductsSizesControllerGetProductSizeForCardByIdQuery } from "../../../../store/size";
 import Item from "antd/es/list/Item";
+import { ButtonText } from "./Products";
+import SizeDropdown from "../../../../shared/ui/dropdown/SizeDropdown";
 
 export const StyledForm = styled(Form)`
   .ant-form-item {
@@ -182,7 +184,7 @@ const Product: React.FC = () => {
                                     />
                                 </Form.Item>
                                 <Form.Item label={<ValueText>Тип товара</ValueText>} name="type" style={{ margin: "5px 0" }}>
-                                    <Select
+                                    {/* <Select
                                         disabled={disabled}
                                         options={[
                                             { value: "bouquet", label: "Букет" },
@@ -194,7 +196,8 @@ const Product: React.FC = () => {
                                             borderRadius: "6px",
                                         }}
                                         bordered={false}
-                                    />
+                                    /> */}
+                                    <SizeDropdown disabled={disabled} />
                                 </Form.Item>
                             </div>
                             <Form.Item label={<ValueText>Описание</ValueText>} name="description" style={{ width: "600px", margin: "0" }}>
@@ -311,21 +314,21 @@ const Product: React.FC = () => {
                         </div>
                     </Form.Item>
 
-                    <Form.Item>
+                    <div>
                         {data ? (
                             <>
                                 {disabled ? (
                                     <Button onClick={() => {
                                         handleEdit();
                                         console.log({ selectedCategories, filters })
-                                    }}>Редактировать</Button>
+                                    }}><ButtonText>Редактировать</ButtonText></Button>
                                 ) : (
                                     <Button type="primary" htmlType="submit">
-                                        Сохранить изменения
+                                        <ButtonText>Сохранить изменения</ButtonText>
                                     </Button>
                                 )}
                                 <Button type="primary" danger>
-                                    Удалить
+                                    <ButtonText>Удалить</ButtonText>
                                 </Button>
                             </>
                         ) : (
@@ -335,7 +338,7 @@ const Product: React.FC = () => {
                                 Сохранить изменения
                             </Button>
                         )}
-                    </Form.Item>
+                    </div>
                 </StyledForm>
             )}
         </Container>

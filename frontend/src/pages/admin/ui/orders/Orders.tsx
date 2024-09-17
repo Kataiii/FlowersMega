@@ -6,6 +6,14 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import OrderContainer from "../../../../shared/ui/orderContainer/OrderContainer";
+import { ButtonText, NameContainer, NamePage } from "../products/Products";
+
+export const SortText = styled.p`
+  font-family: "Inter UI", sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+`
+
 
 const Orders: React.FC = () => {
   const { isLoading, data: initialData } = useOrdersControllerGetAllQuery();
@@ -70,7 +78,10 @@ const Orders: React.FC = () => {
           onClick={() => navigate(`/admin/order/${order.id}`, { state: { previousLocation: locate.pathname } })}
           style={{ width: "50%" }}
         >
-          Подробнее
+          <ButtonText>
+            Подробнее
+          </ButtonText>
+
         </Button>
       ),
     }));
@@ -111,16 +122,23 @@ const Orders: React.FC = () => {
         backgroundColor: "var(--main-bg-color)",
       }}
     >
-      <h1
+      <div
         style={{
           display: "flex",
           margin: "16px 0 0 16px",
         }}
       >
-        Заказы
-      </h1>
+        <NamePage>
+          Заказы
+        </NamePage>
+
+      </div>
       <OrderContainer>
-        <h2 style={{ display: "flex", margin: "8px" }}>База заказов</h2>
+        <div style={{ display: "flex", margin: "8px" }}>
+          <NameContainer>
+            База заказов
+          </NameContainer>
+        </div>
         <div
           style={{
             border: "1px solid var(--primary-bg-color)",
@@ -134,7 +152,7 @@ const Orders: React.FC = () => {
               value={searchId}
               onChange={(e) => setSearchId(e.target.value)}
             />
-            <Button type="primary" icon={<SearchOutlined />}>Найти</Button>
+            <Button style={{ width: "150px" }} type="primary"><ButtonText style={{ display: "inline" }}>Найти</ButtonText> <SearchOutlined /></Button>
           </Space.Compact>
         </div>
         <div
@@ -142,14 +160,18 @@ const Orders: React.FC = () => {
             display: "flex",
           }}
         >
-          <p
+          <div
             style={{
               color: "var(--secondary-bg-color)",
               marginRight: "10px",
+              paddingTop: "5px",
             }}
           >
-            Сортировать по
-          </p>
+            <SortText>
+              Сортировать по
+            </SortText>
+
+          </div>
           <Select
             allowClear
             style={{

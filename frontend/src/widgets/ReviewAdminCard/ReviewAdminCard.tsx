@@ -3,6 +3,7 @@ import { API_URL } from "../../shared/utils/constants";
 import { FullReviewDto } from "../../store/review";
 import { Button, Rate, Image, Flex } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ButtonText } from "../../pages/admin/ui/products/Products";
 
 interface ReviewAdminCardProps {
     review: FullReviewDto;
@@ -124,7 +125,10 @@ const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review }) => {
                         });
                     }}
                 >
-                    Редактировать
+                    <ButtonText>
+                        Редактировать
+                    </ButtonText>
+
                 </Button>
             </div>
 
