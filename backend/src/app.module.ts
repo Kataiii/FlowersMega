@@ -24,6 +24,7 @@ import { AuthModule } from './auth/auth.module';
 import { TokensModule } from './tokens/tokens.module';
 import { CategoriesProductsModule } from './categories-products/categories-products.module';
 import { TgBotModule } from './tg-bot/tg-bot.module';
+import { SeedsModule } from './seeds/seeds.module';
 
 
 @Module({
@@ -67,6 +68,7 @@ import { TgBotModule } from './tg-bot/tg-bot.module';
         AuthModule,
         CategoriesProductsModule,
         TgBotModule,
+        SeedsModule,
     ]
 })
 export class AppModule{}

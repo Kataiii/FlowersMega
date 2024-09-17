@@ -68,4 +68,22 @@ export class ProductsSizesFullService {
             products: productsCardInfo
         }
     }
+
+    async getProductSizeInfo(id: number){
+        const productSize = await this.productsSizesRepository.findOne({where: {id: id}});
+        const size = await this.sizesService.getById(productSize.idSize);
+        return {productSize: productSize, size: size}
+    }
+
+    async getProductsWithPagination(page: number, limit: number){
+        const paginationResult = await this.productsService.getCountAndPagination(page, limit);
+        const productSizesTmp = await Promise.all(paginationResult.products.map(async(item) => {
+            const productSizes = await this.productsSizesRepository.findAll({where: {idProduct: item.id}});
+            const productWithSizes = await Promise.all(productSizes.map(async(item) => {
+                return await this.getProductSizeInfo(item.id);
+            })) 
+            return {products: item, productsSizes: productWithSizes};
+        }));
+        return {count: paginationResult.count, products: productSizesTmp};
+    }
 }
