@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Phone } from 'nestjs-telegraf';
+import { Op } from 'sequelize';
 import { ImagesReviewsService } from 'src/images-reviews/images-reviews.service';
 import { ProductsSizesService } from 'src/products-sizes/products-sizes.service';
 import { ProductsService } from 'src/products/products.service';
@@ -84,7 +85,22 @@ export class ReviewsService {
         } as FullReviewDto;
     }
 
-    async getReviewsAllWithPagination(page: number, limit: number){
+    async getReviewsAllWithPagination(page: number, limit: number, search?: string){
+        if(search){
+            const reviewsCount = (await this.reviewsRepository.findAndCountAll({where: {firstname: {[Op.like]: `%${search}%`}}})).count;
+            const reviews = (await this.reviewsRepository.findAll({
+                where: {firstname: {[Op.like]: `%${search}%`}},
+                limit: limit,
+                offset: (page - 1) * limit,
+                include: [{all: true}]
+            }));
+            const fullReview: FullReviewDto[] = await Promise.all(reviews.map(async(item) => await this.convertReview(item)));
+            return {
+                count: reviewsCount,
+                reviews: fullReview
+            };
+        }
+
         const reviewsCount = (await this.reviewsRepository.findAndCountAll()).count;
 
         const reviews = await this.reviewsRepository.findAll({
