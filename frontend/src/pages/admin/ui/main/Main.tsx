@@ -34,7 +34,22 @@ const Container = styled.div`
   display: flex;
 `;
 
-const LinkButton = styled.button``;
+const LinkButton = styled.button`
+  background: transparent;
+  border: none;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+`;
+
+const LinkText = styled.p`
+  font-family: "Inter UI", sans-serif,
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--primary-bg-color);
+  padding-top: -5px;
+`;
 
 const Main: React.FC = () => {
   const navigate = useNavigate();
@@ -75,6 +90,11 @@ const Main: React.FC = () => {
             colorBgContainer: "#FF749F",
             colorBorder: "#FF749F",
             colorText: "#1A2030"
+          },
+          Menu: {
+            itemColor: "var(--primary-bg-color)",
+            itemHoverColor: "var(--primary-bg-color)",
+            itemHoverBg: "var(--city-active)",
           }
         },
         token: {
@@ -94,8 +114,8 @@ const Main: React.FC = () => {
         >
           <LogoAdmin />
           <LinkButton>
-            <ArrowBack />
-            Перейти на сайт
+            <div style={{ display: "flex", marginRight: "5px" }}><ArrowBack /></div>
+            <div><LinkText style={{ display: "inline" }}>Перейти на сайт</LinkText></div>
           </LinkButton>
           <Menu
             defaultSelectedKeys={changeDefaultSelectedKey()}

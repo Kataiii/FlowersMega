@@ -1,6 +1,6 @@
-import { Button, Flex, Form, Input, Rate, Spin, Image } from "antd";
-import { useParams } from "react-router-dom";
-import { useReviewsControllerGetByIdQuery } from "../../../../store/review";
+import { Button, Flex, Form, Input, Rate, Spin, Image, Modal } from "antd";
+import { useNavigate, useParams } from "react-router-dom";
+import { UpdateReviewDto, useReviewControllerDeleteMutation, useReviewControllerUpdateMutation, useReviewsControllerGetByIdQuery } from "../../../../store/review";
 import Container from "../../../../shared/ui/containerMain/ContainerMain";
 import { CloseOutlined, LoadingOutlined } from "@ant-design/icons";
 import { useMemo, useState } from "react";
@@ -9,45 +9,68 @@ import { API_URL } from "../../../../shared/utils/constants";
 import TextArea from "antd/es/input/TextArea";
 import ts from "typescript";
 import { ignore } from "antd/es/theme/useToken";
+import { ButtonText } from "../products/Products";
 
 const Review: React.FC = () => {
     const { id } = useParams();
     const { isLoading, data } = useReviewsControllerGetByIdQuery({ id: Number(id) });
     const [form] = Form.useForm();
-    // @ts-ignore
+    {/* @ts-ignore*/ }
     const [images, setImages] = useState(data?.images || []);
+    const [updateReview] = useReviewControllerUpdateMutation();
+    const [deleteReview] = useReviewControllerDeleteMutation();
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const navigate = useNavigate();
 
+    const showDeleteConfirm = () => {
+        setIsModalVisible(true);
+    };
 
-    const handleFormFinish = (values: any) => {
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
+    const handleFormFinish = async (values: any) => {
+        const productSizeId = data?.idProductSize ? data.idProductSize : 0;
+        const reviewId = Number(id);
 
-        const formData = {
-            id: id,
+        const formData: UpdateReviewDto = {
+            id: reviewId,
+            rating: values.rate,
+            comment: values.comment,
+            idUser: data?.idUser || 0,
             firstname: values.name,
             phone: values.phone,
-            rate: values.rate,
-            images: values.images,
-            comment: values.comment,
-            idProductSize: data?.idProductSize,
-            updatedAt: Date.now(),
-            idUser: data?.idUser,
+            idProductSize: productSizeId,
         };
-        console.log("Form values:", formData);
-        const jsonString = JSON.stringify(formData);
-        console.log(jsonString);
-    }
 
-    // const reviewData = useMemo(() => {
-    //     if (!data) return null;
-    //     return data;
-    // })
+        console.log("Form values:", formData);
+        try {
+            const response = await updateReview({ updatedReview: formData });
+            console.log("Updated review:", response);
+        } catch (error) {
+            console.error("Error updating review:", error);
+        }
+    }
+    const handleDelete = async () => {
+        try {
+            await deleteReview({ id: Number(id) });
+            console.log("Review deleted successfully");
+            setIsModalVisible(false);
+            navigate("/admin/reviews");
+        } catch (error) {
+            console.error("Error deleting review:", error);
+        }
+    };
 
     return (
         <Container>
             {
-                isLoading ?
-                    (<Flex align="center" gap="middle">
+                isLoading ? (
+                    <Flex align="center" gap="middle">
                         <Spin indicator={<LoadingOutlined spin />} size="large" />
-                    </Flex>) : (
+                    </Flex>
+                ) : (
+                    <>
                         <Form
                             form={form}
                             onFinish={handleFormFinish}
@@ -61,52 +84,41 @@ const Review: React.FC = () => {
                                 rate: data?.rating,
                                 // @ts-ignore
                                 images: data?.images,
-
                             }}
                         >
                             <HeadText>
-                                Отзыв <span style={{ color: "var(--primary-review-text)", display: "inline-flex" }}>{data?.firstname}</span>{" "}
-
-                                <span style={{ color: "var(--unactive-text-color)", display: "inline-flex" }}>
-                                    {/* @ts-ignore */}
-                                    от {" "}{new Date(data.createdAt).toLocaleDateString()}
+                                Отзыв <span style={{ color: "var(--primary-review-text)" }}>{data?.firstname}</span>{" "}
+                                <span style={{ color: "var(--unactive-text-color)" }}>от
+                                    <>
+                                        {/* @ts-ignore*/}
+                                        {new Date(data.createdAt).toLocaleDateString()}
+                                    </>
                                 </span>
                             </HeadText>
                             <div>
-                                <div style={{ display: "flex", flexDirection: "row", }}>
+                                <div style={{ display: "flex", flexDirection: "row" }}>
                                     <div style={{ display: "flex", flexDirection: "column" }}>
                                         <Form.Item label={<ValueText>Имя пользователя</ValueText>} name="name" style={{ margin: "5px 0" }}>
-                                            <Input
-                                                style={{ width: "440px" }}
-                                                placeholder="Измените имя пользователя..."
-                                            />
+                                            <Input style={{ width: "440px" }} placeholder="Измените имя пользователя..." />
                                         </Form.Item>
                                         <div style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
                                             <Form.Item label={<ValueText>Номер телефона</ValueText>} name="phone" style={{ margin: "5px 0" }}>
-                                                <Input
-                                                    style={{ width: "300px" }}
-                                                    placeholder="+7 (800) 555 35-35"
-                                                />
+                                                <Input style={{ width: "300px" }} placeholder="+7 (800) 555 35-35" />
                                             </Form.Item>
                                             <Form.Item label={<ValueText>Оценка</ValueText>} name="rate" style={{ margin: "5px 0" }}>
-                                                <Rate value={data?.rating} style={{ color: "var(--primary-bg-color)", width: "140px" }} />
+                                                <Rate style={{ color: "var(--primary-bg-color)", width: "140px" }} />
                                             </Form.Item>
                                         </div>
-
                                     </div>
                                     <div>
                                         <Form.Item label={<ValueText>Вложения</ValueText>} name="images" style={{ margin: "5px 0" }}>
                                             <div style={{ width: "320px", height: "100px", border: "1px solid var(--primary-bg-color)", borderRadius: "12px", padding: "8px 20px", display: "flex", gap: "20px", justifyContent: "center" }}>
-
-                                                {/* @ts-ignore */}
-                                                {data?.images.slice(0, 3).map((item) => {
-                                                    return (<Image src={`${API_URL}/products/images_reviews/${item.idReview}/${item.url}`} style={{ width: "80px", height: "80px", }} />)
-
-                                                })}
+                                                {/* @ts-ignore*/}
+                                                {data?.images?.slice(0, 3).map((item) => (
+                                                    <Image src={`${API_URL}/products/images_reviews/${item.idReview}/${item.url}`} style={{ width: "80px", height: "80px" }} />
+                                                ))}
                                             </div>
                                         </Form.Item>
-
-
                                     </div>
                                 </div>
 
@@ -115,44 +127,37 @@ const Review: React.FC = () => {
                                         placeholder="Измените комментарий пользователя..."
                                         maxLength={1000}
                                         showCount
-                                        style={{
-                                            resize: "none",
-                                            // textAlign: "justify",
-                                            // wordBreak: "normal",
-                                            maxHeight: "150px",
-                                            height: "150px",
-                                            // padding: "4px",
-                                        }}
-                                        value={data?.comment}
-
+                                        style={{ resize: "none", maxHeight: "150px", height: "150px" }}
                                     />
                                 </Form.Item>
                             </div>
 
                             <div style={{ display: "flex", justifyContent: "space-between", width: "770px", margin: "20px 0" }}>
-                                <Button type="primary" htmlType="submit" style={{ width: "49%" }} onClick={
-                                    // @ts-ignore
-                                    () => console.log(data?.images)
-
-                                }>
-                                    Сохранить изменения
+                                <Button type="primary" htmlType="submit" style={{ width: "49%" }}>
+                                    <ButtonText>Сохранить изменения</ButtonText>
                                 </Button>
-                                <Button type="primary" danger style={{ width: "49%" }}>
-                                    Удалить
+                                <Button type="primary" onClick={showDeleteConfirm} danger style={{ width: "49%" }}>
+                                    <ButtonText>Удалить</ButtonText>
                                 </Button>
                             </div>
-
-
-
-
-
                         </Form>
-                    )
-
+                        <Modal
+                            title="Подтвердите удаление"
+                            visible={isModalVisible}
+                            onOk={handleDelete}
+                            onCancel={handleCancel}
+                            okText={<ButtonText>Удалить</ButtonText>}
+                            cancelText={<ButtonText>Отмена</ButtonText>}
+                        >
+                            <p>Вы уверены, что хотите удалить этот отзыв?</p>
+                        </Modal>
+                    </>
+                )
             }
         </Container>
-
-    )
+    );
 }
 
 export default Review;
+
+

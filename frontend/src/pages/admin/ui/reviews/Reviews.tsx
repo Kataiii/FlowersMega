@@ -16,7 +16,11 @@ const Reviews: React.FC = () => {
     const [sortOrder, setSortOrder] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(2);
-    const { data: reviews } = useReviewsControllerGetAllWithPaginationQuery({ page: page, limit: pageSize });
+    const { data: reviews, refetch } = useReviewsControllerGetAllWithPaginationQuery({ page: page, limit: pageSize });
+
+    useEffect(() => {
+        refetch();
+    }, [page, pageSize, refetch, reviews]);
 
     const reviewData = useMemo(() => {
         if (!reviews) return [];
@@ -55,7 +59,7 @@ const Reviews: React.FC = () => {
         if (newPageSize) {
             setPageSize(newPageSize);
         }
-    };
+    }
 
     return (
         <Container style={{ backgroundColor: "var(--main-bg-color)" }}>

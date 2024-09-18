@@ -1,5 +1,6 @@
 import { Button, Checkbox, Form, FormProps, Input } from "antd";
 import Container from "../../../../shared/ui/containerMain/ContainerMain";
+import { ButtonText, NamePage } from "../products/Products";
 
 type FieldType = {
     username?: string;
@@ -19,7 +20,7 @@ const Login: React.FC = () => {
     return (
         <div style={{ width: "100%", height: "100%" }}>
             <div style={{ position: "absolute", width: "400px", height: "350px", left: "35%", top: "35%" }}>
-                <p style={{ display: "block", margin: "auto", textAlign: "center", padding: "0 0 25px 125px", fontWeight: "bold", fontSize: "24px" }}>Авторизация</p>
+                <p style={{ display: "block", margin: "auto", textAlign: "center", padding: "0 0 25px 125px", fontWeight: "bold", fontSize: "24px" }}><NamePage>Авторизация</NamePage></p>
                 <Form
                     name="basic"
                     labelCol={{ span: 8 }}
@@ -49,7 +50,7 @@ const Login: React.FC = () => {
                     <div style={{ left: "50%" }}>
                         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                             <Button type="primary" htmlType="submit">
-                                Войти
+                                <ButtonText>Войти</ButtonText>
                             </Button>
                         </Form.Item>
                     </div>

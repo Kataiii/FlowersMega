@@ -118,6 +118,15 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/products-sizes/product-size/${queryArg.idProduct}/${queryArg.idSize}`
       })
+    }),
+    productSizesControllerGetProductsWithPagination: build.query<
+      productSizesControllerGetProductsWithPaginationApiResponse,
+      productSizesControllerGetProductsWithPaginationApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/products-sizes/products-with-pagination/${queryArg.page}/${queryArg.limit}`
+      })
+
     })
   }),
   overrideExisting: false,
@@ -148,7 +157,7 @@ export type ProductsSizesControllerGetAllSizesByProductIdApiResponse = {
   sizes: Size[];
 }
 export type ProductsSizesControllerGetAllSizesByProductIdApiArg = {
-  id:number;
+  id: number;
 }
 export type ProductsSizesControllerGetByProductIdAndSizeIdApiResponse = ProductSize;
 export type ProductsSizesControllerGetByProductIdAndSizeIdApiArg = {
@@ -179,11 +188,11 @@ export type ProductsSizesControllerGetProductSizeForCardByIdApiResponse =
 export type ProductsSizesControllerGetProductSizeForCardByIdApiArg = {
   id: number;
 };
-export type ProductsSizesControllerGetByCategotyIdWithPaginationApiResponse ={
+export type ProductsSizesControllerGetByCategotyIdWithPaginationApiResponse = {
   count: number;
   products: FullProductSizeDto[];
 }
-  /** status 200  */
+/** status 200  */
 export type ProductsSizesControllerGetByCategotyIdWithPaginationApiArg = {
   page: number;
   limit: number;
@@ -208,6 +217,14 @@ export type CategoriesProductsControllerGetAllApiResponse =
 export type CategoriesProductsControllerGetAllApiArg = {
   id: number;
 };
+export type productSizesControllerGetProductsWithPaginationApiResponse = {
+  count: number;
+  products: ProductWithSizes[];
+}
+export type productSizesControllerGetProductsWithPaginationApiArg = {
+  page: number;
+  limit: number;
+}
 export type Product = {
   /** Unique identifier */
   id: number;
@@ -334,6 +351,18 @@ export type OrderProductSize = {
   /** Unique identifier order */
   idOrder: number;
 };
+export type ProductSizeInfo = {
+
+  productSize: ProductSize;
+
+  size: Size;
+};
+export type ProductWithSizes = {
+
+  products: Product;
+
+  productsSizes: ProductSizeInfo[];
+};
 export type Number = {};
 export const {
   useProductsControllerCreateMutation,
@@ -352,4 +381,5 @@ export const {
   useOrdersProductsSizesControllerGetByIdQuery,
   useCategoriesProductsControllerGetAllQuery,
   useProductsSizesControllerGetByProductIdAndSizeIdQuery,
+  useProductSizesControllerGetProductsWithPaginationQuery,
 } = injectedRtkApi;

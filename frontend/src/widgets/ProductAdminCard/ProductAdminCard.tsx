@@ -19,7 +19,7 @@ export const CardTypeTextHeader = styled.p`
     font-family: "Inter", sans-serif;
     font-size: 10px;
     font-weight: 600;
-    cololor: var(--primary-text-color);
+    color: var(--text-modal);
 `
 
 

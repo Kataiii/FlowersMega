@@ -50,6 +50,27 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/reviews/reviews-product-size/${queryArg.productSizeId}/${queryArg.limit}/${queryArg.page}`
       })
+    }),
+    reviewControllerUpdate: build.mutation<
+      ReviewControllerUpdateApiResponse,
+      ReviewControllerUpdateApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/reviews/`,
+        method: "PATH",
+        body: queryArg.updatedReview,
+      }),
+    }),
+    reviewControllerDelete: build.mutation<
+      ReviewControllerDeleteApiResponse,
+      ReviewControllerDeleteApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/reviews/`,
+        method: "DELETE",
+        body: { id: queryArg.id },
+      }),
+
     })
   }),
   overrideExisting: false,
@@ -99,6 +120,15 @@ export type ReviewsControllerGetStaticticByProductSizeIdApiResponse =
 export type ReviewsControllerGetStaticticByProductSizeIdApiArg = {
   id: number;
 };
+
+export type ReviewControllerUpdateApiResponse = UpdateReviewDto;
+export type ReviewControllerUpdateApiArg = {
+  updatedReview: UpdateReviewDto;
+}
+export type ReviewControllerDeleteApiResponse = UpdateReviewDto;
+export type ReviewControllerDeleteApiArg = {
+  id: number;
+}
 export type Review = {
   /** Unique identifier */
   id?: number;
@@ -167,6 +197,15 @@ export type StaticticReviews = {
   /** Average rating */
   averageRating: number;
 };
+export type UpdateReviewDto = {
+  id: number;
+  rating: number;
+  comment?: string;
+  idUser?: number;
+  firstname?: string;
+  phone: string;
+  idProductSize: number;
+}
 export const {
   useReviewsControllerCreateMutation,
   useReviewsControllerGetAllQuery,
@@ -175,4 +214,6 @@ export const {
   useReviewsControllerGetAllWithPaginationQuery,
   useReviewsControllerGetStaticticByProductSizeIdQuery,
   useReviewsProductSizeControllerGetByProductIdQuery,
+  useReviewControllerUpdateMutation,
+  useReviewControllerDeleteMutation,
 } = injectedRtkApi;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { PlusOutlined, CloseOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Input, Modal, Upload } from "antd";
 import { ItemFilter } from "../../../store/product";
@@ -38,14 +38,14 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   const [newCategoryName, setNewCategoryName] = useState<string>("");
   const [fileList, setFileList] = useState<any[]>([]);
 
-  const formattedItems = data.map((item) => ({
+  const formattedItems = useMemo(() => data.map((item) => ({
     id: item.id,
     name: item.name,
-  }));
+  })), [data]);
 
   useEffect(() => {
     setItems(formattedItems);
-  }, [data]);
+  }, [formattedItems]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);

@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useCallback } from "react";
 import { Button, Input, Pagination, Select, Space } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useProductsControllerGetAllQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery } from "../../../../store/product";
+import { useProductsControllerGetAllQuery, useProductSizesControllerGetProductsWithPaginationQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery } from "../../../../store/product";
 import Container from "../../../../shared/ui/containerMain/ContainerMain";
 import { PlusCircleOutlined, SearchOutlined } from "@ant-design/icons";
 import OrderContainer from "../../../../shared/ui/orderContainer/OrderContainer";
@@ -46,7 +46,7 @@ const Products: React.FC = () => {
     const { data: filtersData } = useFiltersControllerGetAllQuery();
     const { data: categoriesData } = useCategoriesControllerGetAllQuery();
     const { data: productType } = useTypesProductControllerGetAllQuery();
-    const { data: productSizedPag } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ page: page, limit: pageSize });
+    const { data: productSizedPag } = useProductSizesControllerGetProductsWithPaginationQuery({ page: page, limit: pageSize });
 
     const handleCategoriesAndFiltersChange = useCallback((categories: string[], filters: string[]) => {
         setCategories(categories);
@@ -62,7 +62,7 @@ const Products: React.FC = () => {
 
     const filteredData = useMemo(() => {
         if (!searchId) return productData;
-        return productData.filter(product => product.product.name.toString().includes(searchId));
+        return productData.filter(product => product.products.name.toString().includes(searchId));
     }, [searchId, productData]);
 
     const sortedData = useMemo(() => {
@@ -146,16 +146,15 @@ const Products: React.FC = () => {
                 <div style={{ display: "flex", flexDirection: "row", gap: "8px", flexWrap: "wrap" }}>
                     {sortedData.map((product, index) => (
                         <ProductAdminCard
-                            key={product.productSize.id}
-                            id={product.productSize.idProduct}
-                            name={product.product.name}
-                            type={productType?.find((type) => product.product.idTypeProduct === type.id)?.name}
-                            onCategoriesAndFiltersChange={handleCategoriesAndFiltersChange}
+                            key={product.products.id}
+                            id={product.products.id}
+                            name={product.products.name}
+                            type={productType?.find((type) => product.products.idTypeProduct === type.id)?.name}
                         />
                     ))}
                 </div>
                 {/* @ts-ignore */}
-                <Pagination current={page} pageSize={pageSize} total={productSizedPag?.count.count || 0} onChange={handlePageChange} style={{ marginTop: "16px", textAlign: "center" }} />
+                <Pagination current={page} pageSize={pageSize} total={productSizedPag?.count || 0} onChange={handlePageChange} style={{ marginTop: "16px", textAlign: "center" }} />
                 <>
                     {console.log('Total count:', productSizedPag)}
                 </>
