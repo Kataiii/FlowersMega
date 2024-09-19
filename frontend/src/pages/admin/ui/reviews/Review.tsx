@@ -11,7 +11,11 @@ import ts from "typescript";
 import { ignore } from "antd/es/theme/useToken";
 import { ButtonText } from "../products/Products";
 
-const Review: React.FC = () => {
+interface ReviewProps {
+    refetchReviews?: () => void;
+}
+
+const Review: React.FC<ReviewProps> = ({ refetchReviews }) => {
     const { id } = useParams();
     const { isLoading, data } = useReviewsControllerGetByIdQuery({ id: Number(id) });
     const [form] = Form.useForm();
@@ -56,6 +60,9 @@ const Review: React.FC = () => {
             await deleteReview({ id: Number(id) });
             console.log("Review deleted successfully");
             setIsModalVisible(false);
+            if (refetchReviews) {
+                refetchReviews();
+            }
             navigate("/admin/reviews");
         } catch (error) {
             console.error("Error deleting review:", error);
@@ -133,10 +140,10 @@ const Review: React.FC = () => {
                             </div>
 
                             <div style={{ display: "flex", justifyContent: "space-between", width: "770px", margin: "20px 0" }}>
-                                <Button type="primary" htmlType="submit" style={{ width: "49%" }}>
+                                <Button shape="round" type="primary" htmlType="submit" style={{ width: "49%" }}>
                                     <ButtonText>Сохранить изменения</ButtonText>
                                 </Button>
-                                <Button type="primary" onClick={showDeleteConfirm} danger style={{ width: "49%" }}>
+                                <Button shape="round" type="primary" onClick={showDeleteConfirm} danger style={{ width: "49%" }}>
                                     <ButtonText>Удалить</ButtonText>
                                 </Button>
                             </div>

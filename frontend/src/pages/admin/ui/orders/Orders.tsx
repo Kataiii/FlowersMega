@@ -77,6 +77,7 @@ const Orders: React.FC = () => {
           type="primary"
           onClick={() => navigate(`/admin/order/${order.id}`, { state: { previousLocation: locate.pathname } })}
           style={{ width: "50%" }}
+          shape="round"
         >
           <ButtonText>
             Подробнее

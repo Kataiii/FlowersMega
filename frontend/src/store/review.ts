@@ -1,3 +1,4 @@
+import Search from "antd/es/transfer/search";
 import { emptyApi as api } from "./emptyApi";
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -33,9 +34,17 @@ const injectedRtkApi = api.injectEndpoints({
       ReviewsControllerGetAllWithPaginationApiResponse,
       ReviewsControllerGetAllWithPaginationApiArg
     >({
-      query: (queryArg) => ({
-        url: `/reviews/pagination/${queryArg.page}/${queryArg.limit}`,
-      }),
+      query: (queryArg) => {
+        const params: Record<string, any> = {};
+        if (queryArg.search) {
+          params.search = queryArg.search;
+        }
+
+        return {
+          url: `/reviews/pagination/${queryArg.page}/${queryArg.limit}`,
+          params: params,
+        };
+      },
     }),
     reviewsControllerGetStaticticByProductSizeId: build.query<
       ReviewsControllerGetStaticticByProductSizeIdApiResponse,
@@ -104,6 +113,7 @@ export type ReviewsControllerGetAllWithPaginationApiResponse =
 export type ReviewsControllerGetAllWithPaginationApiArg = {
   page: number;
   limit: number;
+  search?: string;
 };
 export type ReviewsProductSizeControllerGetByProductIdApiResponse = {
   count: number;

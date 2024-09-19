@@ -12,6 +12,8 @@ import ProductAdminCard from "../../../../widgets/ProductAdminCard/ProductAdminC
 import { useTypesProductControllerGetAllQuery } from "../../../../store/typeProduct";
 import { styled } from "styled-components";
 import { SortText } from "../orders/Orders";
+import ExtraPriceBlock from "../../../../widgets/extraPrice/ExtraPriceBlock";
+
 
 export const NamePage = styled.p`
     font-family: "Inter UI", sans-serif;
@@ -101,6 +103,7 @@ const Products: React.FC = () => {
                         База товаров
                     </NameContainer>
                 </div>
+                <ExtraPriceBlock />
                 <Button
                     shape="round"
                     type="primary"

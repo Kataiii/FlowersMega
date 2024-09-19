@@ -3,6 +3,7 @@ import { PlusOutlined, CloseOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Input, Modal, Upload } from "antd";
 import { ItemFilter } from "../../../store/product";
 import { ButtonText } from "../../../pages/admin/ui/products/Products";
+import { useCategoriesControllerCreateMutation } from "../../../store/category";
 
 interface CategoryDropdownProps {
   value?: { id?: number; name: string; photo: string }[];
@@ -37,6 +38,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [newCategoryName, setNewCategoryName] = useState<string>("");
   const [fileList, setFileList] = useState<any[]>([]);
+  const [addCategory] = useCategoriesControllerCreateMutation();
 
   const formattedItems = useMemo(() => data.map((item) => ({
     id: item.id,
@@ -51,19 +53,43 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
     setSearchValue(e.target.value);
   };
 
-  const handleAddCategory = () => {
-    if (newCategoryName && !items.some(item => item.name === newCategoryName) && fileList.length > 0) {
-      const newCategory = { name: newCategoryName, photo: URL.createObjectURL(fileList[0].originFileObj) };
-      const newSelectedCategories = [...selectedCategories, newCategory];
-      setSelectedCategories(newSelectedCategories);
-      if (onChange) {
-        onChange(newSelectedCategories);
+  const handleAddCategory = async () => {
+    if (newCategoryName && fileList.length > 0) {
+      try {
+        const body = {
+          name: newCategoryName,
+          file: fileList[0].originFileObj,
+        };
+        const response = await addCategory({
+          body: {
+            name: newCategoryName,
+            file: fileList[0].originFileObj,
+          },
+        }).unwrap();
+        const newCategory = {
+          id: response.id,
+          name: response.name,
+          photo: response.url || "",
+        };
+
+        const newSelectedCategories = [...selectedCategories, newCategory];
+        setSelectedCategories(newSelectedCategories);
+        if (onChange) {
+          onChange(newSelectedCategories);
+        }
+        setNewCategoryName("");
+        setFileList([]);
+        setIsModalVisible(false);
+      } catch (error) {
+        console.error("Ошибка при создании категории:", error);
       }
-      setNewCategoryName("");
-      setFileList([]);
-      setIsModalVisible(false);
     }
   };
+
+
+
+
+
 
   const handleRemoveItem = (categoryId: number) => {
     setItems(items.filter((item) => item.id !== categoryId));
@@ -187,7 +213,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
           </div>
         }
       >
-        <Button type="primary">
+        <Button shape="round" type="primary">
           {<ButtonText style={{ display: "inline" }}>{name}</ButtonText>} {dropdownVisible ? <CloseOutlined /> : <PlusOutlined />}
         </Button>
       </Dropdown>
@@ -204,7 +230,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
           paddingBottom: "4px",
           scrollbarWidth: "thin",
           scrollbarColor: "var(--primary-bg-color) var(--block-bg-color)",
-          paddingTop: "3px",
+          paddingTop: "2px",
         }}
       >
         {selectedCategories.map((category) => (
@@ -215,7 +241,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
               alignItems: "center",
               padding: "4px 8px",
               border: "1px solid var(--primary-bg-color)",
-              borderRadius: "4px",
+              borderRadius: "16px",
               background: "var(--primary-bg-color)",
               color: "#fff",
               whiteSpace: "nowrap",

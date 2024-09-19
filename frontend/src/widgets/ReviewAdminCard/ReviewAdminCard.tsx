@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { API_URL } from "../../shared/utils/constants";
 import { FullReviewDto } from "../../store/review";
-import { Button, Rate, Image, Flex } from "antd";
+import { Button, Rate, Image } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ButtonText } from "../../pages/admin/ui/products/Products";
 
 interface ReviewAdminCardProps {
     review: FullReviewDto;
+    refetchReviews?: () => void;
 }
 
-const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review }) => {
+const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review, refetchReviews }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const navigate = useNavigate();
     const locate = useLocation();
@@ -18,18 +19,19 @@ const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review }) => {
         <div
             style={{
                 width: "370px",
-                // marginBottom: "20px",
                 minHeight: "200px",
                 position: "relative",
                 overflow: "hidden",
             }}
             key={review.id}
         >
-            <div style={{
-                border: "1px solid var(--primary-bg-color)",
-                borderRadius: "6px",
-                padding: "10px",
-            }}>
+            <div
+                style={{
+                    border: "1px solid var(--primary-bg-color)",
+                    borderRadius: "6px",
+                    padding: "10px",
+                }}
+            >
                 <div
                     style={{
                         display: "flex",
@@ -124,16 +126,15 @@ const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review }) => {
                             state: { previousLocation: locate.pathname },
                         });
                     }}
+                    shape="round"
                 >
                     <ButtonText>
                         Редактировать
                     </ButtonText>
-
                 </Button>
             </div>
-
         </div>
-    )
-}
+    );
+};
 
 export default ReviewAdminCard;

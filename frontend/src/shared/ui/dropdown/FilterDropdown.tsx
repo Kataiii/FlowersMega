@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Dropdown, Button, Input, Menu, Checkbox } from 'antd';
 import { PlusOutlined, EditOutlined, CloseOutlined } from '@ant-design/icons';
-import { FilterWithItems } from '../../../store/filter';
+import { FilterWithItems, useFiltersControllerCreateMutation } from '../../../store/filter';
 import { ItemFilter } from '../../../store/product';
 import { ButtonText } from '../../../pages/admin/ui/products/Products';
+import { useItemFilterControllerCreateMutation } from '../../../store/itemFilter';
 
 interface FilterTag {
     filter: FilterWithItems;
@@ -21,16 +22,27 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
     const [activeFilter, setActiveFilter] = useState<FilterWithItems | null>(null);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [searchValue, setSearchValue] = useState('');
+    const [addFilter] = useFiltersControllerCreateMutation();
+    const [addTag] = useItemFilterControllerCreateMutation();
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(e.target.value);
     };
 
-    const handleAddFilter = () => {
+    const handleAddFilter = async () => {
         if (searchValue && data && !data.some(f => f.name === searchValue)) {
-            const newFilter: FilterWithItems = { name: searchValue, items: [] };
-            setFilters([...filters, { filter: newFilter, tags: [] }]);
-            setSearchValue('');
+            try {
+                const response = await addFilter({
+                    createFilterDto: { name: searchValue }
+                }).unwrap();
+                const newFilter: FilterWithItems = { name: response.name, items: [] };
+                setFilters([...filters, { filter: newFilter, tags: [] }]);
+                setSearchValue('');
+            } catch (error) {
+
+                console.error("Ошибка при создании фильтра:", error);
+            }
+
         }
     };
 
@@ -76,12 +88,25 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
         }
     };
 
-    const handleAddTag = () => {
+    const handleAddTag = async () => {
         if (activeFilter && searchValue && !activeFilter.items.some(item => item.name === searchValue)) {
-            const newTag: ItemFilter = { id: parseInt(`${activeFilter.name}-${searchValue}`, 10), name: searchValue };
-            const updatedFilter = { ...activeFilter, items: [...activeFilter.items, newTag] };
-            setFilters([...filters, { filter: updatedFilter, tags: [newTag] }]);
-            setSearchValue('');
+            try {
+                const response = await addTag({
+                    name: searchValue,
+                    idFilter: activeFilter.id || 0
+                }).unwrap();
+
+                const newTag: ItemFilter = { id: response.id, name: searchValue, idFilter: activeFilter.id };
+                const updatedFilter = { ...activeFilter, items: [...activeFilter.items, newTag] };
+                const updatedFilters = filters.map(f =>
+                    f.filter.name === activeFilter.name ? { ...f, filter: updatedFilter } : f
+                );
+
+                setFilters(updatedFilters);
+                setSearchValue('');
+            } catch (error) {
+                console.error("Ошибка при создании тега:", error);
+            }
         }
     };
 
@@ -201,7 +226,7 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
                 dropdownRender={menu => activeFilter ? tagMenu : mainMenu}
                 disabled={disabled}
             >
-                <Button type="primary" onClick={() => setDropdownOpen(!dropdownOpen)}>
+                <Button shape="round" type="primary" onClick={() => setDropdownOpen(!dropdownOpen)}>
                     <ButtonText>Добавить фильтр {dropdownOpen ? <CloseOutlined /> : <PlusOutlined />}</ButtonText>
                 </Button>
             </Dropdown>
