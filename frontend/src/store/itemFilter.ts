@@ -10,6 +10,7 @@ const injectedRtkApi = api.injectEndpoints({
         method: "POST",
         body: arg,
       }),
+      invalidatesTags: ["Tag"],
     })
   }),
   overrideExisting: false,

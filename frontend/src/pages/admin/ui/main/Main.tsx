@@ -37,10 +37,14 @@ const Container = styled.div`
 const LinkButton = styled.button`
   background: transparent;
   border: none;
+  border-radius: 6px;
   padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
   cursor: pointer;
+  &:hover{
+        background-color: var(--city-active);
+    }
 `;
 
 const LinkText = styled.p`
@@ -83,7 +87,9 @@ const Main: React.FC = () => {
             headerBg: "--block-bg-color",
           },
           Button: {
-            colorPrimaryText: "var(--primary-text-color)",
+            colorPrimaryText: "var(--primary-bg-color)",
+            defaultBorderColor: "var(--primary-bg-color)",
+            defaultColor: "var(--primary-bg-color)",
           },
           Select: {
             colorPrimary: "#F5EFF5",

@@ -13,6 +13,8 @@ import { useTypesProductControllerGetAllQuery } from "../../../../store/typeProd
 import { styled } from "styled-components";
 import { SortText } from "../orders/Orders";
 import ExtraPriceBlock from "../../../../widgets/extraPrice/ExtraPriceBlock";
+import PostcardAddBlock from "../../../../widgets/postcard/PostcardAddBlock";
+
 
 
 export const NamePage = styled.p`
@@ -103,6 +105,7 @@ const Products: React.FC = () => {
                         База товаров
                     </NameContainer>
                 </div>
+                <PostcardAddBlock />
                 <ExtraPriceBlock />
                 <Button
                     shape="round"

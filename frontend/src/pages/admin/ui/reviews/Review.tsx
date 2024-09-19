@@ -26,6 +26,8 @@ const Review: React.FC<ReviewProps> = ({ refetchReviews }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const navigate = useNavigate();
 
+
+
     const showDeleteConfirm = () => {
         setIsModalVisible(true);
     };
@@ -33,28 +35,25 @@ const Review: React.FC<ReviewProps> = ({ refetchReviews }) => {
     const handleCancel = () => {
         setIsModalVisible(false);
     };
+
     const handleFormFinish = async (values: any) => {
-        const productSizeId = data?.idProductSize ? data.idProductSize : 0;
-        const reviewId = Number(id);
-
-        const formData: UpdateReviewDto = {
-            id: reviewId,
-            rating: values.rate,
-            comment: values.comment,
-            idUser: data?.idUser || 0,
-            firstname: values.name,
-            phone: values.phone,
-            idProductSize: productSizeId,
-        };
-
-        console.log("Form values:", formData);
         try {
+            const formData: UpdateReviewDto = {
+                id: Number(id),
+                rating: values.rate,
+                comment: values.comment,
+                idUser: data?.idUser || 0,
+                firstname: values.name,
+                phone: values.phone,
+                idProductSize: data?.idProductSize || 0,
+            };
             const response = await updateReview({ updatedReview: formData });
             console.log("Updated review:", response);
         } catch (error) {
             console.error("Error updating review:", error);
         }
-    }
+    };
+
     const handleDelete = async () => {
         try {
             await deleteReview({ id: Number(id) });
@@ -95,7 +94,7 @@ const Review: React.FC<ReviewProps> = ({ refetchReviews }) => {
                         >
                             <HeadText>
                                 Отзыв <span style={{ color: "var(--primary-review-text)" }}>{data?.firstname}</span>{" "}
-                                <span style={{ color: "var(--unactive-text-color)" }}>от
+                                <span style={{ color: "var(--unactive-text-color)" }}>от{" "}
                                     <>
                                         {/* @ts-ignore*/}
                                         {new Date(data.createdAt).toLocaleDateString()}

@@ -4,6 +4,8 @@ import { Button, Dropdown, Input, Modal, Upload } from "antd";
 import { ItemFilter } from "../../../store/product";
 import { ButtonText } from "../../../pages/admin/ui/products/Products";
 import { useCategoriesControllerCreateMutation } from "../../../store/category";
+import axios from "axios";
+import { API_URL } from "../../utils/constants";
 
 interface CategoryDropdownProps {
   value?: { id?: number; name: string; photo: string }[];
@@ -60,12 +62,16 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
           name: newCategoryName,
           file: fileList[0].originFileObj,
         };
-        const response = await addCategory({
-          body: {
-            name: newCategoryName,
-            file: fileList[0].originFileObj,
-          },
-        }).unwrap();
+        console.log(body);
+        // const response = await addCategory({
+        //   body: {
+        //     name: newCategoryName,
+        //     file: fileList[0].originFileObj,
+        //   },
+        // }).unwrap();
+        const response = (await axios.postForm<Category>(`${API_URL}/categories`, body, {
+          withCredentials: true,
+        })).data;
         const newCategory = {
           id: response.id,
           name: response.name,
@@ -261,8 +267,8 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
         visible={isModalVisible}
         onOk={handleAddCategory}
         onCancel={() => setIsModalVisible(false)}
-        okText="Создать"
-        cancelText="Отмена"
+        okText={<ButtonText>Создать</ButtonText>}
+        cancelText={<ButtonText>Отмена</ButtonText>}
       >
         <Input
           placeholder="Название категории"
@@ -276,7 +282,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
           onChange={handleUploadChange}
           listType="picture"
         >
-          <Button icon={<UploadOutlined />}>Загрузить фото</Button>
+          <Button icon={<UploadOutlined />}><ButtonText style={{ display: "inline" }}>Загрузить фото</ButtonText></Button>
         </Upload>
       </Modal>
     </div>

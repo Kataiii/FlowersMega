@@ -9,13 +9,16 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/categories`,
         method: "POST",
         body: queryArg.body,
+
       }),
+      invalidatesTags: ['Category']
     }),
     categoriesControllerGetAll: build.query<
       CategoriesControllerGetAllApiResponse,
       CategoriesControllerGetAllApiArg
     >({
       query: () => ({ url: `/categories` }),
+      providesTags: ['Category'],
     }),
     categoriesControllerGetById: build.query<
       CategoriesControllerGetByIdApiResponse,

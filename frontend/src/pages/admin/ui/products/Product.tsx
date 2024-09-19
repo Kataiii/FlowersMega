@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import Container from "../../../../shared/ui/containerMain/ContainerMain";
 import { useProductsControllerGetByIdQuery, useProductsSizesControllerGetAllSizesByProductIdQuery, useProductsSizesControllerGetByIdQuery, useProductsSizesControllerGetByProductIdQuery } from "../../../../store/product";
-import { Flex, Spin, Image, Input, Select, Dropdown, Space, Form, Button } from "antd";
+import { Flex, Spin, Image, Input, Select, Dropdown, Space, Form, Button, Modal, Upload } from "antd";
 import { CloseOutlined, DownOutlined, LoadingOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { styled } from "styled-components"
 import { API_URL } from "../../../../shared/utils/constants"
@@ -22,6 +22,10 @@ import { useProductsSizesControllerGetByCategotyIdWithPaginationQuery, useProduc
 import Item from "antd/es/list/Item";
 import { ButtonText } from "./Products";
 import SizeDropdown from "../../../../shared/ui/dropdown/SizeDropdown";
+import ModalEmpty from "../../../../shared/ui/modalEmpty/ModalEmpty";
+import TryPhoto from "../../../../widgets/loadPhoto/TryPhoto";
+import { Title } from "../../../../shared/ui/forAdditionalPages/Title";
+import ProductPhotoLoader from "../../../../widgets/loadPhoto/ProductPhotoLoader";
 
 export const StyledForm = styled(Form)`
   .ant-form-item {
@@ -65,11 +69,20 @@ export const ScrollContainer = styled.div`
   padding: 8px;
 `;
 
+const ButtonPhoto = styled.h5`
+    cursor: pointer;
+    font-family: "Inter";
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--primary-bg-color);
+`;
+
 const Product: React.FC = () => {
     const { id } = useParams();
     const { isLoading, data } = useProductsControllerGetByIdQuery({ id: Number(id) });
     const [disabled, setDisabled] = useState(true);
     const [form] = Form.useForm();
+    const [isOpenPhoto, setIsOpenPhoto] = useState<boolean>(false);
     const [variations, setVariations] = useState<any[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<{ name: string; photo: string }[]>([]);
     const [filters, setFilters] = useState<any[]>([]);
@@ -141,6 +154,8 @@ const Product: React.FC = () => {
             data ? setDisabled(true) : setDisabled(false);
         }
     }, [data]);
+
+
 
     return (
         <Container>
@@ -246,7 +261,8 @@ const Product: React.FC = () => {
                                             alignItems: "center",
                                         }}
                                     >
-                                        <LoaderPhoto handleChange={undefined} maxFiles={1} fileList={[]} />
+                                        <ProductPhotoLoader />
+
                                     </div>
                                 </div>
                             )}
@@ -341,6 +357,12 @@ const Product: React.FC = () => {
                     </div>
                 </StyledForm>
             )}
+            <Modal open={isOpenPhoto} >
+                <>
+                    <Title style={{ fontSize: 24 }}>Загрузите аватар</Title>
+                    <TryPhoto />
+                </>
+            </Modal>
         </Container>
     );
 };

@@ -11,18 +11,21 @@ const injectedRtkApi = api.injectEndpoints({
         method: "POST",
         body: queryArg.createFilterDto,
       }),
+      invalidatesTags: ['Filter', 'Tag'],
     }),
     filtersControllerGetAll: build.query<
       FiltersControllerGetAllApiResponse,
       FiltersControllerGetAllApiArg
     >({
       query: () => ({ url: `/filters` }),
+      providesTags: ['Filter', 'Tag'],
     }),
     filtersControllerGetById: build.query<
       FiltersControllerGetByIdApiResponse,
       FiltersControllerGetByIdApiArg
     >({
       query: (queryArg) => ({ url: `/filters/${queryArg.id}` }),
+      providesTags: ['Filter', 'Tag'],
     }),
     filtersControllerGetAllWithMaxPrice: build.query<
       FiltersControllerHetAllWithMaxPriceApiResponse,

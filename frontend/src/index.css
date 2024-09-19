@@ -24,4 +24,9 @@
     height: 9px;
     width: 5px;
   }
+
+  .customSizedUpload .ant-upload {
+    width: 150px !important;
+    height: 155px !important;
+  }
 }

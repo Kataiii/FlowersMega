@@ -185,8 +185,8 @@ const Orders: React.FC = () => {
               { value: "dateOld", label: "Дата (старые)" },
               { value: "customerASC", label: "Заказчик (А-Я)" },
               { value: "customerDESC", label: "Заказчик (Я-А)" },
-              { value: "costASC", label: "Цена (выше)" },
-              { value: "costDESC", label: "Цена (ниже)" },
+              { value: "costASC", label: "Цена (возрастание)" },
+              { value: "costDESC", label: "Цена (убывание)" },
             ]}
             placeholder="Выбрать"
             value={sortOrder}

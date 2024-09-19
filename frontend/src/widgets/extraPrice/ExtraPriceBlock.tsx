@@ -42,7 +42,7 @@ const ExtraPriceBlock: React.FC = () => {
                     gap: "20px"
                 }}
             >
-                <div style={{ backgroundColor: "var(--city-active)", borderRadius: "16px", height: "182px", display: "flex", flexDirection: "column", width: "70%", gap: "10px" }}>
+                <div style={{ backgroundColor: "var(--city-active)", borderRadius: "16px", height: "182px", display: "flex", flexDirection: "column", width: "70%", gap: "10px", padding: "3px", }}>
 
                     <div>
                         <Button
@@ -51,7 +51,7 @@ const ExtraPriceBlock: React.FC = () => {
                             shape="round"
                             onClick={handleAddVariation}
                         >
-                            Добавить наценку <PlusCircleOutlined />
+                            <ButtonText style={{ display: "inline" }}>Добавить наценку</ButtonText> <PlusCircleOutlined />
                         </Button>
                     </div>
                     <div
@@ -90,6 +90,7 @@ const ExtraPriceBlock: React.FC = () => {
                         width: "30%",
                         gap: "9px",
                         border: "1px solid var(--primary-bg-color)",
+                        backgroundColor: "var(--city-active)",
                         padding: "6px",
                         borderRadius: "10px",
                         height: "182px"
@@ -119,10 +120,10 @@ const ExtraPriceBlock: React.FC = () => {
                         </p>
                         <span>ahhaha</span>
                     </div>
-                    <Button danger>
+                    <Button danger type="primary" shape="round">
                         <ButtonText>Сбросить</ButtonText>
                     </Button>
-                    <Button type="primary">
+                    <Button type="primary" shape="round">
                         <ButtonText>Применить</ButtonText>
                     </Button>
                 </div>
