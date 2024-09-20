@@ -6,7 +6,7 @@ import { CloseOutlined, DownOutlined, LoadingOutlined, PlusCircleOutlined } from
 import { styled } from "styled-components"
 import { API_URL } from "../../../../shared/utils/constants"
 import { MenuProps } from "antd/lib";
-import TypeDropdown from "../../../../shared/ui/dropdown/SizeDropdown";
+import TypeDropdown from "../../../../shared/ui/dropdown/TypeDropdown";
 import { useEffect, useState } from "react";
 import TextArea from "antd/es/input/TextArea";
 import CategoryDropdown from "../../../../shared/ui/dropdown/CategoryDropdown";
@@ -224,7 +224,7 @@ const Product: React.FC = () => {
                                         }}
                                         bordered={false}
                                     /> */}
-                                    <SizeDropdown disabled={disabled} />
+                                    <TypeDropdown disabled={disabled} />
                                 </Form.Item>
                             </div>
                             <Form.Item label={<ValueText>Описание</ValueText>} name="description" style={{ width: "600px", margin: "0" }}>
