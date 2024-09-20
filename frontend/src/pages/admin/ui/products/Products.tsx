@@ -105,7 +105,6 @@ const Products: React.FC = () => {
                         База товаров
                     </NameContainer>
                 </div>
-                <PostcardAddBlock />
                 <ExtraPriceBlock />
                 <Button
                     shape="round"

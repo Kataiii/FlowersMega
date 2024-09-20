@@ -27,6 +27,7 @@ import TryPhoto from "../../../../widgets/loadPhoto/TryPhoto";
 import { Title } from "../../../../shared/ui/forAdditionalPages/Title";
 import ProductPhotoLoader from "../../../../widgets/loadPhoto/ProductPhotoLoader";
 
+
 export const StyledForm = styled(Form)`
   .ant-form-item {
     margin-bottom: 0px;
@@ -93,6 +94,14 @@ const Product: React.FC = () => {
     const { data: productVariations, isLoading: productVariationsLoading } = useProductsSizesControllerGetByProductIdQuery({ id: Number(id) });
 
     const handleFormFinish = (values: any) => {
+        const formattedFilters = filters.map((filter) => {
+            console.log("Processing filter:", filter);
+            return {
+                id: filter.filter.id,
+                name: filter.filter.name,
+                tags: filter.tags || [],
+            };
+        });
 
         const formData = {
             name: values.name,
@@ -103,14 +112,16 @@ const Product: React.FC = () => {
             photo: data?.images?.[0]?.url ? data?.images?.[0] : "",
             productSize: variations,
             categories: selectedCategories,
-            filters: filters,
+            filters: formattedFilters,
             updatedAt: values.updatedAt,
         };
-        console.log("Filters state:", filters);
+
+        console.log("Final filters data:", formattedFilters);
         console.log("Form values:", formData);
-        const jsonString = JSON.stringify(formData)
+        const jsonString = JSON.stringify(formData);
         console.log(jsonString);
     };
+
 
     const handleCategoryChange = (newCategories: { name: string; photo: string }[]) => {
         setSelectedCategories(newCategories);
@@ -118,6 +129,7 @@ const Product: React.FC = () => {
 
     const handleFilterChange = (newFilters: any[]) => {
         setFilters(newFilters);
+        console.log("New filters:", newFilters);
     };
 
     const handleEdit = () => {
