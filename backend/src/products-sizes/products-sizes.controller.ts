@@ -1,6 +1,9 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Product } from 'src/products/products.model';
 import { AllSizesDto } from './dto/allSizes.dto';
+import { CreateFullProductSizeDto } from './dto/createFullProduct.dto';
 import { CreateProductSizeDto, CreateProductSizeInfoDto } from './dto/createProductsSizes.dto';
 import { FullProductSizeDto } from './dto/fullProductsSizes.dto';
 import { GetPaginationProductSizeDto } from './dto/getPagination.dto';
@@ -21,6 +24,77 @@ export class ProductsSizesController {
     @Post()
     async create(@Body()dto: CreateProductSizeDto){
         return await this.productsSizesService.create(dto);
+    }
+
+    @ApiOperation({summary: "Create full product"})
+    @ApiResponse({status: 201, type: Product})
+    @Post('/full-product')
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                name: {type: 'string'},
+                type:{type: 'number'},
+                description: {type: 'string'},
+                structure: {type: 'string'},
+                photo:  {
+                    type: 'string',
+                    format: 'binary'
+                },
+                productSize: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        properties: {
+                            idSize: {type: 'number'},
+                            prise: {type: 'number'},
+                            paramsSize: {type: 'string'}
+                        }
+                    }
+                },
+                categories: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        properties: {
+                            id: {type: 'number'},
+                            name: {type: 'string'},
+                            photo: {type: 'string'}
+                        }
+                    }
+                },
+                filters: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        properties: {
+                            filter: {
+                                type: 'object',
+                                properties: {
+                                    id: {type: 'number'},
+                                    name: {type: 'string'}
+                                }
+                            },
+                            tags: {
+                                type: 'array',
+                                items: {
+                                    type: 'object',
+                                    properties: {
+                                        id: {type: 'number'},
+                                        name: {type: 'string'},
+                                        idFilter: {type: 'number'}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }            
+            }
+        }
+    })
+    @UseInterceptors(FileInterceptor('photo'))
+    async createFullProduct(@Body() dto:CreateFullProductSizeDto, @UploadedFile() photo){
+        return await this.productsSizesFullService.createFullProduct(dto, photo);
     }
 
     @ApiOperation({summary: 'Get all products sizes'})

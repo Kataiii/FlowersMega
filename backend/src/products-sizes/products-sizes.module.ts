@@ -7,6 +7,8 @@ import { ProductsModule } from 'src/products/products.module';
 import { SizesModule } from 'src/sizes/sizes.module';
 import { ProductsSizesFullService } from './products-sizes-full.service';
 import { ReviewsModule } from 'src/reviews/reviews.module';
+import { CategoriesProductsModule } from 'src/categories-products/categories-products.module';
+import { ProductsItemsFilterModule } from 'src/products-items-filter/products-items-filter.module';
 
 @Module({
   providers: [ProductsSizesService, ProductsSizesFullService],
@@ -15,7 +17,9 @@ import { ReviewsModule } from 'src/reviews/reviews.module';
     SequelizeModule.forFeature([ProductSize]),
     ProductsModule,
     SizesModule,
-    forwardRef(() => ReviewsModule)
+    forwardRef(() => ReviewsModule),
+    CategoriesProductsModule,
+    ProductsItemsFilterModule
   ],
   exports: [
     ProductsSizesService,

@@ -25,6 +25,7 @@ import { TokensModule } from './tokens/tokens.module';
 import { CategoriesProductsModule } from './categories-products/categories-products.module';
 import { TgBotModule } from './tg-bot/tg-bot.module';
 import { SeedsModule } from './seeds/seeds.module';
+import { ProductsItemsFilterModule } from './products-items-filter/products-items-filter.module';
 
 
 @Module({
@@ -69,6 +70,7 @@ import { SeedsModule } from './seeds/seeds.module';
         CategoriesProductsModule,
         TgBotModule,
         SeedsModule,
+        ProductsItemsFilterModule,
     ]
 })
 export class AppModule{}
