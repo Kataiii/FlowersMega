@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CategoriesProductsService } from 'src/categories-products/categories-products.service';
+import { Category } from 'src/categories/categories.model';
 import { ProductsItemsFilterService } from 'src/products-items-filter/products-items-filter.service';
 import { ProductsService } from 'src/products/products.service';
 import { ReviewsService } from 'src/reviews/reviews.service';
 import { SizesService } from 'src/sizes/sizes.service';
-import { CreateFullProductSizeDto } from './dto/createFullProduct.dto';
+import { CreateFullProductSizeDto, CreateProductSizeSmallDto, FilterWithItems } from './dto/createFullProduct.dto';
 import { ProductSize } from './products-sizes.model';
 
 @Injectable()
@@ -93,13 +94,17 @@ export class ProductsSizesFullService {
     }
 
     async createFullProduct(dto: CreateFullProductSizeDto, photo: File){
+        const prosuctsSizes = JSON.parse(`[${dto.productSize.toString()}]`) as CreateProductSizeSmallDto[];
+        const categories = JSON.parse(`[${dto.categories.toString()}]`) as Category[];
+        const filters  = JSON.parse(`[${dto.filters.toString()}]`) as FilterWithItems[];
         const product = await this.productsService.create({
             name: dto.name,
             description: dto.description,        
             structure: dto.structure,
             idTypeProduct: dto.type
         }, [photo]);
-        await Promise.all(dto.productSize.map(async(item) => {
+        await Promise.all(prosuctsSizes.map(async(item) => {
+            console.log(item);
             return await this.productsSizesRepository.create({
                 idProduct: product.id,
                 idSize: item.idSize,
@@ -107,7 +112,7 @@ export class ProductsSizesFullService {
                 prise: item.prise
             })
         }));
-        await Promise.all(dto.categories.map(async(item) => {
+        await Promise.all(categories.map(async(item) => {
             return await this.categoriesProductService.create({
                 idProduct: product.id,
                 //@ts-ignore
@@ -115,7 +120,7 @@ export class ProductsSizesFullService {
             })
         }));
 
-        await Promise.all(dto.filters.map(async(item) => {
+        await Promise.all(filters.map(async(item) => {
             return await Promise.all(item.tags.map(async(itemTags) => {
                 return await this.productsItemsFilterService.create({
                     idProduct: product.id,

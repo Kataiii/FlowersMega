@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Product } from 'src/products/products.model';
 import { AllSizesDto } from './dto/allSizes.dto';
 import { CreateFullProductSizeDto } from './dto/createFullProduct.dto';
@@ -29,6 +29,7 @@ export class ProductsSizesController {
     @ApiOperation({summary: "Create full product"})
     @ApiResponse({status: 201, type: Product})
     @Post('/full-product')
+    @ApiConsumes('multipart/form-data')
     @ApiBody({
         schema: {
             type: 'object',
@@ -43,8 +44,10 @@ export class ProductsSizesController {
                 },
                 productSize: {
                     type: 'array',
-                    items: {
+                    items:
+                    {
                         type: 'object',
+                        format: 'object',
                         properties: {
                             idSize: {type: 'number'},
                             prise: {type: 'number'},
@@ -56,6 +59,7 @@ export class ProductsSizesController {
                     type: 'array',
                     items: {
                         type: 'object',
+                        format: 'object',
                         properties: {
                             id: {type: 'number'},
                             name: {type: 'string'},
@@ -67,6 +71,7 @@ export class ProductsSizesController {
                     type: 'array',
                     items: {
                         type: 'object',
+                        format: 'object',
                         properties: {
                             filter: {
                                 type: 'object',
