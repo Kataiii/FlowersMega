@@ -14,6 +14,7 @@ import { styled } from "styled-components";
 import { SortText } from "../orders/Orders";
 import ExtraPriceBlock from "../../../../widgets/extraPrice/ExtraPriceBlock";
 import PostcardAddBlock from "../../../../widgets/postcard/PostcardAddBlock";
+import { Debouncer } from "../../../../shared/utils/debounce";
 
 
 
@@ -43,6 +44,7 @@ const Products: React.FC = () => {
     // const { isLoading, data: products } = useProductsControllerGetAllQuery();
     const [sortOrder, setSortOrder] = useState<string>("");
     const [searchId, setSearchId] = useState<string>("");
+    const [finalSearchId, setFinalSearchId] = useState<string>("");
     const [categories, setCategories] = useState<string[]>([]);
     const [filters, setFilters] = useState<string[]>([]);
     const [page, setPage] = useState<number>(1);
@@ -50,7 +52,22 @@ const Products: React.FC = () => {
     const { data: filtersData } = useFiltersControllerGetAllQuery();
     const { data: categoriesData } = useCategoriesControllerGetAllQuery();
     const { data: productType } = useTypesProductControllerGetAllQuery();
-    const { data: productSizedPag } = useProductSizesControllerGetProductsWithPaginationQuery({ page: page, limit: pageSize });
+    const { data: productSizedPag } = useProductSizesControllerGetProductsWithPaginationQuery({ page: page, limit: pageSize, search: finalSearchId });
+
+    const debouncer = new Debouncer();
+
+    const debouncedSearch = useCallback(
+        debouncer.debounce((searchValue: string) => {
+            setFinalSearchId(searchValue);
+            setPage(1);
+        }, 2000), []
+    );
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newSearchValue = e.target.value;
+        setSearchId(newSearchValue);
+        debouncedSearch(newSearchValue);
+    };
 
     const handleCategoriesAndFiltersChange = useCallback((categories: string[], filters: string[]) => {
         setCategories(categories);
@@ -121,7 +138,7 @@ const Products: React.FC = () => {
                         <Input
                             placeholder="Поиск"
                             value={searchId}
-                            onChange={(e) => setSearchId(e.target.value)}
+                            onChange={handleSearchChange}
                         />
                         <Button style={{ width: "150px" }} type="primary" > <ButtonText style={{ display: "inline" }}>Найти</ButtonText> <SearchOutlined /> </Button>
                     </Space.Compact>

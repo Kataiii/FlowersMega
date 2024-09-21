@@ -123,11 +123,29 @@ const injectedRtkApi = api.injectEndpoints({
       productSizesControllerGetProductsWithPaginationApiResponse,
       productSizesControllerGetProductsWithPaginationApiArg
     >({
-      query: (queryArg) => ({
-        url: `/products-sizes/products-with-pagination/${queryArg.page}/${queryArg.limit}`
-      })
+      query: (queryArg) => {
+        const params: Record<string, any> = {};
+        if (queryArg.search) {
+          params.search = queryArg.search;
+        }
+        return {
+          url: `/products-sizes/products-with-pagination/${queryArg.page}/${queryArg.limit}`,
+          params: params,
+        }
 
-    })
+      }
+
+    }),
+    productsControllerCreateWithDetails: build.mutation<
+      ProductsControllerCreateWithDetailsApiResponse,
+      ProductsControllerCreateWithDetailsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/products`,
+        method: "POST",
+        body: queryArg.body,
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -224,7 +242,39 @@ export type productSizesControllerGetProductsWithPaginationApiResponse = {
 export type productSizesControllerGetProductsWithPaginationApiArg = {
   page: number;
   limit: number;
+  search?: string;
 }
+export type ProductsControllerCreateWithDetailsApiResponse = /** status 201 */ Product;
+export type ProductsControllerCreateWithDetailsApiArg = {
+  body: {
+    name: string;
+    type: number;
+    description: string;
+    structure: string;
+    photo: string;
+    productSize: {
+      idSize: number;
+      prise: number;
+      paramsSize: string;
+    }[];
+    categories: {
+      id: number;
+      name: string;
+      photo: string;
+    }[];
+    filters: {
+      filter: {
+        id: number;
+        name: string;
+      };
+      tags: {
+        id: number;
+        name: string;
+        idFilter: number;
+      }[];
+    }[];
+  };
+};
 export type Product = {
   /** Unique identifier */
   id: number;
@@ -382,4 +432,5 @@ export const {
   useCategoriesProductsControllerGetAllQuery,
   useProductsSizesControllerGetByProductIdAndSizeIdQuery,
   useProductSizesControllerGetProductsWithPaginationQuery,
+  useProductsControllerCreateWithDetailsMutation
 } = injectedRtkApi;

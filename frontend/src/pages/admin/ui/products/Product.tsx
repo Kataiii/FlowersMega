@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import Container from "../../../../shared/ui/containerMain/ContainerMain";
-import { useProductsControllerGetByIdQuery, useProductsSizesControllerGetAllSizesByProductIdQuery, useProductsSizesControllerGetByIdQuery, useProductsSizesControllerGetByProductIdQuery } from "../../../../store/product";
+import { useProductsControllerCreateWithDetailsMutation, useProductsControllerGetByIdQuery, useProductsSizesControllerGetAllSizesByProductIdQuery, useProductsSizesControllerGetByIdQuery, useProductsSizesControllerGetByProductIdQuery } from "../../../../store/product";
 import { Flex, Spin, Image, Input, Select, Dropdown, Space, Form, Button, Modal, Upload } from "antd";
 import { CloseOutlined, DownOutlined, LoadingOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { styled } from "styled-components"
@@ -92,14 +92,21 @@ const Product: React.FC = () => {
     const { data: categories, isLoading: categoriesLoading } = useCategoriesControllerGetAllQuery();
     const { data: productSizes, isLoading: sizesLoading } = useProductsSizesControllerGetProductSizeForCardByIdQuery({ id: Number(id) });
     const { data: productVariations, isLoading: productVariationsLoading } = useProductsSizesControllerGetByProductIdQuery({ id: Number(id) });
+    const [createProductWithDetails] = useProductsControllerCreateWithDetailsMutation();
 
-    const handleFormFinish = (values: any) => {
+
+    const handleFormFinish = async (values: any) => {
         const formattedFilters = filters.map((filter) => {
-            console.log("Processing filter:", filter);
             return {
-                id: filter.filter.id,
-                name: filter.filter.name,
-                tags: filter.tags || [],
+                filter: {
+                    id: filter.filter.id,
+                    name: filter.filter.name,
+                },
+                tags: (filter.tags || []).map((tag: any) => ({
+                    id: tag.id,
+                    name: tag.name,
+                    idFilter: tag.idFilter,
+                })),
             };
         });
 
@@ -109,17 +116,31 @@ const Product: React.FC = () => {
             description: values.description,
             structure: values.structure,
             // @ts-ignore
-            photo: data?.images?.[0]?.url ? data?.images?.[0] : "",
-            productSize: variations,
-            categories: selectedCategories,
+            photo: data?.images?.[0]?.url ? data?.images?.[0].url : "",
+            productSize: variations.map((variation: any) => ({
+                idSize: variation.idSize,
+                prise: variation.prise,
+                paramsSize: variation.paramsSize,
+            })),
+            categories: selectedCategories.map((category: any) => ({
+                id: category.id,
+                name: category.name,
+                photo: category.photo,
+            })),
             filters: formattedFilters,
-            updatedAt: values.updatedAt,
+            // updatedAt: values.updatedAt,
         };
 
         console.log("Final filters data:", formattedFilters);
-        console.log("Form values:", formData);
-        const jsonString = JSON.stringify(formData);
-        console.log(jsonString);
+        const json = JSON.stringify(formData);
+        console.log("JSON:", json);
+        console.log(selectedCategories)
+        try {
+            const response = await createProductWithDetails({ body: formData }).unwrap();
+            console.log("Product created successfully:", response);
+        } catch (error) {
+            console.error("Error creating product:", error);
+        }
     };
 
 
@@ -274,7 +295,6 @@ const Product: React.FC = () => {
                                         }}
                                     >
                                         <ProductPhotoLoader />
-
                                     </div>
                                 </div>
                             )}
