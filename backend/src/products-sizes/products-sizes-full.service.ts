@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { CategoriesProductsService } from 'src/categories-products/categories-products.service';
+import { ProductsItemsFilterService } from 'src/products-items-filter/products-items-filter.service';
 import { ProductsService } from 'src/products/products.service';
 import { ReviewsService } from 'src/reviews/reviews.service';
 import { SizesService } from 'src/sizes/sizes.service';
+import { CreateFullProductSizeDto } from './dto/createFullProduct.dto';
 import { ProductSize } from './products-sizes.model';
 
 @Injectable()
@@ -11,7 +14,9 @@ export class ProductsSizesFullService {
         @InjectModel(ProductSize) private productsSizesRepository: typeof ProductSize,
         private productsService: ProductsService,
         private sizesService: SizesService,
-        private reviewsService: ReviewsService
+        private reviewsService: ReviewsService,
+        private categoriesProductService: CategoriesProductsService,
+        private productsItemsFilterService: ProductsItemsFilterService
     ){}
 
     private async getCardInfo(productSize: ProductSize){
@@ -85,5 +90,40 @@ export class ProductsSizesFullService {
             return {products: item, productsSizes: productWithSizes};
         }));
         return {count: paginationResult.count, products: productSizesTmp};
+    }
+
+    async createFullProduct(dto: CreateFullProductSizeDto, photo: File){
+        const product = await this.productsService.create({
+            name: dto.name,
+            description: dto.description,        
+            structure: dto.structure,
+            idTypeProduct: dto.type
+        }, [photo]);
+        await Promise.all(dto.productSize.map(async(item) => {
+            return await this.productsSizesRepository.create({
+                idProduct: product.id,
+                idSize: item.idSize,
+                paramsSize: item.paramsSize,
+                prise: item.prise
+            })
+        }));
+        await Promise.all(dto.categories.map(async(item) => {
+            return await this.categoriesProductService.create({
+                idProduct: product.id,
+                //@ts-ignore
+                idCategory: item.id
+            })
+        }));
+
+        await Promise.all(dto.filters.map(async(item) => {
+            return await Promise.all(item.tags.map(async(itemTags) => {
+                return await this.productsItemsFilterService.create({
+                    idProduct: product.id,
+                    idItemFilter: itemTags.id
+                });
+            }));
+        }));
+
+        return product;
     }
 }

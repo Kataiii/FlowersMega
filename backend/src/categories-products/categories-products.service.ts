@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CategoriesProducts } from './categories_products.model';
+import { CreateCategoriesProductDto } from './dto/createCategoriesProduct.dto';
 
 @Injectable()
 export class CategoriesProductsService {
@@ -13,5 +14,9 @@ export class CategoriesProductsService {
             where: {idCategory: id}
         });
         return categories.count;
+    }
+
+    async create(dto: CreateCategoriesProductDto){
+        return await this.categoriesProductsRepository.create(dto);
     }
 }

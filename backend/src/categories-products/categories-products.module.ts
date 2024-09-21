@@ -9,6 +9,9 @@ import { CategoriesProducts } from './categories_products.model';
   controllers: [CategoriesProductsController],
   imports: [
     SequelizeModule.forFeature([CategoriesProducts]),
+  ],
+  exports: [
+    CategoriesProductsService
   ]
 })
 export class CategoriesProductsModule {}
