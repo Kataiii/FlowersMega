@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AllSizesDto } from './dto/allSizes.dto';
 import { CreateProductSizeDto, CreateProductSizeInfoDto } from './dto/createProductsSizes.dto';
@@ -86,8 +86,8 @@ export class ProductsSizesController {
     @ApiOperation({summary: 'Get product with products size with pagination'})
     @ApiResponse({status: 200, type: [FullProductSizeDto]})
     @ApiResponse({status: 404, description: "Products sizes not fount"})
-    @Get("/products-with-pagination/:page/:limit")
-    async getProductWithProductSizeWithPagination(@Param("page") page: number, @Param("limit") limit: number){
-        return await this.productsSizesFullService.getProductsWithPagination(page, limit);
+    @Get("/products-with-pagination/:page/:limit?")
+    async getProductWithProductSizeWithPagination(@Param("page") page: number, @Param("limit") limit: number, @Query("search") search?: string){
+        return await this.productsSizesFullService.getProductsWithPagination(page, limit, search);
     }
 }

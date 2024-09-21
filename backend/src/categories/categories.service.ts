@@ -44,4 +44,10 @@ export class CategoriesService {
             categories: categories
         };
     }
+
+    async delete(id: number){
+        const category = await this.categoryRepository.findOne({where: {id: id}});
+        await this.categoryRepository.destroy({where: {id: id}});
+        return category;
+    }
 }

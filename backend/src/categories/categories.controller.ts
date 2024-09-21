@@ -1,10 +1,11 @@
 import { Body, Controller, Get, Param, Post, UseInterceptors } from '@nestjs/common';
-import { UploadedFile } from '@nestjs/common/decorators';
+import { Delete, UploadedFile } from '@nestjs/common/decorators';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Category } from './categories.model';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/createCategory.dto';
+import { DeleteCategoryDto } from './dto/deleteCategory.dto';
 import { GetPaginationCategoriesDto } from './dto/getPagination.dto';
 
 @ApiTags("Categories")
@@ -54,5 +55,12 @@ export class CategoriesController {
     @Get('/pagination/:page/:limit')
     async getPagination(@Param("page") page: number, @Param("limit") limit: number){
         return await this.categoriesService.getAllCountAndPagination(page, limit);
+    }
+
+    @ApiOperation({summary: "Delete category by id"})
+    @ApiResponse({status: 200, type: Category})
+    @Delete()
+    async delete(@Body() dto: DeleteCategoryDto){
+      return await this.categoriesService.delete(dto.id);
     }
 }

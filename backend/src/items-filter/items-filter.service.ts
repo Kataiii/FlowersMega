@@ -33,4 +33,10 @@ export class ItemsFilterService {
         if(itemsFilters.length === 0) throw new HttpException("Items filters not fount", HttpStatus.NOT_FOUND);
         return itemsFilters;
     }
+
+    async delete(id: number){
+        const itemFilter = await this.itemFilterRepository.findOne({where: {id: id}});
+        await this.itemFilterRepository.destroy({where: {id: id}});
+        return itemFilter;
+    }
 }
