@@ -10,7 +10,26 @@ const injectedRtkApi = api.injectEndpoints({
         method: "POST",
         body: arg,
       }),
-      invalidatesTags: ["Tag"],
+      invalidatesTags: ["Tag", "Filter"],
+    }),
+    itemFilterControllerGetAll: build.query<
+      ItemFilterControllerGetAllApiResponse,
+      ItemFilterControllerGetAllApiArg
+    >({
+      query: () => ({ url: `/items-filter/` }),
+      providesTags: ['Filter', 'Tag'],
+    }),
+    itemFilterControllerDelete: build.mutation<
+      ItemFilterControllerDeleteApiResponse,
+      ItemFilterControllerDeleteApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/items-filter/`,
+        method: "DELETE",
+        body: { id: queryArg.id }
+      }),
+      invalidatesTags: ["Tag", "Filter"],
+
     })
   }),
   overrideExisting: false,
@@ -21,6 +40,12 @@ export type ItemFilterControllerCreateApiArg = {
   name: string;
   idFilter: number;
 }
+export type ItemFilterControllerDeleteApiResponse = ItemFilter
+export type ItemFilterControllerDeleteApiArg = {
+  id: number;
+}
+export type ItemFilterControllerGetAllApiResponse = ItemFilter[]
+export type ItemFilterControllerGetAllApiArg = void
 export type ItemFilter = {
   /** Unique identifier */
   id?: number;
@@ -30,5 +55,7 @@ export type ItemFilter = {
   idFilter?: number;
 };
 export const {
-  useItemFilterControllerCreateMutation
+  useItemFilterControllerCreateMutation,
+  useItemFilterControllerDeleteMutation,
+  useItemFilterControllerGetAllQuery
 } = injectedRtkApi;

@@ -15,6 +15,6 @@ export const emptyApi = createApi({
       'content-type': 'application/json',
     }, credentials: "include"
   }),
-  tagTypes: ['Review', 'Category', 'Filter', "Tag", "ReviewUPD", "ReviewDEL"],
+  tagTypes: ['Review', 'Category', 'Filter', "Tag", "ReviewUPD", "ReviewDEL", "Sizes"],
   endpoints: () => ({}),
 })

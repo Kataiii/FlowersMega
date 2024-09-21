@@ -3,7 +3,7 @@ import { PlusOutlined, CloseOutlined, UploadOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Input, Modal, Upload } from "antd";
 import { ItemFilter } from "../../../store/product";
 import { ButtonText } from "../../../pages/admin/ui/products/Products";
-import { useCategoriesControllerCreateMutation } from "../../../store/category";
+import { useCategoriesControllerCreateMutation, useCategoriesControllerDeleteMutation } from "../../../store/category";
 import axios from "axios";
 import { API_URL } from "../../utils/constants";
 
@@ -41,6 +41,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   const [newCategoryName, setNewCategoryName] = useState<string>("");
   const [fileList, setFileList] = useState<any[]>([]);
   const [addCategory] = useCategoriesControllerCreateMutation();
+  const [deleteCategory] = useCategoriesControllerDeleteMutation();
 
   const formattedItems = useMemo(() => data.map((item) => ({
     id: item.id,
@@ -97,8 +98,13 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
 
 
 
-  const handleRemoveItem = (categoryId: number) => {
-    setItems(items.filter((item) => item.id !== categoryId));
+  const handleRemoveItem = async (categoryId: number) => {
+    try {
+      await deleteCategory({ id: categoryId }).unwrap();
+      console.log(`Фильтр с id ${categoryId} успешно удален.`);
+    } catch (error) {
+      console.error('Ошибка при удалении фильтра:', error);
+    }
   };
 
   const handleRemoveCategory = (categoryId: number) => {

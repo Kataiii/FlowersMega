@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Dropdown, Button, Input, Menu, Checkbox } from 'antd';
 import { PlusOutlined, EditOutlined, CloseOutlined } from '@ant-design/icons';
-import { FilterWithItems, useFiltersControllerCreateMutation } from '../../../store/filter';
+import { FilterWithItems, useFiltersControllerCreateMutation, useFiltersControllerDeleteByIdMutation } from '../../../store/filter';
 import { ItemFilter } from '../../../store/product';
 import { ButtonText } from '../../../pages/admin/ui/products/Products';
-import { useItemFilterControllerCreateMutation } from '../../../store/itemFilter';
+import { useItemFilterControllerCreateMutation, useItemFilterControllerDeleteMutation } from '../../../store/itemFilter';
 
 interface FilterTag {
     filter: FilterWithItems;
@@ -24,7 +24,8 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
     const [searchValue, setSearchValue] = useState('');
     const [addFilter] = useFiltersControllerCreateMutation();
     const [addTag] = useItemFilterControllerCreateMutation();
-
+    const [deleteFilter] = useFiltersControllerDeleteByIdMutation();
+    const [deleteTag] = useItemFilterControllerDeleteMutation();
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(e.target.value);
     };
@@ -72,6 +73,26 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
 
         }
     };
+
+    const handleRemoveDataFilter = async (filterId: number) => {
+        try {
+            await deleteFilter({ id: filterId }).unwrap();
+            console.log(`Фильтр с id ${filterId} успешно удален.`);
+        } catch (error) {
+            console.error('Ошибка при удалении фильтра:', error);
+        }
+    };
+
+    const handleRemoveItemFilter = async (tagId: number) => {
+        try {
+            await deleteTag({ id: tagId }).unwrap();
+
+            // console.log(`Тег с id ${tagId} успешно удален.`);
+        } catch (error) {
+            console.error('Ошибка при удалении тега:', error);
+        }
+    }
+
 
     const handleRemoveFilter = (filter: FilterWithItems) => {
         setFilters(filters.filter(f => f.filter.name !== filter.name));
@@ -143,10 +164,22 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
             <Menu
                 items={filteredAvailableFilters.map(filter => ({
                     key: filter.name,
-                    label: filter.name,
+                    label: (
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                            <span>{filter.name}</span>
+                            <CloseOutlined
+                                style={{ paddingLeft: "3px" }}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleRemoveDataFilter(filter.id!);
+                                }}
+                            />
+                        </div>
+                    ),
                     onClick: () => handleSelectFilter(filter)
                 }))}
             />
+
         </div>
     );
 
@@ -185,12 +218,30 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
             <Menu>
                 {filteredTags.map(tag => (
                     <Menu.Item key={tag.id}>
-                        <Checkbox
-                            checked={filters.find(f => f.filter.name === activeFilter.name)?.tags.some(t => t.id === tag.id) || false}
-                            onChange={(e) => handleTagChange(e.target.checked, tag)}
-                        >
-                            {tag.name}
-                        </Checkbox>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                            <div>
+                                <Checkbox
+                                    checked={filters.find(f => f.filter.name === activeFilter.name)?.tags.some(t => t.id === tag.id) || false}
+                                    onChange={(e) => handleTagChange(e.target.checked, tag)}
+                                >
+                                    <div >
+                                        <span>
+                                            {tag.name}
+                                        </span>
+
+                                    </div>
+
+                                </Checkbox>
+                            </div>
+                            <CloseOutlined
+                                style={{ paddingLeft: "3px" }}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleRemoveItemFilter(tag.id!);
+                                }}
+                            />
+                        </div>
+
                     </Menu.Item>
                 ))}
             </Menu>

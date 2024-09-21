@@ -42,6 +42,18 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/categories-products/count/${queryArg.id}`,
       }),
     }),
+    categoriesControllerDelete: build.mutation<
+      CategoriesControllerDeleteApiResponse,
+      CategoriesControllerDeleteApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/categories/`,
+        method: "DELETE",
+        body: { id: queryArg.id },
+      }),
+      invalidatesTags: ['Category']
+
+    })
   }),
   overrideExisting: false,
 });
@@ -72,6 +84,10 @@ export type CategoriesProductsControllerGetAllApiResponse =
 export type CategoriesProductsControllerGetAllApiArg = {
   id: number;
 };
+export type CategoriesControllerDeleteApiResponse = void;
+export type CategoriesControllerDeleteApiArg = {
+  id: number;
+}
 export type Category = {
   /** Unique identifier */
   id?: number;
@@ -93,4 +109,5 @@ export const {
   useCategoriesControllerGetByIdQuery,
   useCategoriesControllerGetPaginationQuery,
   useCategoriesProductsControllerGetAllQuery,
+  useCategoriesControllerDeleteMutation
 } = injectedRtkApi;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Select, Input, Button } from "antd";
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
-import { Size, useSizesControllerGetAllQuery } from "../../../store/size";
+import { Size, useSizesControllerDeleteMutation, useSizesControllerGetAllQuery } from "../../../store/size";
 
 const { Option } = Select;
 
@@ -16,6 +16,7 @@ const SizeDropdown: React.FC<SizeDropdownProps> = ({ onChange, value, disabled }
     const { data: sizeData } = useSizesControllerGetAllQuery();
     const [searchValue, setSearchValue] = useState<string>("");
     const [items, setItems] = useState<Size[]>([]);
+    const [deleteSize] = useSizesControllerDeleteMutation();
 
     useEffect(() => {
         if (sizeData) {
@@ -34,8 +35,13 @@ const SizeDropdown: React.FC<SizeDropdownProps> = ({ onChange, value, disabled }
         }
     };
 
-    const handleRemoveSize = (sizeToRemove: Size) => {
-        setItems(items.filter((item) => item.name !== sizeToRemove.name));
+    const handleRemoveSize = async (sizeToRemove: number) => {
+        try {
+            await deleteSize({ id: sizeToRemove }).unwrap();
+            console.log(`Фильтр с id ${sizeToRemove} успешно удален.`);
+        } catch (error) {
+            console.error('Ошибка при удалении фильтра:', error);
+        }
     };
 
     const filteredItems = items.filter((size) =>
@@ -84,7 +90,7 @@ const SizeDropdown: React.FC<SizeDropdownProps> = ({ onChange, value, disabled }
                                 danger
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    handleRemoveSize(size);
+                                    handleRemoveSize(size.id!);
                                 }}
                             >
                                 <CloseOutlined />
