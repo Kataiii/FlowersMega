@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateItemFilterDto } from './dto/createItemFilter.dto';
+import { DeleteItemFilterDto } from './dto/deleteItemFIlter.dto';
 import { ItemFilter } from './items-filter.model';
 import { ItemsFilterService } from './items-filter.service';
 
@@ -38,5 +39,12 @@ export class ItemsFilterController {
     @Get("/filter/:id")
     async getByFilterId(@Param("id") id: number){
         return await this.itemsFilterService.getAllByIdFilter(id);
+    }
+
+    @ApiOperation({summary: 'Delete item filter by id'})
+    @ApiResponse({status: 200, type: [ItemFilter]})
+    @Delete()
+    async delete(@Body() dto:DeleteItemFilterDto){
+        return await this.itemsFilterService.delete(dto.id);
     }
 }

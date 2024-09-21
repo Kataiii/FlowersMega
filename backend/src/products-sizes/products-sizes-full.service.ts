@@ -75,8 +75,8 @@ export class ProductsSizesFullService {
         return {productSize: productSize, size: size}
     }
 
-    async getProductsWithPagination(page: number, limit: number){
-        const paginationResult = await this.productsService.getCountAndPagination(page, limit);
+    async getProductsWithPagination(page: number, limit: number, search?: string){
+        const paginationResult = await this.productsService.getCountAndPagination(page, limit, search);
         const productSizesTmp = await Promise.all(paginationResult.products.map(async(item) => {
             const productSizes = await this.productsSizesRepository.findAll({where: {idProduct: item.id}});
             const productWithSizes = await Promise.all(productSizes.map(async(item) => {

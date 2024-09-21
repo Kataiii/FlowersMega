@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateSizeDto } from './dto/createSize.dto';
+import { DeleteSizeDto } from './dto/deleteSize.dto';
 import { Size } from './sizes.model';
 import { SizesService } from './sizes.service';
 
@@ -30,5 +31,12 @@ export class SizesController {
     @Get("/:id")
     async getById(@Param("id") id: number){
         return await this.sizesService.getById(id);
+    }
+
+    @ApiOperation({summary: 'Delete size by id'})
+    @ApiResponse({status: 200, type: Size})
+    @Delete()
+    async delete(@Body() dto: DeleteSizeDto){
+        return await this.sizesService.delete(dto.id);
     }
 }

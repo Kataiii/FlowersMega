@@ -40,4 +40,10 @@ export class FiltersService {
             filters: filters
         };
     }
+
+    async delete(id: number){
+        const filter = await this.filterRepository.findOne({where: {id: id}});
+        await this.filterRepository.destroy({where: {id: id}});
+        return filter;
+    }
 }

@@ -24,4 +24,10 @@ export class SizesService {
         if(size === null) throw new HttpException("Size not found", HttpStatus.NOT_FOUND);
         return size;
     }
+    
+    async delete(id: number){
+        const size = await this.sizesRepository.findOne({where: {id: id}});
+        await this.sizesRepository.destroy({where: {id: id}});
+        return size;
+    }
 }
