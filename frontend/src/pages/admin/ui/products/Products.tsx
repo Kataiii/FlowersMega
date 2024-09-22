@@ -48,7 +48,7 @@ const Products: React.FC = () => {
     const [categories, setCategories] = useState<string[]>([]);
     const [filters, setFilters] = useState<string[]>([]);
     const [page, setPage] = useState<number>(1);
-    const [pageSize, setPageSize] = useState<number>(2);
+    const [pageSize, setPageSize] = useState<number>(8);
     const { data: filtersData } = useFiltersControllerGetAllQuery();
     const { data: categoriesData } = useCategoriesControllerGetAllQuery();
     const { data: productType } = useTypesProductControllerGetAllQuery();

@@ -141,7 +141,7 @@ const injectedRtkApi = api.injectEndpoints({
       ProductsControllerCreateWithDetailsApiArg
     >({
       query: (queryArg) => ({
-        url: `/products`,
+        url: `/products-sizes/full-product`,
         method: "POST",
         body: queryArg.body,
       }),

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dropdown, Button, Input, Menu, Checkbox } from 'antd';
 import { PlusOutlined, EditOutlined, CloseOutlined } from '@ant-design/icons';
 import { FilterWithItems, useFiltersControllerCreateMutation, useFiltersControllerDeleteByIdMutation } from '../../../store/filter';
@@ -15,11 +15,12 @@ interface FilterDropdownProps {
     disabled?: boolean;
     onChange?: (filters: FilterTag[]) => void;
     data?: FilterWithItems[];
+    value?: FilterTag[];
 }
 
-const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, data }) => {
-    const [filters, setFilters] = useState<FilterTag[]>([]);
-    const [activeFilter, setActiveFilter] = useState<FilterWithItems | null>(null);
+const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, data, value }) => {
+    const [filters, setFilters] = useState<FilterTag[]>(value || []);
+    const [activeFilter, setActiveFilter] = useState<FilterWithItems | null>();
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [addFilter] = useFiltersControllerCreateMutation();
@@ -29,6 +30,10 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(e.target.value);
     };
+
+    useEffect(() => {
+        setFilters(value || [])
+    }, [value])
 
     const handleAddFilter = async () => {
         if (searchValue && data && !data.some(f => f.name === searchValue)) {
@@ -249,7 +254,9 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
     );
 
     return (
+
         <div style={{ display: "flex", alignItems: "start" }}>
+
             <Dropdown
                 menu={{
                     items: activeFilter

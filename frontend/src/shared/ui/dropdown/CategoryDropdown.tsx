@@ -49,11 +49,31 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   // })), [data]);
 
   useEffect(() => {
-    setItems(() => data.map((item) => ({
+    const mappedItems = data.map((item) => ({
       id: item.id,
       name: item.name,
-    })));
-  }, [data]);
+    }));
+
+    const mappedSelectedCategories = value.map((item) => ({
+      id: item.id,
+      name: item.name,
+      photo: item.photo,
+    }));
+
+    setItems((prevItems) => {
+      if (JSON.stringify(prevItems) !== JSON.stringify(mappedItems)) {
+        return mappedItems;
+      }
+      return prevItems;
+    });
+
+    setSelectedCategories((prevSelectedCategories) => {
+      if (JSON.stringify(prevSelectedCategories) !== JSON.stringify(mappedSelectedCategories)) {
+        return mappedSelectedCategories;
+      }
+      return prevSelectedCategories;
+    });
+  }, [data, value]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -113,21 +133,30 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
     }
   };
 
-  const handleSelectCategory = (category: Category) => {
+  const handleSelectCategory = (category: { id?: number; name: string }) => {
     const existingCategory = selectedCategories.find((item) => item.id === category.id);
-    if (!existingCategory) {
-      const newCategory = { id: category.id, name: category.name, photo: category.url || "" };
-      const newSelectedCategories = [...selectedCategories, newCategory];
+
+    if (existingCategory) {
+      // Если категория уже выбрана, удаляем её
+      const newSelectedCategories = selectedCategories.filter((item) => item.id !== category.id);
       setSelectedCategories(newSelectedCategories);
       if (onChange) {
         onChange(newSelectedCategories);
       }
     } else {
-      handleRemoveCategory(category.id!);
+      // Если категория не выбрана, добавляем её
+      const newCategory = { id: category.id, name: category.name, photo: "" }; // Подставляем photo, если нужно
+      const newSelectedCategories = [...selectedCategories, newCategory];
+      setSelectedCategories(newSelectedCategories);
+      if (onChange) {
+        onChange(newSelectedCategories);
+      }
     }
   };
 
-  const filteredItems = items.filter((item) => item.name.toLowerCase().includes(searchValue.toLowerCase()));
+  const filteredItems = items.filter((item) =>
+    item.name.toLowerCase().includes(searchValue.toLowerCase())
+  );
 
   const handleUploadChange = (info: any) => {
     setFileList(info.fileList);
@@ -206,15 +235,18 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
                       cursor: "pointer",
                       display: "flex",
                       width: "100%",
-                      backgroundColor: selectedCategories.find((cat) => cat.id === item.id)
-                        ? "var(--primary-bg-color)"
+                      backgroundColor: selectedCategories.some((cat) => cat.id === item.id)
+                        ? "var(--primary-bg-color)"  // Подсвечиваем выбранные категории
                         : item.id === hoveredItem
-                          ? "var(--primary-bg-color-hover)"
+                          ? "var(--primary-bg-color-hover)"  // Подсвечиваем категорию при наведении
                           : "transparent",
                       borderRight: "1px solid #f0f0f0",
                     }}
                   >
                     {item.name}
+                    {selectedCategories.some((cat) => cat.id === item.id) && (
+                      <CloseOutlined onClick={() => handleSelectCategory(item)} />
+                    )}
                   </div>
                   <CloseOutlined style={{ paddingLeft: "3px" }} onClick={() => handleRemoveItem(item.id!)} />
                 </div>

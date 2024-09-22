@@ -6,8 +6,8 @@ import { Size, useSizesControllerDeleteMutation, useSizesControllerGetAllQuery }
 const { Option } = Select;
 
 interface SizeDropdownProps {
-    onChange?: (value: string) => void;
-    value?: string;
+    onChange?: (value: number | undefined) => void;
+    value?: number | undefined;
     style?: React.CSSProperties;
     disabled?: boolean;
 }
@@ -52,11 +52,11 @@ const SizeDropdown: React.FC<SizeDropdownProps> = ({ onChange, value, disabled }
         <Select
             showSearch
             placeholder="Выберите размер"
-            value={value}
+            value={value?.toString()}
             disabled={disabled}
             style={{ width: 200 }}
             onSearch={handleSearch}
-            onChange={onChange}
+            onChange={(value) => onChange && onChange(Number(value))}
             dropdownRender={(menu) => (
                 <>
                     <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", padding: 8 }}>
@@ -84,7 +84,7 @@ const SizeDropdown: React.FC<SizeDropdownProps> = ({ onChange, value, disabled }
                 <Option key={size.id} value={size.id?.toString()}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         {size.name}
-                        {value !== size.id?.toString() && (
+                        {value !== size.id && (
                             <Button
                                 type="link"
                                 danger

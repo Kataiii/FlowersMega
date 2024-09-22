@@ -91,9 +91,10 @@ const Product: React.FC = () => {
     const { data: filtersData, isLoading: filtersLoading } = useFiltersControllerGetAllQuery();
     const { data: categories, isLoading: categoriesLoading } = useCategoriesControllerGetAllQuery();
     const { data: productSizes, isLoading: sizesLoading } = useProductsSizesControllerGetProductSizeForCardByIdQuery({ id: Number(id) });
-    const { data: productVariations, isLoading: productVariationsLoading } = useProductsSizesControllerGetByProductIdQuery({ id: Number(id) });
+    const { data: productVariations, isLoading: productVariationsLoading } = useProductsSizesControllerGetAllSizesByProductIdQuery({ id: Number(id) });
+    const { data: productFiltCat } = useProductsControllerGetByIdQuery({ id: Number(id) });
     const [createProductWithDetails] = useProductsControllerCreateWithDetailsMutation();
-
+    const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
     const handleFormFinish = async (values: any) => {
         const formattedFilters = filters.map((filter) => {
@@ -116,7 +117,7 @@ const Product: React.FC = () => {
             description: values.description,
             structure: values.structure,
             // @ts-ignore
-            photo: data?.images?.[0]?.url ? data?.images?.[0].url : "",
+            photo: photoUrl ? photoUrl : (data?.images?.[0]?.url || ""),
             productSize: variations.map((variation: any) => ({
                 idSize: variation.idSize,
                 prise: variation.prise,
@@ -158,29 +159,59 @@ const Product: React.FC = () => {
     };
 
     useEffect(() => {
-        if (productSizes && productVariations) {
+        if (productFiltCat && productVariations) {
 
-            const { product } = productSizes;
-            setSelectedCategories(product.categories.map(category => ({
+
+            const filterMap = new Map<number, { filter: { id: number, name: string }, tags: any[] }>();
+            // @ts-ignore
+            productFiltCat.filters.forEach((productFilter) => {
+                const matchingFilter = filtersData?.find((filter) => filter.id === productFilter.idFilter);
+
+                if (matchingFilter) {
+                    if (!filterMap.has(productFilter.idFilter)) {
+                        filterMap.set(productFilter.idFilter, {
+                            filter: {
+                                id: productFilter.idFilter,
+                                name: matchingFilter.name,
+                            },
+                            tags: [],
+                        });
+                    }
+
+                    const filterEntry = filterMap.get(productFilter.idFilter);
+                    const tags = (matchingFilter.items || [])
+                        .filter((tag) => tag.id === productFilter.id);
+
+                    if (tags.length > 0 && filterEntry) {
+                        filterEntry.tags.push(...tags);
+                    }
+                }
+            });
+            const mappedFilters = Array.from(filterMap.values());
+
+            console.log("xddd", mappedFilters);
+
+            // @ts-ignore
+            setSelectedCategories(productFiltCat?.categories.map(category => ({
+                id: category.id,
                 name: category.name,
                 photo: "category.image "
             })));
-            setFilters(product.filters.map(filter => ({
-                id: filter.id,
-                name: filter.name
-            })));
+            // @ts-ignore
+            setFilters(mappedFilters);
 
-            const variations = productVariations.flatMap(variation => ({
+            const variationsS = productVariations.productsSizes.flatMap(variation => ({
                 idSize: variation.idSize,
                 prise: variation.prise,
                 paramsSize: variation.paramsSize,
             }));
+            console.log("aaaaaa", variationsS);
 
-            setVariations(variations);
-            console.log(selectedCategories);
+            setVariations(variationsS);
+
             // setVariations(productVariations.);
         }
-    }, [productSizes, productVariations]);
+    }, [productFiltCat, productVariations]);
 
     useEffect(() => {
         {
@@ -294,7 +325,7 @@ const Product: React.FC = () => {
                                             alignItems: "center",
                                         }}
                                     >
-                                        <ProductPhotoLoader />
+                                        {/* <ProductPhotoLoader /> */}
                                     </div>
                                 </div>
                             )}
@@ -358,7 +389,7 @@ const Product: React.FC = () => {
                                 padding: "2.5px",
                             }}
                         >
-                            <FilterDropdown data={filtersData} onChange={handleFilterChange} disabled={disabled} />
+                            <FilterDropdown value={filters} data={filtersData} onChange={handleFilterChange} disabled={disabled} />
                         </div>
                     </Form.Item>
 
@@ -368,21 +399,22 @@ const Product: React.FC = () => {
                                 {disabled ? (
                                     <Button onClick={() => {
                                         handleEdit();
-                                        console.log({ selectedCategories, filters })
+                                        // @ts-ignore
+                                        console.log("kkk", filters);
                                     }}><ButtonText>Редактировать</ButtonText></Button>
                                 ) : (
                                     <Button type="primary" htmlType="submit">
                                         <ButtonText>Сохранить изменения</ButtonText>
                                     </Button>
                                 )}
-                                <Button type="primary" danger>
+                                <Button type="primary" danger htmlType="submit">
                                     <ButtonText>Удалить</ButtonText>
                                 </Button>
                             </>
                         ) : (
                             <Button onClick={() => {
-                                console.log(productSizes)
-                            }} type="primary" htmlType="submit">
+                                // console.log(productSizes)
+                            }} htmlType="submit" type="primary">
                                 Сохранить изменения
                             </Button>
                         )}

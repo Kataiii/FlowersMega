@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Image, Upload } from 'antd';
-import type { GetProp, UploadFile, UploadProps } from 'antd';
+import type { UploadFile, UploadProps } from 'antd';
+import type { RcFile } from 'antd/es/upload/interface';
 
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
-
-const getBase64 = (file: FileType): Promise<string> =>
+const getBase64 = (file: RcFile): Promise<string> =>
     new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -13,51 +12,57 @@ const getBase64 = (file: FileType): Promise<string> =>
         reader.onerror = (error) => reject(error);
     });
 
-const ProductPhotoLoader: React.FC = () => {
+interface ProductPhotoLoaderProps {
+    onUploadSuccess: (url: string) => void; // Пропс для передачи URL родителю
+}
+
+const ProductPhotoLoader: React.FC<ProductPhotoLoaderProps> = ({ onUploadSuccess }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [fileList, setFileList] = useState<UploadFile[]>([]);
 
     const handlePreview = async (file: UploadFile) => {
         if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj as FileType);
+            file.preview = await getBase64(file.originFileObj as RcFile);
         }
 
         setPreviewImage(file.url || (file.preview as string));
         setPreviewOpen(true);
     };
 
-    const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
+    const handleChange: UploadProps['onChange'] = async ({ fileList: newFileList }) => {
         setFileList(newFileList);
 
+        // При выборе файла конвертируем его в base64
+        const file = newFileList[0]?.originFileObj as RcFile;
+        if (file) {
+            const base64 = await getBase64(file);
+            onUploadSuccess(base64); // Передаем base64 строку в родительский компонент
+        }
+    };
+
     const uploadButton = (
-        <button style={{
-            border: 0, background: 'none'
-        }} type="button">
+        <button style={{ border: 0, background: 'none' }} type="button">
             <PlusOutlined />
-            <div style={{
-                marginTop: 8,
-            }}>Upload</div>
+            <div style={{ marginTop: 8 }}>Upload</div>
         </button>
     );
+
     return (
         <>
             <Upload
-                action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
                 listType="picture-card"
                 fileList={fileList}
                 onPreview={handlePreview}
                 onChange={handleChange}
-                className={"customSizedUpload"}
+                beforeUpload={() => false} // Отключаем автоматическую загрузку на сервер
             >
                 {fileList.length >= 1 ? null : uploadButton}
             </Upload>
             {previewImage && (
                 <Image
                     width="200px"
-                    wrapperStyle={{
-                        display: 'none'
-                    }}
+                    wrapperStyle={{ display: 'none' }}
                     preview={{
                         visible: previewOpen,
                         onVisibleChange: (visible) => setPreviewOpen(visible),

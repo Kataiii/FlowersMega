@@ -40,30 +40,28 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
     const [isExpanded, setIsExpanded] = useState(false);
 
     const dataSource = useMemo(() => {
-        if (!productSizes || !sizes || !productInfo) return [];
+        // if (!productSizes || !sizes || !productInfo) return [];
 
-        const categories = productInfo.product.categories.map((category) => category.name);
-        const filters = productInfo.product.filters.map((filter) => filter.name);
+        // const categories = productInfo.product.categories.map((category) => category.name);
+        // const filters = productInfo.product.filters.map((filter) => filter.name);
 
-        if (onCategoriesAndFiltersChange) {
-            onCategoriesAndFiltersChange(categories, filters);
-        }
+        // if (onCategoriesAndFiltersChange) {
+        //     onCategoriesAndFiltersChange(categories, filters);
+        // }
 
-        return productSizes
-            .map((productSize) => {
-                const size = sizes.find((s) => s.id === productSize.idSize);
-                if (size) {
-                    return {
-                        key: productSize.id,
-                        sizeName: size.name,
-                        paramsSize: productSize.paramsSize,
-                        price: productSize.prise,
-                        categories: categories.join(", "),
-                        filters: filters.join(", "),
-                    };
-                }
-                return null;
-            })
+        return productSizes?.map((productSize) => {
+            const size = sizes?.find((s) => s.id === productSize.idSize);
+            console.log(size, "1size");
+            if (size) {
+                return {
+                    key: productSize.id,
+                    sizeName: size.name,
+                    paramsSize: productSize.paramsSize,
+                    price: productSize.prise,
+                };
+            }
+            // return null;
+        })
             .filter((item): item is NonNullable<typeof item> => item !== null);
     }, [productSizes, sizes, productInfo, onCategoriesAndFiltersChange]);
 
@@ -131,12 +129,13 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
                     <Button
                         style={{ backgroundColor: "var(--primary-bg-color)" }}
                         type="primary"
-                        onClick={() => setIsExpanded(!isExpanded)}
+                        onClick={() => { setIsExpanded(!isExpanded); console.log(sizes) }}
                     >
                         <ButtonText>
                             {productSizes && productSizes.length > 0
                                 ? `${productSizes.length} ${Numerals.numeralsSizes(productSizes.length)}`
                                 : "Нет"}
+
                         </ButtonText>
 
                     </Button>
