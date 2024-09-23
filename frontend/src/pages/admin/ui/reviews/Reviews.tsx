@@ -130,11 +130,20 @@ const Reviews: React.FC = () => {
                 </div>
 
                 {/* TODO убрать высоту*/}
-                <div style={{ height: 620, display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gridTemplateRows: "repeat(2, 1fr)", gap: "10px" }}>
+                <div
+                    style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(2, 1fr)", // Две колонки одинакового размера
+                        gridAutoRows: "1fr", // Равномерная высота строк
+                        gap: "10px", // Промежутки между карточками
+                    }}
+                >
                     {sortedData.map((review) => (
                         <ReviewAdminCard key={review.id} review={review} refetchReviews={refetchReviews} />
                     ))}
                 </div>
+
+
                 <Pagination
                     style={{ marginTop: "16px", textAlign: "center" }}
                     current={page}

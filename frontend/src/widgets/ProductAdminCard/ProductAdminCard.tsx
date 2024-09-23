@@ -9,6 +9,12 @@ import { ButtonText } from "../../pages/admin/ui/products/Products";
 import { styled } from "styled-components";
 
 
+const ExpandableContent = styled.div<{ isExpanded: boolean }>`
+  max-height: ${(props) => (props.isExpanded ? "500px" : "0")};  
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out; 
+`;
+
 export const CardTextHeader = styled.p`
     font-family: "Inter UI", sans-serif;
     font-size: 12px;
@@ -83,6 +89,7 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
         },
     ];
 
+
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             <div
@@ -104,7 +111,7 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
                     }}
                 >
                     <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                        <div style={{fontFamily: "Inter", fontWeight: 400, fontSize: 12}}>№ {id}</div>
+                        <div style={{ fontFamily: "Inter", fontWeight: 400, fontSize: 12 }}>№ {id}</div>
                         {/* @ts-ignore */}
                         <Image style={{ width: "32px", height: "32px", borderRadius: "6px" }} src={`${API_URL}/products/images/${data?.id}/${data?.images?.[0]?.url}`}
                         />
@@ -142,7 +149,7 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
                     </Button>
                 </div>
 
-                {isExpanded && (
+                <ExpandableContent isExpanded={isExpanded}>
                     <div style={{ marginTop: "16px" }}>
                         <Table
                             size="small"
@@ -152,7 +159,9 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
                             columns={columns}
                         />
                     </div>
-                )}
+                </ExpandableContent>
+
+
             </div>
         </div>
     );

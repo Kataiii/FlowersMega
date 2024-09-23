@@ -97,28 +97,28 @@ const ExtraPriceBlock: React.FC = () => {
                     }}
                 >
                     <div style={{ display: "flex", gap: "10px", alignItems: "center", justifyContent: "space-between " }}>
-                        <p style={{ color: "var(--primary-bg-color)", fontSize: "16px", fontFamily: "Inter", fontWeight: "600", }}>
+                        <p style={{ color: "var(--extra-price-all)", fontSize: "16px", fontFamily: "Inter", fontWeight: "600", }}>
                             Общая наценка
                         </p>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                             <Input style={{ width: "250px" }} />
-                            <div style={{ color: "var(--primary-bg-color)", fontWeight: "600", fontSize: "20px" }}>
+                            <div style={{ color: "var(--extra-price-all)", fontWeight: "600", fontSize: "20px" }}>
                                 %
                             </div>
                         </div>
 
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <p>
+                        <p style={{ color: "var(--extra-pice)", fontSize: "16px", fontFamily: "Inter", fontWeight: "600", }}>
                             Всего
                         </p>
-                        <span>0</span>
+                        <span style={{ color: "var(--extra-pice", fontSize: "16px", fontFamily: "Inter", fontWeight: "600", }}>0</span>
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <p>
+                        <p style={{ color: "var(--extra-pice)", fontSize: "16px", fontFamily: "Inter", fontWeight: "600", }}>
                             С наценкой
                         </p>
-                        <span>0</span>
+                        <span style={{ color: "var(--extra-pice)", fontSize: "16px", fontFamily: "Inter", fontWeight: "600", }}>0</span>
                     </div>
                     <Button danger type="primary" shape="round">
                         <ButtonText>Сбросить</ButtonText>

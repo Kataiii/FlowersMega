@@ -19,19 +19,22 @@ const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review, refetchReview
         <div
             style={{
                 width: "100%",
-                height: "100%",
-                minHeight: "200px",
+                height: "100%", // Карточка будет адаптироваться под высоту строки сетки
                 position: "relative",
                 overflow: "hidden",
+                transition: "height 0.8s ease-in-out", // Плавное изменение высоты
             }}
             key={review.id}
         >
             <div
                 style={{
-                    height: "100%",
                     border: "1px solid var(--primary-bg-color)",
                     borderRadius: "6px",
                     padding: "10px",
+                    height: "100%", // Растягиваем контент по всей высоте карточки
+                    display: "flex",
+                    flexDirection: "column", // Чтобы кнопки были снизу
+                    justifyContent: "space-between",
                 }}
             >
                 <div
@@ -43,8 +46,7 @@ const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review, refetchReview
                 >
                     <div style={{ fontFamily: "Inter", fontSize: 14, fontWeight: 400, color: "var(--primary-review-text)" }}>{review.firstname}</div>
                     <div style={{ color: "darkgray" }}>
-                        {/* @ts-ignore */}
-                        {review.phone}
+                        {review?.phone}
                     </div>
                     <div style={{ color: "darkgray", fontFamily: "Inter", fontSize: 14, fontWeight: 400 }}>
                         {new Date(review.createdAt).toLocaleDateString('ru-ru', {
@@ -75,9 +77,10 @@ const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review, refetchReview
 
                 <div style={{ display: "flex", gap: "10px", flexDirection: "column" }}>
                     <div style={{
-                        maxHeight: isExpanded ? "none" : "85px",
+                        maxHeight: isExpanded ? "500px" : "85px",
                         overflow: "hidden",
                         position: "relative",
+                        transition: "max-height 0.8s ease-in-out",
                     }}>
                         <p
                             style={{

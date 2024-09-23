@@ -193,6 +193,7 @@ export type FullReviewDto = {
   idUser?: number;
   /** Name user */
   firstname?: string;
+  phone?: string;
   /** Unique identifier product size */
   idProductSize: number;
   /** Create date */
