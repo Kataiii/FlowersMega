@@ -14,7 +14,7 @@ const Reviews: React.FC = () => {
     const [finalSearchId, setFinalSearchId] = useState<string>("");
     const [sortOrder, setSortOrder] = useState<string>("");
     const [page, setPage] = useState<number>(1);
-    const [pageSize, setPageSize] = useState<number>(2);
+    const [pageSize, setPageSize] = useState<number>(4);
     const [shouldFetch, setShouldFetch] = useState<boolean>(false);
 
     const { data: reviews, refetch } = useReviewsControllerGetAllWithPaginationQuery(
@@ -127,7 +127,8 @@ const Reviews: React.FC = () => {
                     />
                 </div>
 
-                <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: "10px" }}>
+                {/* TODO убрать высоту*/}
+                <div style={{ height:620, display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gridTemplateRows: "repeat(2, 1fr)", gap: "10px" }}>
                     {sortedData.map((review) => (
                         <ReviewAdminCard key={review.id} review={review} refetchReviews={refetchReviews} />
                     ))}

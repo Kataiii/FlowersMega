@@ -52,7 +52,7 @@ const ReviewCardMain: React.FC<ReviewCardMainProps> = ({ review }) => {
         <Container>
             <TitleReview>
                 {/* @ts-ignore */}
-                {/* <Image style={{ width: 26, height: 26, borderRadius: 4 }} src={`${API_URL}/products/images/${review.product.id}/${review?.product.images[0].url}`} /> */}
+                <Image style={{ width: 26, height: 26, borderRadius: 4 }} src={`${API_URL}/products/images/${review.product.id}/${review?.product.images[0].url}`} />
                 <Title>{review.product.name}</Title>
             </TitleReview>
             <ContentReview>

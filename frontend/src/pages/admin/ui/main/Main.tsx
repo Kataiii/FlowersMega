@@ -7,6 +7,7 @@ import {
   ADMIN_PATH,
   ADMIN_PRODUCTS_PATH,
   ADMIN_REVIEWS_PATH,
+  HOME_PATH,
 } from "../../../../shared/utils/constants";
 import { ReactComponent as LogoAdmin } from "../../../../shared/assets/logo-admin.svg";
 import { ReactComponent as ArrowBack } from "../../../../shared/assets/arrow-back.svg";
@@ -121,7 +122,7 @@ const Main: React.FC = () => {
           <LogoAdmin />
           <LinkButton>
             <div style={{ display: "flex", marginRight: "5px" }}><ArrowBack /></div>
-            <div><LinkText style={{ display: "inline" }}>Перейти на сайт</LinkText></div>
+            <div><LinkText style={{ display: "inline" }} onClick={() => navigate(HOME_PATH)}>Перейти на сайт</LinkText></div>
           </LinkButton>
           <Menu
             defaultSelectedKeys={changeDefaultSelectedKey()}

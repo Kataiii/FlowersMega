@@ -18,7 +18,8 @@ const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review, refetchReview
     return (
         <div
             style={{
-                width: "370px",
+                width: "100%",
+                height: "100%",
                 minHeight: "200px",
                 position: "relative",
                 overflow: "hidden",
@@ -27,6 +28,7 @@ const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review, refetchReview
         >
             <div
                 style={{
+                    height: "100%",
                     border: "1px solid var(--primary-bg-color)",
                     borderRadius: "6px",
                     padding: "10px",
@@ -39,12 +41,12 @@ const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review, refetchReview
                         gap: "10px",
                     }}
                 >
-                    <div>{review.firstname}</div>
+                    <div style={{fontFamily: "Inter", fontSize: 14, fontWeight: 400, color: "var(--primary-review-text)"}}>{review.firstname}</div>
                     <div style={{ color: "darkgray" }}>
                         {/* @ts-ignore */}
                         {review.phone}
                     </div>
-                    <div style={{ color: "darkgray" }}>
+                    <div style={{ color: "darkgray", fontFamily: "Inter", fontSize: 14, fontWeight: 400 }}>
                         {new Date(review.createdAt).toLocaleDateString('ru-ru', {
                             year: "numeric",
                             month: "long",
@@ -54,6 +56,7 @@ const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review, refetchReview
                 </div>
                 <div>
                     <Rate
+                        disabled
                         style={{ color: "var(--primary-bg-color)" }}
                         value={review.rating}
                     />

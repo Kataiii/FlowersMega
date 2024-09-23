@@ -60,7 +60,7 @@ const ExtraPriceVar: React.FC<ExtraPriceVarProps> = ({ value, onChange, onRemove
                     value={value.price || ""}
                 />
                 <div style={{ color: "var(--primary-bg-color)", fontWeight: "600", fontSize: "20px" }}>
-                    ₽
+                    %
                 </div>
             </div>
             <div

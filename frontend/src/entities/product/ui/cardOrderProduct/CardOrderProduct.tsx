@@ -22,7 +22,7 @@ const CardOrderProduct: React.FC<CardOrderProductProps> = ({ orderItem }) => {
                     : <>
                         <div style={{ display: "flex", gap: 10 }}>
                             {/* @ts-ignore */}
-                            {/* <Image src={`${API_URL}/products/images/${data?.id}/${data?.images[0].url}`} width={50} height={50} fallback={Error}/> */}
+                            <Image src={`${API_URL}/products/images/${data?.id}/${data?.images[0].url}`} width={50} height={50} fallback={Error}/>
                             <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                                 <Title style={{ fontSize: 16, fontWeight: 500 }}>{data?.name}</Title>
                                 {/* @ts-ignore */}

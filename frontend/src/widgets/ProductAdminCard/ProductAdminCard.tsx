@@ -95,15 +95,16 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
             >
                 <div
                     style={{
-                        display: "flex",
-                        flexDirection: "row",
+                        display: "grid",
+                        gridTemplateColumns: "3fr 1fr 1fr",
+                        // flexDirection: "row",
                         gap: "8px",
-                        alignItems: "center",
-                        justifyContent: "space-between",
+                        // alignItems: "center",
+                        // justifyContent: "space-between",
                     }}
                 >
                     <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                        <div>№ {id}</div>
+                        <div style={{fontFamily: "Inter", fontWeight: 400, fontSize: 12}}>№ {id}</div>
                         {/* @ts-ignore */}
                         <Image style={{ width: "32px", height: "32px", borderRadius: "6px" }} src={`${API_URL}/products/images/${data?.id}/${data?.images?.[0]?.url}`}
                         />

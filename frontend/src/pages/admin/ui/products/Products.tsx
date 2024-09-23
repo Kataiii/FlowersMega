@@ -165,7 +165,7 @@ const Products: React.FC = () => {
                         onChange={(value) => setSortOrder(value)}
                     />
                 </div>
-                <div style={{ display: "flex", flexDirection: "row", gap: "8px", flexWrap: "wrap" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px"}}>
                     {sortedData.map((product, index) => (
                         <ProductAdminCard
                             key={product.products.id}

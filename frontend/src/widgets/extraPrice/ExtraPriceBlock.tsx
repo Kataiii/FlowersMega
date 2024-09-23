@@ -103,7 +103,7 @@ const ExtraPriceBlock: React.FC = () => {
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                             <Input style={{ width: "250px" }} />
                             <div style={{ color: "var(--primary-bg-color)", fontWeight: "600", fontSize: "20px" }}>
-                                ₽
+                                %
                             </div>
                         </div>
 
@@ -112,13 +112,13 @@ const ExtraPriceBlock: React.FC = () => {
                         <p>
                             Всего
                         </p>
-                        <span>ahhaha</span>
+                        <span>0</span>
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <p>
                             С наценкой
                         </p>
-                        <span>ahhaha</span>
+                        <span>0</span>
                     </div>
                     <Button danger type="primary" shape="round">
                         <ButtonText>Сбросить</ButtonText>

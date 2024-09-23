@@ -1,5 +1,7 @@
 import { Button, Checkbox, Form, FormProps, Input } from "antd";
+import { useNavigate } from "react-router-dom";
 import Container from "../../../../shared/ui/containerMain/ContainerMain";
+import { ADMIN_PATH } from "../../../../shared/utils/constants";
 import { ButtonText, NamePage } from "../products/Products";
 
 type FieldType = {
@@ -17,6 +19,8 @@ const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
 };
 
 const Login: React.FC = () => {
+    const navigate = useNavigate();
+
     return (
         <div style={{ width: "100%", height: "100%" }}>
             <div style={{ position: "absolute", width: "400px", height: "350px", left: "35%", top: "35%" }}>
@@ -49,7 +53,7 @@ const Login: React.FC = () => {
 
                     <div style={{ left: "50%" }}>
                         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                            <Button type="primary" htmlType="submit">
+                            <Button type="primary" htmlType="submit" onClick={() => navigate(ADMIN_PATH)}>
                                 <ButtonText>Войти</ButtonText>
                             </Button>
                         </Form.Item>

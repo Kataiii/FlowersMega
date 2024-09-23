@@ -68,7 +68,7 @@ const CardProduct: React.FC<CardProductProps> = ({ product, addToCartButton, add
     return (
         <div style={{ width: '286px', borderRadius: "14px", padding: "8px", backgroundColor: "var(--block-bg-color)", display: "flex", flexDirection: "column", gap: "16px", position: "relative" }}>
             {/* @ts-ignore            */}
-            {/* <Image style={{ width: "270px", height: "270px", borderRadius: "6px", cursor: "pointer" }} src={`${API_URL}/products/images/${product?.productSize.idProduct}/${product?.product.image.url}`} onClick={() => navigate(`${PRODUCT_PATH}/${product.product.name}/${product.size?.name}`, { state: { idProduct: product.productSize.idProduct, idSize: product.productSize.idSize } })} alt={product.product.name} /> */}
+            <Image style={{ width: "270px", height: "270px", borderRadius: "6px", cursor: "pointer" }} src={`${API_URL}/products/images/${product?.productSize.idProduct}/${product?.product.image.url}`} onClick={() => navigate(`${PRODUCT_PATH}/${product.product.name}/${product.size?.name}`, { state: { idProduct: product.productSize.idProduct, idSize: product.productSize.idSize } })} alt={product.product.name} />
             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                 <Rate style={{ color: "var(--primary-bg-color)" }} value={product.reviewsInfo?.averageRating ?? 0} disabled />
                 <p style={{ fontFamily: "Inter", display: "inline", fontSize: 14, fontWeight: 600, color: "var(--text-modal)" }}>{product.reviewsInfo?.count === 0 ? "нет отзывов" : `${product.reviewsInfo?.count} ${Numerals.numeralsReviews((product.reviewsInfo?.count ?? -1) % 10)}`}</p>
@@ -95,12 +95,12 @@ const CardProduct: React.FC<CardProductProps> = ({ product, addToCartButton, add
                     <Title style={{ fontSize: 24, margin: 0 }}>Быстрый заказ</Title>
                     <Text style={{ fontWeight: 400, fontSize: 14, color: "var(--text-modal)", margin: 0 }}>для позиции</Text>
                     <div style={{ margin: "15px 0 0", display: 'flex', gap: 24, alignItems: "center", border: "1px solid var(--primary-bg-color)", width: "100%", borderRadius: 4, padding: 8 }}>
-                        {/* <Image 
+                        <Image 
                             width={30}
                             height={30}
                             style={{borderRadius: 4}}
                             src={`${API_URL}/products/images/${product?.productSize.idProduct}/${product?.product.image.url}`
-                            }/> */}
+                            }/>
                         <Title style={{ fontWeight: 700, fontSize: 16, color: "var(--primary-bg-color)" }}>{product.product.name} {`(${product.size.name})`}</Title>
                     </div>
                     <FastFormOrder item={{ ...product.productSize, count: 1, product: { ...product.product, id: product.productSize.idProduct, structure: "" } }} />
