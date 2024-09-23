@@ -74,6 +74,19 @@ const Order: React.FC = () => {
                 </div>
               </div>
             </div>
+            {
+              data?.comment && (
+                <div style={{ display: "flex", justifyContent: "space-between", flexDirection: "column", borderRadius: "6px", border: "1px solid var(--primary-bg-color)", padding: "8px" }}>
+                  <OrderInfoText style={{ color: "var(--unactive-text-color)" }}>
+                    Комментарий
+                  </OrderInfoText>
+                  <Text style={{ width: "100%", height: "140px", maxHeight: "140px", overflowY: "auto" }}>
+                    {data?.phoneCustomer ? formatPhoneNumber(data?.phoneCustomer) : "Неизвестный номер"}
+                  </Text>
+                </div>
+              )
+            }
+
 
             <div style={{ width: '850px', display: "flex", justifyContent: "start", flexWrap: "nowrap", gridGap: "15px", margin: "8px 0", padding: "8px", borderRadius: "6px", border: "1px solid var(--primary-bg-color)" }}>
               <div style={{ borderRight: "solid 1px var(--primary-bg-color)" }}>

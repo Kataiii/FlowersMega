@@ -12,7 +12,7 @@ import { Debouncer } from "../../../../shared/utils/debounce";
 const Reviews: React.FC = () => {
     const [searchId, setSearchId] = useState<string>("");
     const [finalSearchId, setFinalSearchId] = useState<string>("");
-    const [sortOrder, setSortOrder] = useState<string>("");
+    const [sortOrder, setSortOrder] = useState<string>("rateDESC");
     const [page, setPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(4);
     const [shouldFetch, setShouldFetch] = useState<boolean>(false);
@@ -114,6 +114,8 @@ const Reviews: React.FC = () => {
                     </div>
                     <Select
                         allowClear
+                        defaultActiveFirstOption={true}
+                        defaultValue="rateDESC"
                         style={{ width: 150, height: 25 }}
                         options={[
                             { value: "dateNew", label: "Дата (новые)" },
@@ -128,7 +130,7 @@ const Reviews: React.FC = () => {
                 </div>
 
                 {/* TODO убрать высоту*/}
-                <div style={{ height:620, display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gridTemplateRows: "repeat(2, 1fr)", gap: "10px" }}>
+                <div style={{ height: 620, display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gridTemplateRows: "repeat(2, 1fr)", gap: "10px" }}>
                     {sortedData.map((review) => (
                         <ReviewAdminCard key={review.id} review={review} refetchReviews={refetchReviews} />
                     ))}

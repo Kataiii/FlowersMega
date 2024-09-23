@@ -41,7 +41,7 @@ const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review, refetchReview
                         gap: "10px",
                     }}
                 >
-                    <div style={{fontFamily: "Inter", fontSize: 14, fontWeight: 400, color: "var(--primary-review-text)"}}>{review.firstname}</div>
+                    <div style={{ fontFamily: "Inter", fontSize: 14, fontWeight: 400, color: "var(--primary-review-text)" }}>{review.firstname}</div>
                     <div style={{ color: "darkgray" }}>
                         {/* @ts-ignore */}
                         {review.phone}

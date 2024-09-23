@@ -17,7 +17,7 @@ export const SortText = styled.p`
 
 const Orders: React.FC = () => {
   const { isLoading, data: initialData } = useOrdersControllerGetAllQuery();
-  const [sortOrder, setSortOrder] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<string>("dateNew");
   const [searchId, setSearchId] = useState<string>("");
   const navigate = useNavigate();
   const locate = useLocation();
@@ -175,10 +175,11 @@ const Orders: React.FC = () => {
           </div>
           <Select
             allowClear
+            defaultActiveFirstOption={true}
+            defaultValue="dateNew"
             style={{
               width: 150,
               height: 25,
-              // color: "var(--primary-bg-color)",
             }}
             options={[
               { value: "dateNew", label: "Дата (новые)" },
@@ -192,6 +193,7 @@ const Orders: React.FC = () => {
             value={sortOrder}
             onChange={(value) => setSortOrder(value)}
           />
+
         </div>
         {isLoading ? (
           <Flex align="center" gap="middle">

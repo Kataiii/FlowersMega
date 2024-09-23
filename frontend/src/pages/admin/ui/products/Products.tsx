@@ -42,7 +42,7 @@ const Products: React.FC = () => {
     const navigate = useNavigate();
     const locate = useLocation();
     // const { isLoading, data: products } = useProductsControllerGetAllQuery();
-    const [sortOrder, setSortOrder] = useState<string>("");
+    const [sortOrder, setSortOrder] = useState<string>("DateASC");
     const [searchId, setSearchId] = useState<string>("");
     const [finalSearchId, setFinalSearchId] = useState<string>("");
     const [categories, setCategories] = useState<string[]>([]);
@@ -155,6 +155,8 @@ const Products: React.FC = () => {
                     </div>
                     <Select
                         allowClear
+                        defaultActiveFirstOption={true}
+                        defaultValue="DateASC"
                         style={{ width: 150, height: 25 }}
                         options={[
                             { value: "DateASC", label: "Дата (новые)" },
@@ -165,7 +167,7 @@ const Products: React.FC = () => {
                         onChange={(value) => setSortOrder(value)}
                     />
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px"}}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px" }}>
                     {sortedData.map((product, index) => (
                         <ProductAdminCard
                             key={product.products.id}
