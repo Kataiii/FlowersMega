@@ -81,7 +81,7 @@ const Order: React.FC = () => {
                     Комментарий
                   </OrderInfoText>
                   <Text style={{ width: "100%", height: "140px", maxHeight: "140px", overflowY: "auto" }}>
-                    {data?.phoneCustomer ? formatPhoneNumber(data?.phoneCustomer) : "Неизвестный номер"}
+                    {data?.comment}
                   </Text>
                 </div>
               )
