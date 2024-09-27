@@ -17,66 +17,68 @@ export class ReviewsService {
         private imagesReviewsService: ImagesReviewsService,
         private productsSizesService: ProductsSizesService,
         private productsService: ProductsService
-    ){}
+    ) { }
 
-    async create(dto: CreateReviewDto, files: File[]){
+    async create(dto: CreateReviewDto, files: File[]) {
         const review = await this.reviewsRepository.create({
             rating: dto.rating,
-            comment: dto.comment, 
+            comment: dto.comment,
             idUser: dto.idUser,
             idProductSize: dto.idProductSize,
             firstname: dto.firstname,
             phone: dto.phone
         });
-        if(files !== undefined){
-            files.forEach( async(item) => {
+        if (files !== undefined) {
+            files.forEach(async (item) => {
                 await this.imagesReviewsService.create({
                     idReview: review.id,
                     image: item
                 });
             })
         }
-        return await this.reviewsRepository.findOne({where: {id: review.id}, include: [{ all: true}]});
+        return await this.reviewsRepository.findOne({ where: { id: review.id }, include: [{ all: true }] });
     }
 
-    async getAll(){
+    async getAll() {
         const reviews = await this.reviewsRepository.findAll({
             order: [["idProductSize", "ASC"]],
             include: [{ all: true }]
         })
-        if(reviews.length === 0) throw new HttpException("Reviews not fount", HttpStatus.NOT_FOUND);
+        if (reviews.length === 0) throw new HttpException("Reviews not fount", HttpStatus.NOT_FOUND);
         return reviews;
     }
 
-    async getById(id: number | string){
+    async getById(id: number | string) {
         const review = await this.reviewsRepository.findOne(
             {
-                where: {id: id}, 
+                where: { id: id },
                 include: [{ all: true }]
             }
         );
-        if(review === null) throw new HttpException("Review not found", HttpStatus.NOT_FOUND);
+        if (review === null) throw new HttpException("Review not found", HttpStatus.NOT_FOUND);
         return review;
     }
 
-    async getByProductSizeId(idProductSize: number | string){
+    async getByProductSizeId(idProductSize: number | string) {
         const reviews = await this.reviewsRepository.findAll({
             where: { idProductSize: idProductSize },
             include: [{ all: true }]
         });
-        if(reviews.length === 0) throw new HttpException("Reviews not fount", HttpStatus.NOT_FOUND);
+        if (reviews.length === 0) throw new HttpException("Reviews not fount", HttpStatus.NOT_FOUND);
         return reviews;
+
     }
 
-    private async convertReview(review: Review){
-        const productSize = await this.productsSizesService.getById(review.idProductSize); 
+    private async convertReview(review: Review) {
+        const productSize = await this.productsSizesService.getById(review.idProductSize);
         const product = await this.productsService.getById(productSize.idProduct);
         return {
             id: review.id,
             rating: review.rating,
-            comment: review.comment, 
+            comment: review.comment,
             idUser: review.idUser,
             firstname: review.firstname,
+            phone: review.phone,
             idProductSize: review.idProductSize,
             createdAt: review.createdAt,
             updatedAt: review.updatedAt,
@@ -85,16 +87,17 @@ export class ReviewsService {
         } as FullReviewDto;
     }
 
-    async getReviewsAllWithPagination(page: number, limit: number, search?: string){
-        if(search){
-            const reviewsCount = (await this.reviewsRepository.findAndCountAll({where: {firstname: {[Op.like]: `%${search}%`}}})).count;
+    async getReviewsAllWithPagination(page: number, limit: number, search?: string, field?: string, type?: string) {
+        if (search) {
+            const reviewsCount = (await this.reviewsRepository.findAndCountAll({ where: { firstname: { [Op.like]: `%${search}%` } } })).count;
             const reviews = (await this.reviewsRepository.findAll({
-                where: {firstname: {[Op.like]: `%${search}%`}},
+                where: { firstname: { [Op.like]: `%${search}%` } },
                 limit: limit,
                 offset: (page - 1) * limit,
-                include: [{all: true}]
+                include: [{ all: true }],
+                order: [[field, type]]
             }));
-            const fullReview: FullReviewDto[] = await Promise.all(reviews.map(async(item) => await this.convertReview(item)));
+            const fullReview: FullReviewDto[] = await Promise.all(reviews.map(async (item) => await this.convertReview(item)));
             return {
                 count: reviewsCount,
                 reviews: fullReview
@@ -106,21 +109,22 @@ export class ReviewsService {
         const reviews = await this.reviewsRepository.findAll({
             limit: limit,
             offset: (page - 1) * limit,
-            include: [{all: true}]
+            include: [{ all: true }],
+            order: [[field, type]],
         });
 
-        if(reviews.length === 0) throw new HttpException("Reviews not fount", HttpStatus.NOT_FOUND);
+        if (reviews.length === 0) throw new HttpException("Reviews not fount", HttpStatus.NOT_FOUND);
 
-        const fullReview: FullReviewDto[] = await Promise.all(reviews.map(async(item) => await this.convertReview(item)));
+        const fullReview: FullReviewDto[] = await Promise.all(reviews.map(async (item) => await this.convertReview(item)));
         return {
             count: reviewsCount,
             reviews: fullReview
         };
     }
 
-    async getStaticticByProductSizeId(id: number){
+    async getStaticticByProductSizeId(id: number) {
         const reviews = await this.reviewsRepository.findAndCountAll({
-            where: {idProductSize: id}
+            where: { idProductSize: id }
         });
 
         let averageRating = 0;
@@ -135,16 +139,16 @@ export class ReviewsService {
         }
     }
 
-    async getRewiewsWithStatisticByProductId(id: number, limit: number, page: number){
-        const {count, averageRating} = await this.getStaticticByProductSizeId(id);
+    async getRewiewsWithStatisticByProductId(id: number, limit: number, page: number) {
+        const { count, averageRating } = await this.getStaticticByProductSizeId(id);
         const reviews = await this.reviewsRepository.findAll({
-            where: {idProductSize: id},
+            where: { idProductSize: id },
             limit: limit,
             offset: (page - 1) * limit,
-            include: [{all: true}]
+            include: [{ all: true }]
         })
 
-        const fullReview: FullReviewDto[] = await Promise.all(reviews.map(async(item) => await this.convertReview(item)));
+        const fullReview: FullReviewDto[] = await Promise.all(reviews.map(async (item) => await this.convertReview(item)));
         return {
             count: count,
             averageRating: averageRating,
@@ -152,14 +156,14 @@ export class ReviewsService {
         }
     }
 
-    async update(dto: UpdateReviewDto){
-        const response = await this.reviewsRepository.update(dto, {where: {id: dto.id}});
-        return await this.reviewsRepository.findOne({where: {id: dto.id}}); 
+    async update(dto: UpdateReviewDto) {
+        const response = await this.reviewsRepository.update(dto, { where: { id: dto.id } });
+        return await this.reviewsRepository.findOne({ where: { id: dto.id } });
     }
 
-    async delete(id: number){
-        const review = await this.reviewsRepository.findOne({where: {id: id}});
-        const idReview = await this.reviewsRepository.destroy({where: {id: id}});
+    async delete(id: number) {
+        const review = await this.reviewsRepository.findOne({ where: { id: id } });
+        const idReview = await this.reviewsRepository.destroy({ where: { id: id } });
         return review;
     }
 }

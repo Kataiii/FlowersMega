@@ -4,6 +4,7 @@ import { FullReviewDto } from "../../store/review";
 import { Button, Rate, Image } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ButtonText } from "../../pages/admin/ui/products/Products";
+import ReviewModal from "./ReviewModal";
 
 interface ReviewAdminCardProps {
     review: FullReviewDto;
@@ -14,15 +15,20 @@ const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review, refetchReview
     const [isExpanded, setIsExpanded] = useState(false);
     const navigate = useNavigate();
     const locate = useLocation();
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const onClose = () => {
+        setIsModalVisible(false)
+    }
 
     return (
         <div
             style={{
                 width: "100%",
-                height: "100%", // Карточка будет адаптироваться под высоту строки сетки
+                height: "100%",
                 position: "relative",
                 overflow: "hidden",
-                transition: "height 0.8s ease-in-out", // Плавное изменение высоты
+                transition: "height 0.8s ease-in-out",
             }}
             key={review.id}
         >
@@ -31,9 +37,9 @@ const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review, refetchReview
                     border: "1px solid var(--primary-bg-color)",
                     borderRadius: "6px",
                     padding: "10px",
-                    height: "100%", // Растягиваем контент по всей высоте карточки
+                    height: "100%",
                     display: "flex",
-                    flexDirection: "column", // Чтобы кнопки были снизу
+                    flexDirection: "column",
                     justifyContent: "space-between",
                 }}
             >
@@ -45,8 +51,8 @@ const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review, refetchReview
                     }}
                 >
                     <div style={{ fontFamily: "Inter", fontSize: 14, fontWeight: 400, color: "var(--primary-review-text)" }}>{review.firstname}</div>
-                    <div style={{ color: "darkgray" }}>
-                        {review?.phone}
+                    <div style={{ fontFamily: "Inter", fontSize: 14, fontWeight: 400, color: "darkgray" }}>
+                        {`+${review?.phone}`}
                     </div>
                     <div style={{ color: "darkgray", fontFamily: "Inter", fontSize: 14, fontWeight: 400 }}>
                         {new Date(review.createdAt).toLocaleDateString('ru-ru', {
@@ -109,7 +115,7 @@ const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review, refetchReview
                     </div>
 
                     <button
-                        onClick={() => setIsExpanded(!isExpanded)}
+                        onClick={() => setIsModalVisible(true)}
                         style={{
                             background: "none",
                             border: "none",
@@ -139,6 +145,7 @@ const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review, refetchReview
                     </ButtonText>
                 </Button>
             </div>
+            <ReviewModal isModalVisible={isModalVisible} data={review} onClose={onClose} />
         </div>
     );
 };

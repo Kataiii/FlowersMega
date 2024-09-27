@@ -20,32 +20,32 @@ const Container = styled.div`
 `;
 
 const CatalogPanel: React.FC = () => {
-    const {isLoading, data} = useCategoriesControllerGetAllQuery();
+    const { isLoading, data } = useCategoriesControllerGetAllQuery();
     const [activeItem, setActiveItem] = useState<Category>();
 
-    return(
+    return (
         <Container>
             {
                 isLoading
-                ?   <p>Загрузка...</p>
-                :   <div style={{width: "25%"}}>
+                    ? <p>Загрузка...</p>
+                    : <div style={{ width: "25%" }}>
 
                         {
-                            data && data.map((item,index) => {
-                                return <RadioButton 
-                                            content={item.name}
-                                            key={`radio_buuton-${index}`}
-                                            value={item.id ?? ''}
-                                            isActive={activeItem?.id === item.id}
-                                            clickHandler={() => setActiveItem(item)}
-                                            />
+                            data && data.map((item, index) => {
+                                return <RadioButton
+                                    content={item.name}
+                                    key={`radio_buuton-${index}`}
+                                    value={item.id ?? ''}
+                                    isActive={activeItem?.id === item.id}
+                                    clickHandler={() => setActiveItem(item)}
+                                />
                             })
                         }
                     </div>
             }
-            <div style={{flexGrow: 5}}>
-                <Title style={{fontSize: 24}}>{activeItem?.name}</Title>
-                <FilterPanel/>
+            <div style={{ flexGrow: 5 }}>
+                <Title style={{ fontSize: 24 }}>{activeItem?.name}</Title>
+                {activeItem ? <FilterPanel category={activeItem} /> : <></>}
             </div>
         </Container>
     )

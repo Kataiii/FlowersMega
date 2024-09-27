@@ -43,7 +43,12 @@ const injectedRtkApi = api.injectEndpoints({
         if (queryArg.search) {
           params.search = queryArg.search;
         }
-
+        if (queryArg.field) {
+          params.field = queryArg.field;
+        }
+        if (queryArg.type) {
+          params.type = queryArg.type;
+        }
         return {
           url: `/reviews/pagination/${queryArg.page}/${queryArg.limit}`,
           params: params,
@@ -123,6 +128,8 @@ export type ReviewsControllerGetAllWithPaginationApiArg = {
   page: number;
   limit: number;
   search?: string;
+  field?: string;
+  type?: string;
 };
 export type ReviewsProductSizeControllerGetByProductIdApiResponse = {
   count: number;

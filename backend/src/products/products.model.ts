@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table,  } from "sequelize-typescript";
+import { BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Table, } from "sequelize-typescript";
 import { CategoriesProducts } from "src/categories-products/categories_products.model";
 import { Category } from "src/categories/categories.model";
 import { Image } from "src/images/images.model";
@@ -7,35 +7,36 @@ import { ItemFilter } from "src/items-filter/items-filter.model";
 import { ProductsItemsFilter } from "src/products-items-filter/products-items-filter.model";
 import { TypeProduct } from "src/types-product/types-product.model";
 
-interface ProductCreationAttrs{
+interface ProductCreationAttrs {
     name: string;
     description: string;
     idTypeProduct: number;
+    structure: string
 }
 
-@Table({tableName: 'products', createdAt: true, updatedAt: true})
-export class Product extends Model<Product, ProductCreationAttrs>{
-    @ApiProperty({example: 1, description: 'Unique identifier', required: true})
-    @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true})
+@Table({ tableName: 'products', createdAt: true, updatedAt: true })
+export class Product extends Model<Product, ProductCreationAttrs> {
+    @ApiProperty({ example: 1, description: 'Unique identifier', required: true })
+    @Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true })
     id: number;
 
-    @ApiProperty({example: 'Роза', description: 'Name product', required: true})
-    @Column({type: DataType.STRING, allowNull: false})
+    @ApiProperty({ example: 'Роза', description: 'Name product', required: true })
+    @Column({ type: DataType.STRING, allowNull: false })
     name: string;
 
-    @ApiProperty({example: 'Описание про продукт...', description: 'Description product', required: false})
-    @Column({type: DataType.TEXT, allowNull: true})
+    @ApiProperty({ example: 'Описание про продукт...', description: 'Description product', required: false })
+    @Column({ type: DataType.TEXT, allowNull: true })
     description?: string;
 
-    @ApiProperty({example: 'Розы, аваланж', description: 'Structure product', required: true})
-    @Column({type: DataType.TEXT, allowNull: true})
+    @ApiProperty({ example: 'Розы, аваланж', description: 'Structure product', required: true })
+    @Column({ type: DataType.TEXT, allowNull: true })
     structure: string;
 
     @HasMany(() => Image, "idProduct")
     images: Image[];
 
-    @ApiProperty({example: 1, description: 'Unique identifier type product', required: true})
-    @Column({type: DataType.INTEGER, unique: false, allowNull: false})
+    @ApiProperty({ example: 1, description: 'Unique identifier type product', required: true })
+    @Column({ type: DataType.INTEGER, unique: false, allowNull: false })
     @ForeignKey(() => TypeProduct)
     idTypeProduct: number;
 

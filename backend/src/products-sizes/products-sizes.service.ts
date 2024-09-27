@@ -11,10 +11,10 @@ export class ProductsSizesService {
         @InjectModel(ProductSize) private productsSizesRepository: typeof ProductSize,
         private productsService: ProductsService,
         private sizesService: SizesService,
-    ){}
+    ) { }
 
-    async create(dto: CreateProductSizeDto | CreateProductSizeInfoDto){
-        if("product" in dto){
+    async create(dto: CreateProductSizeDto | CreateProductSizeInfoDto) {
+        if ("product" in dto) {
             const product = await this.productsService.create(dto.product, []);
             const size = await this.sizesService.create(dto.size);
 
@@ -30,22 +30,24 @@ export class ProductsSizesService {
         return await this.productsSizesRepository.create(dto);
     }
 
-    async getAll(){
+    async getAll() {
         const productsSizes = await this.productsSizesRepository.findAll({
             order: [["idProduct", "ASC"]],
             include: [{
                 all: true
             }]
         })
-        if(productsSizes.length === 0) throw new HttpException("Products sizes not fount", HttpStatus.NOT_FOUND);
+        if (productsSizes.length === 0) throw new HttpException("Products sizes not fount", HttpStatus.NOT_FOUND);
         return productsSizes;
     }
 
-    async getAllWithPagination(page: number, limit: number){
+    async getAllWithPagination(page: number, limit: number, field?: string, type?: string) {
         const count = (await this.productsSizesRepository.findAndCountAll()).count;
+        const order = field && type ? [[field, type]] : [['updatedAt', 'ASC']];
         const productsSizes = await this.productsSizesRepository.findAll({
             limit: limit,
-            offset: (page - 1) * limit
+            offset: (page - 1) * limit,
+            order: [field, type],
         });
         return {
             count: count,
@@ -53,42 +55,43 @@ export class ProductsSizesService {
         };
     }
 
-    async getById(id: number | string){
+    async getById(id: number | string) {
         const productSize = await this.productsSizesRepository.findOne(
             {
-                where: {id: id}, 
+                where: { id: id },
                 include: [{
                     all: true
                 }]
             }
         );
-        if(productSize === null) throw new HttpException("Product size not found", HttpStatus.NOT_FOUND);
+        if (productSize === null) throw new HttpException("Product size not found", HttpStatus.NOT_FOUND);
         return productSize;
     }
 
-    async getByProductId(idProduct: string | number){
+    async getByProductId(idProduct: string | number) {
         const productsSizes = await this.productsSizesRepository.findAll(
-            {where: {
-                idProduct: idProduct
-            },
-            order: [["prise", "ASC"]]
+            {
+                where: {
+                    idProduct: idProduct
+                },
+                order: [["prise", "ASC"]]
             }
         );
 
-        if(productsSizes === null) throw new HttpException("Products sizes not found", HttpStatus.NOT_FOUND);
+        if (productsSizes === null) throw new HttpException("Products sizes not found", HttpStatus.NOT_FOUND);
         return productsSizes;
     }
 
-    async getMaxPrice(){
+    async getMaxPrice() {
         const productSize = await this.productsSizesRepository.findAll({
             order: [['prise', 'DESC']]
         });
         return productSize[0].prise;
     }
 
-    async getWithAllSizes(id: number | string){
+    async getWithAllSizes(id: number | string) {
         const productSizes = await this.getByProductId(id);
-        const sizes = await Promise.all(productSizes.map(async(item) => {
+        const sizes = await Promise.all(productSizes.map(async (item) => {
             return await this.sizesService.getById(item.idSize);
         }));
         return {
@@ -97,7 +100,7 @@ export class ProductsSizesService {
         }
     }
 
-    async getBySizeIdByProductId(idSize: number, idProduct: number){
+    async getBySizeIdByProductId(idSize: number, idProduct: number) {
         const productSize = await this.productsSizesRepository.findOne({
             where: {
                 idProduct: idProduct,

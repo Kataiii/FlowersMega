@@ -10,9 +10,10 @@ import { styled } from "styled-components";
 
 
 const ExpandableContent = styled.div<{ isExpanded: boolean }>`
-  max-height: ${(props) => (props.isExpanded ? "500px" : "0")};  
+  max-height: ${(props) => (props.isExpanded ? "500px" : "0")};
   overflow: hidden;
-  transition: max-height 0.3s ease-in-out; 
+  transition: max-height 0.3s ease-in-out;
+  grid-column: span 2; 
 `;
 
 export const CardTextHeader = styled.p`
@@ -42,7 +43,7 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
     const { data: productSizes } = useProductsSizesControllerGetByProductIdQuery({ id: Number(id) });
     const { data } = useProductsControllerGetByIdQuery({ id: Number(id) });
     const { data: sizes } = useSizesControllerGetAllQuery();
-    const { data: productInfo } = useProductsSizesControllerGetProductSizeForCardByIdQuery({ id: Number(id) });
+    // const { data: productInfo } = useProductsSizesControllerGetProductSizeForCardByIdQuery({ id: Number(id) });
     const [isExpanded, setIsExpanded] = useState(false);
 
     const dataSource = useMemo(() => {
@@ -69,7 +70,7 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
             // return null;
         })
             .filter((item): item is NonNullable<typeof item> => item !== null);
-    }, [productSizes, sizes, productInfo, onCategoriesAndFiltersChange]);
+    }, [productSizes, sizes, onCategoriesAndFiltersChange]);
 
     const columns = [
         {

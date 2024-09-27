@@ -133,6 +133,7 @@ const Review: React.FC<ReviewProps> = ({ refetchReviews }) => {
                                         placeholder="Измените комментарий пользователя..."
                                         maxLength={1000}
                                         showCount
+                                        className="reviewText"
                                         style={{ resize: "none", maxHeight: "150px", height: "150px" }}
                                     />
                                 </Form.Item>

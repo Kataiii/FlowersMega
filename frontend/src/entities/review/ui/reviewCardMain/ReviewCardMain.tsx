@@ -3,6 +3,7 @@ import { styled } from "styled-components";
 import { API_URL } from "../../../../shared/utils/constants";
 import { FullReviewDto } from "../../../../store/review";
 import { useState } from "react";
+import ReviewModal from "../../../../widgets/ReviewAdminCard/ReviewModal";
 
 type ReviewCardMainProps = {
     review: FullReviewDto;
@@ -48,8 +49,19 @@ const Name = styled.h3`
 
 const ReviewCardMain: React.FC<ReviewCardMainProps> = ({ review }) => {
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const onClose = () => {
+        setIsModalVisible(false)
+    }
     return (
-        <Container>
+        <Container style={{
+            width: "100%",
+            height: "350px",
+            position: "relative",
+            overflow: "hidden",
+            transition: "height 0.8s ease-in-out",
+        }}>
             <TitleReview>
                 {/* @ts-ignore */}
                 <Image style={{ width: 26, height: 26, borderRadius: 4 }} src={`${API_URL}/products/images/${review.product.id}/${review?.product.images[0].url}`} />
@@ -57,7 +69,7 @@ const ReviewCardMain: React.FC<ReviewCardMainProps> = ({ review }) => {
             </TitleReview>
             <ContentReview>
                 <div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", transition: "height 0.8s ease-in-out", }}>
                         <Name>{review.firstname}</Name>
                         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                             <p style={{ fontFamily: "Inter", fontWeight: 600, fontSize: 16, color: "var(--secondary-review-text)" }}>{new Date(review.createdAt).toLocaleDateString()}</p>
@@ -72,11 +84,12 @@ const ReviewCardMain: React.FC<ReviewCardMainProps> = ({ review }) => {
                             </ConfigProvider>
                         </div>
                     </div>
-                    <div style={{ display: "flex", gap: "10px", flexDirection: "column" }}>
+                    <div style={{ display: "flex", gap: "10px", flexDirection: "column", }}>
                         <div style={{
-                            maxHeight: isExpanded ? "none" : "85px",
+                            maxHeight: isExpanded ? "250px" : "85px",
                             overflow: "hidden",
                             position: "relative",
+                            transition: "max-height 0.8s ease-in-out",
                         }}>
                             <p
                                 style={{
@@ -85,6 +98,7 @@ const ReviewCardMain: React.FC<ReviewCardMainProps> = ({ review }) => {
                                     fontWeight: 400,
                                     fontSize: 16,
                                     color: "var(--secondary-text-color)",
+
                                 }}
                             >
                                 {review.comment}
@@ -105,7 +119,7 @@ const ReviewCardMain: React.FC<ReviewCardMainProps> = ({ review }) => {
                         </div>
 
                         <button
-                            onClick={() => setIsExpanded(!isExpanded)}
+                            onClick={() => setIsModalVisible(true)}
                             style={{
                                 background: "none",
                                 border: "none",
@@ -128,6 +142,7 @@ const ReviewCardMain: React.FC<ReviewCardMainProps> = ({ review }) => {
                     }
                 </div>
             </ContentReview>
+            <ReviewModal isModalVisible={isModalVisible} data={review} onClose={onClose} />
         </Container>
     )
 }

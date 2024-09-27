@@ -1,4 +1,4 @@
-import { Alert, Button, Flex, Input, Select, Space, Spin, Table } from "antd";
+import { Alert, Button, Flex, Input, InputNumber, Select, Space, Spin, Table } from "antd";
 import Container from "../../../../shared/ui/containerMain/ContainerMain";
 import { Order, useOrdersControllerGetAllQuery } from "../../../../store/order";
 import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
@@ -9,8 +9,8 @@ import OrderContainer from "../../../../shared/ui/orderContainer/OrderContainer"
 import { ButtonText, NameContainer, NamePage } from "../products/Products";
 
 export const SortText = styled.p`
-  font-family: "Inter UI", sans-serif;
-  font-size: 12px;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
   font-weight: bold;
 `
 
@@ -134,6 +134,40 @@ const Orders: React.FC = () => {
         </NamePage>
 
       </div>
+      <OrderContainer style={{ display: "flex", flexDirection: "column", gap: "8px", padding: "8px" }}>
+        <div style={{ display: "flex", margin: "8px" }}>
+          <NameContainer>
+            Конфигурация заказов
+          </NameContainer>
+        </div>
+        <div style={{
+          width: "100%",
+          border: "1px solid var(--primary-bg-color)",
+          borderRadius: "10px",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: "10px",
+          padding: "8px",
+        }}>
+          <NameContainer style={{ color: "var(--extra-pice)", fontWeight: "normal" }}>
+            Минимальная сумма заказа
+          </NameContainer>
+          <InputNumber
+            onKeyPress={(event) => {
+              if (!/[0-9]/.test(event.key)) {
+                event.preventDefault();
+              }
+            }}
+            style={{
+              border: "1px solid var(--primary-bg-color)",
+              width: 150,
+            }} />
+          <NameContainer style={{ color: "var(--extra-pice)", fontWeight: "normal" }}>
+            ₽
+          </NameContainer>
+        </div>
+      </OrderContainer>
       <OrderContainer>
         <div style={{ display: "flex", margin: "8px" }}>
           <NameContainer>

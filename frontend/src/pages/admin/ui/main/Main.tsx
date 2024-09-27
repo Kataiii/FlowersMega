@@ -93,10 +93,12 @@ const Main: React.FC = () => {
             defaultColor: "var(--primary-bg-color)",
           },
           Select: {
+            fontFamily: "Inter",
             colorPrimary: "#F5EFF5",
-            colorBgContainer: "#FF749F",
-            colorBorder: "#FF749F",
-            colorText: "#1A2030"
+            colorBgContainer: "var(--city-active)",
+            colorBorder: "var(--city-active)",
+            colorText: "#1A2030",
+
           },
           Menu: {
             itemColor: "var(--primary-bg-color)",

@@ -8,6 +8,7 @@ import { ReviewsService } from 'src/reviews/reviews.service';
 import { SizesService } from 'src/sizes/sizes.service';
 import { CreateFullProductSizeDto, CreateProductSizeSmallDto, FilterWithItems } from './dto/createFullProduct.dto';
 import { ProductSize } from './products-sizes.model';
+import { or } from 'sequelize';
 
 @Injectable()
 export class ProductsSizesFullService {
@@ -18,9 +19,9 @@ export class ProductsSizesFullService {
         private reviewsService: ReviewsService,
         private categoriesProductService: CategoriesProductsService,
         private productsItemsFilterService: ProductsItemsFilterService
-    ){}
+    ) { }
 
-    private async getCardInfo(productSize: ProductSize){
+    private async getCardInfo(productSize: ProductSize) {
         const size = await this.sizesService.getById(productSize.idSize);
         const product = await this.productsService.getById(productSize.idProduct);
         const reviewsInfo = await this.reviewsService.getStaticticByProductSizeId(productSize.id);
@@ -38,10 +39,10 @@ export class ProductsSizesFullService {
         }
     }
 
-    async getFullById(id: number){
+    async getFullById(id: number) {
         const productSize = await this.productsSizesRepository.findOne(
             {
-                where: {id: id}
+                where: { id: id }
             }
         );
         const info = await this.getCardInfo(productSize);
@@ -53,13 +54,13 @@ export class ProductsSizesFullService {
         };
     }
 
-    async getProductsSizesForCardPagination(page: number, limit: number){
+    async getProductsSizesForCardPagination(page: number, limit: number) {
         const count = await this.productsSizesRepository.findAndCountAll();
         const products = await this.productsSizesRepository.findAll({
             limit: limit,
             offset: (page - 1) * limit
         });
-        const productsCardInfo = await Promise.all(products.map(async(item) => {
+        const productsCardInfo = await Promise.all(products.map(async (item) => {
             const info = await this.getCardInfo(item);
             return {
                 productSize: item,
@@ -75,35 +76,35 @@ export class ProductsSizesFullService {
         }
     }
 
-    async getProductSizeInfo(id: number){
-        const productSize = await this.productsSizesRepository.findOne({where: {id: id}});
+    async getProductSizeInfo(id: number) {
+        const productSize = await this.productsSizesRepository.findOne({ where: { id: id } });
         const size = await this.sizesService.getById(productSize.idSize);
-        return {productSize: productSize, size: size}
+        return { productSize: productSize, size: size }
     }
 
-    async getProductsWithPagination(page: number, limit: number, search?: string){
-        const paginationResult = await this.productsService.getCountAndPagination(page, limit, search);
-        const productSizesTmp = await Promise.all(paginationResult.products.map(async(item) => {
-            const productSizes = await this.productsSizesRepository.findAll({where: {idProduct: item.id}});
-            const productWithSizes = await Promise.all(productSizes.map(async(item) => {
+    async getProductsWithPagination(page: number, limit: number, search?: string, field?: string, type?: string, categories?: number[], filters?: number[]) {
+        const paginationResult = await this.productsService.getCountAndPagination(page, limit, search, field, type, categories, filters);
+        const productSizesTmp = await Promise.all(paginationResult.products.map(async (item) => {
+            const productSizes = await this.productsSizesRepository.findAll({ where: { idProduct: item.id } });
+            const productWithSizes = await Promise.all(productSizes.map(async (item) => {
                 return await this.getProductSizeInfo(item.id);
-            })) 
-            return {products: item, productsSizes: productWithSizes};
+            }))
+            return { products: item, productsSizes: productWithSizes };
         }));
-        return {count: paginationResult.count, products: productSizesTmp};
+        return { count: paginationResult.count, products: productSizesTmp };
     }
 
-    async createFullProduct(dto: CreateFullProductSizeDto, photo: File){
+    async createFullProduct(dto: CreateFullProductSizeDto, photo: File) {
         const prosuctsSizes = JSON.parse(`[${dto.productSize.toString()}]`) as CreateProductSizeSmallDto[];
         const categories = JSON.parse(`[${dto.categories.toString()}]`) as Category[];
-        const filters  = JSON.parse(`[${dto.filters.toString()}]`) as FilterWithItems[];
+        const filters = JSON.parse(`[${dto.filters.toString()}]`) as FilterWithItems[];
         const product = await this.productsService.create({
             name: dto.name,
-            description: dto.description,        
+            description: dto.description,
             structure: dto.structure,
             idTypeProduct: dto.type
         }, [photo]);
-        await Promise.all(prosuctsSizes.map(async(item) => {
+        await Promise.all(prosuctsSizes.map(async (item) => {
             console.log(item);
             return await this.productsSizesRepository.create({
                 idProduct: product.id,
@@ -112,7 +113,7 @@ export class ProductsSizesFullService {
                 prise: item.prise
             })
         }));
-        await Promise.all(categories.map(async(item) => {
+        await Promise.all(categories.map(async (item) => {
             return await this.categoriesProductService.create({
                 idProduct: product.id,
                 //@ts-ignore
@@ -120,8 +121,8 @@ export class ProductsSizesFullService {
             })
         }));
 
-        await Promise.all(filters.map(async(item) => {
-            return await Promise.all(item.tags.map(async(itemTags) => {
+        await Promise.all(filters.map(async (item) => {
+            return await Promise.all(item.tags.map(async (itemTags) => {
                 return await this.productsItemsFilterService.create({
                     idProduct: product.id,
                     idItemFilter: itemTags.id

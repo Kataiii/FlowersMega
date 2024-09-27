@@ -27,6 +27,10 @@ import TryPhoto from "../../../../widgets/loadPhoto/TryPhoto";
 import { Title } from "../../../../shared/ui/forAdditionalPages/Title";
 import ProductPhotoLoader from "../../../../widgets/loadPhoto/ProductPhotoLoader";
 
+interface ProductProps {
+    onCatChange?: (categories: any[]) => void,
+    onFilterChange?: (filters: any[]) => void,
+}
 
 export const StyledForm = styled(Form)`
   .ant-form-item {
@@ -78,7 +82,7 @@ const ButtonPhoto = styled.h5`
     color: var(--primary-bg-color);
 `;
 
-const Product: React.FC = () => {
+const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
     const { id } = useParams();
     const { isLoading, data } = useProductsControllerGetByIdQuery({ id: Number(id) });
     const [disabled, setDisabled] = useState(true);
@@ -87,10 +91,8 @@ const Product: React.FC = () => {
     const [variations, setVariations] = useState<any[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<{ name: string; photo: string }[]>([]);
     const [filters, setFilters] = useState<any[]>([]);
-    const { data: sizeData, isLoading: sizeDataLoading } = useProductsSizesControllerGetAllSizesByProductIdQuery({ id: Number(id) });
     const { data: filtersData, isLoading: filtersLoading } = useFiltersControllerGetAllQuery();
     const { data: categories, isLoading: categoriesLoading } = useCategoriesControllerGetAllQuery();
-    const { data: productSizes, isLoading: sizesLoading } = useProductsSizesControllerGetProductSizeForCardByIdQuery({ id: Number(id) });
     const { data: productVariations, isLoading: productVariationsLoading } = useProductsSizesControllerGetAllSizesByProductIdQuery({ id: Number(id) });
     const { data: productFiltCat } = useProductsControllerGetByIdQuery({ id: Number(id) });
     const [createProductWithDetails] = useProductsControllerCreateWithDetailsMutation();
@@ -208,7 +210,12 @@ const Product: React.FC = () => {
             console.log("aaaaaa", variationsS);
 
             setVariations(variationsS);
-
+            if (onCatChange) {
+                onCatChange(selectedCategories);
+            }
+            if (onFilterChange) {
+                onFilterChange(filters);
+            }
             // setVariations(productVariations.);
         }
     }, [productFiltCat, productVariations]);

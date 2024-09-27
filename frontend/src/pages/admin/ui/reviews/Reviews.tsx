@@ -12,13 +12,13 @@ import { Debouncer } from "../../../../shared/utils/debounce";
 const Reviews: React.FC = () => {
     const [searchId, setSearchId] = useState<string>("");
     const [finalSearchId, setFinalSearchId] = useState<string>("");
-    const [sortOrder, setSortOrder] = useState<string>("rateDESC");
+    const [sortOrder, setSortOrder] = useState<string>("rating ASC");
     const [page, setPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(4);
     const [shouldFetch, setShouldFetch] = useState<boolean>(false);
 
     const { data: reviews, refetch } = useReviewsControllerGetAllWithPaginationQuery(
-        { page, limit: pageSize, search: finalSearchId },
+        { page, limit: pageSize, search: finalSearchId, field: sortOrder.split(' ')[0], type: sortOrder.split(' ')[1] },
     );
 
     const debouncer = new Debouncer();
@@ -50,6 +50,12 @@ const Reviews: React.FC = () => {
         setShouldFetch(true);
     };
 
+    const handleSortChange = (value: string) => {
+        setSortOrder(value);
+        setPage(1);
+        setShouldFetch(true);
+    };
+
     const reviewData = useMemo(() => {
         if (!reviews) return [];
         return reviews.reviews.map((review) => ({
@@ -59,18 +65,19 @@ const Reviews: React.FC = () => {
 
     const sortedData = useMemo(() => {
         const sorted = [...reviewData];
-        switch (sortOrder) {
-            case "rateDESC":
-                return sorted.sort((a, b) => b.rating - a.rating);
-            case "rateASC":
-                return sorted.sort((a, b) => a.rating - b.rating);
-            case "dateNew":
-                return sorted.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
-            case "dateOld":
-                return sorted.sort((a, b) => new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime());
-            default:
-                return sorted;
-        }
+        // switch (sortOrder) {
+        //     case "rating DESC":
+        //         return sorted.sort((a, b) => b.rating - a.rating);
+        //     case "rating ASC":
+        //         return sorted.sort((a, b) => a.rating - b.rating);
+        //     case "updatedAt ASC":
+        //         return sorted.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+        //     case "updatedAt DESC":
+        //         return sorted.sort((a, b) => new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime());
+        //     default:
+        //         return sorted;
+        // }
+        return sorted;
     }, [reviewData, sortOrder]);
 
     const refetchReviews = () => {
@@ -113,41 +120,32 @@ const Reviews: React.FC = () => {
                         <SortText>Сортировать по</SortText>
                     </div>
                     <Select
-                        allowClear
+
                         defaultActiveFirstOption={true}
-                        defaultValue="rateDESC"
+                        defaultValue="rating ASC"
                         style={{ width: 150, height: 25 }}
                         options={[
-                            { value: "dateNew", label: "Дата (новые)" },
-                            { value: "dateOld", label: "Дата (старые)" },
-                            { value: "rateASC", label: "Рейтинг (выше)" },
-                            { value: "rateDESC", label: "Рейтинг (ниже)" },
+                            { value: "updatedAt ASC", label: "Дата (старые)" },
+                            { value: "updatedAt DESC", label: "Дата (новые)" },
+                            { value: "rating ASC", label: "Рейтинг (по возрастанию)" },
+                            { value: "rating DESC", label: "Рейтинг (по убванию)" },
                         ]}
                         placeholder="Выбрать"
                         value={sortOrder}
-                        onChange={(value) => setSortOrder(value)}
+                        onChange={handleSortChange}
                     />
                 </div>
 
                 {/* TODO убрать высоту*/}
-                <div
-                    style={{
-                        display: "grid",
-                        gridTemplateColumns: "repeat(2, 1fr)", // Две колонки одинакового размера
-                        gridAutoRows: "1fr", // Равномерная высота строк
-                        gap: "10px", // Промежутки между карточками
-                    }}
-                >
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gridTemplateRows: "repeat(2, 1fr)", gap: "10px" }}>
                     {sortedData.map((review) => (
                         <ReviewAdminCard key={review.id} review={review} refetchReviews={refetchReviews} />
                     ))}
                 </div>
-
-
                 <Pagination
                     style={{ marginTop: "16px", textAlign: "center" }}
                     current={page}
-                    total={reviews?.count || 0}
+                    total={reviews?.count}
                     pageSize={pageSize}
                     onChange={handlePageChange}
                 />

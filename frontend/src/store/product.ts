@@ -128,6 +128,18 @@ const injectedRtkApi = api.injectEndpoints({
         if (queryArg.search) {
           params.search = queryArg.search;
         }
+        if (queryArg.field) {
+          params.field = queryArg.field;
+        }
+        if (queryArg.type) {
+          params.type = queryArg.type;
+        }
+        if (queryArg.categories) {
+          params.categories = queryArg.categories;
+        }
+        if (queryArg.filters) {
+          params.filters = queryArg.filters;
+        }
         return {
           url: `/products-sizes/products-with-pagination/${queryArg.page}/${queryArg.limit}`,
           params: params,
@@ -243,6 +255,10 @@ export type productSizesControllerGetProductsWithPaginationApiArg = {
   page: number;
   limit: number;
   search?: string;
+  field?: string;
+  type?: string;
+  categories?: number[];
+  filters?: number[];
 }
 export type ProductsControllerCreateWithDetailsApiResponse = /** status 201 */ Product;
 export type ProductsControllerCreateWithDetailsApiArg = {

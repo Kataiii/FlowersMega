@@ -42,17 +42,26 @@ const Products: React.FC = () => {
     const navigate = useNavigate();
     const locate = useLocation();
     // const { isLoading, data: products } = useProductsControllerGetAllQuery();
-    const [sortOrder, setSortOrder] = useState<string>("DateASC");
+    const [sortOrder, setSortOrder] = useState<string>("updatedAt ASC");
     const [searchId, setSearchId] = useState<string>("");
     const [finalSearchId, setFinalSearchId] = useState<string>("");
-    const [categories, setCategories] = useState<string[]>([]);
-    const [filters, setFilters] = useState<string[]>([]);
+    const [categories, setCategories] = useState<number[]>([]);
+    const [filters, setFilters] = useState<number[]>([]);
     const [page, setPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(8);
-    const { data: filtersData } = useFiltersControllerGetAllQuery();
-    const { data: categoriesData } = useCategoriesControllerGetAllQuery();
+    const { data: filtersData, isLoading: isFiltersLoading } = useFiltersControllerGetAllQuery();
+    const { data: categoriesData, isLoading: isCategoriesLoading } = useCategoriesControllerGetAllQuery();
     const { data: productType } = useTypesProductControllerGetAllQuery();
-    const { data: productSizedPag } = useProductSizesControllerGetProductsWithPaginationQuery({ page: page, limit: pageSize, search: finalSearchId });
+    const { data: productSizedPag } = useProductSizesControllerGetProductsWithPaginationQuery(
+        {
+            page: page, limit: pageSize,
+            search: finalSearchId,
+            field: sortOrder.split(' ')[0],
+            type: sortOrder.split(' ')[1],
+            categories: categories,
+            filters: filters,
+        }
+    );
 
     const debouncer = new Debouncer();
 
@@ -69,9 +78,15 @@ const Products: React.FC = () => {
         debouncedSearch(newSearchValue);
     };
 
-    const handleCategoriesAndFiltersChange = useCallback((categories: string[], filters: string[]) => {
-        setCategories(categories);
-        setFilters(filters);
+    const handleCategoriesChange = useCallback((categories: any[]) => {
+        const selectedCategoryIds = categories.map(category => category.id);
+        setCategories(selectedCategoryIds);
+
+    }, []);
+
+    const handleFiltersChange = useCallback((filters: any[]) => {
+        const selectedFilters = filters.map(filter => filter.id);
+        setFilters(selectedFilters);
     }, []);
 
     const productData = useMemo(() => {
@@ -81,30 +96,35 @@ const Products: React.FC = () => {
         }));
     }, [productSizedPag]);
 
-    const filteredData = useMemo(() => {
-        if (!searchId) return productData;
-        return productData.filter(product => product.products.name.toString().includes(searchId));
-    }, [searchId, productData]);
+    // const filteredData = useMemo(() => {
+    //     if (!searchId) return productData;
+    //     return productData.filter(product => product.products.name.toString().includes(searchId));
+    // }, [searchId, productData]);
 
     const sortedData = useMemo(() => {
-        const sorted = [...filteredData];
-        switch (sortOrder) {
-            case "DateASC":
-                // @ts-ignore
-                return sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-            case "DateDESC":
-                // @ts-ignore
-                return sorted.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-            default:
-                return sorted;
-        }
-    }, [filteredData, sortOrder]);
+        const sorted = [...productData];
+        // switch (sortOrder) {
+        //     case "DateASC":
+        //         // @ts-ignore
+        //         return sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        //     case "DateDESC":
+        //         // @ts-ignore
+        //         return sorted.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+        //     default:
+        return sorted;
+        // }
+    }, [productData, sortOrder]);
 
     const handlePageChange = (newPage: number, newPageSize?: number) => {
         setPage(newPage);
         if (newPageSize) {
             setPageSize(newPageSize);
         }
+    };
+
+    const handleSortChange = (value: string) => {
+        setSortOrder(value);
+        setPage(1);
     };
 
     // if (isLoading) return <div>Loading...</div>;
@@ -143,8 +163,17 @@ const Products: React.FC = () => {
                         <Button style={{ width: "150px" }} type="primary" > <ButtonText style={{ display: "inline" }}>Найти</ButtonText> <SearchOutlined /> </Button>
                     </Space.Compact>
                     <div style={{ display: "flex", flexDirection: "column", padding: "8px 8px 8px 0", gap: "8px" }}>
-                        <CategoryDropdown name="Категории" data={categoriesData} showAddButton={true} />
-                        <CategoryDropdown name="Теги" data={filtersData?.flatMap(filter => filter.items)} />
+                        {isFiltersLoading && isCategoriesLoading ? <div>Loading... </div> :
+                            <>
+                                <CategoryDropdown name="Категории" data={categoriesData?.map(item => {
+                                    return { id: item.id, name: item.name }
+                                })} showAddButton={true} onChange={handleCategoriesChange} />
+                                <CategoryDropdown name="Теги" data={filtersData?.flatMap(filter => filter.items).map(item => {
+                                    return { id: item.id, name: item.name }
+                                })} onChange={handleFiltersChange} />
+                            </>
+
+                        }
                     </div>
                 </div>
                 <div style={{ display: "flex" }}>
@@ -154,17 +183,16 @@ const Products: React.FC = () => {
                         </SortText>
                     </div>
                     <Select
-                        allowClear
                         defaultActiveFirstOption={true}
-                        defaultValue="DateASC"
+                        defaultValue="updatedAt ASC"
                         style={{ width: 150, height: 25 }}
                         options={[
-                            { value: "DateASC", label: "Дата (новые)" },
-                            { value: "DateDESC", label: "Дата (старые)" },
+                            { value: "updatedAt ASC", label: "Дата (новые)" },
+                            { value: "updatedAt DESC", label: "Дата (старые)" },
                         ]}
                         placeholder="Выбрать"
                         value={sortOrder}
-                        onChange={(value) => setSortOrder(value)}
+                        onChange={handleSortChange}
                     />
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px" }}>
@@ -178,9 +206,11 @@ const Products: React.FC = () => {
                     ))}
                 </div>
                 {/* @ts-ignore */}
-                <Pagination current={page} pageSize={pageSize} total={productSizedPag?.count || 0} onChange={handlePageChange} style={{ marginTop: "16px", textAlign: "center" }} />
+                <Pagination showLessItems={true} current={page} pageSize={pageSize} total={productSizedPag?.count || 0} onChange={handlePageChange} style={{ marginTop: "16px", textAlign: "center" }} />
                 <>
-                    {console.log('Total count:', productSizedPag)}
+                    {console.log('Total count:', categoriesData)}
+                    {console.log('categories:', categories)}
+                    {console.log('filters:', filters)}
                 </>
             </OrderContainer>
         </Container>

@@ -7,13 +7,16 @@ import { useCategoriesControllerCreateMutation, useCategoriesControllerDeleteMut
 import axios from "axios";
 import { API_URL } from "../../utils/constants";
 
+type CategoryMin = Omit<Category, "url">;
+type FilteryMin = Omit<ItemFilter, "idFilter">;
+
 interface CategoryDropdownProps {
   value?: { id?: number; name: string; photo: string }[];
   disabled?: boolean;
   onChange?: (value: { id?: number; name: string; photo: string }[]) => void;
   style?: React.CSSProperties;
   name?: string;
-  data?: (Category | ItemFilter)[];
+  data?: (CategoryMin | FilteryMin)[];
   showAddButton?: boolean;
 }
 
@@ -25,7 +28,7 @@ export type Category = {
 
 const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   showAddButton = false,
-  data = [],
+  data,
   name,
   disabled,
   value = [],
@@ -33,7 +36,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   style,
 }) => {
   const [searchValue, setSearchValue] = useState<string>("");
-  const [items, setItems] = useState<{ id?: number; name: string }[]>([]);
+  const [items, setItems] = useState<{ id?: number; name: string }[]>(data ? data : []);
   const [selectedCategories, setSelectedCategories] = useState<{ id?: number; name: string; photo: string }[]>(value);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
@@ -43,37 +46,40 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   const [addCategory] = useCategoriesControllerCreateMutation();
   const [deleteCategory] = useCategoriesControllerDeleteMutation();
 
+
   // const formattedItems = useMemo(() => data.map((item) => ({
   //   id: item.id,
   //   name: item.name,
   // })), [data]);
 
   useEffect(() => {
-    const mappedItems = data.map((item) => ({
-      id: item.id,
-      name: item.name,
-    }));
+    if (data) {
+      const mappedItems = data.map((item) => ({
+        id: item.id,
+        name: item.name,
+      }));
 
-    const mappedSelectedCategories = value.map((item) => ({
-      id: item.id,
-      name: item.name,
-      photo: item.photo,
-    }));
+      const mappedSelectedCategories = value.map((item) => ({
+        id: item.id,
+        name: item.name,
+        photo: item.photo,
+      }));
 
-    setItems((prevItems) => {
-      if (JSON.stringify(prevItems) !== JSON.stringify(mappedItems)) {
-        return mappedItems;
-      }
-      return prevItems;
-    });
+      setItems((prevItems) => {
+        if (JSON.stringify(prevItems) !== JSON.stringify(mappedItems)) {
+          return mappedItems;
+        }
+        return prevItems;
+      });
 
-    setSelectedCategories((prevSelectedCategories) => {
-      if (JSON.stringify(prevSelectedCategories) !== JSON.stringify(mappedSelectedCategories)) {
-        return mappedSelectedCategories;
-      }
-      return prevSelectedCategories;
-    });
-  }, [data, value]);
+      setSelectedCategories((prevSelectedCategories) => {
+        if (JSON.stringify(prevSelectedCategories) !== JSON.stringify(mappedSelectedCategories)) {
+          return mappedSelectedCategories;
+        }
+        return prevSelectedCategories;
+      });
+    }
+  }, []);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -137,21 +143,21 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
     const existingCategory = selectedCategories.find((item) => item.id === category.id);
 
     if (existingCategory) {
-      // Если категория уже выбрана, удаляем её
       const newSelectedCategories = selectedCategories.filter((item) => item.id !== category.id);
       setSelectedCategories(newSelectedCategories);
       if (onChange) {
         onChange(newSelectedCategories);
       }
     } else {
-      // Если категория не выбрана, добавляем её
-      const newCategory = { id: category.id, name: category.name, photo: "" }; // Подставляем photo, если нужно
+      const newCategory = { id: category.id, name: category.name, photo: "" };
       const newSelectedCategories = [...selectedCategories, newCategory];
       setSelectedCategories(newSelectedCategories);
       if (onChange) {
         onChange(newSelectedCategories);
       }
+      console.log(newSelectedCategories);
     }
+
   };
 
   const filteredItems = items.filter((item) =>
@@ -199,7 +205,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
                   setIsModalVisible(true);
                   setDropdownVisible(false);
                 }}
-                style={{ marginBottom: "8px", color: "var(--primary-bg-color)" }}
+                style={{ marginBottom: "8px", color: "var(--primary-bg-color)", fontFamily: "Inter" }}
               >
                 Создать категорию
               </Button>
@@ -222,6 +228,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
                   style={{
                     display: "flex",
                     padding: "1px",
+                    fontFamily: "Inter",
                     borderBottom: "1px solid #f0f0f0",
                     justifyContent: "space-between",
                   }}
@@ -236,17 +243,16 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
                       display: "flex",
                       width: "100%",
                       backgroundColor: selectedCategories.some((cat) => cat.id === item.id)
-                        ? "var(--primary-bg-color)"  // Подсвечиваем выбранные категории
+                        ? "var(--primary-bg-color)"
                         : item.id === hoveredItem
-                          ? "var(--primary-bg-color-hover)"  // Подсвечиваем категорию при наведении
+                          ? "var(--primary-bg-color-hover)"
                           : "transparent",
                       borderRight: "1px solid #f0f0f0",
+                      fontFamily: "Inter"
                     }}
                   >
                     {item.name}
-                    {selectedCategories.some((cat) => cat.id === item.id) && (
-                      <CloseOutlined onClick={() => handleSelectCategory(item)} />
-                    )}
+                    {selectedCategories.some((cat) => cat.id === item.id)}
                   </div>
                   <CloseOutlined style={{ paddingLeft: "3px" }} onClick={() => handleRemoveItem(item.id!)} />
                 </div>
