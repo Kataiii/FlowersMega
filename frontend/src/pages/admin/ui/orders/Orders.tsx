@@ -1,6 +1,6 @@
-import { Alert, Button, Flex, Input, InputNumber, Select, Space, Spin, Table } from "antd";
+import { Alert, Button, Flex, Input, InputNumber, Pagination, Select, Space, Spin, Table } from "antd";
 import Container from "../../../../shared/ui/containerMain/ContainerMain";
-import { Order, useOrdersControllerGetAllQuery } from "../../../../store/order";
+import { Order, useOrdersControllerGetAllQuery, useOrdersControllerGetWithPaginationQuery } from "../../../../store/order";
 import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -16,18 +16,23 @@ export const SortText = styled.p`
 
 
 const Orders: React.FC = () => {
-  const { isLoading, data: initialData } = useOrdersControllerGetAllQuery();
-  const [sortOrder, setSortOrder] = useState<string>("dateNew");
+
+  const [sortOrder, setSortOrder] = useState<string>("updatedAt ASC");
   const [searchId, setSearchId] = useState<string>("");
   const navigate = useNavigate();
   const locate = useLocation();
   const [orders, setOrders] = useState<Order[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(5);
+  const { isLoading, data: initialData } = useOrdersControllerGetWithPaginationQuery(
+    { page: page, limit: pageSize, field: sortOrder.split(' ')[0], type: sortOrder.split(' ')[1] },
+  );
 
-  useEffect(() => {
-    if (initialData) {
-      setOrders(initialData);
-    }
-  }, [initialData]);
+  // useEffect(() => {
+  //   if (initialData) {
+  //     setOrders(initialData);
+  //   }
+  // }, [initialData]);
 
   const columns = [
     {
@@ -64,18 +69,19 @@ const Orders: React.FC = () => {
   ];
 
   const dataSource = useMemo(() => {
-    return orders.map((order, index) => ({
+
+    return initialData?.orders.map((data, index) => ({
       key: index,
-      orderId: order.id,
-      customer: order.nameCustomer,
-      price: order.cost,
-      date: order.dateDelivery,
-      phoneNumber: order.phoneCustomer,
+      orderId: data.id,
+      customer: data.nameCustomer,
+      price: data.cost,
+      date: data.dateDelivery,
+      phoneNumber: data.phoneCustomer,
       moreInfo: (
         <Button
           block
           type="primary"
-          onClick={() => navigate(`/admin/order/${order.id}`, { state: { previousLocation: locate.pathname } })}
+          onClick={() => navigate(`/admin/order/${data.id}`, { state: { previousLocation: locate.pathname } })}
           style={{ width: "50%" }}
           shape="round"
         >
@@ -86,36 +92,48 @@ const Orders: React.FC = () => {
         </Button>
       ),
     }));
-  }, [orders, navigate, locate]);
+  }, [initialData, navigate, locate]);
 
   const filteredData = useMemo(() => {
     if (!searchId) return dataSource;
-    return dataSource.filter(order => order.orderId.toString().includes(searchId));
+    return dataSource?.filter(order => order.orderId.toString().includes(searchId));
   }, [searchId, dataSource]);
 
-  const sortedData = useMemo(() => {
-    const sorted = [...filteredData];
-    switch (sortOrder) {
-      case "idASC":
-        return sorted.sort((a, b) => a.orderId - b.orderId);
-      case "idDESC":
-        return sorted.sort((a, b) => b.orderId - a.orderId);
-      case "dateNew":
-        return sorted.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-      case "dateOld":
-        return sorted.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-      case "customerASC":
-        return sorted.sort((a, b) => a.customer.localeCompare(b.customer));
-      case "customerDESC":
-        return sorted.sort((a, b) => b.customer.localeCompare(a.customer));
-      case "costASC":
-        return sorted.sort((a, b) => a.price - b.price);
-      case "costDESC":
-        return sorted.sort((a, b) => b.price - a.price);
-      default:
-        return sorted;
-    }
-  }, [filteredData, sortOrder]);
+  // const sortedData = useMemo(() => {
+  //   const sorted = [...filteredData];
+  //   // switch (sortOrder) {
+  //   case "idASC":
+  //     return sorted.sort((a, b) => a.orderId - b.orderId);
+  //   case "idDESC":
+  //     return sorted.sort((a, b) => b.orderId - a.orderId);
+  //   case "updatedAt ASC":
+  //     return sorted.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  //   case "updatedAt DESC":
+  //     return sorted.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  //   case "nameCustomer ASC":
+  //     return sorted.sort((a, b) => a.customer.localeCompare(b.customer));
+  //   case "nameCustomer DESC":
+  //     return sorted.sort((a, b) => b.customer.localeCompare(a.customer));
+  //   case "costASC":
+  //     return sorted.sort((a, b) => a.price - b.price);
+  //   case "costDESC":
+  //     return sorted.sort((a, b) => b.price - a.price);
+  //   default:
+  //     return sorted;
+  // }
+  //   return sorted;
+  // }, [filteredData, sortOrder]);
+
+  const handleSortChange = (value: string) => {
+    setSortOrder(value);
+    setPage(1);
+  };
+
+  const handlePageChange = (newPage: number, newPageSize: number) => {
+    setPage(newPage);
+    if (newPageSize) setPageSize(newPageSize);
+
+  }
 
   return (
     <Container
@@ -210,22 +228,22 @@ const Orders: React.FC = () => {
           <Select
             allowClear
             defaultActiveFirstOption={true}
-            defaultValue="dateNew"
+            defaultValue="updatedAt ASC"
             style={{
               width: 150,
               height: 25,
             }}
             options={[
-              { value: "dateNew", label: "Дата (новые)" },
-              { value: "dateOld", label: "Дата (старые)" },
-              { value: "customerASC", label: "Заказчик (А-Я)" },
-              { value: "customerDESC", label: "Заказчик (Я-А)" },
-              { value: "costASC", label: "Цена (возрастание)" },
-              { value: "costDESC", label: "Цена (убывание)" },
+              { value: "updatedAt ASC", label: "Дата (новые)" },
+              { value: "updatedAt DESC", label: "Дата (старые)" },
+              { value: "nameCustomer ASC", label: "Заказчик (А-Я)" },
+              { value: "nameCustomer DESC", label: "Заказчик (Я-А)" },
+              { value: "cost ASC", label: "Цена (возрастание)" },
+              { value: "cost DESC", label: "Цена (убывание)" },
             ]}
             placeholder="Выбрать"
             value={sortOrder}
-            onChange={(value) => setSortOrder(value)}
+            onChange={handleSortChange}
           />
 
         </div>
@@ -234,9 +252,21 @@ const Orders: React.FC = () => {
             <Spin indicator={<LoadingOutlined spin />} size="large" />
           </Flex>
         ) : (
-          <Table dataSource={sortedData} columns={columns} />
+
+          <>
+            <Table dataSource={filteredData} columns={columns} pagination={{ defaultCurrent: page, defaultPageSize: pageSize }} />
+            {console.log('lalalal', dataSource)}
+            {/* <Pagination
+              current={page}
+              total={filteredData?.length}
+              pageSize={pageSize}
+              onChange={handlePageChange}
+            /> */}
+          </>
         )}
+
       </OrderContainer>
+
     </Container>
   );
 };
