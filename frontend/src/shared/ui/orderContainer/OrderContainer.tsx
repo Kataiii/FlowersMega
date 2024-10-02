@@ -6,8 +6,8 @@ const OrderContainer = styled.div`
     flex-direction: column;
     background-color: var(--block-bg-color);
     border-radius: 16px;
-    gap: 8px;
-    margin: 8px;
+    gap: 6px;
+    margin: 0 8px;
     padding: 8px;
   `;
 

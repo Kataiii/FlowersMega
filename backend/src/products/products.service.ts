@@ -60,6 +60,7 @@ export class ProductsService {
             })).count;
             const products = await this.productsRepository.findAll({
                 where: { name: { [Op.like]: `%${search}%` } },
+                include: [{ all: true }],
                 limit: limit,
                 offset: (page - 1) * limit,
                 order: field && type ? [[field, type]] : [["updatedAt", "DESC"]],

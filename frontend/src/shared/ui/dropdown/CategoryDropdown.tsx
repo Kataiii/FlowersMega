@@ -248,7 +248,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
                           ? "var(--primary-bg-color-hover)"
                           : "transparent",
                       borderRight: "1px solid #f0f0f0",
-                      fontFamily: "Inter"
+
                     }}
                   >
                     {item.name}
@@ -293,6 +293,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
               background: "var(--primary-bg-color)",
               color: "#fff",
               whiteSpace: "nowrap",
+              fontFamily: "Inter"
             }}
           >
             {category.name}

@@ -2,11 +2,12 @@ import { Alert, Button, Flex, Input, InputNumber, Pagination, Select, Space, Spi
 import Container from "../../../../shared/ui/containerMain/ContainerMain";
 import { Order, useOrdersControllerGetAllQuery, useOrdersControllerGetWithPaginationQuery } from "../../../../store/order";
 import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import OrderContainer from "../../../../shared/ui/orderContainer/OrderContainer";
 import { ButtonText, NameContainer, NamePage } from "../products/Products";
+import { Debouncer } from "../../../../shared/utils/debounce";
 
 export const SortText = styled.p`
   font-family: "Inter", sans-serif;
@@ -23,10 +24,13 @@ const Orders: React.FC = () => {
   const locate = useLocation();
   const [orders, setOrders] = useState<Order[]>([]);
   const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(5);
+  const [pageSize, setPageSize] = useState<number>(8);
+  const [finalSearchId, setFinalSearchId] = useState<string>("");
   const { isLoading, data: initialData } = useOrdersControllerGetWithPaginationQuery(
-    { page: page, limit: pageSize, field: sortOrder.split(' ')[0], type: sortOrder.split(' ')[1] },
+    { page: page, limit: pageSize, search: finalSearchId, field: sortOrder.split(' ')[0], type: sortOrder.split(' ')[1] },
   );
+  const debouncer = new Debouncer();
+
 
   // useEffect(() => {
   //   if (initialData) {
@@ -94,10 +98,25 @@ const Orders: React.FC = () => {
     }));
   }, [initialData, navigate, locate]);
 
-  const filteredData = useMemo(() => {
-    if (!searchId) return dataSource;
-    return dataSource?.filter(order => order.orderId.toString().includes(searchId));
-  }, [searchId, dataSource]);
+  const debouncedSearch = useCallback(
+    debouncer.debounce((searchValue: string) => {
+      setFinalSearchId(searchValue);
+      setPage(1);
+    }, 2000), []
+  );
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newSearchValue = e.target.value;
+    setSearchId(newSearchValue);
+    debouncedSearch(newSearchValue);
+  };
+
+
+
+  // const filteredData = useMemo(() => {
+  //   if (!searchId) return dataSource;
+  //   return dataSource?.filter(order => order.orderId.toString().includes(searchId));
+  // }, [searchId, dataSource]);
 
   // const sortedData = useMemo(() => {
   //   const sorted = [...filteredData];
@@ -123,6 +142,12 @@ const Orders: React.FC = () => {
   // }
   //   return sorted;
   // }, [filteredData, sortOrder]);
+
+  const handleSearchButtonClick = () => {
+    setFinalSearchId(searchId);
+    setPage(1);
+    // setShouldFetch(true);
+  };
 
   const handleSortChange = (value: string) => {
     setSortOrder(value);
@@ -203,9 +228,9 @@ const Orders: React.FC = () => {
             <Input
               placeholder="Поиск по ID"
               value={searchId}
-              onChange={(e) => setSearchId(e.target.value)}
+              onChange={handleSearchChange}
             />
-            <Button style={{ width: "150px" }} type="primary"><ButtonText style={{ display: "inline" }}>Найти</ButtonText> <SearchOutlined /></Button>
+            <Button style={{ width: "150px" }} type="primary"><ButtonText style={{ display: "inline" }} onClick={handleSearchButtonClick}>Найти</ButtonText> <SearchOutlined /></Button>
           </Space.Compact>
         </div>
         <div
@@ -226,7 +251,7 @@ const Orders: React.FC = () => {
 
           </div>
           <Select
-            allowClear
+
             defaultActiveFirstOption={true}
             defaultValue="updatedAt ASC"
             style={{
@@ -253,16 +278,16 @@ const Orders: React.FC = () => {
           </Flex>
         ) : (
 
-          <>
-            <Table dataSource={filteredData} columns={columns} pagination={{ defaultCurrent: page, defaultPageSize: pageSize }} />
-            {console.log('lalalal', dataSource)}
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            <Table dataSource={dataSource} columns={columns} pagination={false} />
             {/* <Pagination
               current={page}
               total={filteredData?.length}
               pageSize={pageSize}
               onChange={handlePageChange}
             /> */}
-          </>
+            <Pagination current={page} total={initialData?.count} pageSize={pageSize} onChange={handlePageChange} />
+          </div>
         )}
 
       </OrderContainer>

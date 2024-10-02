@@ -414,7 +414,13 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
                                         <ButtonText>Сохранить изменения</ButtonText>
                                     </Button>
                                 )}
-                                <Button type="primary" danger htmlType="submit">
+                                <Button type="primary" danger htmlType="submit" onClick={() => {
+                                    // @ts-ignore
+
+                                    console.log(data?.images?.[0]?.url);
+                                }
+
+                                }>
                                     <ButtonText>Удалить</ButtonText>
                                 </Button>
                             </>

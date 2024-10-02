@@ -115,10 +115,10 @@ ${dto.comment !== undefined
 
     async getOrdersWithPagination(page: number, limit: number, search?: string, field?: string, type?: string) {
         if (search) {
-            const paginationResult = (await this.ordersRepository.findAndCountAll({ where: { nameCustomer: { [Op.like]: `%${search}%` } } })).count;
+            const paginationResult = (await this.ordersRepository.findAndCountAll({ where: { id: search } })).count;
             const orders = (await this.ordersRepository.findAll({
                 where: {
-                    nameCustomer: { [Op.like]: `%${search}%` },
+                    id: search,
                 },
                 limit: limit,
                 offset: (page - 1) * limit,

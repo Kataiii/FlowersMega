@@ -30,6 +30,8 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ category }) => {
                                     padding: "8px",
                                     cursor: "pointer",
                                     width: "200px",
+                                    flexWrap: "wrap",
+                                    flexDirection: "column",
                                     fontFamily: "Inter"
                                 }}
                             >
@@ -39,6 +41,9 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ category }) => {
                                         <div
                                             key={item.id}
                                             style={{
+                                                display: "flex",
+
+
                                                 padding: "4px",
                                                 cursor: "pointer",
                                                 marginBottom: "8px",
