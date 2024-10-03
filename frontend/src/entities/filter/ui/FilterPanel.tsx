@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import Container from "../../../shared/ui/containerMain/ContainerMain";
-import { FilterWithItems, useFiltersControllerGetAllQuery } from "../../../store/filter";
-import { Category } from "../../../store/product";
-import { useNavigate } from "react-router-dom";
+import { useFiltersControllerGetAllQuery } from "../../../store/filter";
+import { Category, ItemFilter } from "../../../store/product";
+import { createSearchParams, useNavigate } from "react-router-dom";
 import { CATALOG_PATH } from "../../../shared/utils/constants";
+import { useDispatch } from "react-redux";
+import { addAllToFilters, addOneToFilters } from "../redux/slice";
+import { Button } from "antd";
+
 
 type FilterPanelProps = {
     category: Category;
@@ -12,52 +16,123 @@ type FilterPanelProps = {
 const FilterPanel: React.FC<FilterPanelProps> = ({ category }) => {
     const { isLoading, data } = useFiltersControllerGetAllQuery();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
+    const handleSelectAll = (filterItems: ItemFilter[]) => {
+        dispatch(addAllToFilters(filterItems));
+
+        const searchParams = createSearchParams(
+            filterItems.reduce((acc: Record<string, string>, item: ItemFilter) => {
+                if (item.id) acc[`itemId_${item.id}`] = item.id.toString();
+                return acc;
+            }, {})
+        ).toString();
+
+        navigate({
+            pathname: `${CATALOG_PATH}`,
+            search: searchParams,
+        });
+    };
 
     return (
         <Container>
             {isLoading ? (
                 <p>Loading...</p>
             ) : (
-                <div style={{ display: "flex", flexDirection: "row", gap: "25px", marginTop: "15px" }}>
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        gap: "25px",
+                        marginTop: "15px",
+                        fontFamily: "Inter",
+                    }}
+                >
                     {data &&
                         data.map((filter) => (
                             <div
-                                key={filter.id}
+                                key={filter?.id}
                                 style={{
-                                    border: "1px solid var(--primary-bg-color)",
                                     borderRadius: "4px",
                                     padding: "8px",
                                     cursor: "pointer",
-                                    width: "200px",
-                                    flexWrap: "wrap",
-                                    flexDirection: "column",
-                                    fontFamily: "Inter"
+                                    width: "600px",
                                 }}
                             >
-                                <div style={{ fontWeight: "bold" }}>{filter.name}</div>
-                                <div style={{ marginTop: "8px" }}>
-                                    {filter.items.map((item) => (
-                                        <div
-                                            key={item.id}
+                                <div
+                                    style={{
+                                        fontWeight: "bold",
+                                        fontSize: "24px",
+                                        fontFamily: "Inter",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        alignItems: "flex-start"
+                                    }}
+                                >
+                                    {filter?.name}
+                                    <Button
+                                        style={{
+                                            padding: "4px 0",
+                                            cursor: "pointer",
+                                            margin: "8px 0",
+                                            border: "none",
+                                            fontWeight: "bold",
+                                            fontSize: "16px",
+                                            fontFamily: "Inter",
+                                        }}
+
+                                        onClick={() => handleSelectAll(filter?.items || [])}
+                                    >
+                                        Выбрать все
+                                    </Button>
+                                </div>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        flexWrap: "wrap",
+                                        maxHeight: "500px",
+                                        gap: "8px",
+                                        marginTop: "8px",
+                                        alignContent: "flex-start",
+                                        fontFamily: "Inter ",
+                                    }}
+                                >
+                                    {filter?.items?.map((item) => (
+                                        <Button
+                                            key={item?.id}
                                             style={{
-                                                display: "flex",
-
-
-                                                padding: "4px",
+                                                width: "30%",
+                                                padding: "4px 0",
                                                 cursor: "pointer",
                                                 marginBottom: "8px",
+                                                margin: "8px 0",
+                                                border: "none",
+                                                textAlign: "left",
+                                                fontSize: "16px",
                                                 fontFamily: "Inter",
-
                                             }}
                                             onClick={() => {
-                                                navigate(`${CATALOG_PATH}/${category.name}/${item.name}`, {
-                                                    // state: { previousLocation: locate.pathname },
-                                                });
+                                                if (item?.id && filter?.id) {
+                                                    dispatch(
+                                                        addOneToFilters({
+                                                            id: item.id,
+                                                            idFilter: filter.id,
+                                                            name: item.name,
+                                                        })
+                                                    );
+
+                                                    navigate({
+                                                        pathname: `${CATALOG_PATH}`,
+                                                        search: createSearchParams({
+                                                            filterId: filter.id.toString(),
+                                                            itemId: item.id.toString(),
+                                                        }).toString(),
+                                                    });
+                                                }
                                             }}
                                         >
-                                            {item.name}
-                                        </div>
+                                            {item?.name}
+                                        </Button>
                                     ))}
                                 </div>
                             </div>
