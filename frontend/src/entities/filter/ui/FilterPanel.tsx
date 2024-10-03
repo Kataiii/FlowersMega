@@ -104,12 +104,13 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ category }) => {
                                                 width: "30%",
                                                 padding: "4px 0",
                                                 cursor: "pointer",
-                                                marginBottom: "8px",
-                                                margin: "8px 0",
+                                                margin: "10px 0",
                                                 border: "none",
                                                 textAlign: "left",
                                                 fontSize: "16px",
                                                 fontFamily: "Inter",
+                                                wordBreak: "break-word",
+                                                whiteSpace: "normal"
                                             }}
                                             onClick={() => {
                                                 if (item?.id && filter?.id) {
