@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Product } from 'src/products/products.model';
 import { AllSizesDto } from './dto/allSizes.dto';
 import { CreateFullProductSizeDto } from './dto/createFullProduct.dto';
@@ -166,10 +166,14 @@ export class ProductsSizesController {
     @ApiOperation({ summary: 'Get product with products size with pagination' })
     @ApiResponse({ status: 200, type: [FullProductSizeDto] })
     @ApiResponse({ status: 404, description: "Products sizes not fount" })
+    @ApiQuery({ name: 'filters', required: false })
+    @ApiQuery({ name: 'categories', required: false })
+    @ApiQuery({ name: 'search', required: false })
     @Get("/products-with-pagination/:page/:limit?")
-    async getProductWithProductSizeWithPagination(@Param("page") page: number, @Param("limit") limit: number, @Query("search") search?: string, @Query("field") field?: string, @Query("type") type?: string, @Query("categories") categories?: string, @Query("filters") filters?: number[]) {
-        console.log(field, type);
-        console.log(categories);
-        return await this.productsSizesFullService.getProductsWithPagination(page, limit, search, field, type);
+    async getProductWithProductSizeWithPagination(@Param("page") page: number, @Param("limit") limit: number, @Query("search") search?: string, @Query("field") field?: string, @Query("type") type?: string, @Query("categories") categories?: string, @Query("filters") filters?: string) {
+        // console.log(categories, "CATEGORY");
+        const arrayCategories: number[] = categories !== undefined && categories !== "" ? categories.split(',').map(item => Number(item)) : [];
+        const arrayFilters: number[] = filters !== undefined && filters !== "" ? filters.split(',').map(item => Number(item)) : [];
+        return await this.productsSizesFullService.getProductsWithPagination(page, limit, search, field, type, arrayCategories, arrayFilters);
     }
 }

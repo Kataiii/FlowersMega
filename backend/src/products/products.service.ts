@@ -5,6 +5,7 @@ import { Image } from 'src/images/images.model';
 import { ImagesService } from 'src/images/images.service';
 import { CreateProductDto } from './dto/createProduct.dto';
 import { Product } from './products.model';
+import { count } from 'console';
 
 @Injectable()
 export class ProductsService {
@@ -53,28 +54,33 @@ export class ProductsService {
         return product;
     }
 
-    async getCountAndPagination(page: number, limit: number, search?: string, field?: string, type?: string, categories?: number[], filters?: number[]) {
-        if (search) {
-            const count = (await this.productsRepository.findAndCountAll({
-                where: { name: { [Op.like]: `%${search}%` } }
-            })).count;
-            const products = await this.productsRepository.findAll({
-                where: { name: { [Op.like]: `%${search}%` } },
-                include: [{ all: true }],
-                limit: limit,
-                offset: (page - 1) * limit,
-                order: field && type ? [[field, type]] : [["updatedAt", "DESC"]],
-            });
+    async getCountAndPagination(page: number, limit: number, search?: string, field?: string, type?: string, idProduct?: number[]) {
+        console.log(idProduct, "idProduct");
+        const idProductsCount = await Promise.all(idProduct.map(
+            async item => {
+                const countTmp = (await this.productsRepository.findAndCountAll({
 
-            return { count: count, products: products };
-        }
+                    where: {
+                        name: { [Op.like]: search ? `%${search}%` : `%` },
+                        id: item,
+                    },
 
-        const count = (await this.productsRepository.findAndCountAll()).count;
-        const products = await this.productsRepository.findAll({
-            limit: limit,
-            offset: (page - 1) * limit,
-            order: field && type ? [[field, type]] : [["updatedAt", "DESC"]]
-        });
-        return { count: count, products: products };
+                    order: field && type ? [[field, type]] : [["updatedAt", "DESC"]],
+                    limit: limit,
+                    offset: (page - 1) * limit,
+                }
+                ));
+                // console.log(countTmp, "CountTMOP");
+                return countTmp;
+            }
+        ))
+        // console.log(idProductsCount, "idPrd");
+        const resultCount = idProductsCount.map(item => item.count).reduce((a, b) => a + b, 0);
+        const resultProducts = idProductsCount.map(item => item.rows).flat();
+        console.log('count: ', resultCount);
+        // console.log('products: ', resultProducts);
+
+        return { count: resultCount, products: resultProducts };
+
     }
 }

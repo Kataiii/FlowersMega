@@ -113,6 +113,16 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
             };
         });
 
+        const categoriesString = JSON.stringify(
+            selectedCategories.map((category: any) => ({
+                id: category.id,
+                name: category.name,
+                photo: category.photo,
+            }))
+        ).slice(1, -1);
+
+        const filtersString = JSON.stringify(formattedFilters).slice(1, -1);
+
         const formData = {
             name: values.name,
             type: values.type,
@@ -125,12 +135,8 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
                 prise: variation.prise,
                 paramsSize: variation.paramsSize,
             })),
-            categories: selectedCategories.map((category: any) => ({
-                id: category.id,
-                name: category.name,
-                photo: category.photo,
-            })),
-            filters: formattedFilters,
+            categories: categoriesString,
+            filters: filtersString,
             // updatedAt: values.updatedAt,
         };
 

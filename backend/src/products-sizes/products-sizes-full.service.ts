@@ -83,7 +83,37 @@ export class ProductsSizesFullService {
     }
 
     async getProductsWithPagination(page: number, limit: number, search?: string, field?: string, type?: string, categories?: number[], filters?: number[]) {
-        const paginationResult = await this.productsService.getCountAndPagination(page, limit, search, field, type, categories, filters);
+
+        // const productSizesTmp = await Promise.all(paginationResult.products.map(async (item) => {
+        //     const productSizes = await this.productsSizesRepository.findAll({ where: { idProduct: item.id } });
+        //     const productWithSizes = await Promise.all(productSizes.map(async (item) => {
+        //         return await this.getProductSizeInfo(item.id);
+        //     }))
+        //     return { products: item, productsSizes: productWithSizes };
+        // }));
+        // return { count: paginationResult.count, products: productSizesTmp };
+        console.log(categories, "categories");
+        const categoriesProductsTmp = categories.length > 0 ? await Promise.all(categories.map(async (item) => {
+            return (await this.categoriesProductService.getProductsByCategoryId(item)).map(item => item.idProduct);
+        })) : (await this.productsService.getAll()).map(item => item.id);
+        console.log(categoriesProductsTmp, "categTNM");
+        const filtersProductsTmp = filters.length > 0 ? await Promise.all(filters.map(async (item) => {
+            return (await this.productsItemsFilterService.getProductsByFilterId(item)).map(item => item.idProduct);
+        })) : (await this.productsService.getAll()).map(item => item.id);
+        console.log(filtersProductsTmp, "filterTNM");
+        const categoriesProducts = Array.from(new Set(categoriesProductsTmp.flat()));
+        console.log(categoriesProducts);
+        const filtersProducts = Array.from(new Set(filtersProductsTmp.flat()));
+        console.log(filtersProducts);
+
+        const finalFIlterCategories = categoriesProducts.filter(item => filtersProducts.includes(item));
+
+
+        console.log(finalFIlterCategories, " const");
+
+
+        const paginationResult = await this.productsService.getCountAndPagination(page, limit, search, field, type, finalFIlterCategories);
+        console.log(paginationResult, "paginationResult");
         const productSizesTmp = await Promise.all(paginationResult.products.map(async (item) => {
             const productSizes = await this.productsSizesRepository.findAll({ where: { idProduct: item.id } });
             const productWithSizes = await Promise.all(productSizes.map(async (item) => {
@@ -91,6 +121,7 @@ export class ProductsSizesFullService {
             }))
             return { products: item, productsSizes: productWithSizes };
         }));
+
         return { count: paginationResult.count, products: productSizesTmp };
     }
 

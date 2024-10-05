@@ -7,16 +7,23 @@ import { CreateCategoriesProductDto } from './dto/createCategoriesProduct.dto';
 export class CategoriesProductsService {
     constructor(
         @InjectModel(CategoriesProducts) private categoriesProductsRepository: typeof CategoriesProducts,
-    ){}
+    ) { }
 
-    async getByCategoryIdCount(id: number){
+    async getByCategoryIdCount(id: number) {
         const categories = await this.categoriesProductsRepository.findAndCountAll({
-            where: {idCategory: id}
+            where: { idCategory: id }
         });
         return categories.count;
     }
 
-    async create(dto: CreateCategoriesProductDto){
+    async getProductsByCategoryId(id: number) {
+        const categories = await this.categoriesProductsRepository.findAll({
+            where: { idCategory: id }
+        });
+        return categories;
+    }
+
+    async create(dto: CreateCategoriesProductDto) {
         return await this.categoriesProductsRepository.create(dto);
     }
 }

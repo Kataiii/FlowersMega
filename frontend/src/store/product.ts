@@ -273,22 +273,8 @@ export type ProductsControllerCreateWithDetailsApiArg = {
       prise: number;
       paramsSize: string;
     }[];
-    categories: {
-      id: number;
-      name: string;
-      photo: string;
-    }[];
-    filters: {
-      filter: {
-        id: number;
-        name: string;
-      };
-      tags: {
-        id: number;
-        name: string;
-        idFilter: number;
-      }[];
-    }[];
+    categories: string;
+    filters: string;
   };
 };
 export type Product = {

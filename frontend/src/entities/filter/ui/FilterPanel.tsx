@@ -54,7 +54,6 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ category }) => {
                                 key={filter?.id}
                                 style={{
                                     borderRadius: "4px",
-                                    padding: "8px",
                                     cursor: "pointer",
                                     width: "600px",
                                 }}
