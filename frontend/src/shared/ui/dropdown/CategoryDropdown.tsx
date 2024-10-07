@@ -36,7 +36,11 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   style,
 }) => {
   const [searchValue, setSearchValue] = useState<string>("");
-  const [items, setItems] = useState<{ id?: number; name: string }[]>(data ? data : []);
+  const [items, setItems] = useState<{ id?: number; name: string }[]>(
+    data ? data.map((item) => ({
+      id: item.id,
+      name: item.name,
+    })) : []);
   const [selectedCategories, setSelectedCategories] = useState<{ id?: number; name: string; photo: string }[]>(value);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
@@ -54,10 +58,6 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
 
   useEffect(() => {
     if (data) {
-      const mappedItems = data.map((item) => ({
-        id: item.id,
-        name: item.name,
-      }));
 
       const mappedSelectedCategories = value.map((item) => ({
         id: item.id,
@@ -65,12 +65,12 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
         photo: item.photo,
       }));
 
-      setItems((prevItems) => {
-        if (JSON.stringify(prevItems) !== JSON.stringify(mappedItems)) {
-          return mappedItems;
-        }
-        return prevItems;
-      });
+      // setItems((prevItems) => {
+      //   if (JSON.stringify(prevItems) !== JSON.stringify(mappedItems)) {
+      //     return mappedItems;
+      //   }
+      //   return prevItems;
+      // });
 
       setSelectedCategories((prevSelectedCategories) => {
         if (JSON.stringify(prevSelectedCategories) !== JSON.stringify(mappedSelectedCategories)) {

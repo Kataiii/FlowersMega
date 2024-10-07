@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useCallback } from "react";
-import { Button, Input, Pagination, Select, Space } from "antd";
+import { Button, Input, Pagination, Select, Space, Spin } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useProductsControllerGetAllQuery, useProductSizesControllerGetProductsWithPaginationQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery } from "../../../../store/product";
 import Container from "../../../../shared/ui/containerMain/ContainerMain";
@@ -163,11 +163,21 @@ const Products: React.FC = () => {
                         <Button style={{ width: "150px" }} type="primary" > <ButtonText style={{ display: "inline" }}>Найти</ButtonText> <SearchOutlined /> </Button>
                     </Space.Compact>
                     <div style={{ display: "flex", flexDirection: "column", padding: "8px 8px 8px 0", gap: "8px" }}>
-                        {isFiltersLoading && isCategoriesLoading ? <div>Loading... </div> :
+                        {isFiltersLoading && isCategoriesLoading ? <Spin size="default" /> :
                             <>
-                                <CategoryDropdown name="Категории" data={categoriesData?.map(item => {
-                                    return { id: item.id, name: item.name }
-                                })} showAddButton={true} onChange={handleCategoriesChange} />
+                                {isCategoriesLoading ? (
+                                    <Spin />
+                                ) : (
+                                    <CategoryDropdown
+                                        name="Категории"
+                                        data={categoriesData?.map(item => {
+                                            return { id: item.id, name: item.name };
+                                        })}
+                                        showAddButton={true}
+                                        onChange={handleCategoriesChange}
+                                    />
+                                )}
+
                                 <CategoryDropdown name="Теги" data={filtersData?.flatMap(filter => filter.items).map(item => {
                                     return { id: item.id, name: item.name }
                                 })} onChange={handleFiltersChange} />
@@ -209,8 +219,8 @@ const Products: React.FC = () => {
                 <Pagination showLessItems={true} current={page} pageSize={pageSize} total={productSizedPag?.count || 0} onChange={handlePageChange} style={{ marginTop: "16px", textAlign: "center" }} />
                 <>
                     {console.log('Total count:', categoriesData)}
-                    {console.log('categories:', categories)}
-                    {console.log('filters:', filters)}
+                    {console.log('categories:', categoriesData)}
+                    {console.log('filters:', filtersData)}
                 </>
             </OrderContainer>
         </Container>
