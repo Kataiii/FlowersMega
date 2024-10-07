@@ -32,6 +32,7 @@ const injectedRtkApi = api.injectEndpoints({
         method: "POST",
         body: queryArg.createProductSizeDto,
       }),
+      invalidatesTags: ['Products']
     }),
     productsSizesControllerGetAll: build.query<
       ProductsSizesControllerGetAllApiResponse,
@@ -145,8 +146,8 @@ const injectedRtkApi = api.injectEndpoints({
           params: params,
         }
 
-      }
-
+      },
+      providesTags: ['Products']
     }),
     productsControllerCreateWithDetails: build.mutation<
       ProductsControllerCreateWithDetailsApiResponse,
@@ -156,6 +157,27 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/products-sizes/full-product`,
         method: "POST",
         body: queryArg.body,
+      }),
+      invalidatesTags: ['Products']
+    }),
+    productsControllerDeleteById: build.mutation<
+      ProductsControllerDeleteByIdApiResponse,
+      ProductsControllerDeleteByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/products-sizes/product/${queryArg.id}`,
+        method: "DELETE",
+
+      }),
+      invalidatesTags: ['Products']
+    }),
+    productsControllerGetProductSizesCount: build.query<
+      ProductsControllerGetProductSizesCountApiResponse,
+      ProductsControllerGetProductSizesCountApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/products/${queryArg.id}/product-sizes/count`,
+        method: "GET",
       }),
     }),
   }),
@@ -277,6 +299,19 @@ export type ProductsControllerCreateWithDetailsApiArg = {
     filters: string;
   };
 };
+
+export type ProductsControllerDeleteByIdApiResponse = void;
+export type ProductsControllerDeleteByIdApiArg = {
+  id: number;
+}
+
+export type ProductsControllerGetProductSizesCountApiResponse = {
+  count: number;
+};
+export type ProductsControllerGetProductSizesCountApiArg = {
+  id: number;
+}
+
 export type Product = {
   /** Unique identifier */
   id: number;
@@ -434,5 +469,7 @@ export const {
   useCategoriesProductsControllerGetAllQuery,
   useProductsSizesControllerGetByProductIdAndSizeIdQuery,
   useProductSizesControllerGetProductsWithPaginationQuery,
-  useProductsControllerCreateWithDetailsMutation
+  useProductsControllerCreateWithDetailsMutation,
+  useProductsControllerDeleteByIdMutation,
+  useProductsControllerGetProductSizesCountQuery,
 } = injectedRtkApi;

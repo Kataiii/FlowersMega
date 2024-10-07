@@ -52,4 +52,14 @@ export class ProductsController {
   async getById(@Param("id") id: number) {
     return await this.productsService.getById(id);
   }
+
+  @ApiOperation({ summary: 'Get count product sizes by id' })
+  @ApiResponse({ status: 200, description: 'Count product sizes' })
+  @ApiResponse({ status: 404, description: 'Product not found' })
+  @Get(':id/product-sizes/count')
+  async getProductSizesCount(@Param('id') productId: number): Promise<{ count: number }> {
+    const count = await this.productsService.countProductSizesByProductId(productId);
+    return { count };
+
+  }
 }

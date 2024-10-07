@@ -59,31 +59,29 @@ export class ProductsService {
 
     async getCountAndPagination(page: number, limit: number, search?: string, field?: string, type?: string, idProduct?: number[]) {
         console.log(idProduct, "idProduct");
-        const idProductsCount = await Promise.all(idProduct.map(
-            async item => {
-                const countTmp = (await this.productsRepository.findAndCountAll({
 
-                    where: {
-                        name: { [Op.like]: search ? `%${search}%` : `%` },
-                        id: item,
-                    },
+        const whereContidion = {
+            name: { [Op.like]: search ? `%${search}%` : `%` },
+            id: { [Op.in]: idProduct },
+        }
 
-                    order: field && type ? [[field, type]] : [["updatedAt", "DESC"]],
-                    limit: limit,
-                    offset: (page - 1) * limit,
-                }
-                ));
-                // console.log(countTmp, "CountTMOP");
-                return countTmp;
-            }
-        ))
+        const countTmp = (await this.productsRepository.findAndCountAll({
+
+            where: whereContidion,
+            order: field && type ? [[field, type]] : [["updatedAt", "DESC"]],
+            limit: limit,
+            offset: (page - 1) * limit,
+        }
+        ));
+        // console.log(countTmp, "CountTMOP");
+
         // console.log(idProductsCount, "idPrd");
-        const resultCount = idProductsCount.map(item => item.count).reduce((a, b) => a + b, 0);
-        const resultProducts = idProductsCount.map(item => item.rows).flat();
-        console.log('count: ', resultCount);
+        // const resultCount = idProductsCount.map(item => item.count).reduce((a, b) => a + b, 0);
+        // const resultProducts = idProductsCount.map(item => item.rows).flat();
+        // console.log('count: ', resultCount);
         // console.log('products: ', resultProducts);
 
-        return { count: resultCount, products: resultProducts };
+        return { count: countTmp.count, products: countTmp.rows };
 
     }
 
@@ -104,6 +102,13 @@ export class ProductsService {
         await this.productsRepository.destroy({ where: { id } });
 
         return { message: `Product with ID ${id} and all related data were deleted successfully` };
+    }
+
+    async countProductSizesByProductId(productId: number): Promise<number> {
+        const count = await this.productSizesRepository.count({
+            where: { idProduct: productId }
+        });
+        return count;
     }
 
 }

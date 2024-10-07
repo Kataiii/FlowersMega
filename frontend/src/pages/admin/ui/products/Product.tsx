@@ -1,31 +1,20 @@
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Container from "../../../../shared/ui/containerMain/ContainerMain";
-import { useProductsControllerCreateWithDetailsMutation, useProductsControllerGetByIdQuery, useProductsSizesControllerGetAllSizesByProductIdQuery, useProductsSizesControllerGetByIdQuery, useProductsSizesControllerGetByProductIdQuery } from "../../../../store/product";
+import { useProductsControllerCreateWithDetailsMutation, useProductsControllerDeleteByIdMutation, useProductsControllerGetByIdQuery, useProductsControllerGetProductSizesCountQuery, useProductsSizesControllerGetAllSizesByProductIdQuery, useProductsSizesControllerGetByIdQuery, useProductsSizesControllerGetByProductIdQuery } from "../../../../store/product";
 import { Flex, Spin, Image, Input, Select, Dropdown, Space, Form, Button, Modal, Upload } from "antd";
 import { CloseOutlined, DownOutlined, LoadingOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { styled } from "styled-components"
 import { API_URL } from "../../../../shared/utils/constants"
-import { MenuProps } from "antd/lib";
 import TypeDropdown from "../../../../shared/ui/dropdown/TypeDropdown";
 import { useEffect, useState } from "react";
 import TextArea from "antd/es/input/TextArea";
 import CategoryDropdown from "../../../../shared/ui/dropdown/CategoryDropdown";
 import FilterDropdown from "../../../../shared/ui/dropdown/FilterDropdown";
-import Variation from "../../../../shared/ui/variations/Variation";
 import VariationsBlock from "../../../../shared/ui/variations/VariationsBlock";
-import { ignore } from "antd/es/theme/useToken";
-import LoaderPhoto from "../../../../shared/ui/loaderPhoto/LoaderPhoto";
-import ts from "typescript";
 import { FilterWithItems, useFiltersControllerGetAllQuery } from "../../../../store/filter";
 import { useCategoriesControllerGetAllQuery } from "../../../../store/category";
-import { useProductsSizesControllerGetByCategotyIdWithPaginationQuery, useProductsSizesControllerGetProductSizeForCardByIdQuery } from "../../../../store/size";
-import Item from "antd/es/list/Item";
 import { ButtonText } from "./Products";
-import SizeDropdown from "../../../../shared/ui/dropdown/SizeDropdown";
-import ModalEmpty from "../../../../shared/ui/modalEmpty/ModalEmpty";
-import TryPhoto from "../../../../widgets/loadPhoto/TryPhoto";
-import { Title } from "../../../../shared/ui/forAdditionalPages/Title";
-import ProductPhotoLoader from "../../../../widgets/loadPhoto/ProductPhotoLoader";
+import { Numerals } from "../../../../shared/utils/numerals";
 
 interface ProductProps {
     onCatChange?: (categories: any[]) => void,
@@ -74,22 +63,22 @@ export const ScrollContainer = styled.div`
   padding: 8px;
 `;
 
-const ButtonPhoto = styled.h5`
-    cursor: pointer;
+export const DeleteModalHead = styled.p`
     font-family: "Inter";
-    font-weight: 400;
+    font-weight: 700;
     font-size: 16px;
-    color: var(--primary-bg-color);
+    color: var(--secondary-text-color);
 `;
 
 const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
     const { id } = useParams();
+    const navigate = useNavigate();
+    const locate = useLocation();
     const { isLoading, data } = useProductsControllerGetByIdQuery({ id: Number(id) });
     const [disabled, setDisabled] = useState(true);
     const [form] = Form.useForm();
-    const [isOpenPhoto, setIsOpenPhoto] = useState<boolean>(false);
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [variations, setVariations] = useState<any[]>([]);
-    const [selectedCategories, setSelectedCategories] = useState<{ name: string; photo: string }[]>([]);
     const [filters, setFilters] = useState<any[]>([]);
     const { data: filtersData, isLoading: filtersLoading } = useFiltersControllerGetAllQuery();
     const { data: categories, isLoading: categoriesLoading } = useCategoriesControllerGetAllQuery();
@@ -97,7 +86,16 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
     const { data: productFiltCat } = useProductsControllerGetByIdQuery({ id: Number(id) });
     const [createProductWithDetails] = useProductsControllerCreateWithDetailsMutation();
     const [photoUrl, setPhotoUrl] = useState<string | null>(null);
-
+    const [deleteProduct] = useProductsControllerDeleteByIdMutation();
+    const productSizesCount = useProductsControllerGetProductSizesCountQuery({ id: Number(id) });
+    //@ts-ignore
+    const [selectedCategories, setSelectedCategories] = useState<{ name: string; photo: string }[]>(productFiltCat?.categories.map(category => {
+        return {
+            id: category.id,
+            name: category.name,
+            photo: "category.image "
+        }
+    }));
     const handleFormFinish = async (values: any) => {
         const formattedFilters = filters.map((filter) => {
             return {
@@ -200,14 +198,20 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
             console.log("xddd", mappedFilters);
 
             // @ts-ignore
-            setSelectedCategories(productFiltCat?.categories.map(category => ({
-                id: category.id,
-                name: category.name,
-                photo: "category.image "
-            })));
+            console.log("CATEG FROM data", productFiltCat?.categories)
+            // @ts-ignore
+            const tmp = productFiltCat?.categories.map(category => {
+                return {
+                    id: category.id,
+                    name: category.name,
+                    photo: "category.image "
+                }
+            })
+            console.log(tmp, "TMP");
+            setSelectedCategories(prev => tmp);
             // @ts-ignore
             setFilters(mappedFilters);
-
+            console.log("SELECT CAT", selectedCategories);
             const variationsS = productVariations.productsSizes.flatMap(variation => ({
                 idSize: variation.idSize,
                 prise: variation.prise,
@@ -224,7 +228,7 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
             }
             // setVariations(productVariations.);
         }
-    }, [productFiltCat, productVariations]);
+    }, [productFiltCat, productVariations, data]);
 
     useEffect(() => {
         {
@@ -276,19 +280,6 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
                                     />
                                 </Form.Item>
                                 <Form.Item label={<ValueText>Тип товара</ValueText>} name="type" style={{ margin: "5px 0" }}>
-                                    {/* <Select
-                                        disabled={disabled}
-                                        options={[
-                                            { value: "bouquet", label: "Букет" },
-                                            { value: "decoration", label: "Композия" },
-                                        ]}
-                                        style={{
-                                            width: "140px",
-                                            border: "1px solid var(--primary-bg-color)",
-                                            borderRadius: "6px",
-                                        }}
-                                        bordered={false}
-                                    /> */}
                                     <TypeDropdown disabled={disabled} />
                                 </Form.Item>
                             </div>
@@ -416,16 +407,11 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
                                         console.log("kkk", filters);
                                     }}><ButtonText>Редактировать</ButtonText></Button>
                                 ) : (
-                                    <Button type="primary" htmlType="submit">
+                                    <Button type="primary">
                                         <ButtonText>Сохранить изменения</ButtonText>
                                     </Button>
                                 )}
-                                <Button type="primary" danger htmlType="submit" onClick={() => {
-                                    // @ts-ignore
-
-                                    console.log(data?.images?.[0]?.url);
-                                }
-
+                                <Button type="primary" danger onClick={() => { setIsModalOpen(true); console.log(productSizesCount) }
                                 }>
                                     <ButtonText>Удалить</ButtonText>
                                 </Button>
@@ -433,18 +419,38 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
                         ) : (
                             <Button onClick={() => {
                                 // console.log(productSizes)
-                            }} htmlType="submit" type="primary">
+                            }} type="primary">
                                 Сохранить изменения
                             </Button>
                         )}
                     </div>
                 </StyledForm>
             )}
-            <Modal open={isOpenPhoto} >
-                <>
-                    <Title style={{ fontSize: 24 }}>Загрузите аватар</Title>
-                    <TryPhoto />
-                </>
+            <Modal open={isModalOpen}
+                onCancel={() => setIsModalOpen(false)}
+                footer={null}
+                style={{ width: "800px" }}
+            >
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", alignItems: "start", }}>
+                    <DeleteModalHead>Вы уверены, что хотите удалить "{data?.name}"</DeleteModalHead>
+                    <Text style={{ color: "red", fontFamily: "Inter" }}>Это действие удалит {productSizesCount.data?.count} {Numerals.numeralsSizes(productSizesCount.data?.count ?? 0)} со связанным товаром</Text>
+                    <div style={{ width: "100%", display: "flex", flexDirection: "row", gap: "10px" }}>
+
+                        <Button type="primary" danger onClick={async () => {
+                            try {
+                                await deleteProduct({ id: Number(id) });
+                                console.log("Product deleted", id);
+                                setIsModalOpen(false);
+                                navigate(`/admin/products`);
+                            } catch (error) {
+                                console.error("Failed to delete product", error);
+                            }
+                        }}
+                            style={{ width: "49%" }}>Удалить</Button>
+                        <Button onClick={() => setIsModalOpen(false)} style={{ width: "49%" }}>Отмена</Button>
+
+                    </div>
+                </div>
             </Modal>
         </Container>
     );
