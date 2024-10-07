@@ -9,9 +9,9 @@ export class ImagesService {
     constructor(
         @InjectModel(Image) private imagesRepository: typeof Image,
         private filesService: FilesService
-    ){}
+    ) { }
 
-    async create(dto: CreateImageDto){
+    async create(dto: CreateImageDto) {
         const fileName = await this.filesService.createImageProduct(dto.image, dto.idProduct);
         return await this.imagesRepository.create({
             idProduct: dto.idProduct,

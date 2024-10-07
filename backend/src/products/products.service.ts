@@ -6,12 +6,15 @@ import { ImagesService } from 'src/images/images.service';
 import { CreateProductDto } from './dto/createProduct.dto';
 import { Product } from './products.model';
 import { count } from 'console';
+import { ProductSize } from 'src/products-sizes/products-sizes.model';
 
 @Injectable()
 export class ProductsService {
     constructor(
         @InjectModel(Product) private productsRepository: typeof Product,
+        @InjectModel(ProductSize) private productSizesRepository: typeof ProductSize,
         private imagesService: ImagesService
+
     ) { }
 
     async create(dto: CreateProductDto, images: File[]) {
@@ -83,4 +86,24 @@ export class ProductsService {
         return { count: resultCount, products: resultProducts };
 
     }
+
+    async deleteProduct(id: number) {
+        const product = await this.productsRepository.findOne({ where: { id } });
+        if (!product) {
+            throw new HttpException('Product not found', HttpStatus.NOT_FOUND);
+        }
+        const productSizes = await this.productSizesRepository.findAll({ where: { idProduct: id } });
+
+        const productSizeCount = productSizes.length;
+        if (productSizeCount > 0) {
+            throw new HttpException(
+                `Product has ${productSizeCount} related product sizes. Deleting them will remove all related data.`,
+                HttpStatus.BAD_REQUEST
+            );
+        }
+        await this.productsRepository.destroy({ where: { id } });
+
+        return { message: `Product with ID ${id} and all related data were deleted successfully` };
+    }
+
 }

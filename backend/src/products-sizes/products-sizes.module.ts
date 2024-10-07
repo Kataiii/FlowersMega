@@ -23,7 +23,8 @@ import { ProductsItemsFilterModule } from 'src/products-items-filter/products-it
   ],
   exports: [
     ProductsSizesService,
-    ProductsSizesFullService
+    ProductsSizesFullService,
+
   ]
 })
-export class ProductsSizesModule {}
+export class ProductsSizesModule { }

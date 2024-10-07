@@ -163,4 +163,10 @@ export class ProductsSizesFullService {
 
         return product;
     }
+
+    async deleteProductWithSizes(productId: number): Promise<{ message: string }> {
+        await this.productsSizesRepository.destroy({ where: { idProduct: productId } });
+        await this.productsService.deleteProduct(productId);
+        return { message: 'Product and all associated sizes deleted successfully' };
+    }
 }

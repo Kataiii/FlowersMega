@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Product } from 'src/products/products.model';
@@ -175,5 +175,14 @@ export class ProductsSizesController {
         const arrayCategories: number[] = categories !== undefined && categories !== "" ? categories.split(',').map(item => Number(item)) : [];
         const arrayFilters: number[] = filters !== undefined && filters !== "" ? filters.split(',').map(item => Number(item)) : [];
         return await this.productsSizesFullService.getProductsWithPagination(page, limit, search, field, type, arrayCategories, arrayFilters);
+    }
+
+    @ApiOperation({ summary: 'Delete product and its sizes by product id' })
+    @ApiResponse({ status: 200, description: 'Product and its sizes deleted successfully' })
+    @ApiResponse({ status: 404, description: 'Product not found' })
+    @Delete('/product/:id')
+    async deleteProductWithSizes(@Param("id") id: number) {
+        const deletedProductSizesCount = await this.productsSizesFullService.deleteProductWithSizes(id);
+        return { message: `Product and ${deletedProductSizesCount} associated sizes deleted successfully.` };
     }
 }
