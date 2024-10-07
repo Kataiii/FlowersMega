@@ -88,38 +88,48 @@ export class ReviewsService {
     }
 
     async getReviewsAllWithPagination(page: number, limit: number, search?: string, field?: string, type?: string) {
-        if (search) {
-            const reviewsCount = (await this.reviewsRepository.findAndCountAll({ where: { firstname: { [Op.like]: `%${search}%` } } })).count;
-            const reviews = (await this.reviewsRepository.findAll({
-                where: { firstname: { [Op.like]: `%${search}%` } },
-                limit: limit,
-                offset: (page - 1) * limit,
-                include: [{ all: true }],
-                order: [[field, type]]
-            }));
-            const fullReview: FullReviewDto[] = await Promise.all(reviews.map(async (item) => await this.convertReview(item)));
-            return {
-                count: reviewsCount,
-                reviews: fullReview
-            };
-        }
+        const whereContidion = { firstname: { [Op.like]: search ? `%${search}%` : `%` } }
+        console.log(limit, "LIMIT");
+        const reviewsCount = (await this.reviewsRepository.findAndCountAll({
 
-        const reviewsCount = (await this.reviewsRepository.findAndCountAll()).count;
-
-        const reviews = await this.reviewsRepository.findAll({
+            where: whereContidion,
+            distinct: true,
             limit: limit,
             offset: (page - 1) * limit,
-            include: [{ all: true }],
+            include: ['images'],
             order: [[field, type]],
-        });
 
-        if (reviews.length === 0) throw new HttpException("Reviews not fount", HttpStatus.NOT_FOUND);
 
-        const fullReview: FullReviewDto[] = await Promise.all(reviews.map(async (item) => await this.convertReview(item)));
+        }));
+
+
+        // const reviews = (await this.reviewsRepository.findAll({
+        //     
+        //     where: ,
+
+        // }));
+        // const fullReview: FullReviewDto[] = await Promise.all(reviews.map(async (item) => await this.convertReview(item)));
         return {
-            count: reviewsCount,
-            reviews: fullReview
+            count: reviewsCount.count,
+            reviews: reviewsCount.rows
         };
+
+        // const reviewsCount = (await this.reviewsRepository.findAndCountAll()).count;
+
+        // const reviews = await this.reviewsRepository.findAll({
+        //     limit: limit,
+        //     offset: (page - 1) * limit,
+        //     include: [{ all: true }],
+        //     order: [[field, type]],
+        // });
+
+        // if (reviews.length === 0) throw new HttpException("Reviews not fount", HttpStatus.NOT_FOUND);
+
+        // const fullReview: FullReviewDto[] = await Promise.all(reviews.map(async (item) => await this.convertReview(item)));
+        // return {
+        //     count: reviewsCount,
+        //     reviews: fullReview
+        // };
     }
 
     async getStaticticByProductSizeId(id: number) {

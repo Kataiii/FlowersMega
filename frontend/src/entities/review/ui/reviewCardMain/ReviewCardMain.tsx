@@ -56,22 +56,30 @@ const ReviewCardMain: React.FC<ReviewCardMainProps> = ({ review }) => {
     }
     return (
         <Container style={{
-            width: "100%",
+            width: "33%",
             height: "350px",
             position: "relative",
             overflow: "hidden",
             transition: "height 0.8s ease-in-out",
         }}>
             <TitleReview>
-                {/* @ts-ignore */}
-                <Image style={{ width: 26, height: 26, borderRadius: 4 }} src={`${API_URL}/products/images/${review.product.id}/${review?.product.images[0].url}`} />
-                <Title>{review.product.name}</Title>
+
+                {review.product ? (
+                    <>
+                        {/* @ts-ignore */}
+                        <Image style={{ width: 26, height: 26, borderRadius: 4 }} src={`${API_URL}/products/images/${review.product.id}/${review?.product.images[0].url}`} />
+                        <Title>{review.product.name}</Title>
+                    </>
+                ) : (
+                    <Title>Товар</Title>
+                )}
+
             </TitleReview>
             <ContentReview>
                 <div>
                     <div style={{ display: "flex", justifyContent: "space-between", transition: "height 0.8s ease-in-out", }}>
-                        <Name>{review.firstname}</Name>
-                        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                        <Name style={{ wordBreak: "break-word" }}>{review.firstname}</Name>
+                        <div style={{ display: "flex", gap: 10, alignItems: "center", }}>
                             <p style={{ fontFamily: "Inter", fontWeight: 600, fontSize: 16, color: "var(--secondary-review-text)" }}>{new Date(review.createdAt).toLocaleDateString()}</p>
                             <ConfigProvider
                                 theme={{
@@ -80,7 +88,7 @@ const ReviewCardMain: React.FC<ReviewCardMainProps> = ({ review }) => {
                                     },
                                 }}
                             >
-                                <Rate style={{ color: "var(--primary-bg-color)" }} value={review.rating} disabled />
+                                <Rate style={{ color: "var(--primary-bg-color)", width: "132px" }} value={review.rating} disabled />
                             </ConfigProvider>
                         </div>
                     </div>
