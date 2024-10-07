@@ -10,6 +10,14 @@ services:
       - docker-network
     volumes:
       - data:/var/lib/postresql/data
+  backend:
+    container_name: backend
+    ports:
+      - "5000:5000"
+    networks:
+      - docker-network
+    volumes:
+        - ./src : /backend/src
 networks:
   docker-network:
     driver: bridge
