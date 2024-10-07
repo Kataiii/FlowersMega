@@ -23,6 +23,7 @@ const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review, refetchReview
 
     return (
         <div
+            key={review.id}
             style={{
                 width: "100%",
                 height: "100%",
@@ -30,7 +31,7 @@ const ReviewAdminCard: React.FC<ReviewAdminCardProps> = ({ review, refetchReview
                 overflow: "hidden",
                 transition: "height 0.8s ease-in-out",
             }}
-            key={review.id}
+
         >
             <div
                 style={{

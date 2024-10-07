@@ -71,7 +71,7 @@ export class ReviewsService {
 
     private async convertReview(review: Review) {
         const productSize = await this.productsSizesService.getById(review.idProductSize);
-        const product = await this.productsService.getById(productSize.idProduct);
+        const product = productSize !== null ? await this.productsService.getById(productSize.idProduct) : null;
         return {
             id: review.id,
             rating: review.rating,

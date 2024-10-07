@@ -64,7 +64,7 @@ export class ProductsSizesService {
                 }]
             }
         );
-        if (productSize === null) throw new HttpException("Product size not found", HttpStatus.NOT_FOUND);
+        // if (productSize === null) throw new HttpException("Product size not found", HttpStatus.NOT_FOUND);
         return productSize;
     }
 

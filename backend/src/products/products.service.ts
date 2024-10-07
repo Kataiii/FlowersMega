@@ -53,7 +53,7 @@ export class ProductsService {
                 }]
             }
         );
-        if (product === null) throw new HttpException("Product not found", HttpStatus.NOT_FOUND);
+        // if (product === null) throw new HttpException("Product not found", HttpStatus.NOT_FOUND);
         return product;
     }
 
