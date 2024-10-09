@@ -72,9 +72,26 @@ const injectedRtkApi = api.injectEndpoints({
       ProductsSizesControllerGetByCategotyIdWithPaginationApiResponse,
       ProductsSizesControllerGetByCategotyIdWithPaginationApiArg
     >({
-      query: (queryArg) => ({
-        url: `/products-sizes/full-products-cards/${queryArg.page}/${queryArg.limit}`,
-      }),
+      query: (queryArg) => {
+        const params: Record<string, any> = {};
+        if (queryArg.search) {
+          params.search = queryArg.search;
+        }
+        if (queryArg.filterItems) {
+          params.filterItems = queryArg.filterItems;
+        }
+        if (queryArg.minPrice) {
+          params.minPrice = queryArg.minPrice;
+        }
+        if (queryArg.maxPrice) {
+          params.maxPrice = queryArg.maxPrice;
+        }
+        return {
+          url: `/products-sizes/full-products-cards/${queryArg.page}/${queryArg.limit}`,
+          params: params,
+        }
+
+      },
     }),
     reviewsControllerGetByProductSizeId: build.query<
       ReviewsControllerGetByProductSizeIdApiResponse,
@@ -248,6 +265,10 @@ export type ProductsSizesControllerGetByCategotyIdWithPaginationApiResponse = {
 export type ProductsSizesControllerGetByCategotyIdWithPaginationApiArg = {
   page: number;
   limit: number;
+  search?: string;
+  filterItems?: number[];
+  minPrice?: number;
+  maxPrice?: number;
 };
 export type ReviewsControllerGetByProductSizeIdApiResponse =
   /** status 200  */ Review[];

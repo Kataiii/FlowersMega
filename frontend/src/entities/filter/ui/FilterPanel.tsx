@@ -30,7 +30,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ category }) => {
 
         navigate({
             pathname: `${CATALOG_PATH}`,
-            search: searchParams,
+            // search: searchParams,
         });
     };
 
@@ -43,6 +43,8 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ category }) => {
                     style={{
                         display: "flex",
                         flexDirection: "row",
+
+                        flexWrap: "wrap",
                         gap: "25px",
                         marginTop: "15px",
                         fontFamily: "Inter",
@@ -55,7 +57,8 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ category }) => {
                                 style={{
                                     borderRadius: "4px",
                                     cursor: "pointer",
-                                    width: "600px",
+                                    width: "32%",
+                                    minWidth: "310px",
                                 }}
                             >
                                 <div
@@ -65,7 +68,8 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ category }) => {
                                         fontFamily: "Inter",
                                         display: "flex",
                                         flexDirection: "column",
-                                        alignItems: "flex-start"
+                                        alignItems: "flex-start",
+                                        marginTop: "10px",
                                     }}
                                 >
                                     {filter?.name}
@@ -90,7 +94,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ category }) => {
                                         display: "flex",
                                         flexWrap: "wrap",
                                         maxHeight: "500px",
-                                        gap: "8px",
+                                        gap: "6px",
                                         marginTop: "8px",
                                         alignContent: "flex-start",
                                         fontFamily: "Inter ",
@@ -100,7 +104,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ category }) => {
                                         <Button
                                             key={item?.id}
                                             style={{
-                                                width: "30%",
+                                                width: "32%",
                                                 padding: "4px 0",
                                                 cursor: "pointer",
                                                 margin: "10px 0",
@@ -123,10 +127,10 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ category }) => {
 
                                                     navigate({
                                                         pathname: `${CATALOG_PATH}`,
-                                                        search: createSearchParams({
-                                                            filterId: filter.id.toString(),
-                                                            itemId: item.id.toString(),
-                                                        }).toString(),
+                                                        // search: createSearchParams({
+                                                        //     filterId: filter.id.toString(),
+                                                        //     itemId: item.id.toString(),
+                                                        // }).toString(),
                                                     });
                                                 }
                                             }}

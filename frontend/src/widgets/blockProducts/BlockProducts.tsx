@@ -16,45 +16,47 @@ const Wrapper = styled.div`
 `;
 
 const BlockProducts: React.FC = () => {
-    const [page,setPage] = useState<number>(1);
-    const [productsSizes, setProductSizes] = useState<FullProductSizeDto[]>([]);
-    const {isLoading, data} = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({page: page, limit: 6});
+    const [page, setPage] = useState<number>(1);
+    const [pageSize, setPageSize] = useState<number>(6);
+    const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ page: page, limit: pageSize });
+    const [productsSizes, setProductSizes] = useState<FullProductSizeDto[]>(data?.products ?? []);
+
 
     useEffect(() => {
-        if(!isLoading){
+        if (!isLoading) {
             setProductSizes(data?.products ?? []);
         }
     }, [isLoading]);
 
     const clickHandler = () => {
         const allPages = Math.floor((data?.count ?? -1) / 6);
-        if(page <= allPages){
+        if (page <= allPages) {
             setPage(page => page + 1);
-            if(!isLoading){
+            if (!isLoading) {
                 setProductSizes([...productsSizes, ...data?.products ?? []]);
             }
         }
     }
 
-    return(
+    return (
         <Container>
-            <TitleSection content="Популярные товары"/>
+            <TitleSection content="Популярные товары" />
             <Wrapper>
-                <div style={{display: "flex", gap: "18px", flexWrap: "wrap"}}>
-                {
-                    isLoading
-                    ? <p>Загрузка...</p>
-                    : data && productsSizes.map((item, index) => {
-                        return <SmartProductCard key={`productSizes-${index}`} product={item} />
-                    })
-                }
+                <div style={{ display: "flex", gap: "18px", flexWrap: "wrap" }}>
+                    {
+                        isLoading
+                            ? <p>Загрузка...</p>
+                            : data && productsSizes.map((item, index) => {
+                                return <SmartProductCard key={`productSizes-${index}`} product={item} />
+                            })
+                    }
                 </div>
                 {
                     (data?.count ?? -1) > productsSizes.length
-                    ?   <div style={{width: "10%", margin: "0 auto"}}>
-                            <SecondaryButton buttonContent={"Загрузить еще"} clickHandler={clickHandler}/>
+                        ? <div style={{ width: "10%", margin: "0 auto" }}>
+                            <SecondaryButton buttonContent={"Загрузить еще"} clickHandler={clickHandler} />
                         </div>
-                    : null
+                        : null
                 }
             </Wrapper>
         </Container>

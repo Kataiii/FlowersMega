@@ -75,7 +75,7 @@ const CardProduct: React.FC<CardProductProps> = ({ product, addToCartButton, add
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <p style={{ fontFamily: 'Inter', fontWeight: 400, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0 }}>{product.product.name} {`(${product.size?.name})`}</p>
+                    <p style={{ fontFamily: 'Inter', fontWeight: 400, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0, wordBreak: "break-all" }}>{product.product.name} {`(${product.size?.name})`}</p>
                     <p style={{ fontFamily: 'Inter', fontWeight: 400, fontSize: "14px", color: "#8B8B8B", margin: 0 }}>Размер: {product.productSize.paramsSize}</p>
                 </div>
                 <p style={{ fontFamily: 'Inter', fontWeight: 600, fontSize: "24px", color: "var(--secondary-text-color)", margin: 0 }}>{product.productSize.prise.toLocaleString()} ₽</p>

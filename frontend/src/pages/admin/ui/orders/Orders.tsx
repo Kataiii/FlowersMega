@@ -280,13 +280,7 @@ const Orders: React.FC = () => {
 
           <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
             <Table dataSource={dataSource} columns={columns} pagination={false} />
-            {/* <Pagination
-              current={page}
-              total={filteredData?.length}
-              pageSize={pageSize}
-              onChange={handlePageChange}
-            /> */}
-            <Pagination current={page} total={initialData?.count} pageSize={pageSize} onChange={handlePageChange} />
+            <Pagination current={page} total={initialData?.count} pageSize={pageSize} onChange={handlePageChange} style={{ alignItems: "center" }} />
           </div>
         )}
 

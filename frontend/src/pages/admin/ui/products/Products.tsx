@@ -96,23 +96,9 @@ const Products: React.FC = () => {
         }));
     }, [productSizedPag]);
 
-    // const filteredData = useMemo(() => {
-    //     if (!searchId) return productData;
-    //     return productData.filter(product => product.products.name.toString().includes(searchId));
-    // }, [searchId, productData]);
-
     const sortedData = useMemo(() => {
         const sorted = [...productData];
-        // switch (sortOrder) {
-        //     case "DateASC":
-        //         // @ts-ignore
-        //         return sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        //     case "DateDESC":
-        //         // @ts-ignore
-        //         return sorted.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-        //     default:
         return sorted;
-        // }
     }, [productData, sortOrder]);
 
     const handlePageChange = (newPage: number, newPageSize?: number) => {
@@ -126,8 +112,6 @@ const Products: React.FC = () => {
         setSortOrder(value);
         setPage(1);
     };
-
-    // if (isLoading) return <div>Loading...</div>;
 
     return (
         <Container style={{ backgroundColor: "var(--main-bg-color)" }}>

@@ -15,6 +15,7 @@ import { FilterWithItems, useFiltersControllerGetAllQuery } from "../../../../st
 import { useCategoriesControllerGetAllQuery } from "../../../../store/category";
 import { ButtonText } from "./Products";
 import { Numerals } from "../../../../shared/utils/numerals";
+import { Block, ImageBlockInside, ImageBlockOutside, StyledCategoriesFiltersBlock, StyledTextArea, StyledVarBlock } from "./Product.styled";
 
 interface ProductProps {
     onCatChange?: (categories: any[]) => void,
@@ -183,7 +184,6 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
                             tags: [],
                         });
                     }
-
                     const filterEntry = filterMap.get(productFilter.idFilter);
                     const tags = (matchingFilter.items || [])
                         .filter((tag) => tag.id === productFilter.id);
@@ -195,20 +195,6 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
             });
             const mappedFilters = Array.from(filterMap.values());
 
-            console.log("xddd", mappedFilters);
-
-            // @ts-ignore
-            console.log("CATEG FROM data", productFiltCat?.categories)
-            // @ts-ignore
-            const tmp = productFiltCat?.categories.map(category => {
-                return {
-                    id: category.id,
-                    name: category.name,
-                    photo: "category.image "
-                }
-            })
-            console.log(tmp, "TMP");
-            setSelectedCategories(prev => tmp);
             // @ts-ignore
             setFilters(mappedFilters);
             console.log("SELECT CAT", selectedCategories);
@@ -226,7 +212,6 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
             if (onFilterChange) {
                 onFilterChange(filters);
             }
-            // setVariations(productVariations.);
         }
     }, [productFiltCat, productVariations, data]);
 
@@ -260,16 +245,7 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
                     <HeadText>
                         {data ? (disabled ? `${data?.name}` : "Редактирование продукта") : "Создание продукта"}
                     </HeadText>
-                    <div
-                        style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            gap: "10px",
-                            width: "760px",
-                            height: "185px",
-                            marginBottom: "0",
-                        }}
-                    >
+                    <Block>
                         <div style={{ width: "600px", display: "flex", flexDirection: "column", marginBottom: "0" }}>
                             <div style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
                                 <Form.Item label={<ValueText>Наименование</ValueText>} name="name" style={{ margin: "5px 0" }}>
@@ -284,19 +260,10 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
                                 </Form.Item>
                             </div>
                             <Form.Item label={<ValueText>Описание</ValueText>} name="description" style={{ width: "600px", margin: "0" }}>
-                                <TextArea
+                                <StyledTextArea
                                     disabled={disabled}
                                     placeholder="Введите описание товара..."
-                                    style={{
-                                        resize: "none",
-                                        overflowX: "hidden",
-                                        overflowY: "auto",
-                                        textAlign: "justify",
-                                        wordBreak: "normal",
-                                        maxHeight: "80px",
-                                        height: "80px",
-                                        padding: "8px",
-                                    }}
+                                    style={{ resize: "none" }}
                                 />
                             </Form.Item>
                         </div>
@@ -307,70 +274,29 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
                                 <Image style={{ width: 150, height: 155, borderRadius: 6 }} src={`${API_URL}/products/images/${data.id}/${data?.images[0].url}`}
                                 />
                             ) : (
-                                <div
-                                    style={{
-                                        width: 150,
-                                        height: 155,
-                                        borderRadius: 12,
-                                        border: "1px solid var(--primary-bg-color)",
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    <div
-                                        style={{
-                                            width: 142,
-                                            height: 147,
-                                            borderRadius: 12,
-                                            border: "1px dashed var(--primary-bg-color)",
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                        }}
-                                    >
+                                <ImageBlockOutside>
+                                    <ImageBlockInside>
                                         {/* <ProductPhotoLoader /> */}
-                                    </div>
-                                </div>
+                                    </ImageBlockInside>
+                                </ImageBlockOutside>
                             )}
                         </Form.Item>
-                    </div>
+                    </Block>
                     <Form.Item label={<ValueText>Состав</ValueText>} name="structure" style={{ margin: "5px 0" }}>
                         <Input disabled={disabled} style={{ width: "760px" }} />
                     </Form.Item>
                     <Form.Item label={<ValueText>Вариации</ValueText>} name="productSize" style={{ margin: "5px 0" }}>
-                        <div
-                            style={{
-                                width: "760px",
-                                height: "250px",
-                                maxHeight: "250px",
-                                border: "1px solid var(--primary-bg-color)",
-                                borderRadius: "8px",
-                                margin: "4px 0",
-                                padding: "8px",
-                            }}
-                        >
+                        <StyledVarBlock>
                             <VariationsBlock
                                 value={variations}
                                 onVariationsChange={(newVariations) => setVariations(newVariations)}
                                 disabled={disabled}
                             />
-                        </div>
+                        </StyledVarBlock>
                     </Form.Item>
 
                     <Form.Item label={<ValueText>Категории</ValueText>} name="categories" style={{ margin: "10px 0" }}>
-                        <div
-                            style={{
-                                width: "760px",
-                                height: "40px",
-                                border: "1px solid var(--primary-bg-color)",
-                                borderRadius: "8px",
-                                margin: "4px 0",
-                                alignItems: "center",
-                                padding: "2.5px",
-                                maxHeight: "150px",
-                            }}
-                        >
+                        <StyledCategoriesFiltersBlock>
                             <CategoryDropdown
                                 value={selectedCategories}
                                 onChange={handleCategoryChange}
@@ -379,22 +305,12 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
                                 showAddButton={true}
                                 data={categories}
                             />
-                        </div>
+                        </StyledCategoriesFiltersBlock>
                     </Form.Item>
                     <Form.Item label={<ValueText>Фильтры</ValueText>} name="filters" style={{ margin: "10px 0" }}>
-                        <div
-                            style={{
-                                width: "760px",
-                                height: "40px",
-                                border: "1px solid var(--primary-bg-color)",
-                                borderRadius: "8px",
-                                margin: "4px 0",
-                                alignItems: "center",
-                                padding: "2.5px",
-                            }}
-                        >
+                        <StyledCategoriesFiltersBlock>
                             <FilterDropdown value={filters} data={filtersData} onChange={handleFilterChange} disabled={disabled} />
-                        </div>
+                        </StyledCategoriesFiltersBlock>
                     </Form.Item>
 
                     <div>

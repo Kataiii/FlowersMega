@@ -10,7 +10,7 @@ export const addAllToFilters = createAction<ItemFilter[]>('addAllToFilters');
 export const deleteOneFromFilters = createAction<Pick<ItemFilter, 'id'>>('deleteFromFilters');
 export const deleteAllFromFilters = createAction('clearFilters');
 export const deleteManyFromFilters = createAction<Pick<ItemFilter, 'idFilter'>>('deleteManyFromFilters');
-
+export const selectAllFilters = (state: RootState) => state.filterSlice.itemsFilter;
 
 type FilterState = {
     minPrice: number;

@@ -10,7 +10,7 @@ import { GetPaginationProductSizeDto } from './dto/getPagination.dto';
 import { ProductsSizesFullService } from './products-sizes-full.service';
 import { ProductSize } from './products-sizes.model';
 import { ProductsSizesService } from './products-sizes.service';
-import { filter } from 'rxjs';
+import { filter, min } from 'rxjs';
 
 @ApiTags("Products Sizes")
 @Controller('products-sizes')
@@ -158,9 +158,16 @@ export class ProductsSizesController {
     @ApiOperation({ summary: 'Get product sizes for cards with pagination' })
     @ApiResponse({ status: 200, type: [FullProductSizeDto] })
     @ApiResponse({ status: 404, description: "Products sizes not fount" })
+    @ApiQuery({ name: 'search', required: false })
+    @ApiQuery({ name: 'filterItems', required: false })
     @Get("/full-products-cards/:page/:limit")
-    async getByCategotyIdWithPagination(@Param("page") page: number, @Param("limit") limit: number) {
-        return await this.productsSizesFullService.getProductsSizesForCardPagination(page, limit);
+    async getByCategotyIdWithPagination(@Param("page") page: number, @Param("limit") limit: number, @Query("search") search?: string, @Query("filterItems") filterItems?: string, @Query("minPrice") minPrice?: number, @Query("maxPrice") maxPrice?: number) {
+        console.log(filterItems, "FILTER ITEMS");
+        console.log(minPrice, "MIN PRICE");
+        console.log(maxPrice, "MAX PRICE");
+
+        const arrayFilters: number[] = filterItems !== undefined && filterItems !== "" ? filterItems.split(',').map(item => Number(item)) : [];
+        return await this.productsSizesFullService.getProductsSizesForCardPagination(page, limit, search, arrayFilters, minPrice, maxPrice);
     }
 
     @ApiOperation({ summary: 'Get product with products size with pagination' })
@@ -185,4 +192,6 @@ export class ProductsSizesController {
         const deletedProductSizesCount = await this.productsSizesFullService.deleteProductWithSizes(id);
         return { message: `Product and ${deletedProductSizesCount} associated sizes deleted successfully.` };
     }
+
+
 }

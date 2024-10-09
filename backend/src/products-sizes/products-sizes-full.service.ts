@@ -8,7 +8,7 @@ import { ReviewsService } from 'src/reviews/reviews.service';
 import { SizesService } from 'src/sizes/sizes.service';
 import { CreateFullProductSizeDto, CreateProductSizeSmallDto, FilterWithItems } from './dto/createFullProduct.dto';
 import { ProductSize } from './products-sizes.model';
-import { or } from 'sequelize';
+import { Op, or } from 'sequelize';
 
 @Injectable()
 export class ProductsSizesFullService {
@@ -54,7 +54,45 @@ export class ProductsSizesFullService {
         };
     }
 
-    async getProductsSizesForCardPagination(page: number, limit: number) {
+    async getProductsSizesForCardPagination(page: number, limit: number, search?: string, filterItems?: number[], minPrice?: number, maxPrice?: number) {
+        console.log(filterItems, "filterItems");
+        if (filterItems.length > 0 || minPrice || maxPrice) {
+            const filtersProductsTmp = filterItems.length > 0 ? await Promise.all(filterItems.map(async (item) => {
+                return (await this.productsItemsFilterService.getProductsByFilterId(item)).map(item => item.idProduct);
+            })) : (await this.productsService.getAll()).map(item => item.id);
+            const filtersProducts = Array.from(new Set(filtersProductsTmp.flat()));
+            const whereCondition: any = {};
+            if (minPrice) {
+                whereCondition.prise = { [Op.gte]: minPrice };
+            }
+            if (maxPrice) {
+                whereCondition.prise = {
+                    ...whereCondition.prise,
+                    [Op.lte]: maxPrice
+                };
+            }
+            if (filtersProducts.length > 0) {
+                whereCondition.idProduct = { [Op.in]: filtersProducts };
+            }
+            const countAndProducts = await this.productsSizesRepository.findAndCountAll({
+                where: whereCondition,
+                limit: limit,
+                offset: (page - 1) * limit,
+            });
+            const productsCardInfo = await Promise.all(countAndProducts.rows.map(async (item) => {
+                const info = await this.getCardInfo(item);
+                return {
+                    productSize: item,
+                    size: info.size,
+                    product: info.product,
+                    reviewsInfo: info.reviewsInfo
+                }
+            }));
+            return {
+                count: countAndProducts.count,
+                products: productsCardInfo
+            }
+        }
         const count = await this.productsSizesRepository.findAndCountAll();
         const products = await this.productsSizesRepository.findAll({
             limit: limit,
@@ -68,10 +106,11 @@ export class ProductsSizesFullService {
                 product: info.product,
                 reviewsInfo: info.reviewsInfo
             }
+
         }));
 
         return {
-            count: count,
+            count: count.count,
             products: productsCardInfo
         }
     }
@@ -83,15 +122,6 @@ export class ProductsSizesFullService {
     }
 
     async getProductsWithPagination(page: number, limit: number, search?: string, field?: string, type?: string, categories?: number[], filters?: number[]) {
-
-        // const productSizesTmp = await Promise.all(paginationResult.products.map(async (item) => {
-        //     const productSizes = await this.productsSizesRepository.findAll({ where: { idProduct: item.id } });
-        //     const productWithSizes = await Promise.all(productSizes.map(async (item) => {
-        //         return await this.getProductSizeInfo(item.id);
-        //     }))
-        //     return { products: item, productsSizes: productWithSizes };
-        // }));
-        // return { count: paginationResult.count, products: productSizesTmp };
         console.log(categories, "categories");
         const categoriesProductsTmp = categories.length > 0 ? await Promise.all(categories.map(async (item) => {
             return (await this.categoriesProductService.getProductsByCategoryId(item)).map(item => item.idProduct);
@@ -101,6 +131,7 @@ export class ProductsSizesFullService {
             return (await this.productsItemsFilterService.getProductsByFilterId(item)).map(item => item.idProduct);
         })) : (await this.productsService.getAll()).map(item => item.id);
         console.log(filtersProductsTmp, "filterTNM");
+
         const categoriesProducts = Array.from(new Set(categoriesProductsTmp.flat()));
         console.log(categoriesProducts);
         const filtersProducts = Array.from(new Set(filtersProductsTmp.flat()));
