@@ -14,7 +14,7 @@ const Catalog: React.FC = () => {
         .filter((id): id is number => id !== undefined);
     const minPrice = useAppSelector(selectMinPrice);
     const maxPrice = useAppSelector(selectMaxPrice);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(12);
     const [page, setPage] = useState(1);
     console.log(filters, "filters");
     // const { isLoading, data } = useProductsSizesControllerGetAllQuery();

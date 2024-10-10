@@ -3,7 +3,7 @@ import Container from "../../../shared/ui/containerMain/ContainerMain";
 import { useFiltersControllerGetAllQuery } from "../../../store/filter";
 import { Category, ItemFilter } from "../../../store/product";
 import { createSearchParams, useNavigate } from "react-router-dom";
-import { CATALOG_PATH } from "../../../shared/utils/constants";
+import { CATALOG_PATH, CATEGORY_PATH } from "../../../shared/utils/constants";
 import { useDispatch } from "react-redux";
 import { addAllToFilters, addOneToFilters } from "../redux/slice";
 import { Button } from "antd";
@@ -126,11 +126,12 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ category }) => {
                                                     );
 
                                                     navigate({
-                                                        pathname: `${CATALOG_PATH}`,
-                                                        // search: createSearchParams({
-                                                        //     filterId: filter.id.toString(),
-                                                        //     itemId: item.id.toString(),
-                                                        // }).toString(),
+                                                        pathname: `${CATALOG_PATH}${CATEGORY_PATH}`,
+                                                        search: createSearchParams({
+                                                            category: category.id ? category.name.toString() : "",
+                                                            //     filterId: filter.id.toString(),
+                                                            //     itemId: item.id.toString(),
+                                                        }).toString(),
                                                     });
                                                 }
                                             }}

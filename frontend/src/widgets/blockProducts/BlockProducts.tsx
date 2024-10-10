@@ -23,20 +23,17 @@ const BlockProducts: React.FC = () => {
 
 
     useEffect(() => {
-        if (!isLoading) {
-            setProductSizes(data?.products ?? []);
+        if (!isLoading && data?.products) {
+            setProductSizes(prevSizes => [...prevSizes, ...data.products]);
         }
-    }, [isLoading]);
+    }, [data, isLoading]);
 
     const clickHandler = () => {
-        const allPages = Math.floor((data?.count ?? -1) / 6);
-        if (page <= allPages) {
-            setPage(page => page + 1);
-            if (!isLoading) {
-                setProductSizes([...productsSizes, ...data?.products ?? []]);
-            }
+        const allPages = Math.ceil((data?.count ?? 0) / pageSize);
+        if (page < allPages) {
+            setPage(prevPage => prevPage + 1);
         }
-    }
+    };
 
     return (
         <Container>

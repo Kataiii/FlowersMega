@@ -96,7 +96,7 @@ export class ProductsSizesFullService {
         const count = await this.productsSizesRepository.findAndCountAll();
         const products = await this.productsSizesRepository.findAll({
             limit: limit,
-            offset: (page - 1) * limit
+            offset: (page - 1) * limit,
         });
         const productsCardInfo = await Promise.all(products.map(async (item) => {
             const info = await this.getCardInfo(item);

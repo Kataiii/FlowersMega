@@ -1,5 +1,5 @@
 import { InputNumber, InputNumberProps, Slider } from "antd";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { selectMaxPrice, selectMinPrice } from "../../entities/filter/redux/selectors";
 import { addMaxPrice, addMinPrice } from "../../entities/filter/redux/slice";
 import { useAppDispatch, useAppSelector } from "../../store/store";
@@ -7,9 +7,10 @@ import { Debouncer } from "../../shared/utils/debounce";
 
 type FilterCostProps = {
     maxPrice: number;
+    onReset?: boolean;
 }
 
-const FilterCost: React.FC<FilterCostProps> = ({ maxPrice }) => {
+const FilterCost: React.FC<FilterCostProps> = ({ maxPrice, onReset }) => {
     const minPriceValue = useAppSelector(selectMinPrice);
     const maxPriceValue = useAppSelector(selectMaxPrice);
     const dispatch = useAppDispatch();
@@ -18,6 +19,10 @@ const FilterCost: React.FC<FilterCostProps> = ({ maxPrice }) => {
     const [minTmpValue, setMinTmpValue] = useState<number>(minPriceValue);
     const [maxTmpValue, setMaxTmpValue] = useState<number>(maxPriceValue);
 
+    useEffect(() => {
+        setMaxTmpValue(maxPrice);
+        setMinTmpValue(minPriceValue);
+    }, [onReset])
 
     const onChange = (value: number[]) => {
         setMinTmpValue(value[0]);

@@ -26,6 +26,7 @@ import { CategoriesProductsModule } from './categories-products/categories-produ
 import { TgBotModule } from './tg-bot/tg-bot.module';
 import { SeedsModule } from './seeds/seeds.module';
 import { ProductsItemsFilterModule } from './products-items-filter/products-items-filter.module';
+import { MinOrderCostModule } from './min-order-cost/min-order-cost.module';
 
 
 @Module({
@@ -71,6 +72,7 @@ import { ProductsItemsFilterModule } from './products-items-filter/products-item
         TgBotModule,
         SeedsModule,
         ProductsItemsFilterModule,
+        MinOrderCostModule,
     ]
 })
 export class AppModule{}

@@ -49,11 +49,13 @@ const HideDiv = styled.div<{ $isOpen?: boolean; }>`
 const FiltersPanel: React.FC = () => {
     const { isLoading, data } = useFiltersControllerGetAllWithMaxPriceQuery();
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [isReset, setIsReset] = useState<boolean>(false);
     const dispatch = useAppDispatch();
 
     const clearPrice = () => {
         dispatch(addMinPrice(0));
         dispatch(addMaxPrice(data?.maxPrice ?? -1));
+        setIsReset(true)
     }
 
     return (
@@ -70,7 +72,7 @@ const FiltersPanel: React.FC = () => {
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                 <TitleSegment>Цена</TitleSegment>
                                 <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                                    <Button onClick={clearPrice}>Сброс</Button>
+                                    <Button onClick={() => { clearPrice(); setIsReset(true); setIsReset(false) }}>Сброс</Button>
                                     <Arrow
                                         fill="#73D982"
                                         style={{
@@ -81,7 +83,7 @@ const FiltersPanel: React.FC = () => {
                                 </div>
                             </div>
                             <HideDiv $isOpen={isOpen}>
-                                <FilterCost maxPrice={data?.maxPrice ?? -1} />
+                                <FilterCost maxPrice={data?.maxPrice ?? -1} onReset={isReset} />
                             </HideDiv>
                         </section>
                         {
