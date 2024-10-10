@@ -126,7 +126,7 @@ const Orders: React.FC = () => {
     if (value !== null) {
       const newCost = Number(value);
       setMinimalOrderCost(newCost);
-      debounceCreation(newCost);
+      // debounceCreation(newCost);
     }
   };
 
@@ -180,35 +180,45 @@ const Orders: React.FC = () => {
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          gap: "10px",
+          justifyContent: "space-between",
           padding: "8px",
         }}>
-          <NameContainer style={{ color: "var(--extra-pice)", fontWeight: "normal" }}>
-            Минимальная сумма заказа
-          </NameContainer>
-          {isLoadingMin ?
-            (
-              <Spin />
-            ) : (
-              <InputNumber
-                onKeyPress={(event) => {
-                  if (!/[0-9]/.test(event.key)) {
-                    event.preventDefault();
-                  }
-                }}
-                value={minimalOrderCost}
-                style={{
-                  border: "1px solid var(--primary-bg-color)",
-                  width: 150,
-                }}
-                onChange={handleCostChange}
-              />
-            )
-          }
+          <div style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: "10px",
+          }}>
+            <NameContainer style={{ color: "var(--extra-pice)", fontWeight: "normal" }}>
+              Минимальная сумма заказа
 
-          <NameContainer style={{ color: "var(--extra-pice)", fontWeight: "normal" }}>
-            ₽
-          </NameContainer>
+            </NameContainer>
+            {isLoadingMin ?
+              (
+                <Spin />
+              ) : (
+                <InputNumber
+                  onKeyPress={(event) => {
+                    if (!/[0-9]/.test(event.key)) {
+                      event.preventDefault();
+                    }
+                  }}
+                  value={minimalOrderCost}
+                  style={{
+                    border: "1px solid var(--primary-bg-color)",
+                    width: 150,
+                  }}
+                  onChange={handleCostChange}
+                />
+              )
+            }
+
+            <NameContainer style={{ color: "var(--extra-pice)", fontWeight: "normal" }}>
+              ₽
+            </NameContainer>
+          </div>
+
+          <Button type="primary" onClick={() => debounceCreation(minimalOrderCost)}><ButtonText>Применить</ButtonText></Button>
         </div>
       </OrderContainer>
       <OrderContainer>
