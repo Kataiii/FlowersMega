@@ -14,7 +14,7 @@ const ContainerFilter = styled.div`
     padding: 24px 16px;
     border-radius: 8px;
     background-color: var(--block-bg-color);
-    width: 350px;
+    width: 270px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;

@@ -34,9 +34,14 @@ const Catalog: React.FC = () => {
                 <h1 style={{ fontFamily: "Inter", fontSize: 32, fontWeight: 600, color: "var(--secondary-text-color)" }}>Каталог</h1>
                 <div style={{ display: "flex", gap: 30 }}>
                     <FiltersPanel />
-                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10, width: "100%" }}>
                         <FiltersTags />
-                        <div style={{ display: "flex", gap: "18px", flexWrap: "wrap", }}>
+                        <div style={{
+                            display: "grid",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+                            gridColumnGap: "5px",
+                            gap: "18px"
+                        }}>
                             {
                                 isLoading
                                     ? <p>Загрузка...</p>

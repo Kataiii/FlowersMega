@@ -13,7 +13,14 @@ const Wrapper = styled.div`
     flex-direction: column;
     gap: 10px;
     position: relative;
+    margin-left: 50px;
 `;
+
+const BlockGrid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(286px, 1fr));
+    gap: 18px; 
+`
 
 const BlockProducts: React.FC = () => {
     const [page, setPage] = useState<number>(1);
@@ -39,15 +46,15 @@ const BlockProducts: React.FC = () => {
         <Container>
             <TitleSection content="Популярные товары" />
             <Wrapper>
-                <div style={{ display: "flex", gap: "18px", flexWrap: "wrap" }}>
+                <BlockGrid>
                     {
                         isLoading
                             ? <p>Загрузка...</p>
-                            : data && productsSizes.map((item, index) => {
-                                return <SmartProductCard key={`productSizes-${index}`} product={item} />
-                            })
+                            : data && productsSizes.map((item, index) => (
+                                <SmartProductCard key={`productSizes-${index}`} product={item} />
+                            ))
                     }
-                </div>
+                </BlockGrid>
                 {
                     (data?.count ?? -1) > productsSizes.length
                         ? <div style={{ width: "10%", margin: "0 auto" }}>
