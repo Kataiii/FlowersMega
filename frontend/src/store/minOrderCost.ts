@@ -9,17 +9,19 @@ const injectedRtkApi = api.injectEndpoints({
             query: (arg) => ({
                 url: `/min-order-cost`,
                 method: "POST",
-                body: arg,
+                body: arg.createMinOrderCosrDto,
             }),
+            invalidatesTags: ['MinCost'],
         }),
         minOrderCostGet: build.query<
             MinOrderCostGetApiResponse,
             MinOrderCostGetApiArg
         >({
-            query: (arg) => ({
+            query: () => ({
                 url: `/min-order-cost`,
                 method: "GET",
             }),
+            providesTags: ['MinCost'],
         }),
     }),
     overrideExisting: false,
@@ -29,11 +31,20 @@ export { injectedRtkApi as MinOrderCostApi };
 
 export type MinOrderCostCreateApiResponse = MinOrderCost
 export type MinOrderCostCreateApiArg = {
-    value: number,
+    createMinOrderCosrDto: CreateMinOrderCosrDto,
 }
-export type MinOrderCostGetApiResponse = MinOrderCost
+export type MinOrderCostGetApiResponse = MinOrderCost[]
 export type MinOrderCostGetApiArg = void;
 
 export type MinOrderCost = {
     value: number,
 }
+
+export type CreateMinOrderCosrDto = {
+    value: number,
+}
+
+export const {
+    useMinOrderCostCreatMutation,
+    useMinOrderCostGetQuery,
+} = injectedRtkApi;

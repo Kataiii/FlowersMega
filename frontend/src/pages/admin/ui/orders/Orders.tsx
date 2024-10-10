@@ -8,6 +8,7 @@ import { styled } from "styled-components";
 import OrderContainer from "../../../../shared/ui/orderContainer/OrderContainer";
 import { ButtonText, NameContainer, NamePage } from "../products/Products";
 import { Debouncer } from "../../../../shared/utils/debounce";
+import { useMinOrderCostCreatMutation, useMinOrderCostGetQuery } from "../../../../store/minOrderCost";
 
 export const SortText = styled.p`
   font-family: "Inter", sans-serif;
@@ -15,7 +16,7 @@ export const SortText = styled.p`
   font-weight: bold;
 `
 
-
+type ValueType = string | number | null;
 const Orders: React.FC = () => {
 
   const [sortOrder, setSortOrder] = useState<string>("updatedAt ASC");
@@ -29,14 +30,18 @@ const Orders: React.FC = () => {
   const { isLoading, data: initialData } = useOrdersControllerGetWithPaginationQuery(
     { page: page, limit: pageSize, search: finalSearchId, field: sortOrder.split(' ')[0], type: sortOrder.split(' ')[1] },
   );
+  const { data: lastMinimalCost, isLoading: isLoadingMin } = useMinOrderCostGetQuery();
+  const [minCost] = useMinOrderCostCreatMutation();
+  const [minimalOrderCost, setMinimalOrderCost] = useState<number>();
   const debouncer = new Debouncer();
 
 
-  // useEffect(() => {
-  //   if (initialData) {
-  //     setOrders(initialData);
-  //   }
-  // }, [initialData]);
+  useEffect(() => {
+    if (lastMinimalCost) {
+      setMinimalOrderCost(lastMinimalCost[0].value);
+    }
+
+  }, [lastMinimalCost])
 
   const columns = [
     {
@@ -105,49 +110,34 @@ const Orders: React.FC = () => {
     }, 2000), []
   );
 
+  const debounceCreation = useCallback(
+    debouncer.debounce((newCost: number) => {
+      minCost({ createMinOrderCosrDto: { value: newCost } });
+    }, 1000), []
+  )
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newSearchValue = e.target.value;
     setSearchId(newSearchValue);
     debouncedSearch(newSearchValue);
   };
 
+  const handleCostChange = (value: ValueType | null) => {
+    if (value !== null) {
+      const newCost = Number(value);
+      setMinimalOrderCost(newCost);
+      debounceCreation(newCost);
+    }
+  };
 
-
-  // const filteredData = useMemo(() => {
-  //   if (!searchId) return dataSource;
-  //   return dataSource?.filter(order => order.orderId.toString().includes(searchId));
-  // }, [searchId, dataSource]);
-
-  // const sortedData = useMemo(() => {
-  //   const sorted = [...filteredData];
-  //   // switch (sortOrder) {
-  //   case "idASC":
-  //     return sorted.sort((a, b) => a.orderId - b.orderId);
-  //   case "idDESC":
-  //     return sorted.sort((a, b) => b.orderId - a.orderId);
-  //   case "updatedAt ASC":
-  //     return sorted.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  //   case "updatedAt DESC":
-  //     return sorted.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  //   case "nameCustomer ASC":
-  //     return sorted.sort((a, b) => a.customer.localeCompare(b.customer));
-  //   case "nameCustomer DESC":
-  //     return sorted.sort((a, b) => b.customer.localeCompare(a.customer));
-  //   case "costASC":
-  //     return sorted.sort((a, b) => a.price - b.price);
-  //   case "costDESC":
-  //     return sorted.sort((a, b) => b.price - a.price);
-  //   default:
-  //     return sorted;
-  // }
-  //   return sorted;
-  // }, [filteredData, sortOrder]);
 
   const handleSearchButtonClick = () => {
     setFinalSearchId(searchId);
     setPage(1);
     // setShouldFetch(true);
   };
+
+  // { console.log('5555', lastMinimalCost[0]) }
 
   const handleSortChange = (value: string) => {
     setSortOrder(value);
@@ -196,16 +186,26 @@ const Orders: React.FC = () => {
           <NameContainer style={{ color: "var(--extra-pice)", fontWeight: "normal" }}>
             Минимальная сумма заказа
           </NameContainer>
-          <InputNumber
-            onKeyPress={(event) => {
-              if (!/[0-9]/.test(event.key)) {
-                event.preventDefault();
-              }
-            }}
-            style={{
-              border: "1px solid var(--primary-bg-color)",
-              width: 150,
-            }} />
+          {isLoadingMin ?
+            (
+              <Spin />
+            ) : (
+              <InputNumber
+                onKeyPress={(event) => {
+                  if (!/[0-9]/.test(event.key)) {
+                    event.preventDefault();
+                  }
+                }}
+                value={minimalOrderCost}
+                style={{
+                  border: "1px solid var(--primary-bg-color)",
+                  width: 150,
+                }}
+                onChange={handleCostChange}
+              />
+            )
+          }
+
           <NameContainer style={{ color: "var(--extra-pice)", fontWeight: "normal" }}>
             ₽
           </NameContainer>

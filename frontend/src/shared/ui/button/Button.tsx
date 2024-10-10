@@ -1,9 +1,12 @@
 import { styled } from "styled-components";
 import "../../utils/cssConstants.css"
+import { CSSProperties } from "styled-components";
 
-export interface ButtonProps{
+export interface ButtonProps {
     buttonContent: string;
     clickHandler: () => void;
+    disabled?: boolean;
+    style?: CSSProperties;
 }
 
 export const ButtonStyle = styled.button`
@@ -22,9 +25,9 @@ export const ButtonStyle = styled.button`
     }
 `
 
-const Button: React.FC<ButtonProps> = ({buttonContent, clickHandler}) => {
-    return(
-        <ButtonStyle onClick={clickHandler}>{buttonContent}</ButtonStyle>
+const Button: React.FC<ButtonProps> = ({ buttonContent, clickHandler, disabled, style }) => {
+    return (
+        <ButtonStyle style={style} disabled={disabled} onClick={clickHandler}>{buttonContent}</ButtonStyle>
     )
 }
 

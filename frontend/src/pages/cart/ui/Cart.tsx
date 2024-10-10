@@ -6,12 +6,13 @@ import Container from "../../../shared/ui/containerMain/ContainerMain";
 import { CART_ORDER_PATH, CATALOG_PATH } from "../../../shared/utils/constants";
 import { useAppSelector } from "../../../store/store";
 import { CartProductCard } from "../../../widgets/cart-product-card/CartProductCard";
+import { useMinOrderCostGetQuery } from "../../../store/minOrderCost";
 
 const Cart: React.FC = () => {
     const navigate = useNavigate();
     const cartTotal = useAppSelector(selectTotalCount);
     const productsInCart = useAppSelector(cartSelectors.selectAll);
-
+    const { data: minOrderCost, isLoading: minOrderCostLoading } = useMinOrderCostGetQuery();
     const totalCost = useMemo(
         () => productsInCart.map(p => p.count * (p.prise ?? 0)).reduce((prev, curr) => prev + curr, 0),
         [productsInCart]
@@ -32,13 +33,13 @@ const Cart: React.FC = () => {
                 }}>
                     {
                         productsInCart.length === 0
-                            ?   <div style={{width: "100%", height: "100%", padding: 45, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 25}}>
-                                    <h2 style={{fontFamily: "Inter", fontSize: 16, fontWeight: 400, color: "var(--secondary-text-color)"}}>Корзина пуста</h2>
-                                    <p style={{fontFamily: "Inter", fontSize: 14, fontWeight: 400, color: "var(--secondary-text-color)"}}>Для выбора товаров перейдите в каталог</p>
-                                    <div style={{width: "fit-content"}}>
-                                        <Button buttonContent={"Перейти в каталог"} clickHandler={() => navigate(CATALOG_PATH)}></Button>
-                                    </div>
+                            ? <div style={{ width: "100%", height: "100%", padding: 45, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 25 }}>
+                                <h2 style={{ fontFamily: "Inter", fontSize: 16, fontWeight: 400, color: "var(--secondary-text-color)" }}>Корзина пуста</h2>
+                                <p style={{ fontFamily: "Inter", fontSize: 14, fontWeight: 400, color: "var(--secondary-text-color)" }}>Для выбора товаров перейдите в каталог</p>
+                                <div style={{ width: "fit-content" }}>
+                                    <Button buttonContent={"Перейти в каталог"} clickHandler={() => navigate(CATALOG_PATH)}></Button>
                                 </div>
+                            </div>
                             : <div>
                                 {productsInCart.map(product => (
                                     <CartProductCard product={product} />
@@ -61,12 +62,25 @@ const Cart: React.FC = () => {
                                             </div>
                                             <div style={{ display: "flex", padding: "12px 0", justifyContent: "space-between" }}>
                                                 <p style={{ fontFamily: "Inter", fontWeight: 600, fontSize: 20, color: "var(--secondary-text-color)" }}>Итого:</p>
-                                                <p style={{ fontFamily: "Inter", fontWeight: 600, fontSize: 20, color: "var(--secondary-text-color)" }}>{totalCost.toLocaleString()} ₽</p>
+                                                <p style={{ fontFamily: "Inter", fontWeight: 600, fontSize: 20, color: totalCost < (minOrderCost && minOrderCost.length > 0 ? minOrderCost[0].value : Infinity) ? 'var(--error)' : 'var(--secondary-text-color)' }}>{totalCost.toLocaleString()} ₽</p>
                                             </div>
+                                            {
+                                                (totalCost < (minOrderCost && minOrderCost.length > 0 ? minOrderCost[0].value : Infinity)) ? (
+                                                    <div style={{ display: "flex", padding: "12px 0", justifyContent: "end" }}>
+                                                        <p style={{ fontFamily: "Inter", fontWeight: 400, fontSize: 12, color: "var(--error)", }}>Минимальная сумма заказа {minOrderCost ? minOrderCost[0].value : 0} ₽</p>
+                                                    </div>
+                                                ) : null
+                                            }
+
                                         </div>
                                     </div>
                                     <div style={{ width: "40%", margin: "0 auto" }}>
-                                        <Button buttonContent={"Оформить заказ"} clickHandler={orderHandler} />
+                                        <Button
+                                            style={{ backgroundColor: totalCost < (minOrderCost && minOrderCost.length > 0 ? minOrderCost[0].value : Infinity) ? "gray" : "var(--primary-bg-color)" }}
+                                            disabled={totalCost < (minOrderCost && minOrderCost.length > 0 ? minOrderCost[0].value : Infinity)}
+                                            buttonContent={"Оформить заказ"}
+                                            clickHandler={orderHandler}
+                                        />
                                     </div>
                                 </div>
                             </div>

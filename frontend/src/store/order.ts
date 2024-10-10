@@ -1,4 +1,5 @@
 import { emptyApi as api } from "./emptyApi";
+import { MinOrderCostCreateApiArg } from "./minOrderCost";
 import { ProductSize } from "./product";
 
 const injectedRtkApi = api.injectEndpoints({
@@ -51,7 +52,7 @@ const injectedRtkApi = api.injectEndpoints({
 					params: params
 				}
 			}
-		})
+		}),
 	}),
 	overrideExisting: false,
 });
