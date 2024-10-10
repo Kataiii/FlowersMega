@@ -86,6 +86,11 @@ const injectedRtkApi = api.injectEndpoints({
         if (queryArg.maxPrice) {
           params.maxPrice = queryArg.maxPrice;
         }
+        if (queryArg.category) {
+          params.category = queryArg.category;
+        }
+        console.log('CATEGORY', queryArg.category);
+        console.log('Request params:', queryArg);
         return {
           url: `/products-sizes/full-products-cards/${queryArg.page}/${queryArg.limit}`,
           params: params,
@@ -269,6 +274,7 @@ export type ProductsSizesControllerGetByCategotyIdWithPaginationApiArg = {
   filterItems?: number[];
   minPrice?: number;
   maxPrice?: number;
+  category?: string;
 };
 export type ReviewsControllerGetByProductSizeIdApiResponse =
   /** status 200  */ Review[];

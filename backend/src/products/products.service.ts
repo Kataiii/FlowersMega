@@ -7,6 +7,7 @@ import { CreateProductDto } from './dto/createProduct.dto';
 import { Product } from './products.model';
 import { count } from 'console';
 import { ProductSize } from 'src/products-sizes/products-sizes.model';
+import { Category } from 'src/categories/categories.model';
 
 @Injectable()
 export class ProductsService {
@@ -55,6 +56,16 @@ export class ProductsService {
         );
         // if (product === null) throw new HttpException("Product not found", HttpStatus.NOT_FOUND);
         return product;
+    }
+
+    async getProductsByCategoryId(categoryId: number) {
+        const products = await this.productsRepository.findAll({
+            include: [{
+                model: Category,
+                where: { id: categoryId },
+            }],
+        });
+        return products;
     }
 
     async getCountAndPagination(page: number, limit: number, search?: string, field?: string, type?: string, idProduct?: number[]) {

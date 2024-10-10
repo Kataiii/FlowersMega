@@ -7,18 +7,22 @@ import FiltersPanel from "../../../widgets/filtersPanel/FiltersPanel";
 import FiltersTags from "../../../widgets/filtersTags/FiltersTags";
 import { SmartProductCard } from "../../../widgets/product/SmartProductCart";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const Catalog: React.FC = () => {
     const filters = useAppSelector(selectFilters)
         .map(item => item.id)
         .filter((id): id is number => id !== undefined);
+    const [searchParams] = useSearchParams();
+    const category = searchParams.get('category');
     const minPrice = useAppSelector(selectMinPrice);
     const maxPrice = useAppSelector(selectMaxPrice);
     const [pageSize, setPageSize] = useState(12);
     const [page, setPage] = useState(1);
     console.log(filters, "filters");
+
     // const { isLoading, data } = useProductsSizesControllerGetAllQuery();
-    const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ limit: pageSize, page: page, filterItems: filters, minPrice: minPrice, maxPrice: maxPrice });
+    const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ limit: pageSize, page: page, filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: category ?? '' });
 
     const handlePageChange = (newPage: number, newPageSize?: number) => {
         setPage(newPage);

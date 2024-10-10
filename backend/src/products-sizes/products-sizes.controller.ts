@@ -160,14 +160,13 @@ export class ProductsSizesController {
     @ApiResponse({ status: 404, description: "Products sizes not fount" })
     @ApiQuery({ name: 'search', required: false })
     @ApiQuery({ name: 'filterItems', required: false })
+    // @ApiQuery({ name: 'category', required: false })
     @Get("/full-products-cards/:page/:limit")
-    async getByCategotyIdWithPagination(@Param("page") page: number, @Param("limit") limit: number, @Query("search") search?: string, @Query("filterItems") filterItems?: string, @Query("minPrice") minPrice?: number, @Query("maxPrice") maxPrice?: number) {
-        console.log(filterItems, "FILTER ITEMS");
-        console.log(minPrice, "MIN PRICE");
-        console.log(maxPrice, "MAX PRICE");
+    async getByCategotyIdWithPagination(@Param("page") page: number, @Param("limit") limit: number, @Query("search") search?: string, @Query("filterItems") filterItems?: string, @Query("minPrice") minPrice?: number, @Query("maxPrice") maxPrice?: number, @Query("category") category?: string) {
 
+        console.log(category, "CATEGORY");
         const arrayFilters: number[] = filterItems !== undefined && filterItems !== "" ? filterItems.split(',').map(item => Number(item)) : [];
-        return await this.productsSizesFullService.getProductsSizesForCardPagination(page, limit, search, arrayFilters, minPrice, maxPrice);
+        return await this.productsSizesFullService.getProductsSizesForCardPagination(page, limit, search, arrayFilters, minPrice, maxPrice, category);
     }
 
     @ApiOperation({ summary: 'Get product with products size with pagination' })
