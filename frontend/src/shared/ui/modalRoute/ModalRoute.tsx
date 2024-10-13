@@ -5,10 +5,11 @@ import Portal from "../portal/Portal";
 import { ReactComponent as CloseIcon } from "../../../shared/assets/closeModal.svg";
 
 type ModalRouteProps = {
-    prevLocation: string
+    prevLocation: string,
+    width?: string,
 } & PropsWithChildren
 
-const ModalRoute: React.FC<ModalRouteProps> = ({ prevLocation, children }) => {
+const ModalRoute: React.FC<ModalRouteProps> = ({ prevLocation, children, width }) => {
     const navigate = useNavigate();
 
     return (
@@ -17,9 +18,10 @@ const ModalRoute: React.FC<ModalRouteProps> = ({ prevLocation, children }) => {
                 <Modal
                     title=""
                     open={true}
+                    width={width}
                     onCancel={() => navigate(prevLocation)}
                     footer={null}
-                    closeIcon={<CloseIcon/>}
+                    closeIcon={<CloseIcon />}
                 >
                     {children}
                 </Modal>

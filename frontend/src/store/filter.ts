@@ -11,18 +11,21 @@ const injectedRtkApi = api.injectEndpoints({
         method: "POST",
         body: queryArg.createFilterDto,
       }),
+      invalidatesTags: ['Filter', 'Tag'],
     }),
     filtersControllerGetAll: build.query<
       FiltersControllerGetAllApiResponse,
       FiltersControllerGetAllApiArg
     >({
       query: () => ({ url: `/filters` }),
+      providesTags: ['Filter', 'Tag'],
     }),
     filtersControllerGetById: build.query<
       FiltersControllerGetByIdApiResponse,
       FiltersControllerGetByIdApiArg
     >({
       query: (queryArg) => ({ url: `/filters/${queryArg.id}` }),
+      providesTags: ['Filter', 'Tag'],
     }),
     filtersControllerGetAllWithMaxPrice: build.query<
       FiltersControllerHetAllWithMaxPriceApiResponse,
@@ -31,6 +34,18 @@ const injectedRtkApi = api.injectEndpoints({
       query: () => ({
         url: `/filters/filters-with-price`
       })
+    }),
+    filtersControllerDeleteById: build.mutation<
+      FiltersControllerDeleteByIdApiResponse,
+      FiltersControllerDeleteByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/filters/`,
+        method: "DELETE",
+        body: { id: queryArg.id },
+      }),
+      invalidatesTags: ['Filter', 'Tag'],
+
     })
   }),
   overrideExisting: false,
@@ -51,6 +66,10 @@ export type FiltersControllerHetAllWithMaxPriceApiResponse = {
   filters: FilterWithItems[];
 }
 export type FiltersControllerHetAllWithMaxPriceApiArg = void;
+export type FiltersControllerDeleteByIdApiResponse = void;
+export type FiltersControllerDeleteByIdApiArg = {
+  id: number;
+}
 export type Filter = {
   /** Unique identifier */
   id?: number;
@@ -79,4 +98,5 @@ export const {
   useFiltersControllerGetAllQuery,
   useFiltersControllerGetByIdQuery,
   useFiltersControllerGetAllWithMaxPriceQuery,
+  useFiltersControllerDeleteByIdMutation,
 } = injectedRtkApi;

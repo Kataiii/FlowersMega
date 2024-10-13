@@ -24,42 +24,51 @@ const Container = styled.div`
 `;
 
 const { Search } = Input;
+
+interface SecondHeaderProps {
+    onSearchChange?: (value: string) => void;
+}
 // TODO Сконструировать в виде, объекта с пропсами 
 //Search?: React.Element,
 //actions: - React.Element[] это кнопки профиля, корзины и т.д
 //location? - React.Eleemtn (Саму кнопку смены локации в features, также можно глобально хранить локацию в entities)
 //Catalog?: React.Element - аналогично с Search
-const SecondHeader: React.FC = () => {
-    const [ isOpen, setIsOpen ] = useState<boolean>(false);
+const SecondHeader: React.FC<SecondHeaderProps> = ({ onSearchChange }) => {
+    const [isOpen, setIsOpen] = useState<boolean>(false);
     const divContainer = useRef<HTMLDivElement>(null);
     useOutsideClick(divContainer, () => setIsOpen(false));
 
     return (
         <Container ref={divContainer}>
-            <Catalog clickHandler={() => setIsOpen(isOpen => !isOpen)}/>
-            <Location/>
+            <Catalog clickHandler={() => setIsOpen(isOpen => !isOpen)} />
+            <Location />
             <Search
                 prefix={<SearchIcon />}
                 placeholder="Поиск"
                 allowClear
                 enterButton="Найти"
                 size="large"
+                onChange={(e) => {
+                    if (onSearchChange) {
+                        onSearchChange(e.target.value);
+                    }
+                }}
             />
 
             <div style={{ display: "flex", gap: "20px" }}>
                 {
                     [
-                        <ProfileButton key={'profile'}/>,
-                        <CartButton key={'cart'}/>,
-                        <FavoriteButton key={'favourite'}/>
+                        <ProfileButton key={'profile'} />,
+                        <CartButton key={'cart'} />,
+                        <FavoriteButton key={'favourite'} />
                     ]
                 }
             </div>
 
             {
                 isOpen
-                ?   <CatalogPanel/>
-                :   null
+                    ? <CatalogPanel />
+                    : null
             }
         </Container>
     )

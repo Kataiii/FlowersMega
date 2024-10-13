@@ -7,6 +7,7 @@ import Header from "./shared/ui/header/Header";
 import SecondHeader from "./shared/ui/secondHeader/SecondHeader";
 import { CATEGORY_PATH, HOME_PATH, mapBreads, PRODUCT_PATH, CATALOG_PATH } from "./shared/utils/constants";
 import "./shared/utils/cssConstants.css";
+import { useEffect, useState } from "react";
 
 const Container = styled.div`
   background-color: var(--main-bg-color);
@@ -25,13 +26,21 @@ const App: React.FC = () => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const params = useParams();
+  const x = window.matchMedia("(max-device-width: 420px)");
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    (window.innerWidth < 420) ? setIsMobile(true) : setIsMobile(false);
+
+
+  }, [isMobile])
 
 
   const sliceBreads = (pathname: string) => {
     const arrayBreads: Partial<BreadcrumbItemType & BreadcrumbSeparatorType>[] = [];
     const arrayPaths: string[] = pathname.split('/');
 
-    if(arrayPaths.find(element => element === "product")) arrayPaths.pop();
+    if (arrayPaths.find(element => element === "product")) arrayPaths.pop();
 
     console.log(arrayPaths);
 
@@ -68,16 +77,28 @@ const App: React.FC = () => {
       }
     })
 
-    if(arrayPaths.find(element => element === "product")) arrayBreads.pop();
+    if (arrayPaths.find(element => element === "product")) arrayBreads.pop();
 
     return arrayBreads;
   }
 
   return (
+
     <Container>
       <ContainerHeaders>
-        <Header />
-        <SecondHeader />
+        {isMobile ? (
+          <>
+
+            {/* {console.log("SSSS", x.matches)} */}
+          </>
+        ) : (
+          <>
+            {/* {console.log("555", x.matches)} */}
+            <Header />
+            <SecondHeader />
+          </>
+        )}
+
       </ContainerHeaders>
       {
         location.pathname === HOME_PATH
@@ -89,6 +110,7 @@ const App: React.FC = () => {
       <Outlet></Outlet>
       <Footer />
     </Container>
+
   )
 }
 

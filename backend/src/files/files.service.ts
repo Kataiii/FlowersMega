@@ -5,7 +5,7 @@ import * as uuid from 'uuid';
 
 @Injectable()
 export class FilesService {
-    constructor(){}
+    constructor() { }
 
     async createFile(file, expansionFile: string, nameFolder: string, pathForFolder: string[]): Promise<string> {
         try {
@@ -23,7 +23,7 @@ export class FilesService {
         }
     }
 
-    async createImageProduct(file, idProduct: number){
+    async createImageProduct(file, idProduct: number) {
         return await this.createFile(
             file,
             file.originalname.slice(file.originalname.lastIndexOf('.'), file.originalname.length),
@@ -32,7 +32,7 @@ export class FilesService {
         );
     }
 
-    async createImageReview(file, idProduct: number){
+    async createImageReview(file, idProduct: number) {
         return await this.createFile(
             file,
             file.originalname.slice(file.originalname.lastIndexOf('.'), file.originalname.length),
@@ -41,7 +41,7 @@ export class FilesService {
         );
     }
 
-    async createAvatar(file, idUser: number){
+    async createAvatar(file, idUser: number) {
         return await this.createFile(
             file,
             file.originalname.slice(file.originalname.lastIndexOf('.'), file.originalname.length),
@@ -50,7 +50,7 @@ export class FilesService {
         );
     }
 
-    async createImageCategory(file){
+    async createImageCategory(file) {
         return await this.createFile(
             file,
             file.originalname.slice(file.originalname.lastIndexOf('.'), file.originalname.length),
@@ -59,10 +59,10 @@ export class FilesService {
         );
     }
 
-    async deleteAvatar(fileName: string, idUser: number){
+    async deleteAvatar(fileName: string, idUser: number) {
         const filePath = path.resolve(__dirname, '..', '..', 'static', 'users', fileName);
         return await fs.unlink(filePath, (error) => {
-            if(error) console.log(error);
+            if (error) console.log(error);
         });
     }
 }

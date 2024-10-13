@@ -1,4 +1,4 @@
-:root{
+:root {
     --main-bg-color: #F5EFF5;
     --primary-bg-color: #FF749F;
     --primary-bg-color-hover: #FF558A;
@@ -15,4 +15,6 @@
     --city-active: #FFDCE7;
     --city-active-hover: #f093b0;
     --error: #ff4d4f;
+    --extra-pice: #9D0000;
+    --extra-price-all: #F71258;
 }
