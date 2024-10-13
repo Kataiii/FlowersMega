@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:18
 
 # Set the working directory in the container
 WORKDIR /backend
@@ -16,6 +16,8 @@ COPY . .
 
 # Expose the application port (if necessary)
 EXPOSE 5000
+
+RUN npm run build
 
 # Start the Nest.js application
 CMD [ "npm", "run", "start:dev" ]
