@@ -16,7 +16,7 @@ const Wrapper = styled.div`
     margin-left: 50px;
 `;
 
-const BlockGrid = styled.div`
+export const BlockGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(286px, 1fr));
     gap: 18px; 
