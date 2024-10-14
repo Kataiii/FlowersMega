@@ -67,3 +67,10 @@ export type ExtraPrice = {
     idCategory: string;
     value: number;
 }
+
+export const {
+    useExtraPriceControllerCreateMutation,
+    useExtraPriceControllerDeleteMutation,
+    useExtraPriceControllerGetAllQuery,
+    useExtraPriveControllerGetByCategoryIdQuery
+} = injectedRtkApi;
