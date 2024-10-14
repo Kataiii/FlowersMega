@@ -198,6 +198,7 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
             // @ts-ignore
             setFilters(mappedFilters);
             console.log("SELECT CAT", selectedCategories);
+            console.log("FILTERS", filters);
             const variationsS = productVariations.productsSizes.flatMap(variation => ({
                 idSize: variation.idSize,
                 prise: variation.prise,

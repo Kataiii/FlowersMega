@@ -10,16 +10,15 @@ interface ExtraPriceAttrs {
 
 @Table({ tableName: 'extra_price', createdAt: true, updatedAt: true })
 export class ExtraPrice extends Model<ExtraPrice, ExtraPriceAttrs> {
-    @ApiProperty({ example: 1, description: 'Unique identifier', required: true })
-    @Column({ type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true })
-    id: number;
 
     @ApiProperty({ example: 1, description: 'Category', required: true })
-    @Column({ type: DataType.STRING, unique: true, allowNull: false })
+    @Column({ type: DataType.STRING, allowNull: false })
     @ForeignKey(() => CategoriesProducts)
     idCategory: string;
 
     @ApiProperty({ example: 1, description: 'Value', required: true })
     @Column({ type: DataType.INTEGER, allowNull: false })
     value: number;
+
+
 }

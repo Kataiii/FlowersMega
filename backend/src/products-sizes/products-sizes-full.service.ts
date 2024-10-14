@@ -22,10 +22,11 @@ export class ProductsSizesFullService {
     ) { }
 
     private async getCardInfo(productSize: ProductSize) {
+        // console.log(productSize, "PRODUCT SIZE")
         const size = await this.sizesService.getById(productSize.idSize);
         const product = await this.productsService.getById(productSize.idProduct);
         const reviewsInfo = await this.reviewsService.getStaticticByProductSizeId(productSize.id);
-
+        // console.log(product, "product");
         return {
             size: size,
             product: {
@@ -104,8 +105,19 @@ export class ProductsSizesFullService {
                 }
             }
         }
+        const whereCondition: any = {};
+        if (minPrice) {
+            whereCondition.prise = { [Op.gte]: minPrice };
+        }
+        if (maxPrice) {
+            whereCondition.prise = {
+                ...whereCondition.prise,
+                [Op.lte]: maxPrice
+            };
+        }
         const count = await this.productsSizesRepository.findAndCountAll();
         const products = await this.productsSizesRepository.findAll({
+            where: whereCondition,
             limit: limit,
             offset: (page - 1) * limit,
         });

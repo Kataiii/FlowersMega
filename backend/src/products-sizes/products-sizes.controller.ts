@@ -160,7 +160,7 @@ export class ProductsSizesController {
     @ApiResponse({ status: 404, description: "Products sizes not fount" })
     @ApiQuery({ name: 'search', required: false })
     @ApiQuery({ name: 'filterItems', required: false })
-    // @ApiQuery({ name: 'category', required: false })
+    @ApiQuery({ name: 'category', required: false })
     @Get("/full-products-cards/:page/:limit")
     async getByCategotyIdWithPagination(@Param("page") page: number, @Param("limit") limit: number, @Query("search") search?: string, @Query("filterItems") filterItems?: string, @Query("minPrice") minPrice?: number, @Query("maxPrice") maxPrice?: number, @Query("category") category?: string) {
 

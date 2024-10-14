@@ -11,14 +11,41 @@ export class ExtraPriceService {
     ) { }
 
     async create(dto: ExtraPrice) {
+        const { id, ...restDto } = dto;
         const [extraPrice, created] = await this.extraPriceRepository.findOrCreate({
-            where: { id: dto.id },
-            defaults: dto
+            where: { idCategory: restDto.idCategory },
+            defaults: restDto
         });
+
         if (!created) {
-            extraPrice.value = dto.value;
+            extraPrice.value = restDto.value;
             await extraPrice.save();
         }
+
         return extraPrice;
     }
+
+    async getAll() {
+        return this.extraPriceRepository.findAll();
+    }
+
+    async getById(id: number) {
+        return this.extraPriceRepository.findByPk(id);
+    }
+
+    async getByCategoryId(idCategory: string) {
+        console.log(idCategory, "HAHAHAH");
+        return this.extraPriceRepository.findAll({
+            where: { idCategory },
+        });
+    }
+
+    async deleteByCategoryId(idCategory: string) {
+        return this.extraPriceRepository.destroy({
+            where: { idCategory }
+        });
+
+    }
+
 }
+
