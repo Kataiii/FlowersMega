@@ -1,17 +1,17 @@
 //@ts-nocheck
 import { createAction, createEntityAdapter, createSlice, createSelector } from "@reduxjs/toolkit";
 import { RootState } from "@reduxjs/toolkit/query";
-import { Product, ProductSize } from "../../../store/product";
+import { FullProductSizeDto, Product, ProductSize } from "../../../store/product";
 
 
-export const addFavorite = createAction<ProductSize>('addFavorite');
-export const deleteFavorite = createAction<Pick< ProductSize, 'id'>>('deleteFavorite');
+export const addFavorite = createAction<FullProductSizeDto>('addFavorite');
+export const deleteFavorite = createAction<Pick< FullProductSizeDto['productSize'], 'id'>>('deleteFavorite');
 
 
 
 
 export const favoritesEntitiyAdapter = createEntityAdapter({
-    selectId: (e:  FullProductSizeDto) => e.id
+    selectId: (e:  FullProductSizeDto) => e.productSize.id
 })
 
 const favoriteSlice = createSlice({
@@ -21,7 +21,7 @@ const favoriteSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(addFavorite, (state, action) => {
             const favoriteItem = action.payload;
-            if (favoriteItem.id) favoritesEntitiyAdapter.addOne(state, favoriteItem);
+            if (favoriteItem.productSize.id) favoritesEntitiyAdapter.addOne(state, favoriteItem);
         }),
             builder.addCase(deleteFavorite, (state, action) => {
                 favoritesEntitiyAdapter.removeOne(state, action.payload.id ?? '');

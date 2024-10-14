@@ -24,7 +24,7 @@ async function start() {
 
     const document = SwaggerModule.createDocument(app, config)
     SwaggerModule.setup('/api/docs', app, document);
-    fs.writeFileSync('../frontend/src/swagger.json', JSON.stringify(document))
+    // fs.writeFileSync('../frontend/src/swagger.json', JSON.stringify(document))
 
     // const reflector = app.get(Reflector);
     // app.useGlobalGuards(new JwtAuthGuard(reflector));

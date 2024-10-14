@@ -13,6 +13,7 @@ export const SmartProductCard: React.FC<SmartProductCardProps> = ({ product }) =
     const { isLoading, data } = useProductsControllerGetByIdQuery({ id: product.productSize.idProduct});
     // const responseSize = useSizesControllerGetByIdQuery({id: size.idSize});
 
+    if(data == null) return null;
     return (
         <>
         {
@@ -20,8 +21,8 @@ export const SmartProductCard: React.FC<SmartProductCardProps> = ({ product }) =
             ?   <p>Загрузка...</p>
             :   <CardProduct
                         product={product}
-                        addToCartButton={<AddToCartButton product={{...product.productSize, product: data!}} />}
-                        addToFavorites={<ToggleFavoritesButton item={product.productSize} />}
+                        addToCartButton={<AddToCartButton product={{...product.productSize, product: data}} />}
+                        addToFavorites={<ToggleFavoritesButton item={product} />}
                     />
         }
         </>
