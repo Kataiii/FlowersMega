@@ -24,7 +24,6 @@ import { ProductsItemsFilterModule } from 'src/products-items-filter/products-it
   exports: [
     ProductsSizesService,
     ProductsSizesFullService,
-
   ]
 })
 export class ProductsSizesModule { }
