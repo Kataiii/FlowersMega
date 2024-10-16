@@ -8,6 +8,7 @@ import Error from "../../../shared/assets/no-image.png";
 import GaleryPhotoProduct from "../../../widgets/product/GaleryPhotoProduct";
 import DescriptionProduct from "../../../widgets/product/DescriptionProduct";
 import BlockReviewProduct from "../../../widgets/blockReviewProduct/BlockReviewProduct";
+import BlockProductsExtras from "../../../widgets/blockProducts/BlockProductsExtras";
 
 const Product: React.FC = () => {
     const {name, size} = useParams();
@@ -28,6 +29,7 @@ const Product: React.FC = () => {
                         <GaleryPhotoProduct product={data}/>
                         <DescriptionProduct product={{...data!, productSize: productSize.data!}}/>
                     </div>
+                    <BlockProductsExtras/>
                     <BlockReviewProduct idProductSize={productSize.data?.id ?? -1}/>
                 </Container>
             </div>
