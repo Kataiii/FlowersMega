@@ -55,16 +55,14 @@ export class ProductsSizesFullService {
         };
     }
 
-    async getProductsSizesForCardPagination(page: number, limit: number, search?: string, filterItems?: number[], minPrice?: number, maxPrice?: number, category?: string) {
+    async getProductsSizesForCardPagination(page: number, limit: number, search?: string, filterItems?: number[], minPrice?: number, maxPrice?: number, category?: number) {
         console.log(filterItems, "filterItems");
-        if (category !== undefined) {
+        console.log(category, "LMAO uAPL");
+        if (category) {
             if (filterItems.length > 0 || minPrice || maxPrice) {
                 const filtersProductsTmp = filterItems.length > 0 ? await Promise.all(filterItems.map(async (item) => {
                     return (await this.productsItemsFilterService.getProductsByFilterId(item)).map(item => item.idProduct);
                 })) : (await this.productsService.getAll()).map(item => item.id);
-                const categoryProducts = await this.categoriesProductService.getCategoryByName(category);
-                const categoryId = categoryProducts.id;
-                console.log(categoryProducts, "categoryProducts");
                 const filtersProducts = Array.from(new Set(filtersProductsTmp.flat()));
                 const whereCondition: any = {};
                 if (minPrice) {
@@ -76,8 +74,8 @@ export class ProductsSizesFullService {
                         [Op.lte]: maxPrice
                     };
                 }
-                if (categoryId) {
-                    const productsByCategory = await this.productsService.getProductsByCategoryId(categoryId);
+                if (category) {
+                    const productsByCategory = await this.productsService.getProductsByCategoryId(category);
                     const productsIdsByCategory = productsByCategory.map(product => product.id);
                     if (filtersProducts.length > 0) {
                         whereCondition.idProduct = { [Op.in]: filtersProducts.filter(id => productsIdsByCategory.includes(id)) };

@@ -40,8 +40,12 @@ export class ExtraPriceController {
     @ApiOperation({ summary: 'Delete extra price by category id' })
     @ApiResponse({ status: 200, description: 'Extra price deleted' })
     @ApiResponse({ status: 400, description: 'Extra price not found' })
-    @Delete("/:id")
-    async deleteById(@Param("id") idCategory: string) {
+    @Delete('/:id')
+    async deleteById(@Param('id') idCategory: string) {
+        console.log(idCategory, "idCategory");
+        if (!idCategory) {
+            throw new Error('idCategory is required');
+        }
         return await this.extraPriceService.deleteByCategoryId(idCategory);
     }
 

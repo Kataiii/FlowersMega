@@ -25,10 +25,18 @@ export class CategoriesProductsService {
         return categories;
     }
 
-    async getCategoryByName(name: string): Promise<Category | null> {
-        return await this.categoriesModel.findOne({
+    async getCategoryByName(name: string) {
+        const category = await this.categoriesModel.findOne({
             where: { name }
         });
+
+        if (!category) {
+            console.log('Category not found:', name);
+            return null;
+        }
+
+        console.log(category.id, "CATEGORY ID");
+        return category.id;
     }
 
     async create(dto: CreateCategoriesProductDto) {

@@ -35,16 +35,16 @@ export class ExtraPriceService {
 
     async getByCategoryId(idCategory: string) {
         console.log(idCategory, "HAHAHAH");
-        return this.extraPriceRepository.findAll({
+        return this.extraPriceRepository.findOne({
             where: { idCategory },
         });
     }
 
     async deleteByCategoryId(idCategory: string) {
-        return this.extraPriceRepository.destroy({
+        console.log(idCategory, "IN SERVICE deleteByCategoryId");
+        return await this.extraPriceRepository.destroy({
             where: { idCategory }
         });
-
     }
 
 }

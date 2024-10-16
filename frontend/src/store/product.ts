@@ -202,6 +202,19 @@ const injectedRtkApi = api.injectEndpoints({
         method: "GET",
       }),
     }),
+    categoryControllerGetIdByName: build.query<
+      CategoryControllerGetIdByNameApiResponse,
+      CategoryControllerGetIdByNameApiArg
+    >({
+      query: (queryArg) => {
+        return {
+          url: `/products-sizes/category/${queryArg.name}`,
+          method: "GET",
+        };
+
+      },
+    }),
+
   }),
   overrideExisting: false,
 });
@@ -274,7 +287,7 @@ export type ProductsSizesControllerGetByCategotyIdWithPaginationApiArg = {
   filterItems?: number[];
   minPrice?: number;
   maxPrice?: number;
-  category?: string;
+  category?: number;
 };
 export type ReviewsControllerGetByProductSizeIdApiResponse =
   /** status 200  */ Review[];
@@ -299,6 +312,12 @@ export type CategoriesProductsControllerGetAllApiArg = {
 export type productSizesControllerGetProductsWithPaginationApiResponse = {
   count: number;
   products: ProductWithSizes[];
+}
+export type CategoryControllerGetIdByNameApiResponse = {
+  id: number;
+}
+export type CategoryControllerGetIdByNameApiArg = {
+  name: string;
 }
 export type productSizesControllerGetProductsWithPaginationApiArg = {
   page: number;
@@ -499,4 +518,5 @@ export const {
   useProductsControllerCreateWithDetailsMutation,
   useProductsControllerDeleteByIdMutation,
   useProductsControllerGetProductSizesCountQuery,
+  useCategoryControllerGetIdByNameQuery
 } = injectedRtkApi;
