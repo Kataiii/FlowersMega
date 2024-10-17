@@ -6,6 +6,7 @@ import { CreateProductSizeDto, CreateProductSizeInfoDto } from './dto/createProd
 import { ProductSize } from './products-sizes.model';
 import { ExtraPriceService } from 'src/extra-price/extra-price.service';
 import { ProductsSizesFullService } from './products-sizes-full.service';
+import { ProductSizeCreationAttrs } from './products-sizes.model'
 
 @Injectable()
 export class ProductsSizesService {
@@ -170,7 +171,21 @@ export class ProductsSizesService {
                 idSize: idSize
             }
         });
+        const productSizesUpd = await this.getByProductId(productSize.idProduct);
+        console.log(productSizesUpd, "YAAAAAAAAAAAAAAa");
+        console.log(productSize, "PROOOOOOOOOOOOOOOOOOOOOOOOD");
 
-        return productSize;
+        const updatedProductSize = productSizesUpd.find(
+            (item) => {
+                console.log(item.productSize.idSize, "HHHH");
+                console.log(Number(idSize), "IDSIIIIIIIIIZE");
+                const isMatch = item.productSize.idSize === Number(idSize) && item.productSize.idProduct === Number(idProduct);
+                console.log(isMatch, "LLLLLLLL");
+                return isMatch;
+            }
+        );
+
+        console.log(updatedProductSize, "WWWWWWWWWWWWWWWWWWWWWWwwww");
+        return updatedProductSize.productSize
     }
 }

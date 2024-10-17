@@ -9,7 +9,8 @@ const injectedRtkApi = api.injectEndpoints({
                 url: "/extra-price/",
                 method: "POST",
                 body: queryArg.body,
-            })
+            }),
+            invalidatesTags: ['ExtraPrice']
         }),
         extraPriceControllerDelete: build.mutation<
             ExtraPriceControllerDeleteApiResponce,

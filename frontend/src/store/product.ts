@@ -54,6 +54,7 @@ const injectedRtkApi = api.injectEndpoints({
       ProductsSizesControllerGetByIdApiArg
     >({
       query: (queryArg) => ({ url: `/products-sizes/${queryArg.id}` }),
+      providesTags: ['ExtraPrice']
     }),
     productsSizesControllerGetByProductId: build.query<
       ProductsSizesControllerGetByProductIdApiResponse,
@@ -96,8 +97,8 @@ const injectedRtkApi = api.injectEndpoints({
           url: `/products-sizes/full-products-cards/${queryArg.page}/${queryArg.limit}`,
           params: params,
         }
-
       },
+      providesTags: ['Products', 'ExtraPrice']
     }),
     reviewsControllerGetByProductSizeId: build.query<
       ReviewsControllerGetByProductSizeIdApiResponse,
