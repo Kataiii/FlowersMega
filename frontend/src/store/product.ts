@@ -1,4 +1,5 @@
 import { emptyApi as api } from "./emptyApi";
+import { Order } from "./order";
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     productsControllerCreate: build.mutation<
@@ -266,7 +267,18 @@ export type ProductsSizesControllerGetByIdApiArg = {
   id: number;
 };
 export type ProductsSizesControllerGetByProductIdApiResponse =
-  /** status 200  */ ProductSize[];
+  /** status 200  */ {
+  productSizes: {
+    id: number;
+    idProduct: number;
+    idSize: number;
+    paramsSize: string;
+    count: number;
+    prise: number;
+    orders: Order[];
+  }
+  product: Product;
+}[];
 export type ProductsSizesControllerGetByProductIdApiArg = {
   id: number;
 };

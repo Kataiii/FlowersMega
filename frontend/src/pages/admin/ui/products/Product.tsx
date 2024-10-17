@@ -97,6 +97,7 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
             photo: "category.image "
         }
     }));
+    console.log(productVariations, "productVariations");
     const handleFormFinish = async (values: any) => {
         const formattedFilters = filters.map((filter) => {
             return {

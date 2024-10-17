@@ -18,6 +18,7 @@ interface CategoryDropdownProps {
   name?: string;
   data?: (CategoryMin | FilteryMin)[];
   showAddButton?: boolean;
+  isHasVariants?: boolean;
 }
 
 export type Category = {
@@ -34,6 +35,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   value = [],
   onChange,
   style,
+  isHasVariants
 }) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [items, setItems] = useState<{ id?: number; name: string }[]>(
@@ -142,6 +144,11 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   const handleSelectCategory = (category: { id?: number; name: string }) => {
     const existingCategory = selectedCategories.find((item) => item.id === category.id);
 
+
+    if (isHasVariants && selectedCategories.length > 0) {
+      return;
+    }
+
     if (existingCategory) {
       const newSelectedCategories = selectedCategories.filter((item) => item.id !== category.id);
       setSelectedCategories(newSelectedCategories);
@@ -171,7 +178,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   return (
     <div style={{ display: "flex", alignItems: "start" }}>
       <Dropdown
-        disabled={disabled}
+        disabled={disabled || (isHasVariants && selectedCategories.length >= 1)}
         trigger={["click"]}
         open={dropdownVisible}
         onOpenChange={(open) => setDropdownVisible(open)}
@@ -298,7 +305,8 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
           >
             {category.name}
             <CloseOutlined
-              onClick={() => handleRemoveCategory(category.id!)}
+              disabled={disabled || (isHasVariants && selectedCategories.length >= 1)}
+              onClick={() => { if ((isHasVariants && selectedCategories.length >= 1)) return; else handleRemoveCategory(category.id!) }}
               style={{ marginLeft: "8px", cursor: "pointer" }}
             />
           </div>

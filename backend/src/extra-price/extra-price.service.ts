@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ExtraPrice } from './extra-price.model';
 import { CategoriesProducts } from 'src/categories-products/categories_products.model';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class ExtraPriceService {
@@ -45,6 +46,25 @@ export class ExtraPriceService {
         return await this.extraPriceRepository.destroy({
             where: { idCategory }
         });
+    }
+
+    async whichOneTheBest() {
+        const generalExtra = await this.extraPriceRepository.findOne({
+            where: { idCategory: 'all' }
+        })
+        const otherCategoriesExtras = await this.extraPriceRepository.findAll({
+            where: { idCategory: { [Op.ne]: 'all' } }
+        })
+
+        const resultMap = otherCategoriesExtras.reduce((map, item) => {
+            const existingValue = map.get(item.idCategory) || generalExtra.value;
+            const maxValue = Math.max(existingValue, item.value);
+            map.set(item.idCategory, maxValue);
+
+            return map;
+        }, new Map([[generalExtra.idCategory, generalExtra.value]]));
+        console.log(resultMap, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        return resultMap;
     }
 
 }

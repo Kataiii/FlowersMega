@@ -20,4 +20,4 @@ import { ProductsModule } from 'src/products/products.module';
     ReviewsService
   ]
 })
-export class ReviewsModule {}
+export class ReviewsModule { }

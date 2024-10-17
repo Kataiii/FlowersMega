@@ -121,6 +121,7 @@ const ExtraPriceVar: React.FC<ExtraPriceVarProps> = ({ value, onChange, onRemove
                                 name="Категории"
                                 showAddButton={true}
                                 data={categories}
+                                isHasVariants={true}
                             />
                         </div>
                         <div

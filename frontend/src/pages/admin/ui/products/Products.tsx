@@ -62,7 +62,7 @@ const Products: React.FC = () => {
             filters: filters,
         }
     );
-
+    console.log(productSizedPag, "PIPYAOOOOOOO");
     const debouncer = new Debouncer();
 
     const debouncedSearch = useCallback(
@@ -195,6 +195,7 @@ const Products: React.FC = () => {
                             key={product.products.id}
                             id={product.products.id}
                             name={product.products.name}
+                            productSizedPag={productSizedPag}
                             type={productType?.find((type) => product.products.idTypeProduct === type.id)?.name}
                         />
                     ))}

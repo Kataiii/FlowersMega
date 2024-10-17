@@ -63,7 +63,12 @@ const ButtonColor = styled.button`
 const CardProduct: React.FC<CardProductProps> = ({ product, addToCartButton, addToFavorites }) => {
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    console.log(product);
+    const [price, setPrice] = useState<number>(product.productSize.prise);
+    console.log(product, "SSSSS");
+
+    // useEffect(() => {
+    //     setPrice(product.productSize.prise);
+    // }, [price]);
 
     return (
         <div style={{ width: '100%', borderRadius: "14px", padding: "8px", backgroundColor: "var(--block-bg-color)", display: "flex", flexDirection: "column", gap: "16px", position: "relative", justifyContent: "space-between" }}>

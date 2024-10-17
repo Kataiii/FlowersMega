@@ -8,13 +8,15 @@ import { Product } from './products.model';
 import { count } from 'console';
 import { ProductSize } from 'src/products-sizes/products-sizes.model';
 import { Category } from 'src/categories/categories.model';
+import { ExtraPriceService } from 'src/extra-price/extra-price.service';
 
 @Injectable()
 export class ProductsService {
     constructor(
         @InjectModel(Product) private productsRepository: typeof Product,
         @InjectModel(ProductSize) private productSizesRepository: typeof ProductSize,
-        private imagesService: ImagesService
+        private imagesService: ImagesService,
+        private extraPriceService: ExtraPriceService
 
     ) { }
 
@@ -46,6 +48,9 @@ export class ProductsService {
     }
 
     async getById(id: number | string) {
+
+        // const extraPrice = await this.productSizesRepository.findAll({})
+        // console.log(extraPrice, "extraPrice");
         const product = await this.productsRepository.findOne(
             {
                 where: { id: id },
