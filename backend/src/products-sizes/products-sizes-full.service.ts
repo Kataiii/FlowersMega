@@ -179,8 +179,6 @@ export class ProductsSizesFullService {
             };
         });
 
-        console.log(updatedProducts, "NUUUU");
-
         return updatedProducts;
     }
 
@@ -270,4 +268,21 @@ export class ProductsSizesFullService {
         await this.productsService.deleteProduct(productId);
         return { message: 'Product and all associated sizes deleted successfully' };
     }
+
+    async getMaxPrice(idCategory?: number) {
+        if (idCategory) {
+            const productsByCategory = await this.categoriesProductService.getProductsByCategoryId(idCategory);
+        } else {
+            console.log("idCategory is undefined");
+        }
+
+        const productSize = await this.productsSizesRepository.findAll({
+            order: [['prise', 'DESC']]
+        });
+
+        const productSizeUpd = await this.calculatePrices(productSize);
+        console.log(productSizeUpd[0].productSize.prise, "FINALLLYYY");
+        return productSizeUpd[0].productSize.prise;
+    }
+
 }
