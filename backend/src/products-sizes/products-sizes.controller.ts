@@ -11,13 +11,15 @@ import { ProductsSizesFullService } from './products-sizes-full.service';
 import { ProductSize } from './products-sizes.model';
 import { ProductsSizesService } from './products-sizes.service';
 import { filter, min } from 'rxjs';
+import { CategoriesProductsService } from 'src/categories-products/categories-products.service';
 
 @ApiTags("Products Sizes")
 @Controller('products-sizes')
 export class ProductsSizesController {
     constructor(
         private productsSizesService: ProductsSizesService,
-        private productsSizesFullService: ProductsSizesFullService
+        private productsSizesFullService: ProductsSizesFullService,
+        private categoriesService: CategoriesProductsService
     ) { }
 
     @ApiOperation({ summary: 'Create product size' })
@@ -160,9 +162,9 @@ export class ProductsSizesController {
     @ApiResponse({ status: 404, description: "Products sizes not fount" })
     @ApiQuery({ name: 'search', required: false })
     @ApiQuery({ name: 'filterItems', required: false })
-    // @ApiQuery({ name: 'category', required: false })
+    @ApiQuery({ name: 'category', required: false })
     @Get("/full-products-cards/:page/:limit")
-    async getByCategotyIdWithPagination(@Param("page") page: number, @Param("limit") limit: number, @Query("search") search?: string, @Query("filterItems") filterItems?: string, @Query("minPrice") minPrice?: number, @Query("maxPrice") maxPrice?: number, @Query("category") category?: string) {
+    async getByCategotyIdWithPagination(@Param("page") page: number, @Param("limit") limit: number, @Query("search") search?: string, @Query("filterItems") filterItems?: string, @Query("minPrice") minPrice?: number, @Query("maxPrice") maxPrice?: number, @Query("category") category?: number) {
 
         console.log(category, "CATEGORY");
         const arrayFilters: number[] = filterItems !== undefined && filterItems !== "" ? filterItems.split(',').map(item => Number(item)) : [];
@@ -192,5 +194,15 @@ export class ProductsSizesController {
         return { message: `Product and ${deletedProductSizesCount} associated sizes deleted successfully.` };
     }
 
+    @ApiOperation({ summary: 'Get categoryId by name' })
+    @ApiResponse({ status: 200 })
+    @ApiResponse({ status: 404, description: "Category not fount" })
+    @Get("/category/:name")
+    async getCategoryIdByName(@Param("name") name: string) {
+        console.log(name, "CATEGORYPPPPPPPP");
+        const response = await this.categoriesService.getCategoryByName(name);
+        console.log(response);
+        return response;
+    }
 
 }

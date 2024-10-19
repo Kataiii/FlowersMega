@@ -97,6 +97,7 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
             photo: "category.image "
         }
     }));
+    console.log(productVariations, "productVariations");
     const handleFormFinish = async (values: any) => {
         const formattedFilters = filters.map((filter) => {
             return {
@@ -198,6 +199,7 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
             // @ts-ignore
             setFilters(mappedFilters);
             console.log("SELECT CAT", selectedCategories);
+            console.log("FILTERS", filters);
             const variationsS = productVariations.productsSizes.flatMap(variation => ({
                 idSize: variation.idSize,
                 prise: variation.prise,

@@ -1,7 +1,7 @@
 import { Pagination } from "antd";
 import { selectFilters, selectMaxPrice, selectMinPrice } from "../../../entities/filter/redux/selectors";
 import Container from "../../../shared/ui/containerMain/ContainerMain";
-import { useProductsSizesControllerGetAllQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery } from "../../../store/product";
+import { useCategoryControllerGetIdByNameQuery, useProductsSizesControllerGetAllQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery } from "../../../store/product";
 import { useAppDispatch, useAppSelector } from "../../../store/store";
 import FiltersPanel from "../../../widgets/filtersPanel/FiltersPanel";
 import FiltersTags from "../../../widgets/filtersTags/FiltersTags";
@@ -15,14 +15,21 @@ const Catalog: React.FC = () => {
         .filter((id): id is number => id !== undefined);
     const [searchParams] = useSearchParams();
     const category = searchParams.get('category');
+    console.log(category, "CATEGORY");
+    const decodedCategory = category ? decodeURIComponent(category) : '';
+
+    // const decodedCategory = category ? decodeURIComponent(category) : '';
+    const { data: categoryIdData } = useCategoryControllerGetIdByNameQuery({ name: decodedCategory });
     const minPrice = useAppSelector(selectMinPrice);
     const maxPrice = useAppSelector(selectMaxPrice);
     const [pageSize, setPageSize] = useState(12);
     const [page, setPage] = useState(1);
-    console.log(filters, "filters");
+
+    console.log(decodedCategory, "CATEGORYAAAAAAAAAAAAAAA");
+    console.log(categoryIdData, "CATEGORYDATA");
 
     // const { isLoading, data } = useProductsSizesControllerGetAllQuery();
-    const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ limit: pageSize, page: page, filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: category ?? '' });
+    const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ limit: pageSize, page: page, filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: Number(categoryIdData) });
 
     const handlePageChange = (newPage: number, newPageSize?: number) => {
         setPage(newPage);

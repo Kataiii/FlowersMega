@@ -1,12 +1,13 @@
 import { Button, Image, Table } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useProductsControllerGetByIdQuery, useProductsSizesControllerGetByProductIdQuery } from "../../store/product";
+import { productSizesControllerGetProductsWithPaginationApiResponse, useProductsControllerGetByIdQuery, useProductsSizesControllerGetByProductIdQuery } from "../../store/product";
 import { Numerals } from "../../shared/utils/numerals";
 import { API_URL } from "../../shared/utils/constants";
 import { useMemo, useState } from "react";
 import { useProductsSizesControllerGetProductSizeForCardByIdQuery, useSizesControllerGetAllQuery } from "../../store/size";
 import { ButtonText } from "../../pages/admin/ui/products/Products";
 import { styled } from "styled-components";
+import { retry } from "@reduxjs/toolkit/query";
 
 
 const ExpandableContent = styled.div<{ isExpanded: boolean }>`
@@ -35,43 +36,47 @@ interface ProductAdminCardProps {
     name?: string;
     type?: string;
     onCategoriesAndFiltersChange?: (categories: string[], filters: string[]) => void;
+    productSizedPag?: productSizesControllerGetProductsWithPaginationApiResponse;
 }
 
-const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onCategoriesAndFiltersChange }) => {
+const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onCategoriesAndFiltersChange, productSizedPag }) => {
     const navigate = useNavigate();
     const locate = useLocation();
     const { data: productSizes } = useProductsSizesControllerGetByProductIdQuery({ id: Number(id) });
     const { data } = useProductsControllerGetByIdQuery({ id: Number(id) });
-    const { data: sizes } = useSizesControllerGetAllQuery();
+    const { data: sizes, isLoading: isSizesLoading } = useSizesControllerGetAllQuery();
     // const { data: productInfo } = useProductsSizesControllerGetProductSizeForCardByIdQuery({ id: Number(id) });
     const [isExpanded, setIsExpanded] = useState(false);
 
+    // console.log(productSizes, "PPPPPPPPPPPPPPPPPPPPPPPPPP");
+    // console.log(productSizedPag, "PPPPPPPPPPPPPPPPPPPPPPPPPPPP");
     const dataSource = useMemo(() => {
-        // if (!productSizes || !sizes || !productInfo) return [];
+        if (!productSizedPag || !sizes || !id) return [];
 
-        // const categories = productInfo.product.categories.map((category) => category.name);
-        // const filters = productInfo.product.filters.map((filter) => filter.name);
+        return productSizedPag.products
+            .filter((item) => item.products.id === id)
+            .flatMap((items) => {
+                console.log(items, "Filtered Product Items");
 
-        // if (onCategoriesAndFiltersChange) {
-        //     onCategoriesAndFiltersChange(categories, filters);
-        // }
-
-        return productSizes?.map((productSize) => {
-            const size = sizes?.find((s) => s.id === productSize.idSize);
-            console.log(size, "1size");
-            if (size) {
-                return {
-                    key: productSize.id,
-                    sizeName: size.name,
-                    paramsSize: productSize.paramsSize,
-                    price: productSize.prise,
-                };
-            }
-            // return null;
-        })
+                return items.productsSizes.map((info) => {
+                    console.log(info, "ProductSize Info");
+                    const size = sizes?.find((s) => s.id === info.productSize.idSize);
+                    console.log(size, "Matching Size");
+                    if (size) {
+                        return {
+                            key: info.productSize.id,
+                            sizeName: size.name,
+                            paramSize: info.productSize.paramsSize,
+                            price: info.productSize.prise,
+                        };
+                    }
+                    return null;
+                });
+            })
             .filter((item): item is NonNullable<typeof item> => item !== null);
-    }, [productSizes, sizes, onCategoriesAndFiltersChange]);
+    }, [productSizedPag, sizes, id]);
 
+    console.log(dataSource, "LMAKWINFOIENIRENIREIERIJERIJ");
     const columns = [
         {
             title: "Размер",

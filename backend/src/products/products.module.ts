@@ -5,6 +5,8 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Product } from './products.model';
 import { ImagesModule } from 'src/images/images.module';
 import { ProductSize } from 'src/products-sizes/products-sizes.model';
+import { ExtraPriceService } from 'src/extra-price/extra-price.service';
+import { ExtraPriceModule } from 'src/extra-price/extra-price.module';
 
 @Module({
   providers: [ProductsService],
@@ -12,9 +14,10 @@ import { ProductSize } from 'src/products-sizes/products-sizes.model';
   imports: [
     SequelizeModule.forFeature([Product, ProductSize]),
     ImagesModule,
+    ExtraPriceModule
   ],
   exports: [
-    ProductsService
+    ProductsService,
   ]
 })
 export class ProductsModule { }

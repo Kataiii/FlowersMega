@@ -9,22 +9,25 @@ import { ProductsSizesFullService } from './products-sizes-full.service';
 import { ReviewsModule } from 'src/reviews/reviews.module';
 import { CategoriesProductsModule } from 'src/categories-products/categories-products.module';
 import { ProductsItemsFilterModule } from 'src/products-items-filter/products-items-filter.module';
+import { ExtraPriceService } from 'src/extra-price/extra-price.service';
+import { ExtraPriceModule } from 'src/extra-price/extra-price.module';
 
 @Module({
   providers: [ProductsSizesService, ProductsSizesFullService],
   controllers: [ProductsSizesController],
   imports: [
-    SequelizeModule.forFeature([ProductSize]),
+    SequelizeModule.forFeature([ProductSize,]),
     ProductsModule,
+    ExtraPriceModule,
     SizesModule,
     forwardRef(() => ReviewsModule),
     CategoriesProductsModule,
-    ProductsItemsFilterModule
+    ProductsItemsFilterModule,
+
   ],
   exports: [
     ProductsSizesService,
     ProductsSizesFullService,
-
   ]
 })
 export class ProductsSizesModule { }

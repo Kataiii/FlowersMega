@@ -9,6 +9,8 @@ import { useState } from "react";
 import { useAppDispatch } from "../../store/store";
 import { addMaxPrice, addMinPrice } from "../../entities/filter/redux/slice";
 import ClearFilters from "../../features/clear-filters/ClearFilters";
+import { useSearchParams } from "react-router-dom";
+import { useCategoryControllerGetIdByNameQuery } from "../../store/product";
 
 const ContainerFilter = styled.div`
     padding: 24px 16px;
@@ -47,7 +49,23 @@ const HideDiv = styled.div<{ $isOpen?: boolean; }>`
 `;
 
 const FiltersPanel: React.FC = () => {
-    const { isLoading, data } = useFiltersControllerGetAllWithMaxPriceQuery();
+    const [searchParams] = useSearchParams();
+    const category = searchParams.get('category');
+    console.log(category, "CATEGORYLLLL");
+    const decodedCategory = category ? decodeURIComponent(category) : '';
+    console.log(decodedCategory, "DECODED CATEGORY");
+    // const decodedCategory = category ? decodeURIComponent(category) : '';
+    const { data: categoryIdData, isLoading: isCategoriesLoading } = useCategoryControllerGetIdByNameQuery(
+        { name: decodedCategory },
+        { skip: !decodedCategory }
+    );
+
+    const { isLoading, data } = useFiltersControllerGetAllWithMaxPriceQuery(
+        { idCategory: Number(categoryIdData) },
+        { skip: !categoryIdData }
+    );
+
+    console.log(data?.maxPrice, "MAX PRICE");
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isReset, setIsReset] = useState<boolean>(false);
     const dispatch = useAppDispatch();
@@ -59,41 +77,48 @@ const FiltersPanel: React.FC = () => {
     }
 
     return (
-        <ContainerFilter>
+        <>
             {
-                isLoading
+                isCategoriesLoading
                     ? <p>Загрузка...</p>
-                    : <>
-                        <section style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                            <Title style={{ fontSize: 32 }}>Фильтры</Title>
-                            <ClearFilters maxPrice={data?.maxPrice ?? -1} />
-                        </section>
-                        <section style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                <TitleSegment>Цена</TitleSegment>
-                                <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                                    <Button onClick={() => { clearPrice(); setIsReset(true); setIsReset(false) }}>Сброс</Button>
-                                    <Arrow
-                                        fill="#73D982"
-                                        style={{
-                                            cursor: "pointer",
-                                            transform: isOpen ? "rotate(0deg)" : "rotate(180deg)"
-                                        }}
-                                        onClick={() => setIsOpen(prev => !prev)} />
-                                </div>
-                            </div>
-                            <HideDiv $isOpen={isOpen}>
-                                <FilterCost maxPrice={data?.maxPrice ?? -1} onReset={isReset} />
-                            </HideDiv>
-                        </section>
+                    : <ContainerFilter>
                         {
-                            data && data.filters.map((item, index) => {
-                                return <FilterSection filter={item} key={`filter-section-${index}`} />
-                            })
+                            isLoading
+                                ? <p>Загрузка...</p>
+                                : <>
+                                    <section style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                        <Title style={{ fontSize: 32 }}>Фильтры</Title>
+                                        <ClearFilters maxPrice={data?.maxPrice ?? -1} />
+                                    </section>
+                                    <section style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                            <TitleSegment>Цена</TitleSegment>
+                                            <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                                                <Button onClick={() => { clearPrice(); setIsReset(true); setIsReset(false) }}>Сброс</Button>
+                                                <Arrow
+                                                    fill="#73D982"
+                                                    style={{
+                                                        cursor: "pointer",
+                                                        transform: isOpen ? "rotate(0deg)" : "rotate(180deg)"
+                                                    }}
+                                                    onClick={() => setIsOpen(prev => !prev)} />
+                                            </div>
+                                        </div>
+                                        <HideDiv $isOpen={isOpen}>
+                                            <FilterCost maxPrice={data?.maxPrice ?? -1} onReset={isReset} />
+                                        </HideDiv>
+                                    </section>
+                                    {
+                                        data && data.filters.map((item, index) => {
+                                            return <FilterSection filter={item} key={`filter-section-${index}`} />
+                                        })
+                                    }
+                                </>
                         }
-                    </>
+                    </ContainerFilter>
             }
-        </ContainerFilter>
+        </>
+
     )
 }
 

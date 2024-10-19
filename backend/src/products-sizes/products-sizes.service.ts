@@ -4,6 +4,9 @@ import { ProductsService } from 'src/products/products.service';
 import { SizesService } from 'src/sizes/sizes.service';
 import { CreateProductSizeDto, CreateProductSizeInfoDto } from './dto/createProductsSizes.dto';
 import { ProductSize } from './products-sizes.model';
+import { ExtraPriceService } from 'src/extra-price/extra-price.service';
+import { ProductsSizesFullService } from './products-sizes-full.service';
+import { ProductSizeCreationAttrs } from './products-sizes.model'
 
 @Injectable()
 export class ProductsSizesService {
@@ -11,6 +14,7 @@ export class ProductsSizesService {
         @InjectModel(ProductSize) private productsSizesRepository: typeof ProductSize,
         private productsService: ProductsService,
         private sizesService: SizesService,
+        private extraPriceForCategories: ExtraPriceService
     ) { }
 
     async create(dto: CreateProductSizeDto | CreateProductSizeInfoDto) {
@@ -69,6 +73,7 @@ export class ProductsSizesService {
     }
 
     async getByProductId(idProduct: string | number) {
+        const extraPriceForCategories = await this.extraPriceForCategories.whichOneTheBest();
         const productsSizes = await this.productsSizesRepository.findAll(
             {
                 where: {
@@ -77,9 +82,59 @@ export class ProductsSizesService {
                 order: [["prise", "ASC"]]
             }
         );
+        const productsCardInfo = await Promise.all(productsSizes.map(async (item) => {
+            const product = await this.productsService.getById(item.idProduct);
+            return {
+                productSize: {
+                    id: item.id,
+                    idProduct: item.idProduct,
+                    idSize: item.idSize,
+                    paramsSize: item.paramsSize,
+                    count: item.count,
+                    prise: item.prise,
+                    orders: item.orders,
+                },
+                product: product
 
+            }
+
+        }));
+        console.log(productsCardInfo, "WANNA CHECK");
+
+        const updatedProducts = productsCardInfo.map(item => {
+
+            const productSize = { ...item.productSize };
+
+            const categories = item.product.categories || [];
+            let priceMultiplier = 1;
+
+            if (categories.length === 0) {
+                priceMultiplier = extraPriceForCategories.get('all') || 1;
+            } else if (categories.length === 1) {
+                priceMultiplier = extraPriceForCategories.get(categories[0].id.toString()) || 1;
+            } else {
+                const multipliers = categories.map(cat => extraPriceForCategories.get(cat.id.toString())).filter(Boolean);
+                if (multipliers.length > 0) {
+                    priceMultiplier = Math.max(...multipliers);
+                }
+            }
+            console.log("Old price:", productSize.prise);
+            console.log("Price multiplier:", priceMultiplier);
+
+            const updatedPrice = Math.floor(productSize.prise + (productSize.prise / 100) * priceMultiplier);
+
+            console.log("New price:", updatedPrice);
+            return {
+                ...item,
+                productSize: {
+                    ...productSize,
+                    prise: updatedPrice,
+                }
+            };
+        });
+        console.log(updatedProducts, "LMAO?");
         if (productsSizes === null) throw new HttpException("Products sizes not found", HttpStatus.NOT_FOUND);
-        return productsSizes;
+        return updatedProducts;
     }
 
     async getMaxPrice() {
@@ -90,15 +145,24 @@ export class ProductsSizesService {
     }
 
     async getWithAllSizes(id: number | string) {
+
         const productSizes = await this.getByProductId(id);
-        const sizes = await Promise.all(productSizes.map(async (item) => {
-            return await this.sizesService.getById(item.idSize);
+
+        const info = await Promise.all(productSizes.map(async (item) => {
+            const size = await this.sizesService.getById(item.productSize.idSize);
+            const prodSize = item.productSize;
+            return { size, prodSize };
         }));
+
+        const productsSizes = info.map(item => item.prodSize);
+        const sizes = info.map(item => item.size);
+
         return {
-            productsSizes: productSizes,
-            sizes: sizes
-        }
+            productsSizes,
+            sizes
+        };
     }
+
 
     async getBySizeIdByProductId(idSize: number, idProduct: number) {
         const productSize = await this.productsSizesRepository.findOne({
@@ -107,7 +171,21 @@ export class ProductsSizesService {
                 idSize: idSize
             }
         });
+        const productSizesUpd = await this.getByProductId(productSize.idProduct);
+        console.log(productSizesUpd, "YAAAAAAAAAAAAAAa");
+        console.log(productSize, "PROOOOOOOOOOOOOOOOOOOOOOOOD");
 
-        return productSize;
+        const updatedProductSize = productSizesUpd.find(
+            (item) => {
+                console.log(item.productSize.idSize, "HHHH");
+                console.log(Number(idSize), "IDSIIIIIIIIIZE");
+                const isMatch = item.productSize.idSize === Number(idSize) && item.productSize.idProduct === Number(idProduct);
+                console.log(isMatch, "LLLLLLLL");
+                return isMatch;
+            }
+        );
+
+        console.log(updatedProductSize, "WWWWWWWWWWWWWWWWWWWWWWwwww");
+        return updatedProductSize.productSize
     }
 }

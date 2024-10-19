@@ -65,7 +65,9 @@ export type FiltersControllerHetAllWithMaxPriceApiResponse = {
   maxPrice: number;
   filters: FilterWithItems[];
 }
-export type FiltersControllerHetAllWithMaxPriceApiArg = void;
+export type FiltersControllerHetAllWithMaxPriceApiArg = {
+  idCategory: number;
+};
 export type FiltersControllerDeleteByIdApiResponse = void;
 export type FiltersControllerDeleteByIdApiArg = {
   id: number;

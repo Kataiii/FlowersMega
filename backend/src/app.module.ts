@@ -27,7 +27,7 @@ import { TgBotModule } from './tg-bot/tg-bot.module';
 import { SeedsModule } from './seeds/seeds.module';
 import { ProductsItemsFilterModule } from './products-items-filter/products-items-filter.module';
 import { MinOrderCostModule } from './min-order-cost/min-order-cost.module';
-
+import { ExtraPriceModule } from './extra-price/extra-price.module';
 
 @Module({
     imports: [
@@ -47,10 +47,10 @@ import { MinOrderCostModule } from './min-order-cost/min-order-cost.module';
             database: process.env.POSTGRES_DB,
             models: [
                 ProductsItemsFilter,
-                CategoriesProducts
+                CategoriesProducts,
             ],
             autoLoadModels: true
-          }),
+        }),
         CitiesModule,
         UsersModule,
         FiltersModule,
@@ -73,6 +73,7 @@ import { MinOrderCostModule } from './min-order-cost/min-order-cost.module';
         SeedsModule,
         ProductsItemsFilterModule,
         MinOrderCostModule,
+        ExtraPriceModule,
     ]
 })
-export class AppModule{}
+export class AppModule { }
