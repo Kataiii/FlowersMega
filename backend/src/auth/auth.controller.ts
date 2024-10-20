@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Ip, Post, Req, Res, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Ip, Post, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
@@ -10,6 +10,7 @@ import { RecoveryDto } from './dto/recovery.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { ResponseDto } from 'src/users/dto/user.dto';
 import { ExtractToken } from 'src/utils/ExtractToken';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 
 @ApiTags('Auth')
@@ -39,6 +40,7 @@ export class AuthController {
 
     @ApiOperation({summary: 'Log out of the system'})
     @Post('/logout')
+    @UseGuards(JwtAuthGuard)
     async logout(@Req() request: Request, @Res({passthrough: true}) response: Response){
         //TODO нет токена - разобраться с этим
         let refreshToken = request.cookies;
