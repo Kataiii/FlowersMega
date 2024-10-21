@@ -25,4 +25,8 @@ export class UsersRolesService {
             }
         })
     }
+
+    async getAllByUserId(id: number){
+        return await this.usersRolesRepository.findAll({where: {userId: id}});
+    }
 }

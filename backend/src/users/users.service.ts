@@ -42,6 +42,18 @@ export class UsersService {
         await this.usersRolesService.findOrCreate({userId: user[0].id, roleId: roleAdmin.id});
     }
 
+    async getByIdWithRole(id: number){
+        const user = await this.userRepository.findOne({where: {id: id}});
+        const relations = await this.usersRolesService.getAllByUserId(id);
+        const roles = await Promise.all(relations.map(async(item) => {
+            return await this.rolesService.getById(item.roleId);
+        }));
+        return {
+            user: user,
+            roles: roles
+        }
+    }
+
     async create(dto: CreateUserDto){
         const user = await this.userRepository.create(dto);
         const role = await this.rolesService.getByName("user");

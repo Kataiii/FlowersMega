@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, UseInterceptors } from '@nestjs/common';
 import { Delete, UploadedFile, UseGuards } from '@nestjs/common/decorators';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/guards/decorators/roles-auth.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesAuthGuard } from 'src/auth/guards/roles-auth.guard';
@@ -16,6 +16,7 @@ import { GetPaginationCategoriesDto } from './dto/getPagination.dto';
 export class CategoriesController {
     constructor(private categoriesService : CategoriesService){}
 
+    @ApiBearerAuth('access-token')
     @Roles("admin")
     @UseGuards(JwtAuthGuard, RolesAuthGuard)
     @ApiOperation({summary: 'Create category'})
@@ -62,6 +63,9 @@ export class CategoriesController {
         return await this.categoriesService.getAllCountAndPagination(page, limit);
     }
 
+    @ApiBearerAuth('access-token')
+    @Roles("admin")
+    @UseGuards(JwtAuthGuard, RolesAuthGuard)
     @ApiOperation({summary: "Delete category by id"})
     @ApiResponse({status: 200, type: Category})
     @Delete()

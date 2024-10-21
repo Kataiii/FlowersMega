@@ -24,7 +24,6 @@ import { AuthModule } from './auth/auth.module';
 import { TokensModule } from './tokens/tokens.module';
 import { CategoriesProductsModule } from './categories-products/categories-products.module';
 import { TgBotModule } from './tg-bot/tg-bot.module';
-import { SeedsModule } from './seeds/seeds.module';
 import { ProductsItemsFilterModule } from './products-items-filter/products-items-filter.module';
 import { MinOrderCostModule } from './min-order-cost/min-order-cost.module';
 import { ExtraPriceModule } from './extra-price/extra-price.module';
@@ -72,7 +71,6 @@ import { UsersRolesModule } from './users-roles/users-roles.module';
         AuthModule,
         CategoriesProductsModule,
         TgBotModule,
-        SeedsModule,
         ProductsItemsFilterModule,
         MinOrderCostModule,
         ExtraPriceModule,

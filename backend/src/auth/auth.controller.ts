@@ -1,5 +1,5 @@
 import { Body, Controller, Get, HttpStatus, Ip, Post, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { AuthResponseDto } from './dto/response.dto';
@@ -40,6 +40,7 @@ export class AuthController {
 
     @ApiOperation({summary: 'Log out of the system'})
     @Post('/logout')
+    @ApiBearerAuth('access-token')
     @UseGuards(JwtAuthGuard)
     async logout(@Req() request: Request, @Res({passthrough: true}) response: Response){
         //TODO нет токена - разобраться с этим
