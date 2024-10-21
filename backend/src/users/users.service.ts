@@ -5,18 +5,62 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 import { UserDto } from './dto/user.dto';
 import { User } from './users.model';
 import * as jwt from 'jsonwebtoken';
+import * as bcryptjs from 'bcryptjs';
 import { AuthService } from '../auth/auth.service';
 import { FilesService } from 'src/files/files.service';
+import { RolesService } from 'src/roles/roles.service';
+import { UsersRolesService } from 'src/users-roles/users-roles.service';
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectModel(User) private userRepository: typeof User,
-        private filesService: FilesService
+        private filesService: FilesService,
+        private rolesService: RolesService,
+        private usersRolesService: UsersRolesService
     ){}
+
+    async onModuleInit() {
+        await this.seeds();
+    }
+      
+    async seeds() {
+        const user = await this.userRepository.findOrCreate({
+            where: {
+                email: process.env.ADMIN_EMAIL
+            },
+            defaults: {
+                firstname: "admin",
+                email: process.env.ADMIN_EMAIL,
+                phone: process.env.ADMIN_PHONE,
+                password: await bcryptjs.hash(process.env.ADMIN_PASSWORD, 10)
+            }
+        });
+        const roleUser = await this.rolesService.getByName("user");
+        const roleAdmin = await this.rolesService.getByName("admin");
+        await this.usersRolesService.findOrCreate({userId: user[0].id, roleId: roleUser.id});
+        await this.usersRolesService.findOrCreate({userId: user[0].id, roleId: roleAdmin.id});
+    }
+
+    async getByIdWithRole(id: number){
+        const user = await this.userRepository.findOne({where: {id: id}});
+        const relations = await this.usersRolesService.getAllByUserId(id);
+        const roles = await Promise.all(relations.map(async(item) => {
+            return await this.rolesService.getById(item.roleId);
+        }));
+        return {
+            user: user,
+            roles: roles
+        }
+    }
 
     async create(dto: CreateUserDto){
         const user = await this.userRepository.create(dto);
+        const role = await this.rolesService.getByName("user");
+        await this.usersRolesService.create({
+            userId: user.id,
+            roleId: role.id
+        });
         return user;
     }
 

@@ -1,6 +1,10 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Roles } from 'src/auth/guards/decorators/roles-auth.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesAuthGuard } from 'src/auth/guards/roles-auth.guard';
 import { CreateItemFilterDto } from './dto/createItemFilter.dto';
+import { DeleteItemFilterDto } from './dto/deleteItemFIlter.dto';
 import { ItemFilter } from './items-filter.model';
 import { ItemsFilterService } from './items-filter.service';
 
@@ -9,6 +13,9 @@ import { ItemsFilterService } from './items-filter.service';
 export class ItemsFilterController {
     constructor(private itemsFilterService : ItemsFilterService){}
 
+    @ApiBearerAuth('access-token')
+    @Roles("admin")
+    @UseGuards(JwtAuthGuard, RolesAuthGuard)
     @ApiOperation({summary: 'Create item filter'})
     @ApiResponse({status: 201, type: ItemFilter})
     @Post()
@@ -38,5 +45,15 @@ export class ItemsFilterController {
     @Get("/filter/:id")
     async getByFilterId(@Param("id") id: number){
         return await this.itemsFilterService.getAllByIdFilter(id);
+    }
+
+    @ApiBearerAuth('access-token')
+    @Roles("admin")
+    @UseGuards(JwtAuthGuard, RolesAuthGuard)
+    @ApiOperation({summary: 'Delete item filter by id'})
+    @ApiResponse({status: 200, type: [ItemFilter]})
+    @Delete()
+    async delete(@Body() dto:DeleteItemFilterDto){
+        return await this.itemsFilterService.delete(dto.id);
     }
 }

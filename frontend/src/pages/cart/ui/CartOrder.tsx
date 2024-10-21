@@ -24,7 +24,9 @@ const CartOrder: React.FC = () => {
                         </div>
                     </div>
                 :   <div style={{width: "100%", display: "flex", justifyContent: "space-between"}}>
-                        <FormOrder/>
+                        <div style={{width: "60%"}}>
+                            <FormOrder/>
+                        </div>
                         <OrderInfo/>
                     </div>
             }

@@ -1,5 +1,8 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Roles } from 'src/auth/guards/decorators/roles-auth.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesAuthGuard } from 'src/auth/guards/roles-auth.guard';
 import { CreateTypeProductDto } from './dto/createTypeProduct.dto';
 import { TypeProduct } from './types-product.model';
 import { TypesProductService } from './types-product.service';
@@ -9,6 +12,9 @@ import { TypesProductService } from './types-product.service';
 export class TypesProductController {
     constructor(private typesProductService : TypesProductService){}
 
+    @ApiBearerAuth('access-token')
+    @Roles("admin")
+    @UseGuards(JwtAuthGuard, RolesAuthGuard)
     @ApiOperation({summary: 'Create type product'})
     @ApiResponse({status: 201, type: TypeProduct})
     @Post()

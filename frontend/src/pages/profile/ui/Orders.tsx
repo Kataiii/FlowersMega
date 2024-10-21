@@ -1,3 +1,4 @@
+import OrderCard from "../../../entities/order/ui/OrderCard";
 import OrderEmpty from "../../../entities/order/ui/OrderEmpty";
 import { useOrdersControllerGetByUserQuery } from "../../../store/order";
 
@@ -11,7 +12,7 @@ const Orders: React.FC = () => {
                 ?   <p>Загрузка...</p>
                 :   isError
                     ?   <OrderEmpty/>
-                    :   <p>Заказы есть</p>
+                    :   data && data?.map((item, index) => { return <OrderCard key={`order-card-${index}`} order={item}/> })
             }
         </div>
     )

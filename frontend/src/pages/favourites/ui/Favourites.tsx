@@ -4,6 +4,7 @@ import Button from "../../../shared/ui/button/Button";
 import Container from "../../../shared/ui/containerMain/ContainerMain"
 import { CATALOG_PATH } from "../../../shared/utils/constants";
 import { useAppSelector } from "../../../store/store";
+import { BlockGrid } from "../../../widgets/blockProducts/BlockProducts";
 import { SmartProductCard } from "../../../widgets/product/SmartProductCart";
 
 const Favourites: React.FC = () => {
@@ -21,13 +22,13 @@ const Favourites: React.FC = () => {
                                 <Button buttonContent={"Перейти в каталог"} clickHandler={() => navigate(CATALOG_PATH)}></Button>
                             </div>
                         </div>
-                    :   <div style={{display: "flex", gap: 15, flexWrap: "wrap"}}>
+                    :   <BlockGrid>
                         {
                             productsFavorite.map((item, index) => {
-                                return <SmartProductCard key={index} size={item} />
+                                return <SmartProductCard key={index} product={item} />
                             })
                         }
-                        </div>
+                        </BlockGrid>
                 }
             </Container>
     )

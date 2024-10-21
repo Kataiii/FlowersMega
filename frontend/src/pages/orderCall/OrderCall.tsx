@@ -1,8 +1,12 @@
-import { Checkbox, ConfigProvider, Form, Input } from "antd";
+import { Checkbox, ConfigProvider, Form, Input, Result } from "antd";
+import axios from "axios";
+import { useState } from "react";
 import PhoneInput from "react-phone-input-2";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import Button from "../../shared/ui/button/Button";
+import ModalEmpty from "../../shared/ui/modalEmpty/ModalEmpty";
+import { API_URL, HOME_PATH } from "../../shared/utils/constants";
 
 const Title = styled.h1`
     font-family: "Inter";
@@ -22,9 +26,19 @@ const Content = styled.p`
 
 const OrderCall: React.FC = () => {
     const [form] = Form.useForm();
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const navigate = useNavigate();
 
-    const onFinish = (values: any) => {
-        console.log(values);
+    const onFinish = async(values: any) => {
+        const response = await axios.post(`${API_URL}/tg-bot/order-call`, {
+            name: values.name,
+            phone: values.phone,
+            disabled: values.disabled
+        }, {
+            withCredentials: true
+        });
+
+        setIsOpen(true);
     };
 
     return (
@@ -68,7 +82,7 @@ const OrderCall: React.FC = () => {
                     </Form.Item>
                 </div>
 
-                <Form.Item label="" name="disabled" valuePropName="checked" rules={[{ required: true, message: "Обязательное поле" }]}>
+                <Form.Item label="" name="disabled"  initialValue={false} valuePropName="checked" rules={[{ required: true, message: "Обязательное поле" }]}>
                     <Checkbox><Content style={{color: "var(--secondary-text-color)"}}>Я согласен на <Link style={{color: "var(--primary-bg-color)"}} to={'#'}>обработку персональных данных</Link></Content></Checkbox>
                 </Form.Item>
 
@@ -78,6 +92,20 @@ const OrderCall: React.FC = () => {
                     </Form.Item>
                 </div>
             </Form>
+            {
+                isOpen
+                ? <ModalEmpty isOpen={isOpen} setIsOpen={()  => setIsOpen(false)}>
+                        <Result
+                            status="success"
+                            title="Ваш запрос создан!"
+                            subTitle="Скоро с вами свяжется менеджер"
+                            extra={[
+                                <Button buttonContent="Вернуться на главную" clickHandler={() => navigate(HOME_PATH)}/>
+                            ]}
+                        />
+                    </ModalEmpty>
+                : null
+            }
         </ConfigProvider>
     )
 }

@@ -2,23 +2,30 @@ import React from "react"
 import CardProduct from "../../entities/product/ui/cardProduct/CardProduct"
 import { AddToCartButton } from "../../features/add-to-cart/AddToCartButton"
 import { ToggleFavoritesButton } from "../../features/toggle-favorite/ToggleFavoriteButton"
-import { Product, ProductSize, useProductsControllerGetByIdQuery } from "../../store/product"
-import { Size, useSizesControllerGetByIdQuery } from "../../store/size"
+import { FullProductSizeDto, useProductsControllerGetByIdQuery } from "../../store/product"
 
 type SmartProductCardProps = {
-    size: ProductSize,
+    product: FullProductSizeDto,
 }
 
-export const SmartProductCard: React.FC<SmartProductCardProps> = ({ size }) => {
+export const SmartProductCard: React.FC<SmartProductCardProps> = ({ product }) => {
 
-    const { isLoading, data } = useProductsControllerGetByIdQuery({ id: size.idProduct });
-    const responseSize = useSizesControllerGetByIdQuery({id: size.idSize});
+    const { isLoading, data } = useProductsControllerGetByIdQuery({ id: product.productSize.idProduct});
+    // const responseSize = useSizesControllerGetByIdQuery({id: size.idSize});
 
-    return isLoading && !data && !responseSize.data
-        ? <p>Загрузка</p>
-        : <CardProduct
-            product={{...data!, productSize: size, size: responseSize.data }}
-            addToCartButton={<AddToCartButton product={{...size, product: data!}} />}
-            addToFavorites={<ToggleFavoritesButton item={size} />}
-        />
+    if(data == null) return null;
+    return (
+        <>
+        {
+            isLoading
+            ?   <p>Загрузка...</p>
+            :   <CardProduct
+                        product={product}
+                        addToCartButton={<AddToCartButton product={{...product.productSize, product: data}} />}
+                        addToFavorites={<ToggleFavoritesButton item={product} />}
+                    />
+        }
+        </>
+
+    )
 }

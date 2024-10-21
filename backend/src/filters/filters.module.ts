@@ -11,6 +11,9 @@ import { FiltersService } from './filters.service';
   imports: [
     SequelizeModule.forFeature([Filter]),
     ProductsSizesModule
+  ],
+  exports: [
+    FiltersService
   ]
 })
 export class FiltersModule {}

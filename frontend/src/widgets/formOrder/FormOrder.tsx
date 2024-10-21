@@ -1,18 +1,26 @@
-import { Checkbox, CheckboxProps, ConfigProvider, DatePicker, Form, Input, Segmented, Tabs, TabsProps, TimePicker } from "antd";
+import { Checkbox, CheckboxProps, ConfigProvider, DatePicker, Form, Input, Result, Segmented, Tabs, TabsProps, TimePicker } from "antd";
 import PhoneInput from "react-phone-input-2";
 import { styled } from "styled-components";
 import locale from 'antd/locale/ru_RU';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import TextArea from "antd/es/input/TextArea";
-import CityInput from "../../entities/city/ui/cityInput/CityInput";
 import { errorMessageEmail, regExEmail } from "../../shared/utils/validationConstants";
 import { useAppSelector } from "../../store/store";
 import { selectUser } from "../../entities/credential/redux/selectors";
 import Button from "../../shared/ui/button/Button";
 import { selectActiveCity } from "../../entities/city/redux/selectors";
 import styles from "./FormOrder.module.css";
+import Transforms from "../../shared/utils/transforms";
+import { ItemOrder, OrdersControllerCreateApiArg, useOrdersControllerCreateMutation } from "../../store/order";
+import { cartSelectors } from "../../entities/cart/redux/selectors";
+import OrderEmpty from "../../entities/order/ui/OrderEmpty";
+import ModalEmpty from "../../shared/ui/modalEmpty/ModalEmpty";
+import { useNavigate } from "react-router-dom";
+import { CATALOG_PATH } from "../../shared/utils/constants";
+import { useDispatch } from "react-redux";
+import { deleteAllFromCart } from "../../entities/cart/redux/slice";
 
 const TitleForm = styled.h4`
     font-family: "Inter";
@@ -21,22 +29,96 @@ const TitleForm = styled.h4`
     color: var(--secondary-text-color);
 `;
 
+type FormValues = {
+    addressArea: string;
+    addressCorpus?: string;
+    addressEntrance?: string;
+    addressFlat?: string;
+    addressFloor?: string;
+    addressHouse: string;
+    addressStreet: string;
+    comment?: string;
+    dateDelivery: any;
+    emailCustomer: string;
+    endTimeDelivery: any;
+    nameCustomer: string;
+    nameRecipient?: string;
+    notCall: boolean;
+    phoneCustomer: string;
+    phoneRecipient?: string;
+    recipientCustomer: boolean;
+    startTimeDelivery: any;
+}
+
 const FormOrder: React.FC = () => {
     const [isRecipientCustomer, setIsRecipientCustomer] = useState<boolean>(false);
     const [isExsistingCity, setIsExsistingCity] = useState<boolean>(true);
+    const [createOrder, { isSuccess }] = useOrdersControllerCreateMutation();
     const user = useAppSelector(selectUser);
     const city = useAppSelector(selectActiveCity);
+    const [ isOpen, setIsOpen ] = useState<boolean>(false);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const productsInCart = useAppSelector(cartSelectors.selectAll);
+    const totalCost = useMemo(
+        () => productsInCart.map(p => p.count * (p.prise ?? 0)).reduce((prev, curr) => prev + curr, 0),
+        [productsInCart]
+    )
 
     const [form] = Form.useForm();
 
-    const onFinish = async (values: any) => {
+    const onFinish = async (values: FormValues) => {
         const tryValues = {
             ...values,
-            'dateDelivery': values['dateDelivery'].format('YYYY-MM-DD'),
-            'startTimeDelivery': values['startTimeDelivery'].format('HH:mm:ss'),
-            'endTimeDelivery': values['endTimeDelivery'].format('HH:mm:ss')
+            'dateDelivery': values['dateDelivery'].format('DD.MM.YYYY'),
+            'startTimeDelivery': values['startTimeDelivery'].format('HH:MM'),
+            'endTimeDelivery': values['endTimeDelivery'].format('HH:MM')
         }
-        console.log(tryValues);
+
+        const dto: OrdersControllerCreateApiArg = {
+            body: {
+                name: '',
+                dateOrder: new Date().toLocaleString(),
+                dateDelivery: tryValues.dateDelivery,
+                cost: totalCost,
+                nameCustomer: tryValues.nameCustomer,
+                emailCustomer: tryValues.emailCustomer,
+                phoneCustomer: tryValues.phoneCustomer,
+                nameRecipient: tryValues.recipientCustomer ? tryValues.nameCustomer : (tryValues.nameRecipient ?? ''),
+                phoneRecipient: tryValues.recipientCustomer ? tryValues.phoneCustomer : (tryValues.phoneRecipient ?? ''),
+                canCall: tryValues.notCall,
+                idCity: isExsistingCity ? (city?.id ?? -1) : -1,
+                addressDelivery: Transforms.transformAddress(
+                    values.addressArea, 
+                    values.addressStreet, 
+                    values.addressHouse,
+                    values.addressCorpus,
+                    values.addressEntrance,
+                    values.addressFloor,
+                    values.addressFlat
+                ),
+                startTimeDelivery: tryValues.startTimeDelivery,
+                endTimeDelivery: tryValues.endTimeDelivery,
+                comment: tryValues.comment, 
+                itemsOrder: productsInCart.map(item => {
+                    return {
+                        count: item.count,
+                        product: {
+                            id: item.id,
+                            idProduct: item.idProduct,
+                            idSize: item.idSize,
+                            paramsSize: item.paramsSize,
+                            count:  item.count,
+                            prise: item.prise
+                        }
+                    } as ItemOrder
+                })
+            }
+        }
+
+        createOrder(dto);
+        dispatch(deleteAllFromCart());
     };
 
     const changeRecepientCustomer: CheckboxProps['onChange'] = (e) => {
@@ -47,6 +129,10 @@ const FormOrder: React.FC = () => {
         if (date.toDate() < new Date(new Date().setDate(new Date().getDate() - 1))) return true;
         return false;
     }
+
+    useEffect(() => {
+        if(isSuccess) setIsOpen(true);
+    }, [isSuccess]);
 
     return (
         <ConfigProvider
@@ -88,7 +174,7 @@ const FormOrder: React.FC = () => {
                     display: "flex",
                     flexDirection: "column",
                     gap: 15,
-                    width: "60%"
+                    width: "100%"
                 }}
             >
                 <div>
@@ -213,7 +299,7 @@ const FormOrder: React.FC = () => {
                             name="dateDelivery" 
                             style={{ flexGrow: 1, display: "flex" }}
                             rules={[{ type: 'object' as const, required: true, message: 'Выберите дату доставки' }]}>
-                                <DatePicker style={{width: "100%"}} size="large" disabledDate={disabledDate} format={"DD-MM-YYYY"} />
+                                <DatePicker style={{width: "100%"}} size="large" disabledDate={disabledDate} format={"DD.MM.YYYY"} />
                         </Form.Item>
                         <div style={{ width: 250, display: "flex", flexDirection: "column", gap: 8 }}>
                             <p>Время доставки</p>
@@ -267,6 +353,20 @@ const FormOrder: React.FC = () => {
                     <Button buttonContent="Оформить заказ" clickHandler={() => { }} />
                 </div>
             </Form>
+            {
+                isSuccess
+                ? <ModalEmpty isOpen={isOpen} setIsOpen={()  => setIsOpen(false)}>
+                        <Result
+                            status="success"
+                            title="Ваш заказ создан!"
+                            subTitle="Скоро с вами свяжется менеджер для подтверждения заказа"
+                            extra={[
+                                <Button buttonContent="Вернуться в каталог" clickHandler={() => navigate(CATALOG_PATH)}/>
+                            ]}
+                        />
+                    </ModalEmpty>
+                : null
+            }
         </ConfigProvider>
     )
 }

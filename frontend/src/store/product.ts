@@ -1,4 +1,5 @@
 import { emptyApi as api } from "./emptyApi";
+import { Order } from "./order";
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     productsControllerCreate: build.mutation<
@@ -32,6 +33,7 @@ const injectedRtkApi = api.injectEndpoints({
         method: "POST",
         body: queryArg.createProductSizeDto,
       }),
+      invalidatesTags: ['Products']
     }),
     productsSizesControllerGetAll: build.query<
       ProductsSizesControllerGetAllApiResponse,
@@ -52,6 +54,7 @@ const injectedRtkApi = api.injectEndpoints({
       ProductsSizesControllerGetByIdApiArg
     >({
       query: (queryArg) => ({ url: `/products-sizes/${queryArg.id}` }),
+      providesTags: ['ExtraPrice']
     }),
     productsSizesControllerGetByProductId: build.query<
       ProductsSizesControllerGetByProductIdApiResponse,
@@ -71,9 +74,31 @@ const injectedRtkApi = api.injectEndpoints({
       ProductsSizesControllerGetByCategotyIdWithPaginationApiResponse,
       ProductsSizesControllerGetByCategotyIdWithPaginationApiArg
     >({
-      query: (queryArg) => ({
-        url: `/products-sizes/full-products-cards/${queryArg.page}/${queryArg.limit}`,
-      }),
+      query: (queryArg) => {
+        const params: Record<string, any> = {};
+        if (queryArg.search) {
+          params.search = queryArg.search;
+        }
+        if (queryArg.filterItems) {
+          params.filterItems = queryArg.filterItems;
+        }
+        if (queryArg.minPrice) {
+          params.minPrice = queryArg.minPrice;
+        }
+        if (queryArg.maxPrice) {
+          params.maxPrice = queryArg.maxPrice;
+        }
+        if (queryArg.category) {
+          params.category = queryArg.category;
+        }
+        console.log('CATEGORY', queryArg.category);
+        console.log('Request params:', queryArg);
+        return {
+          url: `/products-sizes/full-products-cards/${queryArg.page}/${queryArg.limit}`,
+          params: params,
+        }
+      },
+      providesTags: ['Products', 'ExtraPrice']
     }),
     reviewsControllerGetByProductSizeId: build.query<
       ReviewsControllerGetByProductSizeIdApiResponse,
@@ -103,6 +128,95 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/categories-products/count/${queryArg.id}`,
       }),
     }),
+    productsSizesControllerGetAllSizesByProductId: build.query<
+      ProductsSizesControllerGetAllSizesByProductIdApiResponse,
+      ProductsSizesControllerGetAllSizesByProductIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/products-sizes/all-sizes/${queryArg.id}`
+      })
+    }),
+    productsSizesControllerGetByProductIdAndSizeId: build.query<
+      ProductsSizesControllerGetByProductIdAndSizeIdApiResponse,
+      ProductsSizesControllerGetByProductIdAndSizeIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/products-sizes/product-size/${queryArg.idProduct}/${queryArg.idSize}`
+      })
+    }),
+    productSizesControllerGetProductsWithPagination: build.query<
+      productSizesControllerGetProductsWithPaginationApiResponse,
+      productSizesControllerGetProductsWithPaginationApiArg
+    >({
+      query: (queryArg) => {
+        const params: Record<string, any> = {};
+        if (queryArg.search) {
+          params.search = queryArg.search;
+        }
+        if (queryArg.field) {
+          params.field = queryArg.field;
+        }
+        if (queryArg.type) {
+          params.type = queryArg.type;
+        }
+        if (queryArg.categories) {
+          params.categories = queryArg.categories;
+        }
+        if (queryArg.filters) {
+          params.filters = queryArg.filters;
+        }
+        return {
+          url: `/products-sizes/products-with-pagination/${queryArg.page}/${queryArg.limit}`,
+          params: params,
+        }
+
+      },
+      providesTags: ['Products']
+    }),
+    productsControllerCreateWithDetails: build.mutation<
+      ProductsControllerCreateWithDetailsApiResponse,
+      ProductsControllerCreateWithDetailsApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/products-sizes/full-product`,
+        method: "POST",
+        body: queryArg.body,
+      }),
+      invalidatesTags: ['Products']
+    }),
+    productsControllerDeleteById: build.mutation<
+      ProductsControllerDeleteByIdApiResponse,
+      ProductsControllerDeleteByIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/products-sizes/product/${queryArg.id}`,
+        method: "DELETE",
+
+      }),
+      invalidatesTags: ['Products']
+    }),
+    productsControllerGetProductSizesCount: build.query<
+      ProductsControllerGetProductSizesCountApiResponse,
+      ProductsControllerGetProductSizesCountApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/products/${queryArg.id}/product-sizes/count`,
+        method: "GET",
+      }),
+    }),
+    categoryControllerGetIdByName: build.query<
+      CategoryControllerGetIdByNameApiResponse,
+      CategoryControllerGetIdByNameApiArg
+    >({
+      query: (queryArg) => {
+        return {
+          url: `/products-sizes/category/${queryArg.name}`,
+          method: "GET",
+        };
+
+      },
+    }),
+
   }),
   overrideExisting: false,
 });
@@ -127,6 +241,18 @@ export type ProductsSizesControllerCreateApiResponse =
 export type ProductsSizesControllerCreateApiArg = {
   createProductSizeDto: CreateProductSizeDto;
 };
+export type ProductsSizesControllerGetAllSizesByProductIdApiResponse = {
+  productsSizes: ProductSize[];
+  sizes: Size[];
+}
+export type ProductsSizesControllerGetAllSizesByProductIdApiArg = {
+  id: number;
+}
+export type ProductsSizesControllerGetByProductIdAndSizeIdApiResponse = ProductSize;
+export type ProductsSizesControllerGetByProductIdAndSizeIdApiArg = {
+  idProduct: number;
+  idSize: number;
+}
 export type ProductsSizesControllerGetAllApiResponse =
   /** status 200  */ ProductSize[];
 export type ProductsSizesControllerGetAllApiArg = void;
@@ -142,7 +268,18 @@ export type ProductsSizesControllerGetByIdApiArg = {
   id: number;
 };
 export type ProductsSizesControllerGetByProductIdApiResponse =
-  /** status 200  */ ProductSize[];
+  /** status 200  */ {
+  productSizes: {
+    id: number;
+    idProduct: number;
+    idSize: number;
+    paramsSize: string;
+    count: number;
+    prise: number;
+    orders: Order[];
+  }
+  product: Product;
+}[];
 export type ProductsSizesControllerGetByProductIdApiArg = {
   id: number;
 };
@@ -151,11 +288,19 @@ export type ProductsSizesControllerGetProductSizeForCardByIdApiResponse =
 export type ProductsSizesControllerGetProductSizeForCardByIdApiArg = {
   id: number;
 };
-export type ProductsSizesControllerGetByCategotyIdWithPaginationApiResponse =
-  /** status 200  */ FullProductSizeDto[];
+export type ProductsSizesControllerGetByCategotyIdWithPaginationApiResponse = {
+  count: number;
+  products: FullProductSizeDto[];
+}
+/** status 200  */
 export type ProductsSizesControllerGetByCategotyIdWithPaginationApiArg = {
   page: number;
   limit: number;
+  search?: string;
+  filterItems?: number[];
+  minPrice?: number;
+  maxPrice?: number;
+  category?: number;
 };
 export type ReviewsControllerGetByProductSizeIdApiResponse =
   /** status 200  */ Review[];
@@ -177,6 +322,55 @@ export type CategoriesProductsControllerGetAllApiResponse =
 export type CategoriesProductsControllerGetAllApiArg = {
   id: number;
 };
+export type productSizesControllerGetProductsWithPaginationApiResponse = {
+  count: number;
+  products: ProductWithSizes[];
+}
+export type CategoryControllerGetIdByNameApiResponse = {
+  id: number;
+}
+export type CategoryControllerGetIdByNameApiArg = {
+  name: string;
+}
+export type productSizesControllerGetProductsWithPaginationApiArg = {
+  page: number;
+  limit: number;
+  search?: string;
+  field?: string;
+  type?: string;
+  categories?: number[];
+  filters?: number[];
+}
+export type ProductsControllerCreateWithDetailsApiResponse = /** status 201 */ Product;
+export type ProductsControllerCreateWithDetailsApiArg = {
+  body: {
+    name: string;
+    type: number;
+    description: string;
+    structure: string;
+    photo: string;
+    productSize: {
+      idSize: number;
+      prise: number;
+      paramsSize: string;
+    }[];
+    categories: string;
+    filters: string;
+  };
+};
+
+export type ProductsControllerDeleteByIdApiResponse = void;
+export type ProductsControllerDeleteByIdApiArg = {
+  id: number;
+}
+
+export type ProductsControllerGetProductSizesCountApiResponse = {
+  count: number;
+};
+export type ProductsControllerGetProductSizesCountApiArg = {
+  id: number;
+}
+
 export type Product = {
   /** Unique identifier */
   id: number;
@@ -303,6 +497,18 @@ export type OrderProductSize = {
   /** Unique identifier order */
   idOrder: number;
 };
+export type ProductSizeInfo = {
+
+  productSize: ProductSize;
+
+  size: Size;
+};
+export type ProductWithSizes = {
+
+  products: Product;
+
+  productsSizes: ProductSizeInfo[];
+};
 export type Number = {};
 export const {
   useProductsControllerCreateMutation,
@@ -313,10 +519,17 @@ export const {
   useProductsSizesControllerGetPaginationQuery,
   useProductsSizesControllerGetByIdQuery,
   useProductsSizesControllerGetByProductIdQuery,
+  useProductsSizesControllerGetAllSizesByProductIdQuery,
   useProductsSizesControllerGetProductSizeForCardByIdQuery,
   useProductsSizesControllerGetByCategotyIdWithPaginationQuery,
   useReviewsControllerGetByProductSizeIdQuery,
   useReviewsControllerGetStaticticByProductSizeIdQuery,
   useOrdersProductsSizesControllerGetByIdQuery,
   useCategoriesProductsControllerGetAllQuery,
+  useProductsSizesControllerGetByProductIdAndSizeIdQuery,
+  useProductSizesControllerGetProductsWithPaginationQuery,
+  useProductsControllerCreateWithDetailsMutation,
+  useProductsControllerDeleteByIdMutation,
+  useProductsControllerGetProductSizesCountQuery,
+  useCategoryControllerGetIdByNameQuery
 } = injectedRtkApi;

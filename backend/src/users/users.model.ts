@@ -1,6 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { BelongsToMany, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
 import { City } from "src/cities/cities.model";
+import { Role } from "src/roles/roles.model";
+import { UsersRoles } from "src/users-roles/users-roles.model";
 
 interface UserCreationAttrs{
     firstname: string;
@@ -51,4 +53,7 @@ export class User extends Model<User, UserCreationAttrs>{
     @ApiProperty({example: 'image.png', description: 'Avatar image url', required: false})
     @Column({type: DataType.STRING, allowNull: true})
     urlAvatar?: string;
+
+    @BelongsToMany(() => Role, () => UsersRoles)
+    roles: Role[];
 }

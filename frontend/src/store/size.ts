@@ -10,18 +10,31 @@ const injectedRtkApi = api.injectEndpoints({
         method: "POST",
         body: queryArg.createSizeDto,
       }),
+      invalidatesTags: ["Sizes"],
     }),
     sizesControllerGetAll: build.query<
       SizesControllerGetAllApiResponse,
       SizesControllerGetAllApiArg
     >({
       query: () => ({ url: `/sizes` }),
+      providesTags: ["Sizes"],
     }),
     sizesControllerGetById: build.query<
       SizesControllerGetByIdApiResponse,
       SizesControllerGetByIdApiArg
     >({
       query: (queryArg) => ({ url: `/sizes/${queryArg.id}` }),
+    }),
+    sizesControllerDelete: build.mutation<
+      SizesControllerDeleteApiResponse,
+      SizesControllerDeleteApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/sizes/`,
+        method: "DELETE",
+        body: { id: queryArg.id }
+      }),
+      invalidatesTags: ["Sizes"],
     }),
     productsSizesControllerCreate: build.mutation<
       ProductsSizesControllerCreateApiResponse,
@@ -137,6 +150,10 @@ export type OrdersProductsSizesControllerGetByIdApiResponse =
 export type OrdersProductsSizesControllerGetByIdApiArg = {
   id: number;
 };
+export type SizesControllerDeleteApiResponse = void;
+export type SizesControllerDeleteApiArg = {
+  id: number;
+}
 export type Size = {
   /** Unique identifier */
   id?: number;
@@ -253,4 +270,5 @@ export const {
   useProductsSizesControllerGetProductSizeForCardByIdQuery,
   useProductsSizesControllerGetByCategotyIdWithPaginationQuery,
   useOrdersProductsSizesControllerGetByIdQuery,
+  useSizesControllerDeleteMutation
 } = injectedRtkApi;

@@ -1,3 +1,4 @@
+import Search from "antd/es/transfer/search";
 import { emptyApi as api } from "./emptyApi";
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -9,19 +10,23 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/reviews`,
         method: "POST",
         body: queryArg.body,
+
       }),
+      // invalidatesTags: ['Review'],
     }),
     reviewsControllerGetAll: build.query<
       ReviewsControllerGetAllApiResponse,
       ReviewsControllerGetAllApiArg
     >({
       query: () => ({ url: `/reviews` }),
+      providesTags: ['Review']
     }),
     reviewsControllerGetById: build.query<
       ReviewsControllerGetByIdApiResponse,
       ReviewsControllerGetByIdApiArg
     >({
       query: (queryArg) => ({ url: `/reviews/${queryArg.id}` }),
+      providesTags: ['ReviewUPD']
     }),
     reviewsControllerGetByProductSizeId: build.query<
       ReviewsControllerGetByProductSizeIdApiResponse,
@@ -33,9 +38,23 @@ const injectedRtkApi = api.injectEndpoints({
       ReviewsControllerGetAllWithPaginationApiResponse,
       ReviewsControllerGetAllWithPaginationApiArg
     >({
-      query: (queryArg) => ({
-        url: `/reviews/pagination/${queryArg.page}/${queryArg.limit}`,
-      }),
+      query: (queryArg) => {
+        const params: Record<string, any> = {};
+        if (queryArg.search) {
+          params.search = queryArg.search;
+        }
+        if (queryArg.field) {
+          params.field = queryArg.field;
+        }
+        if (queryArg.type) {
+          params.type = queryArg.type;
+        }
+        return {
+          url: `/reviews/pagination/${queryArg.page}/${queryArg.limit}`,
+          params: params,
+        };
+      },
+      providesTags: ['Review', 'ReviewUPD']
     }),
     reviewsControllerGetStaticticByProductSizeId: build.query<
       ReviewsControllerGetStaticticByProductSizeIdApiResponse,
@@ -43,6 +62,39 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => ({ url: `/reviews/statistic/${queryArg.id}` }),
     }),
+    reviewsProductSizeControllerGetByProductId: build.query<
+      ReviewsProductSizeControllerGetByProductIdApiResponse,
+      ReviewsProductSizeControllerGetByProductIdApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/reviews/reviews-product-size/${queryArg.productSizeId}/${queryArg.limit}/${queryArg.page}`
+      }),
+
+    }),
+    reviewControllerUpdate: build.mutation<
+      ReviewControllerUpdateApiResponse,
+      ReviewControllerUpdateApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/reviews`,
+        method: "PATCH",
+        body: queryArg.updatedReview,
+
+      }),
+      invalidatesTags: ['ReviewUPD'],
+    }),
+    reviewControllerDelete: build.mutation<
+      ReviewControllerDeleteApiResponse,
+      ReviewControllerDeleteApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/reviews/`,
+        method: "DELETE",
+        body: { id: queryArg.id },
+
+      }),
+      invalidatesTags: ['ReviewDEL'],
+    })
   }),
   overrideExisting: false,
 });
@@ -54,6 +106,7 @@ export type ReviewsControllerCreateApiArg = {
     comment?: string;
     idUser?: number;
     idProductSize?: number;
+    phone: string;
     firstname?: string;
     files?: Blob[];
   };
@@ -74,12 +127,34 @@ export type ReviewsControllerGetAllWithPaginationApiResponse =
 export type ReviewsControllerGetAllWithPaginationApiArg = {
   page: number;
   limit: number;
+  search?: string;
+  field?: string;
+  type?: string;
 };
+export type ReviewsProductSizeControllerGetByProductIdApiResponse = {
+  count: number;
+  averageRating: number;
+  reviews: FullReviewDto[];
+}
+export type ReviewsProductSizeControllerGetByProductIdApiArg = {
+  productSizeId: number;
+  limit: number;
+  page: number;
+}
 export type ReviewsControllerGetStaticticByProductSizeIdApiResponse =
   /** status 200  */ StaticticReviews;
 export type ReviewsControllerGetStaticticByProductSizeIdApiArg = {
   id: number;
 };
+
+export type ReviewControllerUpdateApiResponse = UpdateReviewDto;
+export type ReviewControllerUpdateApiArg = {
+  updatedReview: UpdateReviewDto;
+}
+export type ReviewControllerDeleteApiResponse = UpdateReviewDto;
+export type ReviewControllerDeleteApiArg = {
+  id: number;
+}
 export type Review = {
   /** Unique identifier */
   id?: number;
@@ -125,6 +200,7 @@ export type FullReviewDto = {
   idUser?: number;
   /** Name user */
   firstname?: string;
+  phone?: string;
   /** Unique identifier product size */
   idProductSize: number;
   /** Create date */
@@ -148,6 +224,15 @@ export type StaticticReviews = {
   /** Average rating */
   averageRating: number;
 };
+export type UpdateReviewDto = {
+  id: number;
+  rating: number;
+  comment?: string;
+  idUser?: number;
+  firstname?: string;
+  phone: string;
+  idProductSize: number;
+}
 export const {
   useReviewsControllerCreateMutation,
   useReviewsControllerGetAllQuery,
@@ -155,4 +240,7 @@ export const {
   useReviewsControllerGetByProductSizeIdQuery,
   useReviewsControllerGetAllWithPaginationQuery,
   useReviewsControllerGetStaticticByProductSizeIdQuery,
+  useReviewsProductSizeControllerGetByProductIdQuery,
+  useReviewControllerUpdateMutation,
+  useReviewControllerDeleteMutation,
 } = injectedRtkApi;
