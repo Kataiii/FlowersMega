@@ -26,14 +26,15 @@ const BlockProducts: React.FC = () => {
     const [page, setPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(6);
     const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ page: page, limit: pageSize });
-    const [productsSizes, setProductSizes] = useState<FullProductSizeDto[]>(data?.products ?? []);
+    const [productsSizes, setProductSizes] = useState<FullProductSizeDto[]>([]);
 
 
     useEffect(() => {
         if (!isLoading && data?.products) {
-            setProductSizes(prevSizes => [...prevSizes, ...data.products]);
+            setProductSizes(data.products);
         }
     }, [data, isLoading]);
+
 
     const clickHandler = () => {
         const allPages = Math.ceil((data?.count ?? 0) / pageSize);

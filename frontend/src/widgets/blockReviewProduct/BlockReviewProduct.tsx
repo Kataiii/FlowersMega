@@ -6,7 +6,7 @@ import { Title } from "../../shared/ui/forAdditionalPages/Title";
 import { Numerals } from "../../shared/utils/numerals";
 import { FullReviewDto, useReviewsProductSizeControllerGetByProductIdQuery } from "../../store/review";
 import { ArrowNext, ArrowPrev } from "../blockReviews/BlockReview";
-import Arrow  from "../../shared/assets/sliderArrow.svg";
+import Arrow from "../../shared/assets/sliderArrow.svg";
 import { CarouselRef } from "antd/es/carousel";
 import styles from "../blockReviews/BlockReview.module.css";
 import SlideReviewsProduct from "../../entities/review/ui/slideReviewsProduct/SlideReviewsProduct";
@@ -42,14 +42,14 @@ const BlockReviewProduct: React.FC<BlockReviewProductProps> = ({ idProductSize }
 
     const sliceArray = (array: FullReviewDto[], length: number): FullReviewDto[][] => {
         const tmp: FullReviewDto[][] = [];
-        for (let i = 0; i <Math.ceil(array.length/length); i++){
-            tmp[i] = array.slice((i*length), (i*length) + length);
+        for (let i = 0; i < Math.ceil(array.length / length); i++) {
+            tmp[i] = array.slice((i * length), (i * length) + length);
         }
         return tmp;
     }
 
     useLayoutEffect(() => {
-        if(!isLoading){
+        if (!isLoading) {
             setIsActiveNext((Math.ceil(((data?.count ?? -1) / 3) - 1) > 0));
         }
     }, [isLoading])
@@ -68,13 +68,13 @@ const BlockReviewProduct: React.FC<BlockReviewProductProps> = ({ idProductSize }
                     : <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                         {
                             isOpen
-                            ?   <AddReview closeHandler={() => setIsOpen(false)} idProductSize={idProductSize}/>
-                            :   null
+                                ? <AddReview closeHandler={() => setIsOpen(false)} idProductSize={idProductSize} />
+                                : null
                         }
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                             <div>
                                 <ContainerRating>
-                                    <TitleRating>{ data?.averageRating !== null ? data?.averageRating.toFixed(1) : ""}</TitleRating>
+                                    <TitleRating>{data?.averageRating !== null ? data?.averageRating.toFixed(1) : ""}</TitleRating>
                                     <div style={{
                                         display: "flex",
                                         flexDirection: "column",
