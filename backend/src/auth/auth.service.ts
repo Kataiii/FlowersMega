@@ -55,7 +55,8 @@ export class AuthService {
     }
 
     private async generateToken(user: User){
-        const payload: PayloadToken = {email: user.email, id: user.id}
+        const data = await this.usersService.getByIdWithRole(user.id);
+        const payload: PayloadToken = {email: user.email, id: user.id, roles: data.roles}
         const tokenAccess = await jwt.sign(payload, process.env.PRIVATE_KEY, {expiresIn: '15m'});
         return tokenAccess;
     }

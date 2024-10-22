@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Product } from 'src/products/products.model';
 import { AllSizesDto } from './dto/allSizes.dto';
 import { CreateFullProductSizeDto } from './dto/createFullProduct.dto';
@@ -12,6 +12,9 @@ import { ProductSize } from './products-sizes.model';
 import { ProductsSizesService } from './products-sizes.service';
 import { filter, min } from 'rxjs';
 import { CategoriesProductsService } from 'src/categories-products/categories-products.service';
+import { Roles } from 'src/auth/guards/decorators/roles-auth.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesAuthGuard } from 'src/auth/guards/roles-auth.guard';
 
 @ApiTags("Products Sizes")
 @Controller('products-sizes')
@@ -22,6 +25,9 @@ export class ProductsSizesController {
         private categoriesService: CategoriesProductsService
     ) { }
 
+    @ApiBearerAuth('access-token')
+    @Roles("admin")
+    @UseGuards(JwtAuthGuard, RolesAuthGuard)
     @ApiOperation({ summary: 'Create product size' })
     @ApiResponse({ status: 201, type: ProductSize })
     @Post()
@@ -29,6 +35,9 @@ export class ProductsSizesController {
         return await this.productsSizesService.create(dto);
     }
 
+    @ApiBearerAuth('access-token')
+    @Roles("admin")
+    @UseGuards(JwtAuthGuard, RolesAuthGuard)
     @ApiOperation({ summary: "Create full product" })
     @ApiResponse({ status: 201, type: Product })
     @Post('/full-product')
@@ -185,6 +194,9 @@ export class ProductsSizesController {
         return await this.productsSizesFullService.getProductsWithPagination(page, limit, search, field, type, arrayCategories, arrayFilters);
     }
 
+    @ApiBearerAuth('access-token')
+    @Roles("admin")
+    @UseGuards(JwtAuthGuard, RolesAuthGuard)
     @ApiOperation({ summary: 'Delete product and its sizes by product id' })
     @ApiResponse({ status: 200, description: 'Product and its sizes deleted successfully' })
     @ApiResponse({ status: 404, description: 'Product not found' })
@@ -204,5 +216,4 @@ export class ProductsSizesController {
         console.log(response);
         return response;
     }
-
 }

@@ -1,5 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Roles } from 'src/auth/guards/decorators/roles-auth.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesAuthGuard } from 'src/auth/guards/roles-auth.guard';
 import { City } from 'src/cities/cities.model';
 import { CreateFilterDto } from './dto/createFilter.dto';
 import { DeleteFilterDto } from './dto/deleteFilter.dto';
@@ -12,6 +15,9 @@ import { FiltersService } from './filters.service';
 export class FiltersController {
     constructor(private filtersService: FiltersService) { }
 
+    @ApiBearerAuth('access-token')
+    @Roles("admin")
+    @UseGuards(JwtAuthGuard, RolesAuthGuard)
     @ApiOperation({ summary: 'Create filter' })
     @ApiResponse({ status: 201, type: Filter })
     @Post()
@@ -43,6 +49,9 @@ export class FiltersController {
         return await this.filtersService.getById(id);
     }
 
+    @ApiBearerAuth('access-token')
+    @Roles("admin")
+    @UseGuards(JwtAuthGuard, RolesAuthGuard)
     @ApiOperation({ summary: "Delete filter by id" })
     @ApiResponse({ status: 200, type: Filter })
     @Delete()

@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
-import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { UsersService } from './users.service';
@@ -7,12 +7,18 @@ import { ResponseDto, UserDto } from './dto/user.dto';
 import { Request } from 'express';
 import { ExtractToken } from 'src/utils/ExtractToken';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Roles } from 'src/auth/guards/decorators/roles-auth.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesAuthGuard } from 'src/auth/guards/roles-auth.guard';
 
 @ApiTags("Users")
 @Controller('users')
 export class UsersController {
     constructor(private userService: UsersService){}
 
+    @ApiBearerAuth('access-token')
+    @Roles("admin")
+    @UseGuards(JwtAuthGuard, RolesAuthGuard)
     @ApiOperation({summary: 'Create user'})
     @ApiResponse({status: 201, type: ResponseDto})
     @Post()
@@ -22,6 +28,9 @@ export class UsersController {
         return userDto;
     }
 
+    @ApiBearerAuth('access-token')
+    @Roles("admin")
+    @UseGuards(JwtAuthGuard, RolesAuthGuard)
     @ApiOperation({summary: 'Get user by id'})
     @ApiResponse({status: 200, type: ResponseDto})
     @Get("/user")
@@ -34,6 +43,9 @@ export class UsersController {
         return userDto;
     }
 
+    @ApiBearerAuth('access-token')
+    @Roles("admin", "user")
+    @UseGuards(JwtAuthGuard, RolesAuthGuard)
     @ApiOperation({summary: 'Update user'})
     @ApiResponse({status: 200, type: ResponseDto})
     @Patch()
@@ -42,6 +54,9 @@ export class UsersController {
         return await this.userService.update(dto, response.id);
     }
 
+    @ApiBearerAuth('access-token')
+    @Roles("admin", "user")
+    @UseGuards(JwtAuthGuard, RolesAuthGuard)
     @ApiOperation({summary: 'Update avatar user'})
     @ApiResponse({status: 200, type: ResponseDto})
     @Post("/avatar")
@@ -63,6 +78,9 @@ export class UsersController {
         return await this.userService.updateAvatar(response.id, file);
     }
 
+    @ApiBearerAuth('access-token')
+    @Roles("admin", "user")
+    @UseGuards(JwtAuthGuard, RolesAuthGuard)
     @ApiOperation({summary: 'Delete user'})
     @ApiResponse({status: 200, type: ResponseDto})
     @Delete()

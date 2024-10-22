@@ -1,6 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Roles } from 'src/auth/guards/decorators/roles-auth.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesAuthGuard } from 'src/auth/guards/roles-auth.guard';
 import { GetPaginationFullReviewDto } from './dto/createPagination.dto';
 import { CreateReviewDto } from './dto/createReviews.dto';
 import { DeleteReviewDto } from './dto/deleteReview.dto';
@@ -96,6 +99,9 @@ export class ReviewsController {
     return await this.reviewsService.getStaticticByProductSizeId(id);
   }
 
+  @ApiBearerAuth('access-token')
+  @Roles("admin")
+  @UseGuards(JwtAuthGuard, RolesAuthGuard)
   @ApiOperation({ summary: "Update status item" })
   @ApiResponse({ status: 200, type: Review })
   @Patch()
@@ -103,6 +109,9 @@ export class ReviewsController {
     return await this.reviewsService.update(dto);
   }
 
+  @ApiBearerAuth('access-token')
+  @Roles("admin")
+  @UseGuards(JwtAuthGuard, RolesAuthGuard)
   @ApiOperation({ summary: 'Delete review by id' })
   @ApiResponse({ status: 200 })
   @Delete()

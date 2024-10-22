@@ -1,8 +1,5 @@
-version: '3.5'
-
 services:
   db:
-    image: postgres
     restart: always
     build: ./database
     env_file:
@@ -10,6 +7,7 @@ services:
     container_name: postgres
     volumes:
       - ./pgdata:/var/lib/postgresql/data
+      - ./backups:/var/lib/postgresql/backups
     ports:
       - '5432:5432'
   app:
