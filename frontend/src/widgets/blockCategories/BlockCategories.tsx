@@ -36,57 +36,57 @@ const GradientDiv = styled.div`
 
 const BlockCategories: React.FC = () => {
     const [page, setPage] = useState<number>(1);
-    const {isLoading, data} = useCategoriesControllerGetPaginationQuery({page: page, limit: 8});
+    const { isLoading, data } = useCategoriesControllerGetPaginationQuery({ page: page, limit: 8 });
     const navigate = useNavigate();
     const [categories, setCategories] = useState<Category[]>([]);
 
     const clickHandler = () => {
         const allPages = Math.floor((data?.count ?? -1) / 8);
-        if(page <= allPages){
+        if (page <= allPages) {
             setPage(page => page + 1);
-            if(!isLoading){
+            if (!isLoading) {
                 setCategories([...categories, ...data?.categories ?? []]);
             }
         }
     }
 
     useEffect(() => {
-        if(!isLoading){
+        if (!isLoading) {
             setCategories([...categories, ...data?.categories ?? []]);
             setPage(page => page + 1);
         }
-    }, [isLoading]);    
+    }, [isLoading]);
 
-    return(
+    return (
         <Container>
-            <TitleSection content="Популярные категории"/>
+            <TitleSection content="Популярные категории" />
             <>
                 {
                     isLoading
-                    ? <p>Загрузка...</p>
-                    : 
-                    <Wrapper>
-                        <ContainerCategories>
-                        {
-                            data && categories.map((item, index) => {
-                                return <CardCategory key={`categories-${index}`} category={item} clickHandler={() => navigate({
-                                    pathname: `${CATALOG_PATH}${CATEGORY_PATH}`,
-                                    search: createSearchParams({
-                                        category: item.name
-                                    }).toString()
-                                })}/>
-                            })
-                        }
-                        </ContainerCategories>
-                        {
-                            (data?.count ?? -1) > categories.length
-                            ?   <div style={{width: "10%", margin: "0 auto"}}>
-                                    <GradientDiv/>
-                                    <SecondaryButton buttonContent={"Загрузить еще"} clickHandler={clickHandler}/>
-                                </div>
-                            : null
-                        }
-                    </Wrapper>
+                        ? <p>Загрузка...</p>
+                        :
+                        <Wrapper>
+                            <ContainerCategories>
+                                {
+                                    data && categories.map((item, index) => {
+                                        return <CardCategory key={`categories-${index}`} category={item} clickHandler={() => navigate({
+                                            pathname: `${CATALOG_PATH}${CATEGORY_PATH}`,
+                                            search: createSearchParams({
+                                                category: item.name
+                                            }).toString()
+                                        })} />
+                                    })
+                                }
+                            </ContainerCategories>
+                            {
+                                (data?.count ?? -1) > categories.length
+                                    ? <div style={{ width: "10%", margin: "0 auto" }}>
+                                        {/* <GradientDiv/> */}
+                                        <SecondaryButton buttonContent={"Загрузить еще"} clickHandler={clickHandler} />
+                                    </div>
+                                    : null
+                            }
+                        </Wrapper>
                 }
             </>
         </Container>

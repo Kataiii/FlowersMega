@@ -10,6 +10,33 @@ export class CategoriesService {
         @InjectModel(Category) private categoryRepository: typeof Category,
         private filesService: FilesService) { }
 
+    async onModuleInit() {
+        await this.seeds();
+    }
+
+    async seeds() {
+        const categories = [
+            { name: 'Цветы в коробке' },
+            { name: 'Букеты' },
+            { name: 'Корзины с цветами' },
+            { name: 'Розы' },
+            { name: 'Открытки' },
+            { name: 'Топперы' },
+            { name: 'Мягкие игрушки' },
+            { name: 'Шары' },
+            { name: 'Комнатные цветы' }
+        ];
+
+        for (const category of categories) {
+            await this.categoryRepository.findOrCreate({
+                where: { name: category.name },
+                defaults: category,
+            });
+        }
+    }
+
+
+
     async create(dto: CreateCategoryDto, preview: File) {
         const categoty = await this.categoryRepository.create(dto);
         const fileName = await this.filesService.createImageCategory(preview);

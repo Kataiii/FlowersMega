@@ -57,12 +57,10 @@ const FiltersPanel: React.FC = () => {
     // const decodedCategory = category ? decodeURIComponent(category) : '';
     const { data: categoryIdData, isLoading: isCategoriesLoading } = useCategoryControllerGetIdByNameQuery(
         { name: decodedCategory },
-        { skip: !decodedCategory }
     );
 
     const { isLoading, data } = useFiltersControllerGetAllWithMaxPriceQuery(
         { idCategory: Number(categoryIdData) },
-        { skip: !categoryIdData }
     );
 
     console.log(data?.maxPrice, "MAX PRICE");

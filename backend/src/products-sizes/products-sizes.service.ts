@@ -99,31 +99,29 @@ export class ProductsSizesService {
             }
 
         }));
-        console.log(productsCardInfo, "WANNA CHECK");
+        // console.log(productsCardInfo, "WANNA CHECK");
 
         const updatedProducts = productsCardInfo.map(item => {
 
             const productSize = { ...item.productSize };
 
             const categories = item.product.categories || [];
-            let priceMultiplier = 1;
+            let priceMultiplier = extraPriceForCategories.get('all') || 0;
 
             if (categories.length === 0) {
-                priceMultiplier = extraPriceForCategories.get('all') || 1;
+                priceMultiplier = extraPriceForCategories.get('all') || priceMultiplier;
             } else if (categories.length === 1) {
-                priceMultiplier = extraPriceForCategories.get(categories[0].id.toString()) || 1;
+                priceMultiplier = extraPriceForCategories.get(categories[0].id.toString()) || priceMultiplier;
             } else {
-                const multipliers = categories.map(cat => extraPriceForCategories.get(cat.id.toString())).filter(Boolean);
-                if (multipliers.length > 0) {
-                    priceMultiplier = Math.max(...multipliers);
-                }
+                const multipliers = categories.map(cat => extraPriceForCategories.get(cat.id.toString()) || priceMultiplier);
+                priceMultiplier = Math.max(...multipliers);
             }
-            console.log("Old price:", productSize.prise);
-            console.log("Price multiplier:", priceMultiplier);
+            // console.log("Old price:", productSize.prise);
+            // console.log("Price multiplier:", priceMultiplier);
 
             const updatedPrice = Math.floor(productSize.prise + (productSize.prise / 100) * priceMultiplier);
 
-            console.log("New price:", updatedPrice);
+            // console.log("New price:", updatedPrice);
             return {
                 ...item,
                 productSize: {
@@ -132,7 +130,7 @@ export class ProductsSizesService {
                 }
             };
         });
-        console.log(updatedProducts, "LMAO?");
+        // console.log(updatedProducts, "LMAO?");
         if (productsSizes === null) throw new HttpException("Products sizes not found", HttpStatus.NOT_FOUND);
         return updatedProducts;
     }
@@ -172,20 +170,20 @@ export class ProductsSizesService {
             }
         });
         const productSizesUpd = await this.getByProductId(productSize.idProduct);
-        console.log(productSizesUpd, "YAAAAAAAAAAAAAAa");
-        console.log(productSize, "PROOOOOOOOOOOOOOOOOOOOOOOOD");
+        // console.log(productSizesUpd, "YAAAAAAAAAAAAAAa");
+        // console.log(productSize, "PROOOOOOOOOOOOOOOOOOOOOOOOD");
 
         const updatedProductSize = productSizesUpd.find(
             (item) => {
-                console.log(item.productSize.idSize, "HHHH");
-                console.log(Number(idSize), "IDSIIIIIIIIIZE");
+                // console.log(item.productSize.idSize, "HHHH");
+                // console.log(Number(idSize), "IDSIIIIIIIIIZE");
                 const isMatch = item.productSize.idSize === Number(idSize) && item.productSize.idProduct === Number(idProduct);
-                console.log(isMatch, "LLLLLLLL");
+                // console.log(isMatch, "LLLLLLLL");
                 return isMatch;
             }
         );
 
-        console.log(updatedProductSize, "WWWWWWWWWWWWWWWWWWWWWWwwww");
+        // console.log(updatedProductSize, "WWWWWWWWWWWWWWWWWWWWWWwwww");
         return updatedProductSize.productSize
     }
 }

@@ -155,7 +155,8 @@ export class ReviewsService {
             where: { idProductSize: id },
             limit: limit,
             offset: (page - 1) * limit,
-            include: [{ all: true }]
+            include: [{ all: true }],
+            order: [['createdAt', 'DESC']],
         })
 
         const fullReview: FullReviewDto[] = await Promise.all(reviews.map(async (item) => await this.convertReview(item)));

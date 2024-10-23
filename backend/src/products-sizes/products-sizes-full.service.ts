@@ -23,6 +23,14 @@ export class ProductsSizesFullService {
         private extraPriceService: ExtraPriceService
     ) { }
 
+    async onModuleInit() {
+        await this.seeds();
+    }
+
+    async seeds() {
+
+    }
+
     private async getCardInfo(productSize: ProductSize) {
         // console.log(productSize, "PRODUCT SIZE")
         const size = await this.sizesService.getById(productSize.idSize);
@@ -86,7 +94,7 @@ export class ProductsSizesFullService {
                     }
                 }
                 const tmp = this.extraPriceService.whichOneTheBest();
-                console.log(tmp, "HHHHHHHEEEEEEEEEEEEEEEELPPPPPPPPPPPPP")
+                // console.log(tmp, "HHHHHHHEEEEEEEEEEEEEEEELPPPPPPPPPPPPP")
                 const countAndProducts = await this.productsSizesRepository.findAndCountAll({
                     where: whereCondition,
                     limit: limit,
@@ -100,7 +108,7 @@ export class ProductsSizesFullService {
             }
         }
         const extraPriceForCategories = await this.extraPriceService.whichOneTheBest();
-        console.log(extraPriceForCategories, "HHHHHHHEEEEEEEEEEEEEEEELPPPPPPPPPPPPP")
+        // console.log(extraPriceForCategories, "HHHHHHHEEEEEEEEEEEEEEEELPPPPPPPPPPPPP")
         const whereCondition: any = {};
         if (minPrice) {
             whereCondition.prise = { [Op.gte]: minPrice };
@@ -118,17 +126,27 @@ export class ProductsSizesFullService {
             limit: limit,
             offset: (page - 1) * limit,
         });
-
         const updatedProducts = await this.calculatePrices(products);
-        // console.log(updatedProducts)
+        // console.log(minPrice, maxPrice, "LOW MAX PRICE")
+        const result = updatedProducts.filter(item => {
+            // console.log(`Checking item: ${JSON.stringify(item.productSize.prise)}`);
+            if (maxPrice) return item.productSize.prise > 0 && item.productSize.prise < maxPrice;
+            else return item
+        });
+
+        // console.log(result, "SUPERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        // console.log(updatedProducts, "SUPERUPD")
         return {
             count: count.count,
-            products: updatedProducts
+            products: result
         }
     }
 
     async calculatePrices(products: ProductSize[]) {
         const extraPriceForCategories = await this.extraPriceService.whichOneTheBest();
+        let countProductsWithMarkup = 0;
+
+        console.log(extraPriceForCategories, "EPRIE BTW")
         const productsCardInfo = await Promise.all(products.map(async (item) => {
             const info = await this.getCardInfo(item);
             // item.prise *= 1.22;
@@ -150,26 +168,26 @@ export class ProductsSizesFullService {
         const updatedProducts = productsCardInfo.map(item => {
 
             const productSize = { ...item.productSize };
-
             const categories = item.product.categories || [];
-            let priceMultiplier = 1;
+            let priceMultiplier = extraPriceForCategories.get('all') || 0;
 
-            if (categories.length === 0) {
-                priceMultiplier = extraPriceForCategories.get('all') || 1;
-            } else if (categories.length === 1) {
-                priceMultiplier = extraPriceForCategories.get(categories[0].id.toString()) || 1;
-            } else {
-                const multipliers = categories.map(cat => extraPriceForCategories.get(cat.id.toString())).filter(Boolean);
-                if (multipliers.length > 0) {
-                    priceMultiplier = Math.max(...multipliers);
-                }
+            if (categories.length === 1) {
+                priceMultiplier = extraPriceForCategories.get(categories[0].id.toString()) || priceMultiplier;
+            } else if (categories.length > 1) {
+                const multipliers = categories.map(cat => extraPriceForCategories.get(cat.id.toString()) || priceMultiplier);
+                priceMultiplier = Math.max(...multipliers);
             }
-            console.log("Old price:", productSize.prise);
-            console.log("Price multiplier:", priceMultiplier);
+
+            if (priceMultiplier > 0) {
+                countProductsWithMarkup++;
+            }
+
+            console.log(priceMultiplier, 'aaaaaaaaaaaa""""""""""""""""""""""""""""""""');
+            console.log(productSize.prise, "DOOOOOO");
 
             const updatedPrice = Math.floor(productSize.prise + (productSize.prise / 100) * priceMultiplier);
+            console.log(updatedPrice, "NUUUUUUUUUUUUU");
 
-            console.log("New price:", updatedPrice);
             return {
                 ...item,
                 productSize: {
@@ -179,7 +197,9 @@ export class ProductsSizesFullService {
             };
         });
 
+
         return updatedProducts;
+
     }
 
     async getProductSizeInfo(id: number) {
@@ -189,29 +209,29 @@ export class ProductsSizesFullService {
     }
 
     async getProductsWithPagination(page: number, limit: number, search?: string, field?: string, type?: string, categories?: number[], filters?: number[]) {
-        console.log(categories, "categories");
+        // console.log(categories, "categories");
         const categoriesProductsTmp = categories.length > 0 ? await Promise.all(categories.map(async (item) => {
             return (await this.categoriesProductService.getProductsByCategoryId(item)).map(item => item.idProduct);
         })) : (await this.productsService.getAll()).map(item => item.id);
-        console.log(categoriesProductsTmp, "categTNM");
+        // console.log(categoriesProductsTmp, "categTNM");
         const filtersProductsTmp = filters.length > 0 ? await Promise.all(filters.map(async (item) => {
             return (await this.productsItemsFilterService.getProductsByFilterId(item)).map(item => item.idProduct);
         })) : (await this.productsService.getAll()).map(item => item.id);
-        console.log(filtersProductsTmp, "filterTNM");
+        // console.log(filtersProductsTmp, "filterTNM");
 
         const categoriesProducts = Array.from(new Set(categoriesProductsTmp.flat()));
-        console.log(categoriesProducts);
+        // console.log(categoriesProducts);
         const filtersProducts = Array.from(new Set(filtersProductsTmp.flat()));
-        console.log(filtersProducts);
+        // console.log(filtersProducts);
 
         const finalFIlterCategories = categoriesProducts.filter(item => filtersProducts.includes(item));
 
 
-        console.log(finalFIlterCategories, " const");
+        // console.log(finalFIlterCategories, " const");
 
 
         const paginationResult = await this.productsService.getCountAndPagination(page, limit, search, field, type, finalFIlterCategories);
-        console.log(paginationResult, "paginationResult");
+        // console.log(paginationResult, "paginationResult");
         const productSizesTmp = await Promise.all(paginationResult.products.map(async (item) => {
             const productSizes = await this.productsSizesRepository.findAll({ where: { idProduct: item.id } });
             const resultProducts = await this.calculatePrices(productSizes);
@@ -220,7 +240,7 @@ export class ProductsSizesFullService {
             // }))
             return { products: item, productsSizes: resultProducts };
         }));
-        console.log(productSizesTmp, "productSizesTmp");
+        // console.log(productSizesTmp, "productSizesTmp");
         return { count: paginationResult.count, products: productSizesTmp };
     }
 
@@ -235,7 +255,7 @@ export class ProductsSizesFullService {
             idTypeProduct: dto.type
         }, [photo]);
         await Promise.all(prosuctsSizes.map(async (item) => {
-            console.log(item);
+            // console.log(item);
             return await this.productsSizesRepository.create({
                 idProduct: product.id,
                 idSize: item.idSize,
@@ -273,7 +293,7 @@ export class ProductsSizesFullService {
         if (idCategory) {
             const productsByCategory = await this.categoriesProductService.getProductsByCategoryId(idCategory);
         } else {
-            console.log("idCategory is undefined");
+            // console.log("idCategory is undefined");
         }
 
         const productSize = await this.productsSizesRepository.findAll({
@@ -281,7 +301,7 @@ export class ProductsSizesFullService {
         });
 
         const productSizeUpd = await this.calculatePrices(productSize);
-        console.log(productSizeUpd[0].productSize.prise, "FINALLLYYY");
+        // console.log(productSizeUpd[0].productSize.prise, "FINALLLYYY");
         return productSizeUpd[0].productSize.prise;
     }
 

@@ -12,6 +12,25 @@ export class FiltersService {
         private productSizesFullService: ProductsSizesFullService
     ) { }
 
+    async onModuleInit() {
+        await this.seeds();
+    }
+
+    async seeds() {
+        const filters = [
+            { name: 'Повод' },
+            { name: 'Кому' }
+        ];
+
+        for (const filter of filters) {
+            await this.filterRepository.findOrCreate({
+                where: { name: filter.name },
+                defaults: filter,
+            });
+        }
+    }
+
+
 
     async create(dto: CreateFilterDto) {
         return await this.filterRepository.create(dto);

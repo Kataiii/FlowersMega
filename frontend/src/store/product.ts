@@ -23,6 +23,7 @@ const injectedRtkApi = api.injectEndpoints({
       ProductsControllerGetByIdApiArg
     >({
       query: (queryArg) => ({ url: `/products/${queryArg.id}` }),
+      providesTags: ['Review']
     }),
     productsSizesControllerCreate: build.mutation<
       ProductsSizesControllerCreateApiResponse,

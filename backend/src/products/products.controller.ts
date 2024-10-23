@@ -54,9 +54,6 @@ export class ProductsController {
     return await this.productsService.getAll();
   }
 
-  @ApiBearerAuth('access-token')
-  @Roles("admin")
-  @UseGuards(JwtAuthGuard, RolesAuthGuard)
   @ApiOperation({ summary: 'Get product by id' })
   @ApiResponse({ status: 200, type: Product })
   @ApiResponse({ status: 404, description: "Product not fount" })

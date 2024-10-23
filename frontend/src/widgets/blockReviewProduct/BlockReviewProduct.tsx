@@ -11,6 +11,8 @@ import { CarouselRef } from "antd/es/carousel";
 import styles from "../blockReviews/BlockReview.module.css";
 import SlideReviewsProduct from "../../entities/review/ui/slideReviewsProduct/SlideReviewsProduct";
 import AddReview from "../../features/add-review/AddReview";
+import ReviewCardMain from "../../entities/review/ui/reviewCardMain/ReviewCardMain";
+import ReviewCardProduct from "../../entities/review/ui/reviewCardProduct/ReviewCardProduct";
 
 type BlockReviewProductProps = {
     idProductSize: number;
@@ -34,12 +36,14 @@ const TitleRating = styled.h5`
 `;
 
 const BlockReviewProduct: React.FC<BlockReviewProductProps> = ({ idProductSize }) => {
-    const { isLoading, data } = useReviewsProductSizeControllerGetByProductIdQuery({ productSizeId: idProductSize, limit: 25, page: 1 });
+
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const slider = useRef<CarouselRef>(null);
     const [isActivePrev, setIsActivePrev] = useState<boolean>(false);
     const [isActiveNext, setIsActiveNext] = useState<boolean>(true);
-
+    const [page, setPage] = useState<number>(1);
+    const [pageSize, setPageSize] = useState<number>(3);
+    const { isLoading, data } = useReviewsProductSizeControllerGetByProductIdQuery({ productSizeId: idProductSize, limit: pageSize, page: page });
     const sliceArray = (array: FullReviewDto[], length: number): FullReviewDto[][] => {
         const tmp: FullReviewDto[][] = [];
         for (let i = 0; i < Math.ceil(array.length / length); i++) {
@@ -72,13 +76,13 @@ const BlockReviewProduct: React.FC<BlockReviewProductProps> = ({ idProductSize }
                                 : null
                         }
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                            <div>
+                            <div style={{ padding: "0 25px" }}>
                                 <ContainerRating>
                                     <TitleRating>{data?.averageRating !== null ? data?.averageRating.toFixed(1) : ""}</TitleRating>
                                     <div style={{
                                         display: "flex",
                                         flexDirection: "column",
-                                        justifyContent: "center"
+                                        justifyContent: "center",
                                     }}>
                                         <Rate style={{ color: "var(--primary-bg-color)" }} value={data?.averageRating ?? 0} disabled />
                                         <p style={{
@@ -95,23 +99,23 @@ const BlockReviewProduct: React.FC<BlockReviewProductProps> = ({ idProductSize }
                                 <ButtonStyle style={{ height: 67 }} onClick={() => setIsOpen(prev => !prev)}>{isOpen ? "Закрыть форму" : "Оставить отзыв"}</ButtonStyle>
                             </div>
                         </div>
-                        <div style={{ position: 'relative' }}>
+
+                        <div style={{ position: "relative", display: "flex", flexDirection: "row", gap: "6px" }}>
                             {
-                                !isActivePrev
-                                    ? null
-                                    : <ArrowPrev src={Arrow} onClick={() => slider.current?.prev()} />
-                            }
-                            <Carousel afterChange={updateArrows} ref={slider} className={styles.carousel} arrows={false} infinite={false}>
-                                {
-                                    sliceArray(data?.reviews ?? [], 3).map((item, index) => {
-                                        return <SlideReviewsProduct key={`wrap_slider-${index}`} reviews={item} />
-                                    })
-                                }
-                            </Carousel>
-                            {
-                                !isActiveNext
-                                    ? null
-                                    : <ArrowNext src={Arrow} onClick={() => slider.current?.next()} />
+                                data?.count === 0 ? null :
+                                    <div style={{ width: "100%", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: "0 25px" }}>
+                                        {
+                                            page === Math.ceil((data?.count ?? 0) / pageSize) ? null : <ArrowNext src={Arrow} onClick={() => setPage(prev => prev + 1)} />
+                                        }
+                                        {
+                                            data?.reviews.map((item, index) => {
+                                                return <ReviewCardProduct key={`review_card-${item.id}`} review={item} />
+                                            })
+                                        }
+                                        {
+                                            page === 1 ? null : <ArrowPrev src={Arrow} onClick={() => setPage(prev => prev - 1)} />
+                                        }
+                                    </div>
                             }
                         </div>
                     </div>
