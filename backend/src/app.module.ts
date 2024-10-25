@@ -28,6 +28,7 @@ import { SeedsModule } from './seeds/seeds.module';
 import { ProductsItemsFilterModule } from './products-items-filter/products-items-filter.module';
 import { MinOrderCostModule } from './min-order-cost/min-order-cost.module';
 import { ExtraPriceModule } from './extra-price/extra-price.module';
+import { TelegramUsersModule } from './telegram-users/telegram-users.module';
 
 @Module({
     imports: [
@@ -74,6 +75,7 @@ import { ExtraPriceModule } from './extra-price/extra-price.module';
         ProductsItemsFilterModule,
         MinOrderCostModule,
         ExtraPriceModule,
+        TelegramUsersModule
     ]
 })
 export class AppModule { }
