@@ -78,11 +78,13 @@ const Router: React.FC = () => {
         <>
             <Routes location={previousLocation || location}>
                 <Route path={ADMIN_PATH} element={<RoleGuard>
-                    <AdminMain />
+                    <>
+                        <AdminMain />
+                        <Route path={''} element={<AdminOrders />} />
+                        <Route path={ADMIN_PRODUCTS_PATH} element={<AdminProducts />} />
+                        <Route path={ADMIN_REVIEWS_PATH} element={<AdminReviews />} />
+                    </>
                 </RoleGuard>}>
-                    <Route path={''} element={<AdminOrders />} />
-                    <Route path={ADMIN_PRODUCTS_PATH} element={<AdminProducts />} />
-                    <Route path={ADMIN_REVIEWS_PATH} element={<AdminReviews />} />
                 </Route>
                 <Route path={ADMIN_LOGIN} element={<Login />} />
                 <Route path={HOME_PATH} element={<App />}>
