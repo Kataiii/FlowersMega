@@ -181,8 +181,8 @@ const Products: React.FC = () => {
                         defaultValue="updatedAt ASC"
                         style={{ width: 150, height: 25 }}
                         options={[
-                            { value: "updatedAt ASC", label: "Дата (новые)" },
-                            { value: "updatedAt DESC", label: "Дата (старые)" },
+                            { value: "updatedAt ASC", label: "Дата (старые)" },
+                            { value: "updatedAt DESC", label: "Дата (новые)" },
                         ]}
                         placeholder="Выбрать"
                         value={sortOrder}

@@ -35,9 +35,10 @@ export class CategoriesProductsService {
             return null;
         }
 
-        console.log(category.id, "CATEGORY ID");
-        return category.id;
+        // console.log(category, "CATEGORY OBJECT");
+        return category;
     }
+
 
     async create(dto: CreateCategoriesProductDto) {
         return await this.categoriesProductsRepository.create(dto);

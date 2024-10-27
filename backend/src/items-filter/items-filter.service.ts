@@ -21,7 +21,7 @@ export class ItemsFilterService {
             { name: '1 сентября', idFilter: 1 },
             { name: 'На свадьбу', idFilter: 1 },
             { name: '14 февраля', idFilter: 1 },
-            { name: 'На юбилей', idFilter: 1 },
+            { name: 'На юбилей', idFilter: 1 },
             { name: 'Сказать люблю', idFilter: 1 },
             { name: 'Цветы на день матери', idFilter: 2 },
             { name: 'Цветы жене', idFilter: 2 },
@@ -64,6 +64,20 @@ export class ItemsFilterService {
         })
         if (itemsFilters.length === 0) throw new HttpException("Items filters not fount", HttpStatus.NOT_FOUND);
         return itemsFilters;
+    }
+
+    async getByName(name: string) {
+        const itemFilter = await this.itemFilterRepository.findOne({
+            where: { name }
+        });
+
+        if (!itemFilter) {
+            console.log('Item filter not found:', name);
+            return null;
+        }
+
+        // console.log(itemFilter, "ITEM FILTER OBJECT");
+        return itemFilter;
     }
 
     async delete(id: number) {

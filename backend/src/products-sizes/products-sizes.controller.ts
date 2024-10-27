@@ -79,33 +79,20 @@ export class ProductsSizesController {
                         }
                     }
                 },
+
                 filters: {
                     type: 'array',
                     items: {
                         type: 'object',
                         format: 'object',
                         properties: {
-                            filter: {
-                                type: 'object',
-                                properties: {
-                                    id: { type: 'number' },
-                                    name: { type: 'string' }
-                                }
-                            },
-                            tags: {
-                                type: 'array',
-                                items: {
-                                    type: 'object',
-                                    properties: {
-                                        id: { type: 'number' },
-                                        name: { type: 'string' },
-                                        idFilter: { type: 'number' }
-                                    }
-                                }
-                            }
+                            id: { type: 'number' },
+                            name: { type: 'string' },
+                            idFilter: { type: 'number' }
                         }
                     }
                 }
+
             }
         }
     })
@@ -214,6 +201,6 @@ export class ProductsSizesController {
         // console.log(name, "CATEGORYPPPPPPPP");
         const response = await this.categoriesService.getCategoryByName(name);
         // console.log(response);
-        return response;
+        return response.id;
     }
 }

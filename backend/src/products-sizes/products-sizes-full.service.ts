@@ -10,6 +10,9 @@ import { CreateFullProductSizeDto, CreateProductSizeSmallDto, FilterWithItems } 
 import { ProductSize } from './products-sizes.model';
 import { Op, or, where } from 'sequelize';
 import { ExtraPriceService } from 'src/extra-price/extra-price.service';
+import * as fs from 'fs';
+import { TypesProductService } from 'src/types-product/types-product.service';
+import { ItemFilter } from 'src/items-filter/items-filter.model';
 
 @Injectable()
 export class ProductsSizesFullService {
@@ -20,15 +23,127 @@ export class ProductsSizesFullService {
         private reviewsService: ReviewsService,
         private categoriesProductService: CategoriesProductsService,
         private productsItemsFilterService: ProductsItemsFilterService,
-        private extraPriceService: ExtraPriceService
+        private extraPriceService: ExtraPriceService,
+        private typeProductService: TypesProductService,
     ) { }
 
-    async onModuleInit() {
-        await this.seeds();
-    }
+    // async onModuleInit() {
+    //     await this.seeds("../backend/static/products/FLOWERS.txt");
+    // }
 
-    async seeds() {
+    async seeds(filePath: string): Promise<void> {
+        const fileContent = fs.readFileSync(filePath, 'utf-8');
+        const lines = fileContent.split('\n');
+        let index = 0;
+        for (const line of lines) {
 
+            const [
+                title,
+                excerpt,
+                price,
+                imageUrl,
+                categoryName,
+                filtersStr,
+                composition,
+                sizesStr
+            ] = line.split(';');
+
+
+            const [typeProductName, productName] = title.split(' - ');
+
+            const typeProductId = await this.typeProductService.getTypeProductByName(typeProductName.trim());
+            if (!typeProductId) continue;
+
+            const categories = await Promise.all(categoryName.split(',').map(async (categoryName) => {
+                const category = await this.categoriesProductService.getCategoryByName(categoryName.trim());
+                return category ? category : null;
+            }));
+            const validCategories = categories.filter((c) => c !== null);
+
+            const filters = await Promise.all(filtersStr.split(',').map(async (filterName) => {
+                console.log(filterName.trim(), "FILTER AAAAAAAAAAAAAAAAAAAAAAAAAa");
+                const filter = await this.productsItemsFilterService.getItemFilterByName(filterName.trim());
+                return filter ? filter : null;
+            }));
+            const validFilters = filters.filter((f) => f !== null);
+
+            console.log(sizesStr, "SIZES CHECK");
+            const sizes = await Promise.all(sizesStr.split(',').map(async (sizeStr) => {
+                const cleanedSizeStr = sizeStr.replace(/["']/g, '').trim();
+                console.log(cleanedSizeStr, "CLEANED SIZE");
+                const [label, dimensions] = cleanedSizeStr.split(':');
+
+                const sizeId = await this.sizesService.getSizeByName(label.trim());
+                if (!sizeId) return null;
+
+                return { idSize: sizeId, paramsSize: dimensions.trim(), prise: parseFloat(price.trim()) };
+            }));
+
+            const validSizes = sizes.filter((s) => s !== null);
+
+            const filePromise = await fetch(imageUrl.trim())
+                .then(response => response.blob())
+                .then(blob => new File([blob], `image${index++}`, { type: blob.type }));
+
+            console.log(productName.trim(), "PRODUCT NAME");
+            console.log(excerpt.trim(), "DESCRIPTION");
+            console.log(typeProductId, "TYPE PRODUCT ID");
+            // console.log(validCategories, "CATEGORIES");
+            // console.log(validFilters, "FILTERS");
+            console.log(validSizes, "SIZES");
+            console.log([filePromise], "IMAGE URL");
+            console.log(composition.trim(), "STRUCTURE");
+
+            // await this.createFullProduct({
+            //     name: productName.trim(),
+            //     description: excerpt.trim(),
+            //     type: typeProductId,
+            //     categories: validCategories, 
+            //     filters: validFilters, 
+            //     structure: composition.trim(),
+            //     productSize: validSizes,
+            // }, imageUrl.trim());
+
+            const product = await this.productsService.create({
+                name: productName.trim(),
+                description: excerpt.trim(),
+                structure: composition.trim(),
+                idTypeProduct: typeProductId
+            }, []);
+            // console.log(product)
+            await Promise.all(validSizes.map(async (item) => {
+                // console.log(item);
+                return await this.productsSizesRepository.create({
+                    idProduct: product.id,
+                    idSize: item.idSize,
+                    paramsSize: item.paramsSize,
+                    prise: item.prise
+                })
+            }));
+            await Promise.all(validCategories.map(async (item) => {
+                return await this.categoriesProductService.create({
+                    idProduct: product.id,
+                    //@ts-ignore
+                    idCategory: item.id
+                })
+            }));
+            console.log(validFilters.length, "FILTERS");
+            if (validFilters.length === 0) {
+                console.log('No valid filters to insert for this product.');
+            } else {
+                await Promise.all(validFilters.map(async (item) => {
+                    try {
+                        const createdFilter = await this.productsItemsFilterService.create({
+                            idProduct: product.id,
+                            idItemFilter: item.id
+                        });
+                        console.log('Created filter entry:', createdFilter);
+                    } catch (error) {
+                        console.error(`Failed to create filter for item ID ${item.id}:`, error);
+                    }
+                }));
+            }
+        }
     }
 
     private async getCardInfo(productSize: ProductSize) {
@@ -130,7 +245,7 @@ export class ProductsSizesFullService {
         // console.log(minPrice, maxPrice, "LOW MAX PRICE")
         const result = updatedProducts.filter(item => {
             // console.log(`Checking item: ${JSON.stringify(item.productSize.prise)}`);
-            if (maxPrice) return item.productSize.prise > 0 && item.productSize.prise < maxPrice;
+            if (maxPrice) return item.productSize.prise > 0 && item.productSize.prise <= maxPrice;
             else return item
         });
 
@@ -247,7 +362,7 @@ export class ProductsSizesFullService {
     async createFullProduct(dto: CreateFullProductSizeDto, photo: File) {
         const prosuctsSizes = JSON.parse(`[${dto.productSize.toString()}]`) as CreateProductSizeSmallDto[];
         const categories = JSON.parse(`[${dto.categories.toString()}]`) as Category[];
-        const filters = JSON.parse(`[${dto.filters.toString()}]`) as FilterWithItems[];
+        const filters = JSON.parse(`[${dto.filters.toString()}]`) as ItemFilter[];
         const product = await this.productsService.create({
             name: dto.name,
             description: dto.description,
@@ -272,12 +387,12 @@ export class ProductsSizesFullService {
         }));
 
         await Promise.all(filters.map(async (item) => {
-            return await Promise.all(item.tags.map(async (itemTags) => {
-                return await this.productsItemsFilterService.create({
-                    idProduct: product.id,
-                    idItemFilter: itemTags.id
-                });
-            }));
+
+            return await this.productsItemsFilterService.create({
+                idProduct: product.id,
+                idItemFilter: item.id
+            });
+
         }));
 
         return product;

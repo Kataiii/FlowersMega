@@ -26,7 +26,7 @@ export class FilesService {
     async createImageProduct(file, idProduct: number) {
         return await this.createFile(
             file,
-            file.originalname.slice(file.originalname.lastIndexOf('.'), file.originalname.length),
+            file.originalname ? file.originalname.slice(file.originalname.lastIndexOf('.'), file.originalname.length) : file.name,
             idProduct.toString(),
             ["products", "images"]
         );

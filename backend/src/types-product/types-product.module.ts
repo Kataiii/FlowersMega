@@ -9,6 +9,7 @@ import { TypesProductService } from './types-product.service';
   providers: [TypesProductService],
   imports: [
     SequelizeModule.forFeature([TypeProduct])
-  ]
+  ],
+  exports: [TypesProductService]
 })
-export class TypesProductModule {}
+export class TypesProductModule { }
