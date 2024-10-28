@@ -14,6 +14,53 @@ import * as fs from 'fs';
 import { TypesProductService } from 'src/types-product/types-product.service';
 import { ItemFilter } from 'src/items-filter/items-filter.model';
 
+class CustomFile implements File {
+    buffer: Buffer;
+    originalname: string;
+    lastModified: number;
+    name: string;
+    webkitRelativePath: string;
+    size: number;
+    type: string;
+
+    constructor(buffer: Buffer, name: string, type: string) {
+        this.buffer = buffer;
+        this.originalname = name;
+        this.lastModified = Date.now();
+        this.name = name;
+        this.webkitRelativePath = "";
+        this.size = buffer.length;
+        this.type = type;
+    }
+
+    // Реализация метода arrayBuffer()
+    async arrayBuffer(): Promise<ArrayBuffer> {
+        return this.buffer.buffer.slice(this.buffer.byteOffset, this.buffer.byteOffset + this.buffer.byteLength);
+    }
+
+    // Реализация метода slice()
+    slice(start?: number, end?: number, contentType?: string): Blob {
+        const slice = this.buffer.slice(start, end);
+        return new Blob([slice], { type: contentType || this.type });
+    }
+
+    // Реализация метода stream()
+    stream(): ReadableStream {
+        const readable = new ReadableStream({
+            start(controller) {
+                controller.enqueue(this.buffer);
+                controller.close();
+            }
+        });
+        return readable;
+    }
+
+    // Реализация метода text()
+    async text(): Promise<string> {
+        return this.buffer.toString('utf-8');
+    }
+}
+
 @Injectable()
 export class ProductsSizesFullService {
     constructor(
@@ -27,107 +74,115 @@ export class ProductsSizesFullService {
         private typeProductService: TypesProductService,
     ) { }
 
-    // async onModuleInit() {
-    //     await this.seeds("../backend/static/products/FLOWERS.txt");
-    // }
+    async onModuleInit() {
+        await this.seeds("../backend/static/products/FLOWERS.txt");
+    }
 
     async seeds(filePath: string): Promise<void> {
         const fileContent = fs.readFileSync(filePath, 'utf-8');
         const lines = fileContent.split('\n');
         let index = 0;
-        for (const line of lines) {
 
+        for (const line of lines) {
             const [
                 title,
                 excerpt,
-                price,
+                productTags,
+                pricesStr,
                 imageUrl,
                 categoryName,
-                filtersStr,
+                komuFiltersStr,
+                povodFiltersStr,
                 composition,
                 sizesStr
             ] = line.split(';');
-
-
             const [typeProductName, productName] = title.split(' - ');
 
+            // Получение ID типа продукта
             const typeProductId = await this.typeProductService.getTypeProductByName(typeProductName.trim());
             if (!typeProductId) continue;
 
-            const categories = await Promise.all(categoryName.split(',').map(async (categoryName) => {
-                const category = await this.categoriesProductService.getCategoryByName(categoryName.trim());
-                return category ? category : null;
-            }));
+            // Категории продукта
+            const categories = await Promise.all(
+                categoryName.split(',').map(async (categoryName) => {
+                    const category = await this.categoriesProductService.getCategoryByName(categoryName.trim());
+                    return category ? category : null;
+                })
+            );
             const validCategories = categories.filter((c) => c !== null);
 
-            const filters = await Promise.all(filtersStr.split(',').map(async (filterName) => {
-                console.log(filterName.trim(), "FILTER AAAAAAAAAAAAAAAAAAAAAAAAAa");
-                const filter = await this.productsItemsFilterService.getItemFilterByName(filterName.trim());
-                return filter ? filter : null;
-            }));
-            const validFilters = filters.filter((f) => f !== null);
+            // Фильтры "кому" и "поводы"
+            const komuFilters = await Promise.all(
+                komuFiltersStr.split(',').map(async (filterName) => {
+                    const filter = await this.productsItemsFilterService.getItemFilterByName(filterName.trim());
+                    return filter ? filter : null;
+                })
+            );
+            const povodFilters = await Promise.all(
+                povodFiltersStr.split(',').map(async (filterName) => {
+                    const filter = await this.productsItemsFilterService.getItemFilterByName(filterName.trim());
+                    return filter ? filter : null;
+                })
+            );
+            const validFilters = [...komuFilters, ...povodFilters].filter((f) => f !== null);
 
-            console.log(sizesStr, "SIZES CHECK");
-            const sizes = await Promise.all(sizesStr.split(',').map(async (sizeStr) => {
-                const cleanedSizeStr = sizeStr.replace(/["']/g, '').trim();
-                console.log(cleanedSizeStr, "CLEANED SIZE");
-                const [label, dimensions] = cleanedSizeStr.split(':');
+            // Обработка цен и размеров
+            const prices = pricesStr.split(',').map((price) => parseFloat(price.trim()));
+            const sizes = await Promise.all(
+                sizesStr.split(',').map(async (sizeStr, idx) => {
+                    const cleanedSizeStr = sizeStr.replace(/["']/g, '').trim();
+                    const [label, dimensions] = cleanedSizeStr.split(':');
+                    const sizeId = await this.sizesService.getSizeByName(label.trim());
 
-                const sizeId = await this.sizesService.getSizeByName(label.trim());
-                if (!sizeId) return null;
-
-                return { idSize: sizeId, paramsSize: dimensions.trim(), prise: parseFloat(price.trim()) };
-            }));
-
+                    if (!sizeId || !prices[idx]) return null;
+                    return {
+                        idSize: sizeId,
+                        paramsSize: dimensions.trim(),
+                        prise: prices[idx]
+                    };
+                })
+            );
             const validSizes = sizes.filter((s) => s !== null);
 
+            // Загрузка изображения
             const filePromise = await fetch(imageUrl.trim())
-                .then(response => response.blob())
-                .then(blob => new File([blob], `image${index++}`, { type: blob.type }));
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch image: ${response.statusText}`);
+                    }
+                    return response.arrayBuffer();
+                })
+                .then(arrayBuffer => Buffer.from(arrayBuffer))
+                .then(buffer => new CustomFile(buffer, `image${index++}.jpg`, "image/jpeg"));
 
-            console.log(productName.trim(), "PRODUCT NAME");
-            console.log(excerpt.trim(), "DESCRIPTION");
-            console.log(typeProductId, "TYPE PRODUCT ID");
-            // console.log(validCategories, "CATEGORIES");
-            // console.log(validFilters, "FILTERS");
-            console.log(validSizes, "SIZES");
-            console.log([filePromise], "IMAGE URL");
-            console.log(composition.trim(), "STRUCTURE");
-
-            // await this.createFullProduct({
-            //     name: productName.trim(),
-            //     description: excerpt.trim(),
-            //     type: typeProductId,
-            //     categories: validCategories, 
-            //     filters: validFilters, 
-            //     structure: composition.trim(),
-            //     productSize: validSizes,
-            // }, imageUrl.trim());
-
+            // Создание продукта
             const product = await this.productsService.create({
                 name: productName.trim(),
                 description: excerpt.trim(),
                 structure: composition.trim(),
                 idTypeProduct: typeProductId
-            }, []);
-            // console.log(product)
+            }, [filePromise]);
+
+            // Привязка размеров к продукту
             await Promise.all(validSizes.map(async (item) => {
-                // console.log(item);
                 return await this.productsSizesRepository.create({
                     idProduct: product.id,
                     idSize: item.idSize,
                     paramsSize: item.paramsSize,
                     prise: item.prise
-                })
+                });
             }));
+
+            // Привязка категорий к продукту
             await Promise.all(validCategories.map(async (item) => {
                 return await this.categoriesProductService.create({
                     idProduct: product.id,
                     //@ts-ignore
                     idCategory: item.id
-                })
+                });
             }));
-            console.log(validFilters.length, "FILTERS");
+
+            // Привязка фильтров к продукту
             if (validFilters.length === 0) {
                 console.log('No valid filters to insert for this product.');
             } else {
@@ -145,6 +200,7 @@ export class ProductsSizesFullService {
             }
         }
     }
+
 
     private async getCardInfo(productSize: ProductSize) {
         // console.log(productSize, "PRODUCT SIZE")

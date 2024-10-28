@@ -9,6 +9,10 @@ export class FilesService {
 
     async createFile(file, expansionFile: string, nameFolder: string, pathForFolder: string[]): Promise<string> {
         try {
+            if (!file || !file.buffer) {
+                throw new Error('File buffer is undefined');
+            }
+
             const fileName = uuid.v4() + expansionFile;
             let filePath = path.resolve(__dirname, '..', '..', 'static', ...pathForFolder, nameFolder);
 

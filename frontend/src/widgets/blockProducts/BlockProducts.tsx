@@ -39,7 +39,7 @@ const BlockProducts: React.FC = () => {
     const clickHandler = () => {
         const allPages = Math.ceil((data?.count ?? 0) / pageSize);
         if (page < allPages) {
-            setPage(prevPage => prevPage + 1);
+            setPageSize(prevPage => prevPage + 3);
         }
     };
 
