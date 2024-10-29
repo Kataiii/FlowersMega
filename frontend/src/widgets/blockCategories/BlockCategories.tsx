@@ -36,14 +36,15 @@ const GradientDiv = styled.div`
 
 const BlockCategories: React.FC = () => {
     const [page, setPage] = useState<number>(1);
-    const { isLoading, data } = useCategoriesControllerGetPaginationQuery({ page: page, limit: 8 });
+    const [pageSize, setPageSize] = useState<number>(5);
+    const { isLoading, data } = useCategoriesControllerGetPaginationQuery({ page: page, limit: pageSize });
     const navigate = useNavigate();
     const [categories, setCategories] = useState<Category[]>([]);
 
     const clickHandler = () => {
         const allPages = Math.floor((data?.count ?? -1) / 8);
-        if (page <= allPages) {
-            setPage(page => page + 1);
+        if (pageSize <= (data ? data?.count : 1)) {
+            setPageSize(pageSize => pageSize + 3);
             if (!isLoading) {
                 setCategories([...categories, ...data?.categories ?? []]);
             }

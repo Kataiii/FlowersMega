@@ -163,6 +163,7 @@ export class ProductsSizesController {
     async getByCategotyIdWithPagination(@Param("page") page: number, @Param("limit") limit: number, @Query("search") search?: string, @Query("filterItems") filterItems?: string, @Query("minPrice") minPrice?: number, @Query("maxPrice") maxPrice?: number, @Query("category") category?: number) {
 
         console.log(category, "CATEGORY");
+        console.log(search, "SEARCHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         const arrayFilters: number[] = filterItems !== undefined && filterItems !== "" ? filterItems.split(',').map(item => Number(item)) : [];
         return await this.productsSizesFullService.getProductsSizesForCardPagination(page, limit, search, arrayFilters, minPrice, maxPrice, category);
     }
@@ -198,9 +199,21 @@ export class ProductsSizesController {
     @ApiResponse({ status: 404, description: "Category not fount" })
     @Get("/category/:name")
     async getCategoryIdByName(@Param("name") name: string) {
-        // console.log(name, "CATEGORYPPPPPPPP");
+        console.log(name, "CATEGORYPPPPPPPP");
+        if (name === "null") { console.log("DWNIJWENIJEWNIJNWEIJGNIWENGIJWENGNEWGNWENGINEER"); return -1 };
         const response = await this.categoriesService.getCategoryByName(name);
         // console.log(response);
         return response.id;
     }
+
+    @ApiOperation({ summary: 'Search categories and products' })
+    @ApiResponse({ status: 200 })
+    @ApiResponse({ status: 404, description: "Category/Product not found" })
+    @ApiQuery({ name: 'search', required: false })
+    @Get("/search/:search")
+    async getCategoriesAndProductsBySearch(@Param("search") search: string) {
+        console.log(search, "SEARCH");
+        return await this.productsSizesFullService.getCategoryProductsSizesBySearch(search);
+    }
+
 }

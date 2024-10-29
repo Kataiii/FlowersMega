@@ -161,6 +161,15 @@ export class ProductsSizesService {
         };
     }
 
+    async getSearchedProducts(search?: string) {
+        const products = await this.productsService.searchProducts(search);
+        const productsSizes = await Promise.all(products.map(async (item) => {
+            return await this.productsSizesRepository.findOne({
+                where: { idProduct: item.id },
+            });
+        }));
+        return productsSizes;
+    }
 
     async getBySizeIdByProductId(idSize: number, idProduct: number) {
         const productSize = await this.productsSizesRepository.findOne({

@@ -25,6 +25,24 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/products/${queryArg.id}` }),
       providesTags: ['Review']
     }),
+    productsSizesControllerSearch: build.query<
+      ProductsSizesControllerSearchApiResponse,
+      ProductsSizesControllerSearchApiArg
+    >({
+      query: (queryArg) => {
+        if (!queryArg || queryArg.trim() === "") {
+
+          return {
+            url: `/products-sizes/search`,
+            method: "GET",
+          };
+        }
+        return {
+          url: `/products-sizes/search/${queryArg}`,
+          method: "GET",
+        };
+      },
+    }),
     productsSizesControllerCreate: build.mutation<
       ProductsSizesControllerCreateApiResponse,
       ProductsSizesControllerCreateApiArg
@@ -92,6 +110,7 @@ const injectedRtkApi = api.injectEndpoints({
         if (queryArg.category) {
           params.category = queryArg.category;
         }
+        console.log(queryArg.search, "HHHHHHHHHHHMMMMMMMMMMMMMMMMMMMMMMMMMM")
         console.log('CATEGORY', queryArg.category);
         console.log('Request params:', queryArg);
         return {
@@ -210,6 +229,7 @@ const injectedRtkApi = api.injectEndpoints({
       CategoryControllerGetIdByNameApiArg
     >({
       query: (queryArg) => {
+        console.log(queryArg.name, "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
         return {
           url: `/products-sizes/category/${queryArg.name}`,
           method: "GET",
@@ -231,6 +251,14 @@ export type ProductsControllerCreateApiArg = {
     files?: Blob[];
   };
 };
+
+export type ProductsSizesControllerSearchApiResponse =
+  {
+    category: Category[],
+    products: Product[]
+  }
+export type ProductsSizesControllerSearchApiArg = string | null;
+
 export type ProductsControllerGetAllApiResponse = /** status 200  */ Product[];
 export type ProductsControllerGetAllApiArg = void;
 export type ProductsControllerGetByIdApiResponse = /** status 200  */ Product;
@@ -331,7 +359,7 @@ export type CategoryControllerGetIdByNameApiResponse = {
   id: number;
 }
 export type CategoryControllerGetIdByNameApiArg = {
-  name: string;
+  name: string | null;
 }
 export type productSizesControllerGetProductsWithPaginationApiArg = {
   page: number;
@@ -514,6 +542,7 @@ export type Number = {};
 export const {
   useProductsControllerCreateMutation,
   useProductsControllerGetAllQuery,
+  useProductsSizesControllerSearchQuery,
   useProductsControllerGetByIdQuery,
   useProductsSizesControllerCreateMutation,
   useProductsSizesControllerGetAllQuery,

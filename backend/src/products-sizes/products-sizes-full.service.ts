@@ -13,6 +13,7 @@ import { ExtraPriceService } from 'src/extra-price/extra-price.service';
 import * as fs from 'fs';
 import { TypesProductService } from 'src/types-product/types-product.service';
 import { ItemFilter } from 'src/items-filter/items-filter.model';
+import { CategoriesService } from 'src/categories/categories.service';
 
 class CustomFile implements File {
     buffer: Buffer;
@@ -33,18 +34,16 @@ class CustomFile implements File {
         this.type = type;
     }
 
-    // Реализация метода arrayBuffer()
     async arrayBuffer(): Promise<ArrayBuffer> {
         return this.buffer.buffer.slice(this.buffer.byteOffset, this.buffer.byteOffset + this.buffer.byteLength);
     }
 
-    // Реализация метода slice()
     slice(start?: number, end?: number, contentType?: string): Blob {
         const slice = this.buffer.slice(start, end);
         return new Blob([slice], { type: contentType || this.type });
     }
 
-    // Реализация метода stream()
+
     stream(): ReadableStream {
         const readable = new ReadableStream({
             start(controller) {
@@ -55,7 +54,6 @@ class CustomFile implements File {
         return readable;
     }
 
-    // Реализация метода text()
     async text(): Promise<string> {
         return this.buffer.toString('utf-8');
     }
@@ -74,9 +72,9 @@ export class ProductsSizesFullService {
         private typeProductService: TypesProductService,
     ) { }
 
-    async onModuleInit() {
-        await this.seeds("../backend/static/products/FLOWERS.txt");
-    }
+    // async onModuleInit() {
+    //     await this.seeds("../backend/static/products/FLOWERS.txt");
+    // }
 
     async seeds(filePath: string): Promise<void> {
         const fileContent = fs.readFileSync(filePath, 'utf-8');
@@ -98,11 +96,9 @@ export class ProductsSizesFullService {
             ] = line.split(';');
             const [typeProductName, productName] = title.split(' - ');
 
-            // Получение ID типа продукта
             const typeProductId = await this.typeProductService.getTypeProductByName(typeProductName.trim());
             if (!typeProductId) continue;
 
-            // Категории продукта
             const categories = await Promise.all(
                 categoryName.split(',').map(async (categoryName) => {
                     const category = await this.categoriesProductService.getCategoryByName(categoryName.trim());
@@ -111,7 +107,6 @@ export class ProductsSizesFullService {
             );
             const validCategories = categories.filter((c) => c !== null);
 
-            // Фильтры "кому" и "поводы"
             const komuFilters = await Promise.all(
                 komuFiltersStr.split(',').map(async (filterName) => {
                     const filter = await this.productsItemsFilterService.getItemFilterByName(filterName.trim());
@@ -126,7 +121,6 @@ export class ProductsSizesFullService {
             );
             const validFilters = [...komuFilters, ...povodFilters].filter((f) => f !== null);
 
-            // Обработка цен и размеров
             const prices = pricesStr.split(',').map((price) => parseFloat(price.trim()));
             const sizes = await Promise.all(
                 sizesStr.split(',').map(async (sizeStr, idx) => {
@@ -144,7 +138,6 @@ export class ProductsSizesFullService {
             );
             const validSizes = sizes.filter((s) => s !== null);
 
-            // Загрузка изображения
             const filePromise = await fetch(imageUrl.trim())
                 .then(response => {
                     if (!response.ok) {
@@ -155,7 +148,6 @@ export class ProductsSizesFullService {
                 .then(arrayBuffer => Buffer.from(arrayBuffer))
                 .then(buffer => new CustomFile(buffer, `image${index++}.jpg`, "image/jpeg"));
 
-            // Создание продукта
             const product = await this.productsService.create({
                 name: productName.trim(),
                 description: excerpt.trim(),
@@ -163,7 +155,6 @@ export class ProductsSizesFullService {
                 idTypeProduct: typeProductId
             }, [filePromise]);
 
-            // Привязка размеров к продукту
             await Promise.all(validSizes.map(async (item) => {
                 return await this.productsSizesRepository.create({
                     idProduct: product.id,
@@ -173,7 +164,6 @@ export class ProductsSizesFullService {
                 });
             }));
 
-            // Привязка категорий к продукту
             await Promise.all(validCategories.map(async (item) => {
                 return await this.categoriesProductService.create({
                     idProduct: product.id,
@@ -182,7 +172,6 @@ export class ProductsSizesFullService {
                 });
             }));
 
-            // Привязка фильтров к продукту
             if (validFilters.length === 0) {
                 console.log('No valid filters to insert for this product.');
             } else {
@@ -236,9 +225,30 @@ export class ProductsSizesFullService {
         };
     }
 
+    async getCategoryProductsSizesBySearch(search?: string) {
+        console.log(search, "NUUUUUUUUU LYAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        if (search.includes('all')) {
+            console.log("HAHAHAHAHA?")
+            const categories = await this.categoriesProductService.getTopCategories();
+            const products = await this.productsService.getAll();
+            const limitedProducts = products.slice(0, 10).flat();
+            return { category: categories, products: limitedProducts };
+        }
+        if (search !== null && search !== undefined) {
+            console.log("KAAAAAAAAAAAAAAAAAAK?")
+            const categories = await this.categoriesProductService.getSearchCategoryByName(search);
+            const products = await this.productsService.searchProducts(search);
+            const limitedProducts = products.slice(0, 10).flat();
+            return { category: categories, products: limitedProducts };
+        }
+
+
+    }
+
     async getProductsSizesForCardPagination(page: number, limit: number, search?: string, filterItems?: number[], minPrice?: number, maxPrice?: number, category?: number) {
         console.log(filterItems, "filterItems");
         console.log(category, "LMAO uAPL");
+        console.log(search, "search");
         if (category) {
             if (filterItems.length > 0 || minPrice || maxPrice) {
                 const filtersProductsTmp = filterItems.length > 0 ? await Promise.all(filterItems.map(async (item) => {
@@ -255,6 +265,7 @@ export class ProductsSizesFullService {
                         [Op.lte]: maxPrice
                     };
                 }
+
                 if (category) {
                     const productsByCategory = await this.productsService.getProductsByCategoryId(category);
                     const productsIdsByCategory = productsByCategory.map(product => product.id);
@@ -281,6 +292,21 @@ export class ProductsSizesFullService {
         const extraPriceForCategories = await this.extraPriceService.whichOneTheBest();
         // console.log(extraPriceForCategories, "HHHHHHHEEEEEEEEEEEEEEEELPPPPPPPPPPPPP")
         const whereCondition: any = {};
+        let count = await this.productsSizesRepository.findAndCountAll();
+        if (search) {
+            const foundProducts = await this.productsService.searchProducts(search);
+            const foundProductIds = foundProducts.map(product => product.id);
+            if (foundProductIds.length > 0) {
+                count.count = foundProductIds.length;
+                whereCondition.idProduct = { [Op.in]: foundProductIds };
+            } else {
+                return {
+                    count: 0,
+                    products: []
+                };
+            }
+        }
+
         if (minPrice) {
             whereCondition.prise = { [Op.gte]: minPrice };
         }
@@ -290,13 +316,15 @@ export class ProductsSizesFullService {
                 [Op.lte]: maxPrice
             };
         }
-        const count = await this.productsSizesRepository.findAndCountAll();
+        console.log(whereCondition, "whereCondition");
+
 
         const products = await this.productsSizesRepository.findAll({
             where: whereCondition,
             limit: limit,
             offset: (page - 1) * limit,
         });
+
         const updatedProducts = await this.calculatePrices(products);
         // console.log(minPrice, maxPrice, "LOW MAX PRICE")
         const result = updatedProducts.filter(item => {
@@ -414,6 +442,9 @@ export class ProductsSizesFullService {
         // console.log(productSizesTmp, "productSizesTmp");
         return { count: paginationResult.count, products: productSizesTmp };
     }
+
+
+
 
     async createFullProduct(dto: CreateFullProductSizeDto, photo: File) {
         const prosuctsSizes = JSON.parse(`[${dto.productSize.toString()}]`) as CreateProductSizeSmallDto[];

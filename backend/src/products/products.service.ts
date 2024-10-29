@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { Image } from 'src/images/images.model';
 import { ImagesService } from 'src/images/images.service';
 import { CreateProductDto } from './dto/createProduct.dto';
@@ -70,6 +70,23 @@ export class ProductsService {
                 where: { id: categoryId },
             }],
         });
+        return products;
+    }
+
+    async searchProducts(search: string) {
+        const products = await this.productsRepository.findAll({
+            where: Sequelize.where(
+                Sequelize.fn('LOWER', Sequelize.col('name')),
+                {
+                    [Op.like]: `%${search.toLowerCase()}%`
+                }
+            ),
+            order: [["name", "ASC"]],
+            include: [{
+                model: Image
+            }]
+        })
+        // if (products.length === 0) throw new HttpException("Products not fount", HttpStatus.NOT_FOUND);
         return products;
     }
 
