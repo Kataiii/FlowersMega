@@ -11,6 +11,7 @@ import { CategoriesProductsModule } from 'src/categories-products/categories-pro
 import { ProductsItemsFilterModule } from 'src/products-items-filter/products-items-filter.module';
 import { ExtraPriceService } from 'src/extra-price/extra-price.service';
 import { ExtraPriceModule } from 'src/extra-price/extra-price.module';
+import { TypesProductModule } from 'src/types-product/types-product.module';
 
 @Module({
   providers: [ProductsSizesService, ProductsSizesFullService],
@@ -23,7 +24,7 @@ import { ExtraPriceModule } from 'src/extra-price/extra-price.module';
     forwardRef(() => ReviewsModule),
     CategoriesProductsModule,
     ProductsItemsFilterModule,
-
+    TypesProductModule,
   ],
   exports: [
     ProductsSizesService,

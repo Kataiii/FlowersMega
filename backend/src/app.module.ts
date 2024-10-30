@@ -76,6 +76,7 @@ import { UsersRolesModule } from './users-roles/users-roles.module';
         ExtraPriceModule,
         RolesModule,
         UsersRolesModule,
-    ]
+
+    ],
 })
 export class AppModule { }

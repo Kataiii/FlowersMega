@@ -9,6 +9,10 @@ export class FilesService {
 
     async createFile(file, expansionFile: string, nameFolder: string, pathForFolder: string[]): Promise<string> {
         try {
+            if (!file || !file.buffer) {
+                throw new Error('File buffer is undefined');
+            }
+
             const fileName = uuid.v4() + expansionFile;
             let filePath = path.resolve(__dirname, '..', '..', 'static', ...pathForFolder, nameFolder);
 
@@ -26,7 +30,7 @@ export class FilesService {
     async createImageProduct(file, idProduct: number) {
         return await this.createFile(
             file,
-            file.originalname.slice(file.originalname.lastIndexOf('.'), file.originalname.length),
+            file.originalname ? file.originalname.slice(file.originalname.lastIndexOf('.'), file.originalname.length) : file.name,
             idProduct.toString(),
             ["products", "images"]
         );
@@ -50,14 +54,15 @@ export class FilesService {
         );
     }
 
-    async createImageCategory(file) {
+    async createImageCategory(file, categoryId: string) {
         return await this.createFile(
             file,
-            file.originalname.slice(file.originalname.lastIndexOf('.'), file.originalname.length),
-            "categories",
-            []
+            file.originalname ? file.originalname.slice(file.originalname.lastIndexOf('.')) : file.name,
+            categoryId,
+            ["categories"]
         );
     }
+
 
     async deleteAvatar(fileName: string, idUser: number) {
         const filePath = path.resolve(__dirname, '..', '..', 'static', 'users', fileName);

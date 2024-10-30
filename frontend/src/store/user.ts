@@ -43,7 +43,7 @@ const injectedRtkApi = api.injectEndpoints({
         formData: true,
         body: queryArgs
       })
-    })
+    }),
   }),
   overrideExisting: false,
 });

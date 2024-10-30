@@ -49,6 +49,7 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
                 console.error("Ошибка при создании фильтра:", error);
             }
 
+
         }
     };
 
@@ -190,13 +191,13 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
 
     const tagMenu = activeFilter && (
         <div style={{ padding: "8px", backgroundColor: "#fff", border: "1px solid #d9d9d9", borderRadius: "8px" }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', flexDirection: "column" }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', flexDirection: "column", gap: '8px' }}>
                 <div>
                     <Input
                         placeholder="Поиск тегов..."
                         value={searchValue}
                         onChange={handleSearch}
-                        style={{ width: "135px" }}
+                        style={{ width: "85%" }}
                         onClick={(e) => e.stopPropagation()}
                     />
                     <Button
@@ -242,7 +243,7 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
                                 style={{ paddingLeft: "3px" }}
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    handleRemoveItemFilter(tag.id!);
+                                    handleRemoveItemFilter(tag.id ? tag.id : 0);
                                 }}
                             />
                         </div>
@@ -310,14 +311,19 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
                         <span>{filterObj.filter.name}:</span>
                         <span style={{ marginLeft: '8px', border: "1px solid #1890ff", borderRadius: '4px', padding: '2px 4px', backgroundColor: '#fff', color: '#1890ff' }}>
                             {filterObj.tags.map(tag => tag.name).join(', ')}
+                            <>
+                                {console.log(filterObj, "")}
+                            </>
+
                         </span>
-                        <EditOutlined
+
+                        {/* <EditOutlined
                             style={{ marginLeft: '8px', cursor: 'pointer' }}
                             onClick={() => {
                                 setActiveFilter(filterObj.filter);
                                 setDropdownOpen(false);
                             }}
-                        />
+                        /> */}
                         <CloseOutlined
                             onClick={() => handleRemoveFilter(filterObj.filter)}
                             style={{ marginLeft: '8px', cursor: 'pointer' }}

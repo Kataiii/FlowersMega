@@ -76,7 +76,7 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
             .filter((item): item is NonNullable<typeof item> => item !== null);
     }, [productSizedPag, sizes, id]);
 
-    console.log(dataSource, "LMAKWINFOIENIRENIREIERIJERIJ");
+    // console.log(dataSource, "LMAKWINFOIENIRENIREIERIJERIJ");
     const columns = [
         {
             title: "Размер",

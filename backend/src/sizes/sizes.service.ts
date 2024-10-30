@@ -25,6 +25,20 @@ export class SizesService {
         return size;
     }
 
+    async getSizeByName(name: string): Promise<number | null> {
+        const size = await this.sizesRepository.findOne({
+            where: { name },
+        });
+
+        if (!size) {
+            console.log('Size not found:', name);
+            return null;
+        }
+
+        return size.id;
+    }
+
+
     async delete(id: number) {
         const size = await this.sizesRepository.findOne({ where: { id: id } });
         await this.sizesRepository.destroy({ where: { id: id } });
