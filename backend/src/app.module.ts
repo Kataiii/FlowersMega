@@ -29,6 +29,7 @@ import { MinOrderCostModule } from './min-order-cost/min-order-cost.module';
 import { ExtraPriceModule } from './extra-price/extra-price.module';
 import { RolesModule } from './roles/roles.module';
 import { UsersRolesModule } from './users-roles/users-roles.module';
+import { TelegramUsersModule } from './telegram-users/telegram-users.module';
 
 @Module({
     imports: [
@@ -77,6 +78,7 @@ import { UsersRolesModule } from './users-roles/users-roles.module';
         RolesModule,
         UsersRolesModule,
 
+        TelegramUsersModule
     ],
 })
 export class AppModule { }
