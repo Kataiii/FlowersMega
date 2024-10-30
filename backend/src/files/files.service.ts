@@ -54,14 +54,15 @@ export class FilesService {
         );
     }
 
-    async createImageCategory(file) {
+    async createImageCategory(file, categoryId: string) {
         return await this.createFile(
             file,
-            file.originalname.slice(file.originalname.lastIndexOf('.'), file.originalname.length),
-            "categories",
-            []
+            file.originalname ? file.originalname.slice(file.originalname.lastIndexOf('.')) : file.name,
+            categoryId,
+            ["categories"]
         );
     }
+
 
     async deleteAvatar(fileName: string, idUser: number) {
         const filePath = path.resolve(__dirname, '..', '..', 'static', 'users', fileName);

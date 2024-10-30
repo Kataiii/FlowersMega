@@ -49,9 +49,9 @@ const Catalog: React.FC = () => {
                         <FiltersTags />
                         <div style={{
                             display: "grid",
-                            gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+                            gridTemplateColumns: "repeat(auto-fill, minmax(270px, 1fr))",
                             gridColumnGap: "5px",
-                            gap: "18px"
+                            gap: "10px"
                         }}>
                             {
                                 isLoading

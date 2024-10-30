@@ -11,6 +11,7 @@ export class ItemsFilterService {
         await this.seeds();
     }
 
+
     async seeds() {
         const itemFilters = [
             { name: 'День рождения', idFilter: 1 },
@@ -21,7 +22,7 @@ export class ItemsFilterService {
             { name: '1 сентября', idFilter: 1 },
             { name: 'На свадьбу', idFilter: 1 },
             { name: '14 февраля', idFilter: 1 },
-            { name: 'На юбилей', idFilter: 1 },
+            { name: 'На юбилей', idFilter: 1 },
             { name: 'Сказать люблю', idFilter: 1 },
             { name: 'Цветы на день матери', idFilter: 2 },
             { name: 'Цветы жене', idFilter: 2 },

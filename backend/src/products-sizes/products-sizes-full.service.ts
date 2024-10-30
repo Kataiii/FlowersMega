@@ -15,7 +15,7 @@ import { TypesProductService } from 'src/types-product/types-product.service';
 import { ItemFilter } from 'src/items-filter/items-filter.model';
 import { CategoriesService } from 'src/categories/categories.service';
 
-class CustomFile implements File {
+export class CustomFile implements File {
     buffer: Buffer;
     originalname: string;
     lastModified: number;
@@ -72,9 +72,9 @@ export class ProductsSizesFullService {
         private typeProductService: TypesProductService,
     ) { }
 
-    // async onModuleInit() {
-    //     await this.seeds("../backend/static/products/FLOWERS.txt");
-    // }
+    async onModuleInit() {
+        await this.seeds("../backend/static/products/FLOWERS.txt");
+    }
 
     async seeds(filePath: string): Promise<void> {
         const fileContent = fs.readFileSync(filePath, 'utf-8');
