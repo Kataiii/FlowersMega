@@ -123,6 +123,7 @@ const SecondHeader: React.FC<SecondHeaderProps> = ({ onSearchChange }) => {
                     placeholder="Поиск"
                     allowClear
                     size="large"
+                    enterButton={<Button type="primary"><ButtonText>Найти</ButtonText></Button>}
                     onChange={handleSearchChange}
                     onFocus={handleInputFocus}
                 />
