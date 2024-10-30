@@ -36,6 +36,8 @@ export class UsersService {
                 password: await bcryptjs.hash(process.env.ADMIN_PASSWORD, 10)
             }
         });
+        await this.rolesService.create("user");
+        await this.rolesService.create("admin");
         const roleUser = await this.rolesService.getByName("user");
         const roleAdmin = await this.rolesService.getByName("admin");
         await this.usersRolesService.findOrCreate({userId: user[0].id, roleId: roleUser.id});

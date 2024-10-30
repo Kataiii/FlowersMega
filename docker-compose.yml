@@ -3,24 +3,24 @@ services:
     restart: always
     build: ./database
     env_file:
-      - ./backend/.development.env
+      - ./backend/.production.env
     container_name: postgres
     volumes:
       - ./pgdata:/var/lib/postgresql/data
       - ./backups:/var/lib/postgresql/backups
     ports:
       - '5432:5432'
-  app:
-    container_name: app
-    image: flowers_mega
-    build: ./backend
-    env_file: ./backend/.development.env
-    ports:
-      - "5000:5000"
-    depends_on:
-      - db
-    volumes:
-      - ./backend:/app
+  # app:
+  #   container_name: app
+  #   image: flowers_mega
+  #   build: ./backend
+  #   env_file: ./backend/.production.env
+  #   ports:
+  #     - "5000:5000"
+  #   depends_on:
+  #     - db
+  #   volumes:
+  #     - ./backend:/app
   pgadmin:
     image: dpage/pgadmin4
     restart: always
@@ -32,3 +32,8 @@ services:
       - '5050:80'
     depends_on:
       - db
+networks:
+  default:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1450
