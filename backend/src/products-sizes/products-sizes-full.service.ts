@@ -72,9 +72,9 @@ export class ProductsSizesFullService {
         private typeProductService: TypesProductService,
     ) { }
 
-    async onModuleInit() {
-        await this.seeds("../backend/static/products/FLOWERS.txt");
-    }
+    // async onModuleInit() {
+    //     await this.seeds("../backend/static/products/FLOWERS.txt");
+    // }
 
     async seeds(filePath: string): Promise<void> {
         const fileContent = fs.readFileSync(filePath, 'utf-8');
@@ -226,24 +226,46 @@ export class ProductsSizesFullService {
     }
 
     async getCategoryProductsSizesBySearch(search?: string) {
-        console.log(search, "NUUUUUUUUU LYAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-        if (search.includes('all')) {
-            console.log("HAHAHAHAHA?")
+        console.log(search, "NUUUUUUUUU LYAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
+        const sizeId = await this.sizesService.getSizeByName('-');
+
+        if (search && search.includes('all')) {
+            console.log("HAHAHAHAHA?");
+
             const categories = await this.categoriesProductService.getTopCategories();
+
+            const prodSizes = await this.productsSizesRepository.findAll({
+                where: { idSize: { [Op.ne]: sizeId } }
+            });
+
             const products = await this.productsService.getAll();
-            const limitedProducts = products.slice(0, 10).flat();
+            const filteredProducts = products.filter(product =>
+                prodSizes.some(size => size.idProduct === product.id)
+            );
+
+            const limitedProducts = filteredProducts.slice(0, 10);
             return { category: categories, products: limitedProducts };
         }
+
         if (search !== null && search !== undefined) {
-            console.log("KAAAAAAAAAAAAAAAAAAK?")
+            console.log("KAAAAAAAAAAAAAAAAAAK?");
+
             const categories = await this.categoriesProductService.getSearchCategoryByName(search);
             const products = await this.productsService.searchProducts(search);
-            const limitedProducts = products.slice(0, 10).flat();
+
+            const prodSizes = await this.productsSizesRepository.findAll({
+                where: { idSize: { [Op.ne]: sizeId } }
+            });
+            const filteredProducts = products.filter(product =>
+                prodSizes.some(size => size.idProduct === product.id)
+            );
+
+            const limitedProducts = filteredProducts.slice(0, 10);
             return { category: categories, products: limitedProducts };
         }
-
-
     }
+
 
     async getProductsSizesForCardPagination(page: number, limit: number, search?: string, filterItems?: number[], minPrice?: number, maxPrice?: number, category?: number) {
         console.log(filterItems, "filterItems");

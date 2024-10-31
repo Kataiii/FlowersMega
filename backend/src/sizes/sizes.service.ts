@@ -7,6 +7,27 @@ import { Size } from './sizes.model';
 export class SizesService {
     constructor(@InjectModel(Size) private sizesRepository: typeof Size) { }
 
+    async onModuleInit() {
+        await this.seeds();
+    }
+
+
+    async seeds() {
+        const sizes = [
+            { name: 'Стандартный' },
+            { name: 'Средний' },
+            { name: 'Большой' },
+            { name: 'Эксклюзивный' },
+            { name: '-' },
+        ];
+        for (const size of sizes) {
+            await this.sizesRepository.findOrCreate({
+                where: { name: size.name },
+                defaults: size,
+            });
+        }
+    }
+
     async create(dto: CreateSizeDto) {
         return await this.sizesRepository.create(dto);
     }

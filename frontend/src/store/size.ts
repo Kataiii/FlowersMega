@@ -19,6 +19,12 @@ const injectedRtkApi = api.injectEndpoints({
       query: () => ({ url: `/sizes` }),
       providesTags: ["Sizes"],
     }),
+    sizeContollerGetByName: build.query<
+      SizeContollerGetByNameApiResponse,
+      SizeControllerGetByNameApiArg
+    >({
+      query: (queryArg) => ({ url: `/sizes/name/${queryArg.name}` })
+    }),
     sizesControllerGetById: build.query<
       SizesControllerGetByIdApiResponse,
       SizesControllerGetByIdApiArg
@@ -154,6 +160,11 @@ export type SizesControllerDeleteApiResponse = void;
 export type SizesControllerDeleteApiArg = {
   id: number;
 }
+
+export type SizeContollerGetByNameApiResponse = number;
+export type SizeControllerGetByNameApiArg = {
+  name: string;
+};
 export type Size = {
   /** Unique identifier */
   id?: number;
@@ -270,5 +281,6 @@ export const {
   useProductsSizesControllerGetProductSizeForCardByIdQuery,
   useProductsSizesControllerGetByCategotyIdWithPaginationQuery,
   useOrdersProductsSizesControllerGetByIdQuery,
-  useSizesControllerDeleteMutation
+  useSizesControllerDeleteMutation,
+  useSizeContollerGetByNameQuery
 } = injectedRtkApi;

@@ -9,6 +9,7 @@ import { SmartProductCard } from "../../../widgets/product/SmartProductCart";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useProductContext } from "../../../shared/ui/secondHeader/ProductContext";
+import { useSizeContollerGetByNameQuery } from "../../../store/size";
 
 const Catalog: React.FC = () => {
     const filters = useAppSelector(selectFilters)
@@ -31,7 +32,7 @@ const Catalog: React.FC = () => {
     console.log(category, "CONTEXT")
     console.log(decodedCategory, "CATEGORYAAAAAAAAAAAAAAA");
     console.log(categoryIdData, "CATEGORYDATA");
-
+    const { data: postcardId } = useSizeContollerGetByNameQuery({ name: "-" });
     // const { isLoading, data } = useProductsSizesControllerGetAllQuery();
     const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ limit: pageSize, page: page, search: selectedProduct ? selectedProduct : '', filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: categoryD ? Number(categoryIdData) : undefined });
 
@@ -56,9 +57,13 @@ const Catalog: React.FC = () => {
                             {
                                 isLoading
                                     ? <p>Загрузка...</p>
-                                    : data && data.products.map((item, index) => {
-                                        return <SmartProductCard key={index} product={item} />
-                                    })
+                                    : data && data.products.map((item, index) => item.productSize.idSize !== postcardId ? (
+                                        <>
+                                            {console.log(1)}
+                                            <SmartProductCard key={`productSizes-${index}`} product={item} />
+
+                                        </>
+                                    ) : null)
                             }
                         </div>
 
