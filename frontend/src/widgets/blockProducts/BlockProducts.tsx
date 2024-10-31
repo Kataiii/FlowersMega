@@ -5,6 +5,7 @@ import Container from "../../shared/ui/containerMain/ContainerMain";
 import TitleSection from "../../shared/ui/titleSection/TitleSection";
 import { FullProductSizeDto, ProductSize, useProductsSizesControllerGetByCategotyIdWithPaginationQuery, useProductsSizesControllerGetPaginationQuery } from "../../store/product";
 import { SmartProductCard } from "../product/SmartProductCart";
+import { useSizeContollerGetByNameQuery } from "../../store/size";
 
 const Wrapper = styled.div`
     padding: 24px;
@@ -27,7 +28,8 @@ const BlockProducts: React.FC = () => {
     const [pageSize, setPageSize] = useState<number>(6);
     const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ page: page, limit: pageSize });
     const [productsSizes, setProductSizes] = useState<FullProductSizeDto[]>([]);
-
+    const { data: postcardId } = useSizeContollerGetByNameQuery({ name: "-" });
+    console.log(postcardId, "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
 
     useEffect(() => {
         if (!isLoading && data?.products) {
@@ -51,11 +53,18 @@ const BlockProducts: React.FC = () => {
                     {
                         isLoading
                             ? <p>Загрузка...</p>
-                            : data && productsSizes.map((item, index) => (
-                                <SmartProductCard key={`productSizes-${index}`} product={item} />
-                            ))
+                            : data && productsSizes.map((item, index) =>
+                                item.productSize.idSize !== postcardId ? (
+                                    <>
+                                        {console.log(1)}
+                                        <SmartProductCard key={`productSizes-${index}`} product={item} />
+
+                                    </>
+                                ) : null
+                            )
                     }
                 </BlockGrid>
+
                 {
                     (data?.count ?? -1) > productsSizes.length
                         ? <div style={{ width: "10%", margin: "0 auto" }}>

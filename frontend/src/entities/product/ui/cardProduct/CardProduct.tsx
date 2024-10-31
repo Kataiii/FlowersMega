@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { API_URL, PRODUCT_PATH } from "../../../../shared/utils/constants";
 import { FullProductSizeDto, Product, ProductSize, useProductsControllerGetByIdQuery } from "../../../../store/product";
-import { Size, useSizesControllerGetByIdQuery } from "../../../../store/size";
+import { Size, useSizeContollerGetByNameQuery, useSizesControllerGetByIdQuery } from "../../../../store/size";
 import AddCart from "../../../../shared/assets/add_cart.svg";
 import Cursor from "../../../../shared/assets/cursor.svg";
 import { useNavigate } from "react-router-dom";
@@ -65,7 +65,7 @@ const CardProduct: React.FC<CardProductProps> = ({ product, addToCartButton, add
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [price, setPrice] = useState<number>(product.productSize.prise);
     console.log(product, "SSSSS");
-
+    const { data: postcardId } = useSizeContollerGetByNameQuery({ name: "-" });
     // useEffect(() => {
     //     setPrice(product.productSize.prise);
     // }, [price]);
@@ -80,7 +80,7 @@ const CardProduct: React.FC<CardProductProps> = ({ product, addToCartButton, add
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <p style={{ fontFamily: 'Inter', fontWeight: 400, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0, wordBreak: "break-all" }}>{product.product.name} {`(${product.size?.name})`}</p>
+                    <p style={{ fontFamily: 'Inter', fontWeight: 400, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0, wordBreak: "break-all" }}>{product.product.name} {product.size.id !== postcardId ? (`(${product.size?.name})`) : null}</p>
                     <p style={{ fontFamily: 'Inter', fontWeight: 400, fontSize: "14px", color: "#8B8B8B", margin: 0 }}>Размер: {product.productSize.paramsSize}</p>
                 </div>
                 <p style={{ fontFamily: 'Inter', fontWeight: 600, fontSize: "24px", color: "var(--secondary-text-color)", margin: 0 }}>{product.productSize.prise.toLocaleString()} ₽</p>
