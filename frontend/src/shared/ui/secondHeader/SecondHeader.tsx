@@ -51,6 +51,7 @@ const CatalogSearch = styled.div`
 `;
 
 const SecondHeader: React.FC<SecondHeaderProps> = ({ onSearchChange }) => {
+    const [isCatalogOpen, setIsCatalogOpen] = useState<boolean>(false);
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>("all");
     const { setSelectedProduct, setCategory } = useProductContext();
@@ -115,7 +116,7 @@ const SecondHeader: React.FC<SecondHeaderProps> = ({ onSearchChange }) => {
 
     return (
         <Container ref={divContainer}>
-            <Catalog clickHandler={() => setIsOpen(isOpen => !isOpen)} />
+            <Catalog clickHandler={() => setIsCatalogOpen(isCatalogOpen => !isCatalogOpen)} />
             <Location />
             <div style={{ flexGrow: "1", position: "relative" }}>
                 <Search
@@ -173,6 +174,11 @@ const SecondHeader: React.FC<SecondHeaderProps> = ({ onSearchChange }) => {
                 <CartButton />
                 <FavoriteButton />
             </div>
+            {
+                isCatalogOpen
+                    ? <CatalogPanel />
+                    : null
+            }
         </Container>
     );
 };
