@@ -27,7 +27,7 @@ const PostcardAddBlock: React.FC = () => {
     };
 
     return (
-        <div style={{ border: "2px solid var(--primary-bg-color)", width: "35%", height: "520px", borderRadius: "16px", display: "flex", flexDirection: "column", padding: "8px", gap: "8px" }}>
+        <div style={{ border: "2px solid var(--primary-bg-color)", width: "100%", height: "60vh", borderRadius: "16px", display: "flex", flexDirection: "column", padding: "8px", gap: "8px" }}>
             <p style={{ fontFamily: "Inter", fontSize: "16px", fontWeight: 600, height: "5%", color: "var(--primary-review-text)", padding: "8px" }}>
                 Добавление в корзину
             </p>

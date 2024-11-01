@@ -17,6 +17,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ category }) => {
     const { isLoading, data } = useFiltersControllerGetAllQuery();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    console.log(data, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaa")
 
     const handleSelectAll = (filterItems: ItemFilter[]) => {
         dispatch(addAllToFilters(filterItems));

@@ -8,6 +8,7 @@ import SecondHeader from "./shared/ui/secondHeader/SecondHeader";
 import { CATEGORY_PATH, HOME_PATH, mapBreads, PRODUCT_PATH, CATALOG_PATH } from "./shared/utils/constants";
 import "./shared/utils/cssConstants.css";
 import { useEffect, useState } from "react";
+import ProductProvider from "./shared/ui/secondHeader/ProductContext";
 
 const Container = styled.div`
   background-color: var(--main-bg-color);
@@ -83,34 +84,35 @@ const App: React.FC = () => {
   }
 
   return (
+    <ProductProvider >
+      <Container>
+        <ContainerHeaders>
+          {isMobile ? (
+            <>
 
-    <Container>
-      <ContainerHeaders>
-        {isMobile ? (
-          <>
+              {/* {console.log("SSSS", x.matches)} */}
+            </>
+          ) : (
+            <>
+              {/* {console.log("555", x.matches)} */}
+              <Header />
+              <SecondHeader />
 
-            {/* {console.log("SSSS", x.matches)} */}
-          </>
-        ) : (
-          <>
-            {/* {console.log("555", x.matches)} */}
-            <Header />
-            <SecondHeader />
-          </>
-        )}
+            </>
+          )}
 
-      </ContainerHeaders>
-      {
-        location.pathname === HOME_PATH
-          ? null
-          : <div style={{ width: "90%", margin: "0 auto", padding: "25px 0 10px" }}>
-            <Breadcrumb items={sliceBreads(location.pathname)} />
-          </div>
-      }
-      <Outlet></Outlet>
-      <Footer />
-    </Container>
-
+        </ContainerHeaders>
+        {
+          location.pathname === HOME_PATH
+            ? null
+            : <div style={{ width: "90%", margin: "0 auto", padding: "25px 0 10px" }}>
+              <Breadcrumb items={sliceBreads(location.pathname)} />
+            </div>
+        }
+        <Outlet></Outlet>
+        <Footer />
+      </Container>
+    </ProductProvider>
   )
 }
 

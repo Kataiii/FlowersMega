@@ -88,7 +88,7 @@ const BlockReviews: React.FC = () => {
                                     {console.log(data?.count)}
                                     {
                                         data?.reviews.map((item, index) => {
-                                            return <ReviewCardMain key={`review_card-${index}`} review={item} />
+                                            return <ReviewCardMain key={`review_card-${item.id}`} review={item} />
                                         })
                                     }
                                     {

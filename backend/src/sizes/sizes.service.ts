@@ -7,6 +7,27 @@ import { Size } from './sizes.model';
 export class SizesService {
     constructor(@InjectModel(Size) private sizesRepository: typeof Size) { }
 
+    async onModuleInit() {
+        await this.seeds();
+    }
+
+
+    async seeds() {
+        const sizes = [
+            { name: 'Стандартный' },
+            { name: 'Средний' },
+            { name: 'Большой' },
+            { name: 'Эксклюзивный' },
+            { name: '-' },
+        ];
+        for (const size of sizes) {
+            await this.sizesRepository.findOrCreate({
+                where: { name: size.name },
+                defaults: size,
+            });
+        }
+    }
+
     async create(dto: CreateSizeDto) {
         return await this.sizesRepository.create(dto);
     }
@@ -24,6 +45,20 @@ export class SizesService {
         if (size === null) throw new HttpException("Size not found", HttpStatus.NOT_FOUND);
         return size;
     }
+
+    async getSizeByName(name: string): Promise<number | null> {
+        const size = await this.sizesRepository.findOne({
+            where: { name },
+        });
+
+        if (!size) {
+            console.log('Size not found:', name);
+            return null;
+        }
+
+        return size.id;
+    }
+
 
     async delete(id: number) {
         const size = await this.sizesRepository.findOne({ where: { id: id } });

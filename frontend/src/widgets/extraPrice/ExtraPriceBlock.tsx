@@ -56,7 +56,7 @@ const ExtraPriceBlock: React.FC = () => {
 
     const handleDelete = async () => {
         try {
-            await deleteExtra({ idCategory: 'all' });
+            await createExtra({ body: { idCategory: 'all', value: 0 } });
         } catch (e) {
             console.error('Error during deletion:', e);
         }

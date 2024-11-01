@@ -31,8 +31,8 @@ export class CreateFullProductSizeDto {
     productSize: CreateProductSizeSmallDto[];
 
     @ApiProperty({ type: [Category], description: 'Array categories', required: true })
-    categories: [];
+    categories: Category[];
 
     @ApiProperty({ type: [FilterWithItems], description: 'Array filters with items', required: true })
-    filters: FilterWithItems[];
+    filters: ItemFilter[];
 }

@@ -14,80 +14,77 @@ import { RolesAuthGuard } from 'src/auth/guards/roles-auth.guard';
 @ApiTags("Users")
 @Controller('users')
 export class UsersController {
-    constructor(private userService: UsersService){}
+  constructor(private userService: UsersService) { }
 
-    @ApiBearerAuth('access-token')
-    @Roles("admin")
-    @UseGuards(JwtAuthGuard, RolesAuthGuard)
-    @ApiOperation({summary: 'Create user'})
-    @ApiResponse({status: 201, type: ResponseDto})
-    @Post()
-    async create(@Body() dto: CreateUserDto){
-        const user = await this.userService.create(dto);
-        const userDto: UserDto = user;
-        return userDto;
-    }
+  @ApiBearerAuth('access-token')
+  @Roles("admin")
+  @UseGuards(JwtAuthGuard, RolesAuthGuard)
+  @ApiOperation({ summary: 'Create user' })
+  @ApiResponse({ status: 201, type: ResponseDto })
+  @Post()
+  async create(@Body() dto: CreateUserDto) {
+    const user = await this.userService.create(dto);
+    const userDto: UserDto = user;
+    return userDto;
+  }
 
-    @ApiBearerAuth('access-token')
-    @Roles("admin")
-    @UseGuards(JwtAuthGuard, RolesAuthGuard)
-    @ApiOperation({summary: 'Get user by id'})
-    @ApiResponse({status: 200, type: ResponseDto})
-    @Get("/user")
-    async getById(@Req() request: Request){
-        const [type, token] = request.headers.authorization.split(' ');
-        const accessToken = type === 'Bearer' ? token : undefined;
-        const payload = await this.userService.checkAccountData(accessToken);
-        const user = await this.userService.getById(payload.id);
-        const userDto: UserDto = user;
-        return userDto;
-    }
+  @ApiBearerAuth('access-token')
+  @Roles("admin")
+  @UseGuards(JwtAuthGuard, RolesAuthGuard)
+  @ApiOperation({ summary: 'Get user by id' })
+  @ApiResponse({ status: 200, type: ResponseDto })
+  @Get("/user")
+  async getById(@Req() request: Request) {
+    const [type, token] = request.headers.authorization.split(' ');
+    const accessToken = type === 'Bearer' ? token : undefined;
+    const payload = await this.userService.checkAccountData(accessToken);
+    const user = await this.userService.getById(payload.id);
+    const userDto: UserDto = user;
+    return userDto;
+  }
 
-    @ApiBearerAuth('access-token')
-    @Roles("admin", "user")
-    @UseGuards(JwtAuthGuard, RolesAuthGuard)
-    @ApiOperation({summary: 'Update user'})
-    @ApiResponse({status: 200, type: ResponseDto})
-    @Patch()
-    async update(@Body() dto: UpdateUserDto, @Req() request: Request){
-        const response = await ExtractToken.checkAccessToken(ExtractToken.extractTokenFromHeader(request));
-        return await this.userService.update(dto, response.id);
-    }
+  @ApiBearerAuth('access-token')
+  @Roles("admin", "user")
+  @UseGuards(JwtAuthGuard, RolesAuthGuard)
+  @ApiOperation({ summary: 'Update user' })
+  @ApiResponse({ status: 200, type: ResponseDto })
+  @Patch()
+  async update(@Body() dto: UpdateUserDto, @Req() request: Request) {
+    const response = await ExtractToken.checkAccessToken(ExtractToken.extractTokenFromHeader(request));
+    return await this.userService.update(dto, response.id);
+  }
 
-    @ApiBearerAuth('access-token')
-    @Roles("admin", "user")
-    @UseGuards(JwtAuthGuard, RolesAuthGuard)
-    @ApiOperation({summary: 'Update avatar user'})
-    @ApiResponse({status: 200, type: ResponseDto})
-    @Post("/avatar")
-    @ApiConsumes('multipart/form-data')
-    @ApiBody({
-        schema: {
-          type: 'object',
-          properties: {
-            file: {
-              type: 'string',
-              format: 'binary',
-            },
-          },
+  @ApiBearerAuth('access-token')
+  @Roles("admin", "user")
+  @UseGuards(JwtAuthGuard, RolesAuthGuard)
+  @ApiOperation({ summary: 'Update avatar user' })
+  @ApiResponse({ status: 200, type: ResponseDto })
+  @Post("/avatar")
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
         },
-      })
-    @UseInterceptors(FileInterceptor('file'))
-    async updateAvatar(@UploadedFile('file') file, @Req() request: Request){
-        const response = await ExtractToken.checkAccessToken(ExtractToken.extractTokenFromHeader(request));
-        return await this.userService.updateAvatar(response.id, file);
-    }
+      },
+    },
+  })
+  @UseInterceptors(FileInterceptor('file'))
+  async updateAvatar(@UploadedFile('file') file, @Req() request: Request) {
+    const response = await ExtractToken.checkAccessToken(ExtractToken.extractTokenFromHeader(request));
+    return await this.userService.updateAvatar(response.id, file);
+  }
 
-    @ApiBearerAuth('access-token')
-    @Roles("admin", "user")
-    @UseGuards(JwtAuthGuard, RolesAuthGuard)
-    @ApiOperation({summary: 'Delete user'})
-    @ApiResponse({status: 200, type: ResponseDto})
-    @Delete()
-    async delete(@Req() request: Request){
-        const [type, token] = request.headers.authorization.split(' ');
-        const accessToken = type === 'Bearer' ? token : undefined;
-        const payload = await this.userService.checkAccountData(accessToken);
-        return await this.userService.delete(payload.id);
-    }
+  @ApiOperation({ summary: 'Delete user' })
+  @ApiResponse({ status: 200, type: ResponseDto })
+  @Delete()
+  async delete(@Req() request: Request) {
+    const [type, token] = request.headers.authorization.split(' ');
+    const accessToken = type === 'Bearer' ? token : undefined;
+    const payload = await this.userService.checkAccountData(accessToken);
+    return await this.userService.delete(payload.id);
+  }
 }

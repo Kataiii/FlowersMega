@@ -63,7 +63,6 @@ const ReviewCardMain: React.FC<ReviewCardMainProps> = ({ review }) => {
             transition: "height 0.8s ease-in-out",
         }}>
             <TitleReview>
-
                 {review.product ? (
                     <>
                         {/* @ts-ignore */}
@@ -71,7 +70,11 @@ const ReviewCardMain: React.FC<ReviewCardMainProps> = ({ review }) => {
                         <Title>{review.product.name}</Title>
                     </>
                 ) : (
-                    <Title>Товар</Title>
+
+                    <>
+                        {console.log(review, "LALALLLLALA")}
+                        <Title>Товар</Title>
+                    </>
                 )}
 
             </TitleReview>

@@ -12,7 +12,7 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
 
       }),
-      // invalidatesTags: ['Review'],
+      invalidatesTags: ['Review'],
     }),
     reviewsControllerGetAll: build.query<
       ReviewsControllerGetAllApiResponse,
@@ -26,7 +26,7 @@ const injectedRtkApi = api.injectEndpoints({
       ReviewsControllerGetByIdApiArg
     >({
       query: (queryArg) => ({ url: `/reviews/${queryArg.id}` }),
-      providesTags: ['ReviewUPD']
+      providesTags: ['Review']
     }),
     reviewsControllerGetByProductSizeId: build.query<
       ReviewsControllerGetByProductSizeIdApiResponse,
@@ -54,7 +54,7 @@ const injectedRtkApi = api.injectEndpoints({
           params: params,
         };
       },
-      providesTags: ['Review', 'ReviewUPD']
+      providesTags: ['Review']
     }),
     reviewsControllerGetStaticticByProductSizeId: build.query<
       ReviewsControllerGetStaticticByProductSizeIdApiResponse,
@@ -69,7 +69,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/reviews/reviews-product-size/${queryArg.productSizeId}/${queryArg.limit}/${queryArg.page}`
       }),
-
+      providesTags: ['Review'],
     }),
     reviewControllerUpdate: build.mutation<
       ReviewControllerUpdateApiResponse,
@@ -81,7 +81,7 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.updatedReview,
 
       }),
-      invalidatesTags: ['ReviewUPD'],
+      invalidatesTags: ['Review'],
     }),
     reviewControllerDelete: build.mutation<
       ReviewControllerDeleteApiResponse,
@@ -93,7 +93,7 @@ const injectedRtkApi = api.injectEndpoints({
         body: { id: queryArg.id },
 
       }),
-      invalidatesTags: ['ReviewDEL'],
+      invalidatesTags: ['Review'],
     })
   }),
   overrideExisting: false,

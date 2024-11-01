@@ -16,6 +16,7 @@ import { useCategoriesControllerGetAllQuery } from "../../../../store/category";
 import { ButtonText } from "./Products";
 import { Numerals } from "../../../../shared/utils/numerals";
 import { Block, ImageBlockInside, ImageBlockOutside, StyledCategoriesFiltersBlock, StyledTextArea, StyledVarBlock } from "./Product.styled";
+import ts from "typescript";
 
 interface ProductProps {
     onCatChange?: (categories: any[]) => void,
@@ -78,13 +79,14 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
     const { isLoading, data } = useProductsControllerGetByIdQuery({ id: Number(id) });
     const [disabled, setDisabled] = useState(true);
     const [form] = Form.useForm();
+    const { data: productFiltCat } = useProductsControllerGetByIdQuery({ id: Number(id) });
+
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [variations, setVariations] = useState<any[]>([]);
     const [filters, setFilters] = useState<any[]>([]);
     const { data: filtersData, isLoading: filtersLoading } = useFiltersControllerGetAllQuery();
     const { data: categories, isLoading: categoriesLoading } = useCategoriesControllerGetAllQuery();
     const { data: productVariations, isLoading: productVariationsLoading } = useProductsSizesControllerGetAllSizesByProductIdQuery({ id: Number(id) });
-    const { data: productFiltCat } = useProductsControllerGetByIdQuery({ id: Number(id) });
     const [createProductWithDetails] = useProductsControllerCreateWithDetailsMutation();
     const [photoUrl, setPhotoUrl] = useState<string | null>(null);
     const [deleteProduct] = useProductsControllerDeleteByIdMutation();
@@ -98,6 +100,8 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
         }
     }));
     console.log(productVariations, "productVariations");
+    // @ts-ignore
+    console.log(productFiltCat, "productFiltCat");
     const handleFormFinish = async (values: any) => {
         const formattedFilters = filters.map((filter) => {
             return {
@@ -206,7 +210,7 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
                 paramsSize: variation.paramsSize,
             }));
             console.log("aaaaaa", variationsS);
-
+            setSelectedCategories(selectedCategories)
             setVariations(variationsS);
             if (onCatChange) {
                 onCatChange(selectedCategories);
@@ -227,7 +231,7 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
 
     return (
         <Container>
-            {isLoading ? (
+            {isLoading && categoriesLoading && productFiltCat ? (
                 <Flex align="center" gap="middle">
                     <Spin indicator={<LoadingOutlined spin />} size="large" />
                 </Flex>
