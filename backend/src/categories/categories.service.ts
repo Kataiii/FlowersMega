@@ -13,10 +13,10 @@ export class CategoriesService {
         @InjectModel(Category) private categoryRepository: typeof Category,
         private filesService: FilesService) { }
 
-    // async onModuleInit() {
-    //     const filePath = '../backend/static/products/CATEGORIES.txt';
-    //     await this.seeds(filePath);
-    // }
+    async onModuleInit() {
+        const filePath = '../backend/static/products/CATEGORIES.txt';
+        await this.seeds(filePath);
+    }
 
 
     async seeds(filePath: string): Promise<void> {
@@ -32,23 +32,26 @@ export class CategoriesService {
                 continue;
             }
 
-            try {
+            const fileBuffer = fs.readFileSync(imageUrl);
+            await this.create({ name: categoryName.trim() }, new CustomFile(fileBuffer, `${categoryName.trim()}.jpg`, "image/jpeg"));
 
-                const fileBuffer = await fetch(imageUrl.trim())
-                    .then(response => {
-                        if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`);
-                        return response.arrayBuffer();
-                    })
-                    .then(arrayBuffer => Buffer.from(arrayBuffer))
-                    .then(buffer => new CustomFile(buffer, `${categoryName.trim()}.jpg`, "image/jpeg"));
-                console.log(fileBuffer, "CATEGORY PHOTO")
+            // try {
 
-                await this.create({ name: categoryName.trim() }, fileBuffer);
+            //     const fileBuffer = await fetch(imageUrl.trim())
+            //         .then(response => {
+            //             if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`);
+            //             return response.arrayBuffer();
+            //         })
+            //         .then(arrayBuffer => Buffer.from(arrayBuffer))
+            //         .then(buffer => new CustomFile(buffer, `${categoryName.trim()}.jpg`, "image/jpeg"));
+            //     console.log(fileBuffer, "CATEGORY PHOTO")
 
-                console.log(`Category "${categoryName.trim()}" processed successfully.`);
-            } catch (error) {
-                console.error(`Error processing category "${categoryName.trim()}":`, error);
-            }
+            //     await this.create({ name: categoryName.trim() }, fileBuffer);
+
+            //     console.log(`Category "${categoryName.trim()}" processed successfully.`);
+            // } catch (error) {
+            //     console.error(`Error processing category "${categoryName.trim()}":`, error);
+            // }
         }
     }
 

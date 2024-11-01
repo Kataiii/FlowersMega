@@ -72,9 +72,9 @@ export class ProductsSizesFullService {
         private typeProductService: TypesProductService,
     ) { }
 
-    // async onModuleInit() {
-    //     await this.seeds("../backend/static/products/FLOWERS.txt");
-    // }
+    async onModuleInit() {
+        await this.seeds("../backend/static/products/FLOWERS.txt");
+    }
 
     async seeds(filePath: string): Promise<void> {
         const fileContent = fs.readFileSync(filePath, 'utf-8');
