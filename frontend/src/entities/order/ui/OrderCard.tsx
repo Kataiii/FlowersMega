@@ -2,7 +2,7 @@ import SecondaryButton, { ButtonStyle } from "../../../shared/ui/button/Secondar
 import { Text } from "../../../shared/ui/forAdditionalPages/Content";
 import { Title } from "../../../shared/ui/forAdditionalPages/Title";
 import { Order } from "../../../store/order";
-import ReOrder from "../../../shared/assets/reOrder.svg";
+import {ReactComponent as ReOrder} from "../../../shared/assets/reOrder.svg";
 import { styled } from "styled-components";
 import { Numerals } from "../../../shared/utils/numerals";
 import { useState } from "react";
@@ -43,7 +43,7 @@ const OrderCard: React.FC<OrderCardProps> = ({order}) => {
                         <Text style={{display: "inline", fontSize: 16, fontWeight: 400, color: "var(--text-modal)"}}>от {new Date(order.dateOrder).toLocaleDateString()}</Text>
                     </div>
                     <div style={{width: "fit-content"}}>
-                        <Button>Повторить заказ <img src={ReOrder} alt="re-order"/></Button>
+                        <Button>Повторить заказ <ReOrder alt="re-order"/></Button>
                     </div>
                 </div>
                 <div style={{display: "flex", gap: 15, alignItems: "center"}}>

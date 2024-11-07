@@ -20,9 +20,9 @@ export class UsersService {
         private usersRolesService: UsersRolesService
     ) { }
 
-    async onModuleInit() {
-        await this.seeds();
-    }
+    // async onModuleInit() {
+    //     await this.seeds();
+    // }
 
     async seeds() {
         const user = await this.userRepository.findOrCreate({

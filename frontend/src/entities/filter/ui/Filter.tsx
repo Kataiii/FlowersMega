@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-import Arrow from "../../../shared/assets/arrow.svg";
+import {ReactComponent as Arrow} from "../../../shared/assets/arrow.svg";
 
 type FilterProps = {
     clearFilter: React.ReactElement;
@@ -35,7 +35,7 @@ const Filter: React.FC<FilterProps> = ({clearFilter, filterName, itemsFilter}) =
                 <FilterTitle>{filterName}</FilterTitle>
                 <div>
                     {clearFilter}
-                    <Image src={Arrow} alt="arrow"/>
+                    <Arrow alt="arrow"/>
                 </div>
             </ContainerTitle>
             <ContainerItems>

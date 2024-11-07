@@ -12,9 +12,9 @@ export class FiltersService {
         private productSizesFullService: ProductsSizesFullService
     ) { }
 
-    async onModuleInit() {
-        await this.seeds();
-    }
+    // async onModuleInit() {
+    //     await this.seeds();
+    // }
 
     async seeds() {
         const filters = [

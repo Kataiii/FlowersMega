@@ -1,10 +1,6 @@
-import { Image } from "antd";
 import { useLocation, useParams } from "react-router-dom";
 import Container from "../../../shared/ui/containerMain/ContainerMain";
-import { API_URL } from "../../../shared/utils/constants";
-import { FullProductSizeDto, useCategoryControllerGetIdByNameQuery, useProductsControllerGetByIdQuery, useProductsSizesControllerGetByProductIdAndSizeIdQuery } from "../../../store/product";
-import { useSizesControllerGetAllQuery } from "../../../store/size";
-import Error from "../../../shared/assets/no-image.png";
+import {  useProductsControllerGetByIdQuery, useProductsSizesControllerGetByProductIdAndSizeIdQuery } from "../../../store/product";
 import GaleryPhotoProduct from "../../../widgets/product/GaleryPhotoProduct";
 import DescriptionProduct from "../../../widgets/product/DescriptionProduct";
 import BlockReviewProduct from "../../../widgets/blockReviewProduct/BlockReviewProduct";

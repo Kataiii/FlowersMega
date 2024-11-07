@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { API_URL, PRODUCT_PATH } from "../../../../shared/utils/constants";
 import { FullProductSizeDto, Product, ProductSize, useProductsControllerGetByIdQuery } from "../../../../store/product";
-import { Size, useSizeContollerGetByNameQuery, useSizesControllerGetByIdQuery } from "../../../../store/size";
-import AddCart from "../../../../shared/assets/add_cart.svg";
-import Cursor from "../../../../shared/assets/cursor.svg";
+import { useSizeContollerGetByNameQuery } from "../../../../store/size";
+import {ReactComponent as Cursor} from "../../../../shared/assets/cursor.svg";
 import { useNavigate } from "react-router-dom";
 import { Image, Rate } from "antd";
 import { Numerals } from "../../../../shared/utils/numerals";
@@ -87,7 +86,7 @@ const CardProduct: React.FC<CardProductProps> = ({ product, addToCartButton, add
                 <div style={{ display: "flex", justifyContent: "space-between", gap: "10px" }}>
                     {addToCartButton}
                     <ButtonColor onClick={() => setIsOpen(true)}>
-                        <img src={Cursor} alt="cursor" />
+                        <Cursor alt="cursor" />
                         В 1 клик
                     </ButtonColor>
                 </div>

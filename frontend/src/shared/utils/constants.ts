@@ -33,7 +33,7 @@ export const ADMIN_REVIEWS_PATH = "/admin/reviews";
 export const ADMIN_REVIEW_PATH = "/admin/review/:id";
 export const ADMIN_LOGIN = "/admin/login";
 
-export const API_URL = "http://localhost:5000";
+export const API_URL = "http://luckyflora.ru/api/";
 
 export const PHONE = "8 800 000 00 00";
 export const EMAIL = "info@flowersmega.ru";

@@ -1,7 +1,7 @@
 import { Input } from "antd";
 import { SearchProps } from "antd/es/input";
 import { SetStateAction, useState } from "react";
-import Point from "../../../../shared/assets/point.svg";
+import {ReactComponent as Point} from "../../../../shared/assets/point.svg";
 import ModalEmpty from "../../../../shared/ui/modalEmpty/ModalEmpty";
 import CityModal from "../cityPanel/CityPanel";
 
@@ -18,7 +18,7 @@ const CityInput: React.FC = () => {
             <Search
                 placeholder="Выберите город"
                 allowClear
-                enterButton={<img src={Point} alt="point"/>}
+                enterButton={<Point alt="point"/>}
                 size="large"
                 onSearch={onSearch}
             />
