@@ -30,6 +30,7 @@ import { ExtraPriceModule } from './extra-price/extra-price.module';
 import { RolesModule } from './roles/roles.module';
 import { UsersRolesModule } from './users-roles/users-roles.module';
 import { TelegramUsersModule } from './telegram-users/telegram-users.module';
+import { CategoriesProductssizesModule } from './categories-productssizes/categories-productssizes.module';
 
 @Module({
     imports: [
@@ -77,7 +78,8 @@ import { TelegramUsersModule } from './telegram-users/telegram-users.module';
         TokensModule,
         AuthModule,
         ProductsSizesModule,
-        TelegramUsersModule
+        TelegramUsersModule,
+        CategoriesProductssizesModule
     ],
 })
 export class AppModule { }

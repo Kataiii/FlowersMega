@@ -14,6 +14,27 @@ const RootContainer = createGlobalStyle`
   padding: 0;
   }
 
+  :root {
+    --main-bg-color: #F5EFF5;
+    --primary-bg-color: #FF749F;
+    --primary-bg-color-hover: #FF558A;
+    --secondary-bg-color: #6bc778;
+    --secondary-bg-color-hover: #5cad68;
+    --block-bg-color: #FFFFFF;
+    --block-bg-color-hover: #eeeeee;
+    --primary-text-color: #FFFFFF;
+    --secondary-text-color: #1A2030;
+    --text-modal: #8B8B8B;
+    --unactive-text-color: #B7B7B7;
+    --primary-review-text: #861C82;
+    --secondary-review-text: #9C789B;
+    --city-active: #FFDCE7;
+    --city-active-hover: #f093b0;
+    --error: #ff4d4f;
+    --extra-pice: #9D0000;
+    --extra-price-all: #F71258;
+}
+
   div::-webkit-scrollbar {}
 
   div::-webkit-scrollbar-track {

@@ -5,7 +5,6 @@ import { Image } from 'src/images/images.model';
 import { ImagesService } from 'src/images/images.service';
 import { CreateProductDto } from './dto/createProduct.dto';
 import { Product } from './products.model';
-import { count } from 'console';
 import { ProductSize } from 'src/products-sizes/products-sizes.model';
 import { Category } from 'src/categories/categories.model';
 import { ExtraPriceService } from 'src/extra-price/extra-price.service';
@@ -48,9 +47,6 @@ export class ProductsService {
     }
 
     async getById(id: number | string) {
-
-        // const extraPrice = await this.productSizesRepository.findAll({})
-        // console.log(extraPrice, "extraPrice");
         const product = await this.productsRepository.findOne(
             {
                 where: { id: id },
@@ -59,7 +55,6 @@ export class ProductsService {
                 }]
             }
         );
-        // if (product === null) throw new HttpException("Product not found", HttpStatus.NOT_FOUND);
         return product;
     }
 
@@ -86,7 +81,6 @@ export class ProductsService {
                 model: Image
             }]
         })
-        // if (products.length === 0) throw new HttpException("Products not fount", HttpStatus.NOT_FOUND);
         return products;
     }
 

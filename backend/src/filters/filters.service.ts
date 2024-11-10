@@ -59,7 +59,7 @@ export class FiltersService {
         });
         if (filters.length === 0) throw new HttpException("Filters not fount", HttpStatus.NOT_FOUND);
         const maxPrice = await this.productSizesFullService.getMaxPrice(idCategory);
-        console.log(maxPrice, "SHOUD BE");
+        // console.log(maxPrice, "SHOUD BE");
         return {
             maxPrice: maxPrice,
             filters: filters

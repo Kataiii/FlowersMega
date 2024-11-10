@@ -14,6 +14,8 @@ import * as fs from 'fs';
 import { TypesProductService } from 'src/types-product/types-product.service';
 import { ItemFilter } from 'src/items-filter/items-filter.model';
 import { CategoriesService } from 'src/categories/categories.service';
+import { CategoriesProductssizesService } from 'src/categories-productssizes/categories-productssizes.service';
+import { CategoriesProductsSizes } from 'src/categories-productssizes/categories-productssizes.model';
 
 export class CustomFile implements File {
     buffer: Buffer;
@@ -70,6 +72,7 @@ export class ProductsSizesFullService {
         private productsItemsFilterService: ProductsItemsFilterService,
         private extraPriceService: ExtraPriceService,
         private typeProductService: TypesProductService,
+        private categoriesProductsSizesService: CategoriesProductssizesService
     ) { }
 
     // async onModuleInit() {
@@ -514,19 +517,26 @@ export class ProductsSizesFullService {
     }
 
     async getMaxPrice(idCategory?: number) {
+        let productSize: ProductSize;
         if (idCategory) {
-            const productsByCategory = await this.categoriesProductService.getProductsByCategoryId(idCategory);
-        } else {
-            // console.log("idCategory is undefined");
+            productSize = await this.productsSizesRepository.findOne({
+                order: [['extraPrice', 'DESC']],
+                limit: 1,
+                include: [{
+                    model: CategoriesProductsSizes,
+                    where: {
+                        idCategory: idCategory
+                    }
+                  }]
+            })
+            console.log(productSize);
         }
-
-        const productSize = await this.productsSizesRepository.findAll({
-            order: [['prise', 'DESC']]
-        });
-
-        const productSizeUpd = await this.calculatePrices(productSize);
-        // console.log(productSizeUpd[0].productSize.prise, "FINALLLYYY");
-        return productSizeUpd[0].productSize.prise;
+        else {
+            productSize = await this.productsSizesRepository.findOne({
+                order: [['extraPrice', 'DESC']],
+                limit: 1
+            });
+        }
+        return productSize !== null ? productSize.extraPrice : 0;
     }
-
 }
