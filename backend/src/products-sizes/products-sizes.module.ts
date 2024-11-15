@@ -13,6 +13,8 @@ import { ExtraPriceService } from 'src/extra-price/extra-price.service';
 import { ExtraPriceModule } from 'src/extra-price/extra-price.module';
 import { TypesProductModule } from 'src/types-product/types-product.module';
 import { CategoriesProductssizesModule } from 'src/categories-productssizes/categories-productssizes.module';
+import { CategoriesModule } from 'src/categories/categories.module';
+import { ItemsFilterModule } from 'src/items-filter/items-filter.module';
 
 @Module({
   providers: [ProductsSizesService, ProductsSizesFullService],
@@ -26,7 +28,9 @@ import { CategoriesProductssizesModule } from 'src/categories-productssizes/cate
     CategoriesProductsModule,
     ProductsItemsFilterModule,
     TypesProductModule,
-    CategoriesProductssizesModule
+    CategoriesProductssizesModule,
+    CategoriesModule,
+    ItemsFilterModule
   ],
   exports: [
     ProductsSizesService,

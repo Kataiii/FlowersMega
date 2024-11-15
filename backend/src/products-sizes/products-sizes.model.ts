@@ -13,6 +13,7 @@ export interface ProductSizeCreationAttrs {
     paramsSize: string;
     count?: number;
     prise: number;
+    extraPrice: number;
 }
 
 @Table({ tableName: 'products_sizes', createdAt: true, updatedAt: true })
@@ -44,7 +45,7 @@ export class ProductSize extends Model<ProductSize, ProductSizeCreationAttrs> {
     prise: number;
 
     @ApiProperty({ example: 100.00, description: 'Extra prize of product', required: true })
-    @Column({ type: DataType.DOUBLE, unique: false, allowNull: false, defaultValue: Sequelize.literal('price') })
+    @Column({ type: DataType.DOUBLE, unique: false, allowNull: false })
     extraPrice: number;
 
     @BelongsToMany(() => Order, () => OrderProductSize)

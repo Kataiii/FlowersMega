@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { CreateProductItemsFilterDto } from './dto/createProductItemsFilter.dto';
 import { ProductsItemsFilter } from './products-items-filter.model';
 import { ItemFilter } from 'src/items-filter/items-filter.model';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class ProductsItemsFilterService {
@@ -21,6 +22,18 @@ export class ProductsItemsFilterService {
         const filters = await this.productsItemsFilterRepository.findAll({
             where: { idItemFilter: id }
         })
+        return filters;
+    }
+
+    async getProductsByFilterIdArray(ids: number[]) {
+        console.log("tmp ", ids);
+        const filters = await this.productsItemsFilterRepository.findAll({
+            where: { idItemFilter: {
+                [Op.in]: ids
+              } 
+            }
+        })
+        console.log("Filters ", filters)
         return filters;
     }
 
