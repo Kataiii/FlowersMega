@@ -1,8 +1,8 @@
 import { Pagination } from "antd";
 import { selectFilters, selectMaxPrice, selectMinPrice } from "../../../entities/filter/redux/selectors";
 import Container from "../../../shared/ui/containerMain/ContainerMain";
-import { useCategoryControllerGetIdByNameQuery, useProductsSizesControllerGetAllQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery } from "../../../store/product";
-import { useAppDispatch, useAppSelector } from "../../../store/store";
+import { useCategoryControllerGetIdByNameQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery } from "../../../store/product";
+import { useAppSelector } from "../../../store/store";
 import FiltersPanel from "../../../widgets/filtersPanel/FiltersPanel";
 import FiltersTags from "../../../widgets/filtersTags/FiltersTags";
 import { SmartProductCard } from "../../../widgets/product/SmartProductCart";
@@ -17,23 +17,16 @@ const Catalog: React.FC = () => {
         .filter((id): id is number => id !== undefined);
     const [searchParams] = useSearchParams();
     const categoryD = searchParams.get('category');
-    console.log(categoryD, "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU");
     const decodedCategory = categoryD ? decodeURIComponent(categoryD) : '';
     const { selectedProduct } = useProductContext();
     const { setCategory, category } = useProductContext();
     setCategory(decodedCategory);
-    console.log(selectedProduct, "SELECTEDPRODUCT");
-    // const decodedCategory = category ? decodeURIComponent(category) : '';
     const { data: categoryIdData } = useCategoryControllerGetIdByNameQuery({ name: categoryD ? categoryD : 'null' });
     const minPrice = useAppSelector(selectMinPrice);
     const maxPrice = useAppSelector(selectMaxPrice);
-    const [pageSize, setPageSize] = useState(12);
+    const [pageSize, setPageSize] = useState(30);
     const [page, setPage] = useState(1);
-    console.log(category, "CONTEXT")
-    console.log(decodedCategory, "CATEGORYAAAAAAAAAAAAAAA");
-    console.log(categoryIdData, "CATEGORYDATA");
     const { data: postcardId } = useSizeContollerGetByNameQuery({ name: "-" });
-    // const { isLoading, data } = useProductsSizesControllerGetAllQuery();
     const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ limit: pageSize, page: page, search: selectedProduct ? selectedProduct : '', filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: categoryD ? Number(categoryIdData) : undefined });
 
     const handlePageChange = (newPage: number, newPageSize?: number) => {

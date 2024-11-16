@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from "react-router"
 import { selectAuth } from "../../entities/credential/redux/selectors";
-import { AUTH_PATH, HOME_PATH } from "../../shared/utils/constants";
+import { ADMIN_LOGIN, ADMIN_PATH, AUTH_PATH, HOME_PATH } from "../../shared/utils/constants";
 import { useAppSelector } from "../../store/store";
 
 type AuthGuardProps = {
@@ -9,8 +9,11 @@ type AuthGuardProps = {
 
 export const AuthGuard: React.FC<AuthGuardProps> = ({children}) => {
     const isAuth = useAppSelector(selectAuth);
+    const locate = useLocation();
 
-    return isAuth
-        ? children
+    if(isAuth) return children;
+
+    return locate.pathname === ADMIN_PATH
+        ? <Navigate to={ADMIN_LOGIN}/>
         : <Navigate to={AUTH_PATH} state={{previousLocation: HOME_PATH}}/>
 }

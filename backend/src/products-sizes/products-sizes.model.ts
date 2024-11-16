@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Sequelize, Table, } from "sequelize-typescript";
+import { BelongsTo, BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Sequelize, Table, } from "sequelize-typescript";
 import { CategoriesProductsSizes } from "src/categories-productssizes/categories-productssizes.model";
 import { Category } from "src/categories/categories.model";
 import { Order } from "src/order/order.model";
@@ -56,4 +56,7 @@ export class ProductSize extends Model<ProductSize, ProductSizeCreationAttrs> {
 
     @HasMany(() => CategoriesProductsSizes)
     categoriesProductsSizes: CategoriesProductsSizes[];
+
+    @BelongsTo(() => Product)
+    product: Product;
 }

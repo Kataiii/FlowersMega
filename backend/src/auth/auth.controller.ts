@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 import { AuthResponseDto } from './dto/response.dto';
-import { Request, Response } from 'express';
+import { Request, response, Response } from 'express';
 import { RegistDto } from './dto/regist.dto';
 import { stringify } from 'flatted';
 import { RecoveryDto } from './dto/recovery.dto';
@@ -26,6 +26,19 @@ export class AuthController {
         let tokens = await this.authService.login(dto, ip);
         response.cookie('refreshToken', tokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
         return tokens;
+    }
+
+    @ApiOperation({summary: 'Check is admin'})
+    @ApiResponse({ status: 204 })
+    @ApiResponse({ status: 403 })
+    // @UseGuards(JwtAuthGuard)
+    @Get("/check-permission")
+    async checkIsAdmin(@Req() request: Request, @Res() response: Response){
+        const [type, token] = request.headers.authorization.split(' ');
+        const accessToken = type === 'Bearer' ? token : undefined;
+        const role = await this.authService.checkIsAdmin(accessToken);
+        if(!role) response.status(403).send(); 
+        response.status(204).send();
     }
 
     @ApiOperation({ summary: 'Registration in system' })

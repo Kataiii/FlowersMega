@@ -350,101 +350,89 @@ export class ProductsSizesFullService {
             )
           ).map((item) => item.idProduct)
     console.log("filtersIds ", filtersProductsTmp);
-    const filtersProducts = Array.from(new Set(filtersProductsTmp.flat()));
+    const filtersProducts = filtersProductsTmp && Array.from(new Set(filtersProductsTmp.flat()));
+
+    console.log("filtersProducts ", filtersProducts);
 
     const whereCondition: any = {};
-    if (minPrice) {
+    if (minPrice >= 0) {
       whereCondition.extraPrice = { [Op.gte]: minPrice };
     }
-    if (maxPrice) {
+
+    console.log("whereCondition ", whereCondition);
+    if (maxPrice >= 0) {
       whereCondition.extraPrice = {
         ...whereCondition.prise,
         [Op.lte]: maxPrice,
       };
     }
 
+    console.log("whereCondition ", whereCondition);
+
     if (filtersProducts.length > 0) {
+      console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
       whereCondition.idProduct = {
         [Op.in]: filtersProducts,
       };
     }
 
-    const countAndProducts = await this.productsSizesRepository.findAndCountAll(
-      {
-        where: whereCondition,
-        limit: limit,
-        offset: (page - 1) * limit,
-        include: [
-            category && {
-            model: CategoriesProductsSizes,
-            where: {
-              idCategory: category,
+    console.log("search ", search);
+
+    let countAndProducts:  {
+      rows: ProductSize[];
+      count: number;
+  } = {
+    rows: [],
+    count: 0
+  };
+
+    if(category){
+      countAndProducts = await this.productsSizesRepository.findAndCountAll(
+        {
+          where: whereCondition,
+          limit: limit,
+          offset: (page - 1) * limit,
+          include: [
+            {
+              model: CategoriesProductsSizes,
+              where: {
+                idCategory: category,
+              },
             },
-          },
-           search && {
-            model: Product,
-            where: {
-              name: { [Op.like]: search ? `%${search}%` : `%` },
+            {
+              model: Product,
+              where: {
+                name: { [Op.like]: search ? `%${search}%` : `%` },
+              },
             },
-          },
-        ],
-      }
-    );
+          ],
+        }
+      );
+    }
+    else {
+      countAndProducts = await this.productsSizesRepository.findAndCountAll(
+        {
+          where: whereCondition,
+          limit: limit,
+          offset: (page - 1) * limit,
+          include: [
+            {
+              model: Product,
+              where: {
+                name: { [Op.like]: search ? `%${search}%` : `%` },
+              },
+            },
+          ],
+        }
+      );
+    }
+
     console.log("AAAAAAAAAAAAAAAAAAAAA");
     const resCardInfo = await this.calculatePrices(countAndProducts.rows);
     return {
       count: countAndProducts.count,
       products: resCardInfo,
     };
-
-    // const whereCondition: any = {};
-    // let count = await this.productsSizesRepository.findAndCountAll();
-    // if (search) {
-    //   const foundProducts = await this.productsService.searchProducts(search);
-    //   const foundProductIds = foundProducts.map((product) => product.id);
-    //   if (foundProductIds.length > 0) {
-    //     count.count = foundProductIds.length;
-    //     whereCondition.idProduct = { [Op.in]: foundProductIds };
-    //   } else {
-    //     return {
-    //       count: 0,
-    //       products: [],
-    //     };
-    //   }
-    // }
-
-    // if (minPrice) {
-    //   whereCondition.prise = { [Op.gte]: minPrice };
-    // }
-    // if (maxPrice) {
-    //   whereCondition.prise = {
-    //     ...whereCondition.prise,
-    //     [Op.lte]: maxPrice,
-    //   };
-    // }
-    // console.log(whereCondition, "whereCondition");
-
-    // const products = await this.productsSizesRepository.findAll({
-    //   where: whereCondition,
-    //   limit: limit,
-    //   offset: (page - 1) * limit,
-    // });
-
-    // const updatedProducts = await this.calculatePrices(products);
-    // // console.log(minPrice, maxPrice, "LOW MAX PRICE")
-    // const result = updatedProducts.filter((item) => {
-    //   // console.log(`Checking item: ${JSON.stringify(item.productSize.prise)}`);
-    //   if (maxPrice)
-    //     return item.productSize.prise > 0 && item.productSize.prise <= maxPrice;
-    //   else return item;
-    // });
-
-    // // console.log(result, "SUPERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-    // // console.log(updatedProducts, "SUPERUPD")
-    // return {
-    //   count: count.count,
-    //   products: result,
-    // };
   }
 
   async calculatePrices(products: ProductSize[]) {
