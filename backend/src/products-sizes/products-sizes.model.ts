@@ -1,5 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { BelongsToMany, Column, DataType, ForeignKey, Model, Table, } from "sequelize-typescript";
+import { BelongsTo, BelongsToMany, Column, DataType, ForeignKey, HasMany, Model, Sequelize, Table, } from "sequelize-typescript";
+import { CategoriesProductsSizes } from "src/categories-productssizes/categories-productssizes.model";
+import { Category } from "src/categories/categories.model";
 import { Order } from "src/order/order.model";
 import { OrderProductSize } from "src/orders-products-sizes/orders-products-sizes.model";
 import { Product } from "src/products/products.model";
@@ -11,6 +13,7 @@ export interface ProductSizeCreationAttrs {
     paramsSize: string;
     count?: number;
     prise: number;
+    extraPrice: number;
 }
 
 @Table({ tableName: 'products_sizes', createdAt: true, updatedAt: true })
@@ -41,6 +44,19 @@ export class ProductSize extends Model<ProductSize, ProductSizeCreationAttrs> {
     @Column({ type: DataType.DOUBLE, unique: false, allowNull: false })
     prise: number;
 
+    @ApiProperty({ example: 100.00, description: 'Extra prize of product', required: true })
+    @Column({ type: DataType.DOUBLE, unique: false, allowNull: false })
+    extraPrice: number;
+
     @BelongsToMany(() => Order, () => OrderProductSize)
     orders: Order[];
+
+    @BelongsToMany(() => Category, () => CategoriesProductsSizes)
+    categories: Category[];
+
+    @HasMany(() => CategoriesProductsSizes)
+    categoriesProductsSizes: CategoriesProductsSizes[];
+
+    @BelongsTo(() => Product)
+    product: Product;
 }

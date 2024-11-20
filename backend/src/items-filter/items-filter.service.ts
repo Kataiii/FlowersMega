@@ -7,9 +7,9 @@ import { ItemFilter } from './items-filter.model';
 export class ItemsFilterService {
     constructor(@InjectModel(ItemFilter) private itemFilterRepository: typeof ItemFilter) { }
 
-    async onModuleInit() {
-        await this.seeds();
-    }
+    // async onModuleInit() {
+    //     await this.seeds();
+    // }
 
 
     async seeds() {

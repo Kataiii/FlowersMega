@@ -1,10 +1,10 @@
 import { ABOUT_PATH, CATALOG_PATH, CONTACTS_PATH, EMAIL, HELP_PATH, HOME_PATH, PAYMENT_DELIVERY_PATH, PHONE, targetA } from "../../utils/constants";
 import Container from "../containerMain/ContainerMain";
 import Link from "../link/Link";
-import Logo from "../../assets/logo.svg";
+import {ReactComponent as Logo} from "../../assets/logo.svg";
 import { useNavigate } from "react-router-dom";
-import Phone from "../../assets/phone_footer.svg";
-import Mail from "../../assets/mail_footer.svg";
+import {ReactComponent as Phone} from "../../assets/phone_footer.svg";
+import {ReactComponent as Mail} from "../../assets/mail_footer.svg";
 
 const Footer: React.FC = () => {
     const navigate = useNavigate();
@@ -15,14 +15,14 @@ const Footer: React.FC = () => {
                 <Container>
                     <div style={{display: "flex", justifyContent: "space-between"}}>
                         <div style={{display: "flex", flexDirection: "column", gap: "16px"}}>
-                            <img style={{cursor: "pointer", width: "278px"}} src={Logo} alt="logo" onClick={() => navigate(HOME_PATH)}/>
+                            <Logo style={{cursor: "pointer", width: "278px"}} alt="logo" onClick={() => navigate(HOME_PATH)}/>
                             <h4 style={{fontFamily: "Inter", fontWeight: 600, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0}}>Наши контакты</h4>
                             <div style={{display: "flex", gap: "8px", alignItems: "center"}}>
-                                <img src={Phone} alt="phone"/>
+                                <Phone alt="phone"/>
                                 <p style={{fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0}}>{PHONE}</p>
                             </div>
                             <div style={{display: "flex", gap: "8px", alignItems: "center"}}>
-                                <img src={Mail} alt="mail"/>
+                                <Mail alt="mail"/>
                                 <p style={{fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0}}>{EMAIL}</p>
                             </div>
                         </div>

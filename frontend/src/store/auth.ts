@@ -34,6 +34,16 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: () => ({ url: `/auth/refresh` }),
     }),
+    authControllerCheckPermissions: build.query<
+      AuthControllerCheckPermissionsApiArg,
+      AuthControllerCheckPermissionsApiResponse
+    >({
+      query:  () => '/auth/check-permission',
+      transformResponse: (response: any, meta: any) => ({
+        ...response,
+        status: meta.response?.status || 200
+      })
+    }),
     authControllerRecoveryPassword: build.mutation<
       AuthControllerRecoveryPasswordApiResponse,
       AuthControllerRecoveryPasswordApiArg
@@ -72,6 +82,8 @@ export type AuthControllerLogoutApiArg = void;
 export type AuthControllerRefreshApiResponse =
   /** status 200  */ AuthResponseDto;
 export type AuthControllerRefreshApiArg = void;
+export type AuthControllerCheckPermissionsApiArg = null;
+export type AuthControllerCheckPermissionsApiResponse = any;
 export type AuthControllerRecoveryPasswordApiResponse =
   /** status 200  */ AuthResponseDto;
 export type AuthControllerRecoveryPasswordApiArg = {
@@ -141,4 +153,5 @@ export const {
   useAuthControllerRefreshQuery,
   useAuthControllerRecoveryPasswordMutation,
   useAuthControllerChangePasswordMutation,
+  useAuthControllerCheckPermissionsQuery
 } = injectedRtkApi;

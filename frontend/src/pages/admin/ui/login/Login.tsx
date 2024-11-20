@@ -1,7 +1,13 @@
 import { Button, Checkbox, Form, FormProps, Input } from "antd";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { loginThunk } from "../../../../entities/credential/redux/asyncThunk";
+import { selectAuth } from "../../../../entities/credential/redux/selectors";
 import Container from "../../../../shared/ui/containerMain/ContainerMain";
-import { ADMIN_PATH } from "../../../../shared/utils/constants";
+import { ADMIN_PATH, PROFILE_PATH } from "../../../../shared/utils/constants";
+import { regExEmail, errorMessageEmail } from "../../../../shared/utils/validationConstants";
+import { AuthDto } from "../../../../store/auth";
+import { useAppDispatch, useAppSelector } from "../../../../store/store";
 import { ButtonText, NamePage } from "../products/Products";
 
 type FieldType = {
@@ -10,16 +16,28 @@ type FieldType = {
     remember?: string;
 };
 
-const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-    console.log('Success:', values);
-};
+// const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
+//     console.log('Success:', values);
+// };
 
-const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-};
+// const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
+//     console.log('Failed:', errorInfo);
+// };
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
+
+    const dispatch = useAppDispatch();
+    const isAuth = useAppSelector(selectAuth);
+
+    const onFinish = async (values: AuthDto) => {
+        dispatch(loginThunk(values));
+    };
+
+    useEffect(() => {
+        if (isAuth) navigate(ADMIN_PATH);
+    }, [isAuth])
+
 
     return (
         <div style={{ width: "100%", height: "100%" }}>
@@ -32,15 +50,19 @@ const Login: React.FC = () => {
                     style={{ maxWidth: "100%", height: "auto", display: "block", margin: "0 auto" }}
                     initialValues={{ remember: true }}
                     onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
+                    // onFinishFailed={onFinishFailed}
                     autoComplete="off"
                 >
-                    <Form.Item<FieldType>
-                        label="Логин"
-                        name="username"
-                        rules={[{ required: true, message: 'Введите логин!' }]}
+                    <Form.Item 
+                        style={{ marginBottom: 8, flexGrow: 1 }} 
+                        label="Ваш E-mail"
+                        name="email" 
+                        rules={[
+                            { required: true, message: "Введите вашу почту" },
+                            { pattern: regExEmail, message: errorMessageEmail }
+                        ]}
                     >
-                        <Input />
+                        <Input placeholder="mail@mail.ru" />
                     </Form.Item>
 
                     <Form.Item<FieldType>
@@ -53,7 +75,7 @@ const Login: React.FC = () => {
 
                     <div style={{ left: "50%" }}>
                         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                            <Button type="primary" htmlType="submit" onClick={() => navigate(ADMIN_PATH)}>
+                            <Button type="primary" htmlType="submit">
                                 <ButtonText>Войти</ButtonText>
                             </Button>
                         </Form.Item>

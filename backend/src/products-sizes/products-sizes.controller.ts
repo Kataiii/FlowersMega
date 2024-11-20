@@ -161,9 +161,6 @@ export class ProductsSizesController {
     @ApiQuery({ name: 'category', required: false })
     @Get("/full-products-cards/:page/:limit")
     async getByCategotyIdWithPagination(@Param("page") page: number, @Param("limit") limit: number, @Query("search") search?: string, @Query("filterItems") filterItems?: string, @Query("minPrice") minPrice?: number, @Query("maxPrice") maxPrice?: number, @Query("category") category?: number) {
-
-        console.log(category, "CATEGORY");
-        console.log(search, "SEARCHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         const arrayFilters: number[] = filterItems !== undefined && filterItems !== "" ? filterItems.split(',').map(item => Number(item)) : [];
         return await this.productsSizesFullService.getProductsSizesForCardPagination(page, limit, search, arrayFilters, minPrice, maxPrice, category);
     }

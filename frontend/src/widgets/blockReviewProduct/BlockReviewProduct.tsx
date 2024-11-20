@@ -5,13 +5,9 @@ import Button, { ButtonStyle } from "../../shared/ui/button/Button";
 import { Title } from "../../shared/ui/forAdditionalPages/Title";
 import { Numerals } from "../../shared/utils/numerals";
 import { FullReviewDto, useReviewsProductSizeControllerGetByProductIdQuery } from "../../store/review";
-import { ArrowNext, ArrowPrev } from "../blockReviews/BlockReview";
-import Arrow from "../../shared/assets/sliderArrow.svg";
+import {ReactComponent as Arrow} from "../../shared/assets/sliderArrow.svg";
 import { CarouselRef } from "antd/es/carousel";
-import styles from "../blockReviews/BlockReview.module.css";
-import SlideReviewsProduct from "../../entities/review/ui/slideReviewsProduct/SlideReviewsProduct";
 import AddReview from "../../features/add-review/AddReview";
-import ReviewCardMain from "../../entities/review/ui/reviewCardMain/ReviewCardMain";
 import ReviewCardProduct from "../../entities/review/ui/reviewCardProduct/ReviewCardProduct";
 
 type BlockReviewProductProps = {
@@ -105,7 +101,7 @@ const BlockReviewProduct: React.FC<BlockReviewProductProps> = ({ idProductSize }
                                 data?.count === 0 ? null :
                                     <div style={{ width: "100%", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: "0 25px" }}>
                                         {
-                                            page === Math.ceil((data?.count ?? 0) / pageSize) ? null : <ArrowNext src={Arrow} onClick={() => setPage(prev => prev + 1)} />
+                                            page === Math.ceil((data?.count ?? 0) / pageSize) ? null : <Arrow style={{width: 50, height: 50, position: "absolute", zIndex: 10, top: "50%", left: "100%", transform: "translate(-50%, 0) rotate(180deg)", cursor: "pointer"}} onClick={() => setPage(prev => prev + 1)} />
                                         }
                                         {
                                             data?.reviews.map((item, index) => {
@@ -113,7 +109,7 @@ const BlockReviewProduct: React.FC<BlockReviewProductProps> = ({ idProductSize }
                                             })
                                         }
                                         {
-                                            page === 1 ? null : <ArrowPrev src={Arrow} onClick={() => setPage(prev => prev - 1)} />
+                                            page === 1 ? null : <Arrow style={{width: 50, height: 50, position: "absolute", zIndex: 10, top: "50%", left: 0, transform: "translate(-50%, 0) rotate(0)", cursor: "pointer"}} onClick={() => setPage(prev => prev - 1)} />
                                         }
                                     </div>
                             }

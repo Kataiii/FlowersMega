@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
-import ErrorImage from "../../../shared/assets/error.svg";
+import {ReactComponent as ErrorImage} from "../../../shared/assets/error.svg";
 import Container from "../../../shared/ui/containerMain/ContainerMain";
 import { CATALOG_PATH, HOME_PATH } from "../../../shared/utils/constants";
 
@@ -28,7 +28,7 @@ const Error: React.FC = () => {
 
     return(
         <Container style={{margin: '0 auto', flexGrow: 3, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 15}}>
-            <img style={{width: '35%', display: 'block'}} src={ErrorImage} alt="error"/>
+            <ErrorImage style={{width: '35%', display: 'block'}} alt="error"/>
             <PrimaryText>Страница не найдена</PrimaryText>
             <div style={{width: "70%", display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 5}}>
                 <Text>Такой страницы не существует, или она была удалена.</Text>

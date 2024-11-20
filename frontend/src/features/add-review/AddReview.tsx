@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
 import { Title } from "../../shared/ui/forAdditionalPages/Title";
-import Close from "../../shared/assets/closeModal.svg";
+import {ReactComponent as Close} from "../../shared/assets/closeModal.svg";
 import { ConfigProvider, Form, Input, Rate, UploadFile, UploadProps } from "antd";
 import { useAppSelector } from "../../store/store";
 import { selectToken, selectUser } from "../../entities/credential/redux/selectors";
@@ -89,7 +89,7 @@ const AddReview: React.FC<AddReviewProps> = ({ closeHandler, idProductSize }) =>
 
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                         <Title style={{ fontSize: 20 }}>Написание отзыва</Title>
-                        <img style={{ cursor: "pointer" }} src={Close} alt="close" onClick={closeHandler} />
+                        <Close style={{ cursor: "pointer" }} alt="close" onClick={closeHandler} />
                     </div>
                     <Form.Item style={{ marginBottom: 0 }}>
                         <p style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: "Inter", fontWeight: 500, fontSize: 15, color: "var(--text-modal)" }}>Оценка товара: <Rate style={{ color: "var(--primary-bg-color)" }} onChange={(e) => setRating(e)} /></p>

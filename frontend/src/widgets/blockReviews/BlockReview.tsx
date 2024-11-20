@@ -3,28 +3,9 @@ import { useEffect, useRef, useState } from "react";
 import Container from "../../shared/ui/containerMain/ContainerMain"
 import TitleSection from "../../shared/ui/titleSection/TitleSection";
 import { FullReviewDto, useReviewsControllerGetAllWithPaginationQuery } from "../../store/review";
-import Arrow from "../../shared/assets/sliderArrow.svg";
-import styles from "./BlockReview.module.css";
-import { styled } from "styled-components";
-import SlideReviews from "../../entities/review/ui/slideReviews/SlideReviews";
+import {ReactComponent as Arrow} from "../../shared/assets/sliderArrow.svg";
 import { CarouselRef } from "antd/es/carousel";
 import ReviewCardMain from "../../entities/review/ui/reviewCardMain/ReviewCardMain";
-
-export const ArrowNext = styled.img`
-    width: 50px;
-    height: 50px;
-    position: absolute;
-    z-index: 10;
-    top: 50%; 
-    left: 100%;
-    transform: translate(-50%, 0) rotate(180deg); 
-    cursor: pointer;
-`;
-
-export const ArrowPrev = styled(ArrowNext)`
-    left: 0;
-    transform: translate(-50%, 0) rotate(0); 
-`;
 
 const BlockReviews: React.FC = () => {
     const [page, setPage] = useState<number>(1);
@@ -82,7 +63,7 @@ const BlockReviews: React.FC = () => {
                             {
                                 <>
                                     {
-                                        page === Math.ceil((data?.count ?? 0) / pageSize) ? null : <ArrowNext src={Arrow} onClick={() => setPage(prev => prev + 1)} />
+                                        page === Math.ceil((data?.count ?? 0) / pageSize) ? null : <Arrow style={{width: 50, height: 50, position: "absolute", zIndex: 10, top: "50%", left: "100%", transform: "translate(-50%, 0) rotate(180deg)", cursor: "pointer"}} onClick={() => setPage(prev => prev + 1)} />
                                     }
 
                                     {console.log(data?.count)}
@@ -92,7 +73,7 @@ const BlockReviews: React.FC = () => {
                                         })
                                     }
                                     {
-                                        page === 1 ? null : <ArrowPrev src={Arrow} onClick={() => setPage(prev => prev - 1)} />
+                                        page === 1 ? null :  <Arrow style={{width: 50, height: 50, position: "absolute", zIndex: 10, top: "50%", left: 0, transform: "translate(-50%, 0) rotate(0)", cursor: "pointer"}} onClick={() => setPage(prev => prev - 1)} />
                                     }
                                 </>
                             }

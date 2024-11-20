@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
 import Button from "../button/Button";
-import Logo from "../../assets/logo.svg";
+import {ReactComponent as Logo} from "../../assets/logo.svg";
 import "../../utils/cssConstants.css";
 import { Link as LinkRRD, useLocation, useNavigate } from "react-router-dom";
 import { ABOUT_PATH, CONTACTS_PATH, HELP_PATH, HOME_PATH, ORDER_CALL_PATH, PAYMENT_DELIVERY_PATH, targetA } from "../../utils/constants";
@@ -20,10 +20,6 @@ const ContainerLinks = styled(Container)`
     justify-content: flex-end;
     gap: 45px;
     padding: 0 20px;
-`;
-
-const LogoStyle = styled.img`
-    cursor: pointer;
 `;
 
 const Header: React.FC = () => {
@@ -55,7 +51,7 @@ const Header: React.FC = () => {
 
     return (
         <Container>
-            <LogoStyle src={Logo} alt="logo" onClick={() => navigate(HOME_PATH)} />
+            <Logo style={{cursor: "pointer"}} alt="logo" onClick={() => navigate(HOME_PATH)} />
             <ContainerLinks>
                 <>
                     {

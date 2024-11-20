@@ -2,8 +2,8 @@ import { styled } from "styled-components";
 import { cartSelectors } from "../../entities/cart/redux/selectors";
 import { addOneToCart, deleteOneFromCart } from "../../entities/cart/redux/slice";
 import { useAppDispatch, useAppSelector } from "../../store/store";
-import Minus from "../../shared/assets/minus.svg";
-import Plus from "../../shared/assets/plus.svg";
+import {ReactComponent as Minus} from "../../shared/assets/minus.svg";
+import {ReactComponent as Plus} from "../../shared/assets/plus.svg";
 
 type ProductPageCountControllerProps = {
     id: string | number
@@ -39,11 +39,11 @@ const ProductPageCountController: React.FC<ProductPageCountControllerProps> = ({
 
     return(
         <ContainerButtons>
-            <Button onClick={decrement}><img src={Minus} alt="minus"/></Button>
+            <Button onClick={decrement}><Minus alt="minus"/></Button>
             <div style={{padding: "8px 20px", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <input style={{width: "40px", textAlign: "center", outline: "none", border: "none",fontFamily: "Inter", fontSize: 20, fontWeight: 400, color: "var(--secondary-text-color)"}} value={cartProduct.count}/>
             </div>
-            <Button onClick={increment}><img src={Plus} alt="plus"/></Button>
+            <Button onClick={increment}><Plus alt="plus"/></Button>
         </ContainerButtons>
     )
 }

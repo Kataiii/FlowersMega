@@ -83,8 +83,21 @@ export class ExtraPriceService {
         }, new Map([[generalExtra.idCategory, generalExtra.value]]));
         // console.log(resultMap, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         return resultMap;
-
     }
 
+    async extraPriceForProductSize(categories: number[]){
+        const generalExtra = await this.extraPriceRepository.findOne({
+            where: { idCategory: 'all' }
+        })
+        const categoriesExtra = await Promise.all(categories.map(async(item) => {
+            const extraPriceCategory = await this.extraPriceRepository.findOne({
+                where:{
+                    idCategory: item.toString()
+                }
+            });
+            return extraPriceCategory ? extraPriceCategory.value : 0;
+        }));
+        return Math.max(...categoriesExtra, generalExtra.value);
+    }
 }
 

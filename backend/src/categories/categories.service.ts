@@ -6,34 +6,45 @@ import { CreateCategoryDto } from './dto/createCategory.dto';
 import { CustomFile } from 'src/products-sizes/products-sizes-full.service';
 import * as fs from 'fs';
 import fetch from 'node-fetch';
-import path from 'path';
+import * as path from 'path';
 @Injectable()
 export class CategoriesService {
     constructor(
         @InjectModel(Category) private categoryRepository: typeof Category,
         private filesService: FilesService) { }
 
-    async onModuleInit() {
-        const filePath = '../backend/static/products/CATEGORIES.txt';
-        await this.seeds(filePath);
-    }
-
+    // async onModuleInit() {
+    //     const filePath = '../backend/static/products/CATEGORIES.txt';
+    //     await this.seeds(filePath);
+    // }
 
     async seeds(filePath: string): Promise<void> {
         const fileContent = fs.readFileSync(filePath, 'utf-8');
         const lines = fileContent.split('\n');
         let index = 0;
 
-        for (const line of lines) {
-            const [categoryName, imageUrl] = line.split(';');
+        console.log(lines);
 
+        for(let i: number =0; i < lines.length; i++){
+            const [categoryName, imageUrl] = lines[i].split(';');
+            // console.log(categoryName);
             if (!categoryName || !imageUrl) {
-                console.log(`Invalid line format: ${line}`);
-                continue;
+                console.log(`Invalid line format: ${lines[i]}`);
             }
-
-            const fileBuffer = fs.readFileSync(imageUrl);
-            await this.create({ name: categoryName.trim() }, new CustomFile(fileBuffer, `${categoryName.trim()}.jpg`, "image/jpeg"));
+            else{
+                try{
+                    console.log("sdadasda");
+                    console.log(path.resolve(__dirname, "..", '..', 'static', 'products', 'categories', `flowers${index+1}.jpg`));
+                    const fileBuffer = fs.readFileSync(path.resolve(__dirname, "..",'..', 'static', 'products', 'categories', `flowers${index+1}.jpg`));
+                    await this.create({ name: categoryName.trim() }, new CustomFile(fileBuffer, `${categoryName.trim()}.jpg`, "image/jpeg"));
+                }
+                catch(e){
+                    console.log(e);
+                }
+            }
+        }; 
+        // (const line of lines) {
+            
 
             // try {
 
@@ -52,7 +63,7 @@ export class CategoriesService {
             // } catch (error) {
             //     console.error(`Error processing category "${categoryName.trim()}":`, error);
             // }
-        }
+        // }
     }
 
 

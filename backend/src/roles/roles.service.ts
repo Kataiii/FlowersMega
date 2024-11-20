@@ -6,9 +6,9 @@ import { Role } from './roles.model';
 export class RolesService {
     constructor(@InjectModel(Role) private rolesRepository: typeof Role) { }
 
-    async onModuleInit() {
-        await this.seeds();
-    }
+    // async onModuleInit() {
+    //     await this.seeds();
+    // }
 
     async seeds() {
         await this.rolesRepository.findOrCreate({

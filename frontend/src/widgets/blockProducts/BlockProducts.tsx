@@ -14,7 +14,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     gap: 10px;
     position: relative;
-    margin-left: 50px;
+    /* margin-left: 50px; */
 `;
 
 export const BlockGrid = styled.div`
@@ -25,7 +25,7 @@ export const BlockGrid = styled.div`
 
 const BlockProducts: React.FC = () => {
     const [page, setPage] = useState<number>(1);
-    const [pageSize, setPageSize] = useState<number>(6);
+    const [pageSize, setPageSize] = useState<number>(5);
     const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ page: page, limit: pageSize });
     const [productsSizes, setProductSizes] = useState<FullProductSizeDto[]>([]);
     const { data: postcardId } = useSizeContollerGetByNameQuery({ name: "-" });

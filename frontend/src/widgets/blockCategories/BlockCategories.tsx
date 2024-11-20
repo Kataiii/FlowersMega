@@ -8,9 +8,9 @@ import TitleSection from "../../shared/ui/titleSection/TitleSection";
 import { CATALOG_PATH, CATEGORY_PATH } from "../../shared/utils/constants";
 import { Category, useCategoriesControllerGetPaginationQuery } from "../../store/category";
 
-const ContainerCategories = styled.div`
-    display: flex;
-    flex-wrap: wrap;
+const ContainerCategories = styled.div<{ $countColumns: number; }>`
+    display: grid;
+    grid-template-columns: repeat(${props => props.$countColumns}, 1fr);
     gap: 15px;
 `;
 
@@ -36,7 +36,7 @@ const GradientDiv = styled.div`
 
 const BlockCategories: React.FC = () => {
     const [page, setPage] = useState<number>(1);
-    const [pageSize, setPageSize] = useState<number>(5);
+    const [pageSize, setPageSize] = useState<number>(8);
     const { isLoading, data } = useCategoriesControllerGetPaginationQuery({ page: page, limit: pageSize });
     const navigate = useNavigate();
     const [categories, setCategories] = useState<Category[]>([]);
@@ -67,7 +67,7 @@ const BlockCategories: React.FC = () => {
                         ? <p>Загрузка...</p>
                         :
                         <Wrapper>
-                            <ContainerCategories>
+                            <ContainerCategories $countColumns={pageSize}>
                                 {
                                     data && categories.map((item, index) => {
                                         return <CardCategory key={`categories-${index}`} category={item} clickHandler={() => navigate({
