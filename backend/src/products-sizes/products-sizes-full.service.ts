@@ -7,9 +7,9 @@ import { ProductsService } from "src/products/products.service";
 import { ReviewsService } from "src/reviews/reviews.service";
 import { SizesService } from "src/sizes/sizes.service";
 import {
-  CreateFullProductSizeDto,
-  CreateProductSizeSmallDto,
-  FilterWithItems,
+    CreateFullProductSizeDto,
+    CreateProductSizeSmallDto,
+    FilterWithItems,
 } from "./dto/createFullProduct.dto";
 import { ProductSize } from "./products-sizes.model";
 import { Op, or, where } from "sequelize";
@@ -25,618 +25,618 @@ import { ExtraPrice } from "src/extra-price/extra-price.model";
 import { Product } from "src/products/products.model";
 
 export class CustomFile implements File {
-  buffer: Buffer;
-  originalname: string;
-  lastModified: number;
-  name: string;
-  webkitRelativePath: string;
-  size: number;
-  type: string;
+    buffer: Buffer;
+    originalname: string;
+    lastModified: number;
+    name: string;
+    webkitRelativePath: string;
+    size: number;
+    type: string;
 
-  constructor(buffer: Buffer, name: string, type: string) {
-    this.buffer = buffer;
-    this.originalname = name;
-    this.lastModified = Date.now();
-    this.name = name;
-    this.webkitRelativePath = "";
-    this.size = buffer.length;
-    this.type = type;
-  }
+    constructor(buffer: Buffer, name: string, type: string) {
+        this.buffer = buffer;
+        this.originalname = name;
+        this.lastModified = Date.now();
+        this.name = name;
+        this.webkitRelativePath = "";
+        this.size = buffer.length;
+        this.type = type;
+    }
 
-  async arrayBuffer(): Promise<ArrayBuffer> {
-    return this.buffer.buffer.slice(
-      this.buffer.byteOffset,
-      this.buffer.byteOffset + this.buffer.byteLength
-    );
-  }
+    async arrayBuffer(): Promise<ArrayBuffer> {
+        return this.buffer.buffer.slice(
+            this.buffer.byteOffset,
+            this.buffer.byteOffset + this.buffer.byteLength
+        );
+    }
 
-  slice(start?: number, end?: number, contentType?: string): Blob {
-    const slice = this.buffer.slice(start, end);
-    return new Blob([slice], { type: contentType || this.type });
-  }
+    slice(start?: number, end?: number, contentType?: string): Blob {
+        const slice = this.buffer.slice(start, end);
+        return new Blob([slice], { type: contentType || this.type });
+    }
 
-  stream(): ReadableStream {
-    const readable = new ReadableStream({
-      start(controller) {
-        controller.enqueue(this.buffer);
-        controller.close();
-      },
-    });
-    return readable;
-  }
+    stream(): ReadableStream {
+        const readable = new ReadableStream({
+            start(controller) {
+                controller.enqueue(this.buffer);
+                controller.close();
+            },
+        });
+        return readable;
+    }
 
-  async text(): Promise<string> {
-    return this.buffer.toString("utf-8");
-  }
+    async text(): Promise<string> {
+        return this.buffer.toString("utf-8");
+    }
 }
 
 @Injectable()
 export class ProductsSizesFullService {
-  constructor(
-    @InjectModel(ProductSize)
-    private productsSizesRepository: typeof ProductSize,
-    private productsService: ProductsService,
-    private sizesService: SizesService,
-    private reviewsService: ReviewsService,
-    private categoriesProductService: CategoriesProductsService,
-    private productsItemsFilterService: ProductsItemsFilterService,
-    private extraPriceService: ExtraPriceService,
-    private categoriesService: CategoriesService,
-    private itemFilterService: ItemsFilterService,
-    private typeProductService: TypesProductService,
-    private categoriesProductsSizesService: CategoriesProductssizesService
-  ) {}
+    constructor(
+        @InjectModel(ProductSize)
+        private productsSizesRepository: typeof ProductSize,
+        private productsService: ProductsService,
+        private sizesService: SizesService,
+        private reviewsService: ReviewsService,
+        private categoriesProductService: CategoriesProductsService,
+        private productsItemsFilterService: ProductsItemsFilterService,
+        private extraPriceService: ExtraPriceService,
+        private categoriesService: CategoriesService,
+        private itemFilterService: ItemsFilterService,
+        private typeProductService: TypesProductService,
+        private categoriesProductsSizesService: CategoriesProductssizesService
+    ) { }
 
-  // async onModuleInit() {
-  //     await this.seeds("../backend/static/products/FLOWERS.txt");
-  // }
+    // async onModuleInit() {
+    //     await this.seeds("../backend/static/products/FLOWERS.txt");
+    // }
 
-  async seeds(filePath: string): Promise<void> {
-    const fileContent = fs.readFileSync(filePath, "utf-8");
-    const lines = fileContent.split("\n");
-    let index = 0;
+    async seeds(filePath: string): Promise<void> {
+        const fileContent = fs.readFileSync(filePath, "utf-8");
+        const lines = fileContent.split("\n");
+        let index = 0;
 
-    const categories = await this.categoriesService.getAll();
-    const itemFIlters = await this.itemFilterService.getAll();
-    const typeProducts = await this.typeProductService.getAll();
-    const sizes = await this.sizesService.getAll();
-    const extraPrises = await this.extraPriceService.getAll();
+        const categories = await this.categoriesService.getAll();
+        const itemFIlters = await this.itemFilterService.getAll();
+        const typeProducts = await this.typeProductService.getAll();
+        const sizes = await this.sizesService.getAll();
+        const extraPrises = await this.extraPriceService.getAll();
 
-    for (const line of lines) {
-      const [
-        title,
-        excerpt,
-        productTags,
-        pricesStr,
-        imageUrl,
-        categoryName,
-        komuFiltersStr,
-        povodFiltersStr,
-        composition,
-        sizesStr,
-      ] = line.split(";");
-      const [typeProductName, productName] = title.split(" - ");
+        for (const line of lines) {
+            const [
+                title,
+                excerpt,
+                productTags,
+                pricesStr,
+                imageUrl,
+                categoryName,
+                komuFiltersStr,
+                povodFiltersStr,
+                composition,
+                sizesStr,
+            ] = line.split(";");
+            const [typeProductName, productName] = title.split(" - ");
 
-      const typeProductId = typeProducts.find(
-        (item) => item.name === typeProductName.trim()
-      );
-      if (!typeProductId) continue;
+            const typeProductId = typeProducts.find(
+                (item) => item.name === typeProductName.trim()
+            );
+            if (!typeProductId) continue;
 
-      const categoriesProduct = categoryName.split(",").map((categoryName) => {
-        return categories.find((item) => item.name === categoryName.trim());
-      });
+            const categoriesProduct = categoryName.split(",").map((categoryName) => {
+                return categories.find((item) => item.name === categoryName.trim());
+            });
 
-      const validCategories = categoriesProduct.filter(
-        (c) => c !== null || c !== undefined
-      );
+            const validCategories = categoriesProduct.filter(
+                (c) => c !== null || c !== undefined
+            );
 
-      const extraPrice = this.extraPriceForProductSize(
-        extraPrises,
-        validCategories.map((item) => item.id)
-      );
+            const extraPrice = this.extraPriceForProductSize(
+                extraPrises,
+                validCategories.map((item) => item.id)
+            );
 
-      const itemFiltersProduct = [
-        ...komuFiltersStr.split(","),
-        ...povodFiltersStr.split(","),
-      ].map((filterName) => {
-        return itemFIlters.find((item) => item.name === filterName.trim());
-      });
+            const itemFiltersProduct = [
+                ...komuFiltersStr.split(","),
+                ...povodFiltersStr.split(","),
+            ].map((filterName) => {
+                return itemFIlters.find((item) => item.name === filterName.trim());
+            });
 
-      const validItemFilters = itemFiltersProduct.filter(
-        (c) => c !== null || c !== undefined
-      );
+            const validItemFilters = itemFiltersProduct.filter(
+                (c) => c !== null || c !== undefined
+            );
 
-      const prices = pricesStr
-        .split(",")
-        .map((price) => parseFloat(price.trim()));
+            const prices = pricesStr
+                .split(",")
+                .map((price) => parseFloat(price.trim()));
 
-      const sizesProduct = sizesStr.split(",").map((sizeStr, idx) => {
-        const cleanedSizeStr = sizeStr.replace(/["']/g, "").trim();
-        const [label, dimensions] = cleanedSizeStr.split(":");
-        const sizeId = sizes.find((el) => el.name === label.trim()).id;
+            const sizesProduct = sizesStr.split(",").map((sizeStr, idx) => {
+                const cleanedSizeStr = sizeStr.replace(/["']/g, "").trim();
+                const [label, dimensions] = cleanedSizeStr.split(":");
+                const sizeId = sizes.find((el) => el.name === label.trim()).id;
 
-        if (!sizeId || !prices[idx]) return null;
-        return {
-          idSize: sizeId,
-          paramsSize: dimensions.trim(),
-          prise: prices[idx],
-        };
-      });
-      const validSizes = sizesProduct.filter((s) => s !== null);
+                if (!sizeId || !prices[idx]) return null;
+                return {
+                    idSize: sizeId,
+                    paramsSize: dimensions.trim(),
+                    prise: prices[idx],
+                };
+            });
+            const validSizes = sizesProduct.filter((s) => s !== null);
 
-      const filePromise = await fetch(imageUrl.trim())
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`Failed to fetch image: ${response.statusText}`);
-          }
-          return response.arrayBuffer();
-        })
-        .then((arrayBuffer) => Buffer.from(arrayBuffer))
-        .then(
-          (buffer) =>
-            new CustomFile(buffer, `image${index++}.jpg`, "image/jpeg")
-        );
+            const filePromise = await fetch(imageUrl.trim())
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch image: ${response.statusText}`);
+                    }
+                    return response.arrayBuffer();
+                })
+                .then((arrayBuffer) => Buffer.from(arrayBuffer))
+                .then(
+                    (buffer) =>
+                        new CustomFile(buffer, `image${index++}.jpg`, "image/jpeg")
+                );
 
-      const product = await this.productsService.create(
-        {
-          name: productName.trim(),
-          description: excerpt.trim(),
-          structure: composition.trim(),
-          idTypeProduct: typeProductId ? typeProductId.id : 1,
-        },
-        [filePromise]
-      );
+            const product = await this.productsService.create(
+                {
+                    name: productName.trim(),
+                    description: excerpt.trim(),
+                    structure: composition.trim(),
+                    idTypeProduct: typeProductId ? typeProductId.id : 1,
+                },
+                [filePromise]
+            );
 
-      console.log("productId ", product.id);
+            console.log("productId ", product.id);
 
-      const productSizes = await Promise.all(
-        validSizes.map(async (item) => {
-          return await this.productsSizesRepository.create({
-            idProduct: product.id,
-            idSize: item.idSize,
-            paramsSize: item.paramsSize,
-            prise: item.prise,
-            extraPrice: item.prise * ((100 + extraPrice) * 0.01),
-          });
-        })
-      );
+            const productSizes = await Promise.all(
+                validSizes.map(async (item) => {
+                    return await this.productsSizesRepository.create({
+                        idProduct: product.id,
+                        idSize: item.idSize,
+                        paramsSize: item.paramsSize,
+                        prise: item.prise,
+                        extraPrice: item.prise * ((100 + extraPrice) * 0.01),
+                    });
+                })
+            );
 
-      await Promise.all(
-        validCategories.map(async (item) => {
-          await this.categoriesProductService.create({
-            idProduct: product.id,
-            idCategory: item.id,
-          });
-          await Promise.all(
-            productSizes.map(async (el) => {
-              await this.categoriesProductsSizesService.create({
-                idCategory: item.id,
-                idProductSize: el.id,
-              });
-            })
-          );
-        })
-      );
+            await Promise.all(
+                validCategories.map(async (item) => {
+                    await this.categoriesProductService.create({
+                        idProduct: product.id,
+                        idCategory: item.id,
+                    });
+                    await Promise.all(
+                        productSizes.map(async (el) => {
+                            await this.categoriesProductsSizesService.create({
+                                idCategory: item.id,
+                                idProductSize: el.id,
+                            });
+                        })
+                    );
+                })
+            );
 
-      if (validItemFilters.length === 0) {
-        console.log("No valid filters to insert for this product.");
-      } else {
-        await Promise.all(
-          validItemFilters.map(async (item) => {
-            try {
-              const createdFilter =
-                await this.productsItemsFilterService.create({
-                  idProduct: product.id,
-                  idItemFilter: item.id,
-                });
-              console.log("Created filter entry:", createdFilter);
-            } catch (error) {
-              console.error(
-                `Failed to create filter for item ID ${item.id}:`,
-                error
-              );
+            if (validItemFilters.length === 0) {
+                console.log("No valid filters to insert for this product.");
+            } else {
+                await Promise.all(
+                    validItemFilters.map(async (item) => {
+                        try {
+                            const createdFilter =
+                                await this.productsItemsFilterService.create({
+                                    idProduct: product.id,
+                                    idItemFilter: item.id,
+                                });
+                            console.log("Created filter entry:", createdFilter);
+                        } catch (error) {
+                            console.error(
+                                `Failed to create filter for item ID ${item.id}:`,
+                                error
+                            );
+                        }
+                    })
+                );
             }
-          })
+        }
+    }
+
+    private extraPriceForProductSize(
+        extraPrises: ExtraPrice[],
+        categories: number[]
+    ) {
+        const generalExtra = extraPrises.find((item) => item.idCategory === "all");
+        const categoriesExtra = categories.map((item) => {
+            const prise = extraPrises.find((el) => el.idCategory === item.toString());
+            return prise ? prise.value : 0;
+        });
+        return Math.max(...categoriesExtra, generalExtra.value);
+    }
+
+    private async getCardInfo(productSize: ProductSize) {
+        // console.log(productSize, "PRODUCT SIZE")
+        const size = await this.sizesService.getById(productSize.idSize);
+        const product = await this.productsService.getById(productSize.idProduct);
+        const reviewsInfo = await this.reviewsService.getStaticticByProductSizeId(
+            productSize.id
         );
-      }
-    }
-  }
-
-  private extraPriceForProductSize(
-    extraPrises: ExtraPrice[],
-    categories: number[]
-  ) {
-    const generalExtra = extraPrises.find((item) => item.idCategory === "all");
-    const categoriesExtra = categories.map((item) => {
-      const prise = extraPrises.find((el) => el.idCategory === item.toString());
-      return prise ? prise.value : 0;
-    });
-    return Math.max(...categoriesExtra, generalExtra.value);
-  }
-
-  private async getCardInfo(productSize: ProductSize) {
-    // console.log(productSize, "PRODUCT SIZE")
-    const size = await this.sizesService.getById(productSize.idSize);
-    const product = await this.productsService.getById(productSize.idProduct);
-    const reviewsInfo = await this.reviewsService.getStaticticByProductSizeId(
-      productSize.id
-    );
-    // console.log(product, "product");
-    return {
-      size: size,
-      product: {
-        name: product.name,
-        idTypeProduct: product.idTypeProduct,
-        image: product.images[0],
-        filters: product.filters,
-        categories: product.categories,
-      },
-      reviewsInfo: reviewsInfo,
-    };
-  }
-
-  async getFullById(id: number) {
-    const productSize = await this.productsSizesRepository.findOne({
-      where: { id: id },
-    });
-    const info = await this.getCardInfo(productSize);
-    return {
-      productSize: productSize,
-      size: info.size,
-      product: info.product,
-      reviewsInfo: info.reviewsInfo,
-    };
-  }
-
-  async getCategoryProductsSizesBySearch(search?: string) {
-    console.log(search, "NUUUUUUUUU LYAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-
-    const sizeId = await this.sizesService.getSizeByName("-");
-
-    if (search && search.includes("all")) {
-      console.log("HAHAHAHAHA?");
-
-      const categories = await this.categoriesProductService.getTopCategories();
-
-      const prodSizes = await this.productsSizesRepository.findAll({
-        where: { idSize: { [Op.ne]: sizeId } },
-      });
-
-      const products = await this.productsService.getAll();
-      const filteredProducts = products.filter((product) =>
-        prodSizes.some((size) => size.idProduct === product.id)
-      );
-
-      const limitedProducts = filteredProducts.slice(0, 10);
-      return { category: categories, products: limitedProducts };
-    }
-
-    if (search !== null && search !== undefined) {
-      console.log("KAAAAAAAAAAAAAAAAAAK?");
-
-      const categories =
-        await this.categoriesProductService.getSearchCategoryByName(search);
-      const products = await this.productsService.searchProducts(search);
-
-      const prodSizes = await this.productsSizesRepository.findAll({
-        where: { idSize: { [Op.ne]: sizeId } },
-      });
-      const filteredProducts = products.filter((product) =>
-        prodSizes.some((size) => size.idProduct === product.id)
-      );
-
-      const limitedProducts = filteredProducts.slice(0, 10);
-      return { category: categories, products: limitedProducts };
-    }
-  }
-
-  async getProductsSizesForCardPagination(
-    page: number,
-    limit: number,
-    search?: string,
-    filterItems?: number[],
-    minPrice?: number,
-    maxPrice?: number,
-    category?: number
-  ) {
-    console.log(filterItems, "filterItems");
-    console.log(category, "LMAO uAPL");
-    console.log(search, "search");
-    const filtersProductsTmp =
-      filterItems.length > 0
-        && (
-            await this.productsItemsFilterService.getProductsByFilterIdArray(
-              filterItems
-            )
-          ).map((item) => item.idProduct)
-    console.log("filtersIds ", filtersProductsTmp);
-    const filtersProducts = filtersProductsTmp && Array.from(new Set(filtersProductsTmp.flat()));
-
-    console.log("filtersProducts ", filtersProducts);
-
-    const whereCondition: any = {};
-    if (minPrice >= 0) {
-      whereCondition.extraPrice = { [Op.gte]: minPrice };
-    }
-
-    console.log("whereCondition ", whereCondition);
-    if (maxPrice >= 0) {
-      whereCondition.extraPrice = {
-        ...whereCondition.prise,
-        [Op.lte]: maxPrice,
-      };
-    }
-
-    console.log("whereCondition ", whereCondition);
-
-    if (filtersProducts.length > 0) {
-      console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
-      whereCondition.idProduct = {
-        [Op.in]: filtersProducts,
-      };
-    }
-
-    console.log("search ", search);
-
-    let countAndProducts:  {
-      rows: ProductSize[];
-      count: number;
-  } = {
-    rows: [],
-    count: 0
-  };
-
-    if(category){
-      countAndProducts = await this.productsSizesRepository.findAndCountAll(
-        {
-          where: whereCondition,
-          limit: limit,
-          offset: (page - 1) * limit,
-          include: [
-            {
-              model: CategoriesProductsSizes,
-              where: {
-                idCategory: category,
-              },
-            },
-            {
-              model: Product,
-              where: {
-                name: { [Op.like]: search ? `%${search}%` : `%` },
-              },
-            },
-          ],
-        }
-      );
-    }
-    else {
-      countAndProducts = await this.productsSizesRepository.findAndCountAll(
-        {
-          where: whereCondition,
-          limit: limit,
-          offset: (page - 1) * limit,
-          include: [
-            {
-              model: Product,
-              where: {
-                name: { [Op.like]: search ? `%${search}%` : `%` },
-              },
-            },
-          ],
-        }
-      );
-    }
-
-    console.log("AAAAAAAAAAAAAAAAAAAAA");
-    const resCardInfo = await this.calculatePrices(countAndProducts.rows);
-    return {
-      count: countAndProducts.count,
-      products: resCardInfo,
-    };
-  }
-
-  async calculatePrices(products: ProductSize[]) {
-    const extraPriceForCategories =
-      await this.extraPriceService.whichOneTheBest();
-    let countProductsWithMarkup = 0;
-
-    console.log(extraPriceForCategories, "EPRIE BTW");
-    const productsCardInfo = await Promise.all(
-      products.map(async (item) => {
-        const info = await this.getCardInfo(item);
+        // console.log(product, "product");
         return {
-          productSize: {
-            id: item.id,
-            idProduct: item.idProduct,
-            idSize: item.idSize,
-            paramsSize: item.paramsSize,
-            count: item.count,
-            prise: item.extraPrice,
-            orders: item.orders,
-          },
-          size: info.size,
-          product: info.product,
-          reviewsInfo: info.reviewsInfo,
-        };
-      })
-    );
-    const updatedProducts = productsCardInfo.map((item) => {
-      const productSize = { ...item.productSize };
-
-      return {
-        ...item,
-        productSize: productSize,
-      };
-    });
-
-    return updatedProducts;
-  }
-
-  async getProductSizeInfo(id: number) {
-    const productSize = await this.productsSizesRepository.findOne({
-      where: { id: id },
-    });
-    const size = await this.sizesService.getById(productSize.idSize);
-    return { productSize: productSize, size: size };
-  }
-
-  async getProductsWithPagination(
-    page: number,
-    limit: number,
-    search?: string,
-    field?: string,
-    type?: string,
-    categories?: number[],
-    filters?: number[]
-  ) {
-    // console.log(categories, "categories");
-    const categoriesProductsTmp =
-      categories.length > 0
-        ? await Promise.all(
-            categories.map(async (item) => {
-              return (
-                await this.categoriesProductService.getProductsByCategoryId(
-                  item
-                )
-              ).map((item) => item.idProduct);
-            })
-          )
-        : (await this.productsService.getAll()).map((item) => item.id);
-    // console.log(categoriesProductsTmp, "categTNM");
-    const filtersProductsTmp =
-      filters.length > 0
-        ? await Promise.all(
-            filters.map(async (item) => {
-              return (
-                await this.productsItemsFilterService.getProductsByFilterId(
-                  item
-                )
-              ).map((item) => item.idProduct);
-            })
-          )
-        : (await this.productsService.getAll()).map((item) => item.id);
-    // console.log(filtersProductsTmp, "filterTNM");
-
-    const categoriesProducts = Array.from(
-      new Set(categoriesProductsTmp.flat())
-    );
-    // console.log(categoriesProducts);
-    const filtersProducts = Array.from(new Set(filtersProductsTmp.flat()));
-    // console.log(filtersProducts);
-
-    const finalFIlterCategories = categoriesProducts.filter((item) =>
-      filtersProducts.includes(item)
-    );
-
-    // console.log(finalFIlterCategories, " const");
-
-    const paginationResult = await this.productsService.getCountAndPagination(
-      page,
-      limit,
-      search,
-      field,
-      type,
-      finalFIlterCategories
-    );
-    // console.log(paginationResult, "paginationResult");
-    const productSizesTmp = await Promise.all(
-      paginationResult.products.map(async (item) => {
-        const productSizes = await this.productsSizesRepository.findAll({
-          where: { idProduct: item.id },
-        });
-        const resultProducts = await this.calculatePrices(productSizes);
-        // const productWithSizes = await Promise.all(productSizes.map(async (item) => {
-        //     return await this.getProductSizeInfo(item.id);
-        // }))
-        return { products: item, productsSizes: resultProducts };
-      })
-    );
-    // console.log(productSizesTmp, "productSizesTmp");
-    return { count: paginationResult.count, products: productSizesTmp };
-  }
-
-  async createFullProduct(dto: CreateFullProductSizeDto, photo: File) {
-    const prosuctsSizes = JSON.parse(
-      `[${dto.productSize.toString()}]`
-    ) as CreateProductSizeSmallDto[];
-    const categories = JSON.parse(
-      `[${dto.categories.toString()}]`
-    ) as Category[];
-    const filters = JSON.parse(`[${dto.filters.toString()}]`) as ItemFilter[];
-    const product = await this.productsService.create(
-      {
-        name: dto.name,
-        description: dto.description,
-        structure: dto.structure,
-        idTypeProduct: dto.type,
-      },
-      [photo]
-    );
-    await Promise.all(
-      prosuctsSizes.map(async (item) => {
-        // console.log(item);
-        return await this.productsSizesRepository.create({
-          idProduct: product.id,
-          idSize: item.idSize,
-          paramsSize: item.paramsSize,
-          prise: item.prise,
-        });
-      })
-    );
-    await Promise.all(
-      categories.map(async (item) => {
-        return await this.categoriesProductService.create({
-          idProduct: product.id,
-          //@ts-ignore
-          idCategory: item.id,
-        });
-      })
-    );
-
-    await Promise.all(
-      filters.map(async (item) => {
-        return await this.productsItemsFilterService.create({
-          idProduct: product.id,
-          idItemFilter: item.id,
-        });
-      })
-    );
-
-    return product;
-  }
-
-  async deleteProductWithSizes(
-    productId: number
-  ): Promise<{ message: string }> {
-    await this.productsSizesRepository.destroy({
-      where: { idProduct: productId },
-    });
-    await this.productsService.deleteProduct(productId);
-    return { message: "Product and all associated sizes deleted successfully" };
-  }
-
-  async getMaxPrice(idCategory?: number) {
-    let productSize: ProductSize;
-    if (idCategory) {
-      productSize = await this.productsSizesRepository.findOne({
-        order: [["extraPrice", "DESC"]],
-        limit: 1,
-        include: [
-          {
-            model: CategoriesProductsSizes,
-            where: {
-              idCategory: idCategory,
+            size: size,
+            product: {
+                name: product.name,
+                idTypeProduct: product.idTypeProduct,
+                image: product.images[0],
+                filters: product.filters,
+                categories: product.categories,
             },
-          },
-        ],
-      });
-      console.log(productSize);
-    } else {
-      productSize = await this.productsSizesRepository.findOne({
-        order: [["extraPrice", "DESC"]],
-        limit: 1,
-      });
+            reviewsInfo: reviewsInfo,
+        };
     }
-    return productSize !== null ? productSize.extraPrice : 0;
-  }
+
+    async getFullById(id: number) {
+        const productSize = await this.productsSizesRepository.findOne({
+            where: { id: id },
+        });
+        const info = await this.getCardInfo(productSize);
+        return {
+            productSize: productSize,
+            size: info.size,
+            product: info.product,
+            reviewsInfo: info.reviewsInfo,
+        };
+    }
+
+    async getCategoryProductsSizesBySearch(search?: string) {
+        console.log(search, "NUUUUUUUUU LYAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
+        const sizeId = await this.sizesService.getSizeByName("-");
+
+        if (search && search.includes("all")) {
+            console.log("HAHAHAHAHA?");
+
+            const categories = await this.categoriesProductService.getTopCategories();
+
+            const prodSizes = await this.productsSizesRepository.findAll({
+                where: { idSize: { [Op.ne]: sizeId } },
+            });
+
+            const products = await this.productsService.getAll();
+            const filteredProducts = products.filter((product) =>
+                prodSizes.some((size) => size.idProduct === product.id)
+            );
+
+            const limitedProducts = filteredProducts.slice(0, 10);
+            return { category: categories, products: limitedProducts };
+        }
+
+        if (search !== null && search !== undefined) {
+            console.log("KAAAAAAAAAAAAAAAAAAK?");
+
+            const categories =
+                await this.categoriesProductService.getSearchCategoryByName(search);
+            const products = await this.productsService.searchProducts(search);
+
+            const prodSizes = await this.productsSizesRepository.findAll({
+                where: { idSize: { [Op.ne]: sizeId } },
+            });
+            const filteredProducts = products.filter((product) =>
+                prodSizes.some((size) => size.idProduct === product.id)
+            );
+
+            const limitedProducts = filteredProducts.slice(0, 10);
+            return { category: categories, products: limitedProducts };
+        }
+    }
+
+    async getProductsSizesForCardPagination(
+        page: number,
+        limit: number,
+        search?: string,
+        filterItems?: number[],
+        minPrice?: number,
+        maxPrice?: number,
+        category?: number
+    ) {
+        console.log(filterItems, "filterItems");
+        console.log(category, "LMAO uAPL");
+        console.log(search, "search");
+        const filtersProductsTmp =
+            filterItems.length > 0
+            && (
+                await this.productsItemsFilterService.getProductsByFilterIdArray(
+                    filterItems
+                )
+            ).map((item) => item.idProduct)
+        console.log("filtersIds ", filtersProductsTmp);
+        const filtersProducts = filtersProductsTmp && Array.from(new Set(filtersProductsTmp.flat()));
+
+        console.log("filtersProducts ", filtersProducts);
+
+        const whereCondition: any = {};
+        if (minPrice >= 0) {
+            whereCondition.extraPrice = { [Op.gte]: minPrice };
+        }
+
+        console.log("whereCondition ", whereCondition);
+        if (maxPrice >= 0) {
+            whereCondition.extraPrice = {
+                ...whereCondition.prise,
+                [Op.lte]: maxPrice,
+            };
+        }
+
+        console.log("whereCondition ", whereCondition);
+
+        if (filtersProducts.length > 0) {
+            console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
+            whereCondition.idProduct = {
+                [Op.in]: filtersProducts,
+            };
+        }
+
+        console.log("search ", search);
+
+        let countAndProducts: {
+            rows: ProductSize[];
+            count: number;
+        } = {
+            rows: [],
+            count: 0
+        };
+
+        if (category) {
+            countAndProducts = await this.productsSizesRepository.findAndCountAll(
+                {
+                    where: whereCondition,
+                    limit: limit,
+                    offset: (page - 1) * limit,
+                    include: [
+                        {
+                            model: CategoriesProductsSizes,
+                            where: {
+                                idCategory: category,
+                            },
+                        },
+                        {
+                            model: Product,
+                            where: {
+                                name: { [Op.like]: search ? `%${search}%` : `%` },
+                            },
+                        },
+                    ],
+                }
+            );
+        }
+        else {
+            countAndProducts = await this.productsSizesRepository.findAndCountAll(
+                {
+                    where: whereCondition,
+                    limit: limit,
+                    offset: (page - 1) * limit,
+                    include: [
+                        {
+                            model: Product,
+                            where: {
+                                name: { [Op.like]: search ? `%${search}%` : `%` },
+                            },
+                        },
+                    ],
+                }
+            );
+        }
+
+        console.log("AAAAAAAAAAAAAAAAAAAAA");
+        const resCardInfo = await this.calculatePrices(countAndProducts.rows);
+        return {
+            count: countAndProducts.count,
+            products: resCardInfo,
+        };
+    }
+
+    async calculatePrices(products: ProductSize[]) {
+        const extraPriceForCategories =
+            await this.extraPriceService.whichOneTheBest();
+        let countProductsWithMarkup = 0;
+
+        console.log(extraPriceForCategories, "EPRIE BTW");
+        const productsCardInfo = await Promise.all(
+            products.map(async (item) => {
+                const info = await this.getCardInfo(item);
+                return {
+                    productSize: {
+                        id: item.id,
+                        idProduct: item.idProduct,
+                        idSize: item.idSize,
+                        paramsSize: item.paramsSize,
+                        count: item.count,
+                        prise: item.extraPrice,
+                        orders: item.orders,
+                    },
+                    size: info.size,
+                    product: info.product,
+                    reviewsInfo: info.reviewsInfo,
+                };
+            })
+        );
+        const updatedProducts = productsCardInfo.map((item) => {
+            const productSize = { ...item.productSize };
+
+            return {
+                ...item,
+                productSize: productSize,
+            };
+        });
+
+        return updatedProducts;
+    }
+
+    async getProductSizeInfo(id: number) {
+        const productSize = await this.productsSizesRepository.findOne({
+            where: { id: id },
+        });
+        const size = await this.sizesService.getById(productSize.idSize);
+        return { productSize: productSize, size: size };
+    }
+
+    async getProductsWithPagination(
+        page: number,
+        limit: number,
+        search?: string,
+        field?: string,
+        type?: string,
+        categories?: number[],
+        filters?: number[]
+    ) {
+        // console.log(categories, "categories");
+        const categoriesProductsTmp =
+            categories.length > 0
+                ? await Promise.all(
+                    categories.map(async (item) => {
+                        return (
+                            await this.categoriesProductService.getProductsByCategoryId(
+                                item
+                            )
+                        ).map((item) => item.idProduct);
+                    })
+                )
+                : (await this.productsService.getAll()).map((item) => item.id);
+        // console.log(categoriesProductsTmp, "categTNM");
+        const filtersProductsTmp =
+            filters.length > 0
+                ? await Promise.all(
+                    filters.map(async (item) => {
+                        return (
+                            await this.productsItemsFilterService.getProductsByFilterId(
+                                item
+                            )
+                        ).map((item) => item.idProduct);
+                    })
+                )
+                : (await this.productsService.getAll()).map((item) => item.id);
+        // console.log(filtersProductsTmp, "filterTNM");
+
+        const categoriesProducts = Array.from(
+            new Set(categoriesProductsTmp.flat())
+        );
+        // console.log(categoriesProducts);
+        const filtersProducts = Array.from(new Set(filtersProductsTmp.flat()));
+        // console.log(filtersProducts);
+
+        const finalFIlterCategories = categoriesProducts.filter((item) =>
+            filtersProducts.includes(item)
+        );
+
+        // console.log(finalFIlterCategories, " const");
+
+        const paginationResult = await this.productsService.getCountAndPagination(
+            page,
+            limit,
+            search,
+            field,
+            type,
+            finalFIlterCategories
+        );
+        // console.log(paginationResult, "paginationResult");
+        const productSizesTmp = await Promise.all(
+            paginationResult.products.map(async (item) => {
+                const productSizes = await this.productsSizesRepository.findAll({
+                    where: { idProduct: item.id },
+                });
+                const resultProducts = await this.calculatePrices(productSizes);
+                // const productWithSizes = await Promise.all(productSizes.map(async (item) => {
+                //     return await this.getProductSizeInfo(item.id);
+                // }))
+                return { products: item, productsSizes: resultProducts };
+            })
+        );
+        // console.log(productSizesTmp, "productSizesTmp");
+        return { count: paginationResult.count, products: productSizesTmp };
+    }
+
+    async createFullProduct(dto: CreateFullProductSizeDto, photo: File) {
+        const prosuctsSizes = JSON.parse(
+            `[${dto.productSize.toString()}]`
+        ) as CreateProductSizeSmallDto[];
+        const categories = JSON.parse(
+            `[${dto.categories.toString()}]`
+        ) as Category[];
+        const filters = JSON.parse(`[${dto.filters.toString()}]`) as ItemFilter[];
+        const product = await this.productsService.create(
+            {
+                name: dto.name,
+                description: dto.description,
+                structure: dto.structure,
+                idTypeProduct: dto.type,
+            },
+            [photo]
+        );
+        await Promise.all(
+            prosuctsSizes.map(async (item) => {
+                // console.log(item);
+                return await this.productsSizesRepository.create({
+                    idProduct: product.id,
+                    idSize: item.idSize,
+                    paramsSize: item.paramsSize,
+                    prise: item.prise,
+                });
+            })
+        );
+        await Promise.all(
+            categories.map(async (item) => {
+                return await this.categoriesProductService.create({
+                    idProduct: product.id,
+                    //@ts-ignore
+                    idCategory: item.id,
+                });
+            })
+        );
+
+        await Promise.all(
+            filters.map(async (item) => {
+                return await this.productsItemsFilterService.create({
+                    idProduct: product.id,
+                    idItemFilter: item.id,
+                });
+            })
+        );
+
+        return product;
+    }
+
+    async deleteProductWithSizes(
+        productId: number
+    ): Promise<{ message: string }> {
+        await this.productsSizesRepository.destroy({
+            where: { idProduct: productId },
+        });
+        await this.productsService.deleteProduct(productId);
+        return { message: "Product and all associated sizes deleted successfully" };
+    }
+
+    async getMaxPrice(idCategory?: number) {
+        let productSize: ProductSize;
+        if (idCategory) {
+            productSize = await this.productsSizesRepository.findOne({
+                order: [["extraPrice", "DESC"]],
+                limit: 1,
+                include: [
+                    {
+                        model: CategoriesProductsSizes,
+                        where: {
+                            idCategory: idCategory,
+                        },
+                    },
+                ],
+            });
+            console.log(productSize);
+        } else {
+            productSize = await this.productsSizesRepository.findOne({
+                order: [["extraPrice", "DESC"]],
+                limit: 1,
+            });
+        }
+        return productSize !== null ? productSize.extraPrice : 0;
+    }
 }

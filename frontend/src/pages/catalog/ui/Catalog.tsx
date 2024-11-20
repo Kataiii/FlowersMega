@@ -50,7 +50,7 @@ const Catalog: React.FC = () => {
                             {
                                 isLoading
                                     ? <p>Загрузка...</p>
-                                    : data && data.products.map((item, index) => item.productSize.idSize !== postcardId ? (
+                                    : data && data.products.map((item, index) => item.productSize.idSize == postcardId ? (
                                         <>
                                             {console.log(1)}
                                             <SmartProductCard key={`productSizes-${index}`} product={item} />

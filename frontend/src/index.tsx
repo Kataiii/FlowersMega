@@ -93,34 +93,34 @@ const RootContainer = createGlobalStyle`
 `;
 
 const root = ReactDOM.createRoot(
-	document.getElementById('root') as HTMLElement
+  document.getElementById('root') as HTMLElement
 );
 root.render(
-	<>
-		<RootContainer/>
-		<ConfigProvider
-			theme={{
-				token: {
-					colorPrimary: "#FF749F",
-					colorPrimaryActive: "#FF558A",
-					colorPrimaryHover: "#FF558A"
-				},
-				components: {
-					Input:{
-						activeBorderColor: "#FF558A",
-						hoverBorderColor: "#FF558A",
-						colorBorder: "#FF749F",
-						fontFamily: "Inter"
-					}
-				}
-			}}>
-			<Provider store={store}>
-				<PersistGate persistor={persistor} loading={<Spin></Spin>}>
-					<BrowserRouter>
-						<Router />
-					</BrowserRouter>
-				</PersistGate>
-			</Provider>
-		</ConfigProvider>
-	</>
+  <>
+    <RootContainer />
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: "#FF749F",
+          colorPrimaryActive: "#FF558A",
+          colorPrimaryHover: "#FF558A"
+        },
+        components: {
+          Input: {
+            activeBorderColor: "#FF558A",
+            hoverBorderColor: "#FF558A",
+            colorBorder: "#FF749F",
+            fontFamily: "Inter"
+          }
+        }
+      }}>
+      <Provider store={store}>
+        <PersistGate persistor={persistor} loading={<Spin></Spin>}>
+          <BrowserRouter>
+            <Router />
+          </BrowserRouter>
+        </PersistGate>
+      </Provider>
+    </ConfigProvider>
+  </>
 );

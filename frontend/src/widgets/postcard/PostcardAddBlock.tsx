@@ -1,30 +1,48 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { ButtonText } from "../../pages/admin/ui/products/Products";
-import Podstcard from "./Podstcard";
+import Postcard from "./Postcard";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addPostcard, removePostcard, updatePostcard } from "../../entities/postcard/redux/slice";
+import { postcardsSelectors } from "../../entities/postcard/redux/selectors";
 
-const PostcardAddBlock: React.FC = () => {
-    const [variations, setVariations] = useState<any[]>([]);
-    const [position, setPosition] = useState<number>(0);
+interface PostcardAddBlockProps {
+    idProductSize: number;
+}
 
+const PostcardAddBlock: React.FC<PostcardAddBlockProps> = ({ idProductSize }) => {
+    const dispatch = useDispatch();
+    const postcards = useSelector((state: any) =>
+        postcardsSelectors.selectAll(state).filter((p) => p.idProductSize === idProductSize)
+    );
     const handleAddVariation = () => {
-        const newVariation = {};
-        const updatedVariations = [...variations, newVariation];
-        setVariations(updatedVariations);
-    };
 
-    const handleChangeVariation = (index: number, updatedVariation: any) => {
-        const updatedVariations = variations.map((v, i) =>
-            i === index ? updatedVariation : v
-        );
-        setVariations(updatedVariations);
+        dispatch(addPostcard({ idProductSize: idProductSize, text: "" }));
+        console.log(postcards);
     };
 
     const handleRemoveVariation = (index: number) => {
-        const updatedVariations = variations.filter((_, i) => i !== index);
-        setVariations(updatedVariations);
-    };
+        dispatch(removePostcard({ id: index }));
+    }
+
+    // const handleChangeVariation = (index: number, updatedText: string) => {
+    //     setVariations(
+    //         variations.map((v, i) => (i === index ? updatedText : v))
+    //     );
+    //     dispatch(
+    //         updatePostcard({
+    //             idProductSize: position,
+    //             index,
+    //             text: updatedText,
+    //         })
+    //     );
+    // };
+
+    // const handleRemoveVariation = (index: number) => {
+    //     const updatedVariations = variations.filter((_, i) => i !== index);
+    //     setVariations(updatedVariations);
+    // };
 
     return (
         <div style={{ border: "2px solid var(--primary-bg-color)", width: "100%", height: "60vh", borderRadius: "16px", display: "flex", flexDirection: "column", padding: "8px", gap: "8px" }}>
@@ -41,13 +59,15 @@ const PostcardAddBlock: React.FC = () => {
                 scrollbarColor: "var(--primary-bg-color) var(--main-bg-color)",
                 scrollbarWidth: "thin",
             }}>
-                {variations.map((variation, index) => (
-                    <Podstcard
+                {postcards.map((variation, index) => (
+                    <Postcard
                         key={index}
                         index={++index}
-                        value={variation}
-                        onChange={(updateVariation) => handleChangeVariation(index, updateVariation)}
-                        onRemove={() => handleRemoveVariation(index)} />
+                        value={variation} onChange={function (updatedVariation: any): void {
+                            throw new Error("Function not implemented.");
+                        }}// onChange={(updateVariation) => handleChangeVariation(index, updateVariation)}
+                        onRemove={() => handleRemoveVariation(index)}
+                    />
                 ))}
             </div>
             <Button type="dashed"
