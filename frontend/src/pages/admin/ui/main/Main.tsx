@@ -11,7 +11,7 @@ import {
 } from "../../../../shared/utils/constants";
 import { ReactComponent as LogoAdmin } from "../../../../shared/assets/logo-admin.svg";
 import { ReactComponent as ArrowBack } from "../../../../shared/assets/arrow-back.svg";
-
+import ruRU from 'antd/locale/ru_RU';
 type MenuItem = Required<MenuProps>["items"][number];
 
 function getItem(
@@ -80,6 +80,7 @@ const Main: React.FC = () => {
 
   return (
     <ConfigProvider
+      locale={ruRU}
       theme={{
         components: {
           Table: {

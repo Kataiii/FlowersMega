@@ -135,6 +135,7 @@ export class ProductsSizesController {
     @ApiResponse({ status: 404, description: "Product size not fount" })
     @Get("/:id")
     async getById(@Param("id") id: number) {
+        console.log(id, 'asasasa');
         return await this.productsSizesService.getById(id);
     }
 
@@ -197,7 +198,7 @@ export class ProductsSizesController {
     @Get("/category/:name")
     async getCategoryIdByName(@Param("name") name: string) {
         console.log(name, "CATEGORYPPPPPPPP");
-        if (name === "null") { console.log("DWNIJWENIJEWNIJNWEIJGNIWENGIJWENGNEWGNWENGINEER"); return -1 };
+        if (name === "null" || name === null) { console.log("DWNIJWENIJEWNIJNWEIJGNIWENGIJWENGNEWGNWENGINEER"); return -1 };
         const response = await this.categoriesService.getCategoryByName(name);
         // console.log(response);
         return response.id;

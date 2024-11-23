@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 import { API_URL, PRODUCT_PATH } from "../../../../shared/utils/constants";
 import { FullProductSizeDto, Product, ProductSize, useProductsControllerGetByIdQuery } from "../../../../store/product";
 import { useSizeContollerGetByNameQuery } from "../../../../store/size";
-import {ReactComponent as Cursor} from "../../../../shared/assets/cursor.svg";
+import { ReactComponent as Cursor } from "../../../../shared/assets/cursor.svg";
 import { useNavigate } from "react-router-dom";
 import { Image, Rate } from "antd";
 import { Numerals } from "../../../../shared/utils/numerals";

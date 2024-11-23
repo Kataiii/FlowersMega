@@ -28,6 +28,8 @@ const Catalog: React.FC = () => {
     const [page, setPage] = useState(1);
     const { data: postcardId } = useSizeContollerGetByNameQuery({ name: "-" });
     const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ limit: pageSize, page: page, search: selectedProduct ? selectedProduct : '', filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: categoryD ? Number(categoryIdData) : undefined });
+    console.log(postcardId, "POSTCRRD SIE ID")
+    console.log(data?.products.filter(item => item.productSize.idSize === 5))
 
     const handlePageChange = (newPage: number, newPageSize?: number) => {
         setPage(newPage);

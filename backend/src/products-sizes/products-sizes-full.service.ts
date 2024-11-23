@@ -429,6 +429,7 @@ export class ProductsSizesFullService {
 
         console.log("AAAAAAAAAAAAAAAAAAAAA");
         const resCardInfo = await this.calculatePrices(countAndProducts.rows);
+        console.log(resCardInfo, "EXTRA PRICE CHECK VALUE")
         return {
             count: countAndProducts.count,
             products: resCardInfo,
@@ -502,6 +503,7 @@ export class ProductsSizesFullService {
                     })
                 )
                 : (await this.productsService.getAll()).map((item) => item.id);
+
         // console.log(categoriesProductsTmp, "categTNM");
         const filtersProductsTmp =
             filters.length > 0

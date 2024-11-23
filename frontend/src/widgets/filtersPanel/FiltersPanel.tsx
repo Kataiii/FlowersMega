@@ -73,7 +73,7 @@ const FiltersPanel: React.FC = () => {
         dispatch(addMaxPrice(data?.maxPrice ?? -1));
         setIsReset(true)
     }
-
+    console.log(data?.maxPrice, "MAX PRICE from DATAAAA");
     return (
         <>
             {

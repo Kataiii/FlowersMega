@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Container from "../../shared/ui/containerMain/ContainerMain"
 import TitleSection from "../../shared/ui/titleSection/TitleSection";
 import { FullReviewDto, useReviewsControllerGetAllWithPaginationQuery } from "../../store/review";
-import {ReactComponent as Arrow} from "../../shared/assets/sliderArrow.svg";
+import { ReactComponent as Arrow } from "../../shared/assets/sliderArrow.svg";
 import { CarouselRef } from "antd/es/carousel";
 import ReviewCardMain from "../../entities/review/ui/reviewCardMain/ReviewCardMain";
 
@@ -50,7 +50,7 @@ const BlockReviews: React.FC = () => {
         setPage(newPage);
 
     };
-
+    console.log(data, 'XDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD')
     return (
         <Container>
             <TitleSection content="Отзывы клиентов" />
@@ -59,25 +59,32 @@ const BlockReviews: React.FC = () => {
                     ? <p>Загрузка...</p>
                     :
                     <>
-                        <div style={{ position: "relative", display: "flex", flexDirection: "row", gap: "6px" }}>
-                            {
-                                <>
-                                    {
-                                        page === Math.ceil((data?.count ?? 0) / pageSize) ? null : <Arrow style={{width: 50, height: 50, position: "absolute", zIndex: 10, top: "50%", left: "100%", transform: "translate(-50%, 0) rotate(180deg)", cursor: "pointer"}} onClick={() => setPage(prev => prev + 1)} />
-                                    }
+                        {data?.count === 0 ?
+                            null
+                            : (
 
-                                    {console.log(data?.count)}
+                                <div style={{ position: "relative", display: "flex", flexDirection: "row", gap: "6px" }}>
                                     {
-                                        data?.reviews.map((item, index) => {
-                                            return <ReviewCardMain key={`review_card-${item.id}`} review={item} />
-                                        })
+                                        <>
+                                            {
+                                                page === Math.ceil((data?.count ?? 0) / pageSize) ? null : <Arrow style={{ width: 50, height: 50, position: "absolute", zIndex: 10, top: "50%", left: "100%", transform: "translate(-50%, 0) rotate(180deg)", cursor: "pointer" }} onClick={() => setPage(prev => prev + 1)} />
+                                            }
+
+                                            {console.log(data?.count)}
+                                            {
+                                                data?.reviews.map((item, index) => {
+                                                    return <ReviewCardMain key={`review_card-${item.id}`} review={item} />
+                                                })
+                                            }
+                                            {
+                                                page === 1 ? null : <Arrow style={{ width: 50, height: 50, position: "absolute", zIndex: 10, top: "50%", left: 0, transform: "translate(-50%, 0) rotate(0)", cursor: "pointer" }} onClick={() => setPage(prev => prev - 1)} />
+                                            }
+                                        </>
                                     }
-                                    {
-                                        page === 1 ? null :  <Arrow style={{width: 50, height: 50, position: "absolute", zIndex: 10, top: "50%", left: 0, transform: "translate(-50%, 0) rotate(0)", cursor: "pointer"}} onClick={() => setPage(prev => prev - 1)} />
-                                    }
-                                </>
-                            }
-                        </div>
+                                </div>
+                            )
+                        }
+
                     </>
             }
         </Container>

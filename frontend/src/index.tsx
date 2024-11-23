@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import { persistor, store } from './store/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { createGlobalStyle, styled } from 'styled-components';
-
+import ruRU from 'antd/locale/ru_RU';
 const RootContainer = createGlobalStyle`
   * {
   box-sizing: border-box;
@@ -99,6 +99,7 @@ root.render(
   <>
     <RootContainer />
     <ConfigProvider
+      locale={ruRU}
       theme={{
         token: {
           colorPrimary: "#FF749F",

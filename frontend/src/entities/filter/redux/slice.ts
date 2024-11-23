@@ -19,7 +19,7 @@ type FilterState = {
 };
 
 const initialState: FilterState = {
-    minPrice: -1,
+    minPrice: 0,
     maxPrice: -1,
     itemsFilter: []
 }
