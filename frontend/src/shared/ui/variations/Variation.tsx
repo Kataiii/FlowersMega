@@ -58,7 +58,7 @@ const Variation: React.FC<VariationProps> = ({ variation, onRemove, onChange, di
                     <Input
                         type="number"
                         disabled={disabled}
-                        value={variation.prise}
+                        value={variation.extraPrice}
                         placeholder="Введите стоимость товара в рублях..."
                         style={{ width: "480px" }}
                         onChange={handlePriceChange}

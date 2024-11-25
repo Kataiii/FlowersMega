@@ -1,14 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { ExtraPrice } from './extra-price.model';
 import { CategoriesProducts } from 'src/categories-products/categories_products.model';
 import { Op } from 'sequelize';
+import { ProductsSizesService } from 'src/products-sizes/products-sizes.service';
 
 @Injectable()
 export class ExtraPriceService {
     constructor(
         @InjectModel(ExtraPrice) private extraPriceRepository: typeof ExtraPrice,
         @InjectModel(CategoriesProducts) private categoriesProductsRepository: typeof CategoriesProducts,
+        @Inject(forwardRef(() => ProductsSizesService)) private productsSizesService: ProductsSizesService,
     ) { }
 
     async onModuleInit() {
@@ -38,9 +40,10 @@ export class ExtraPriceService {
             await extraPrice.save();
         }
 
+        await this.productsSizesService.updatePrices();
+
         return extraPrice;
     }
-
 
     async getAll() {
         return this.extraPriceRepository.findAll();
@@ -58,6 +61,7 @@ export class ExtraPriceService {
     }
 
     async deleteByCategoryId(idCategory: string) {
+        await this.productsSizesService.updatePrices();
         // console.log(idCategory, "IN SERVICE deleteByCategoryId");
         return await this.extraPriceRepository.destroy({
             where: { idCategory }
@@ -85,13 +89,13 @@ export class ExtraPriceService {
         return resultMap;
     }
 
-    async extraPriceForProductSize(categories: number[]){
+    async extraPriceForProductSize(categories: number[]) {
         const generalExtra = await this.extraPriceRepository.findOne({
             where: { idCategory: 'all' }
         })
-        const categoriesExtra = await Promise.all(categories.map(async(item) => {
+        const categoriesExtra = await Promise.all(categories.map(async (item) => {
             const extraPriceCategory = await this.extraPriceRepository.findOne({
-                where:{
+                where: {
                     idCategory: item.toString()
                 }
             });

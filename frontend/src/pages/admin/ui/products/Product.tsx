@@ -206,10 +206,10 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
             console.log("FILTERS", filters);
             const variationsS = productVariations.productsSizes.flatMap(variation => ({
                 idSize: variation.idSize,
-                prise: variation.prise,
+                extraPrice: variation.extraPrice,
                 paramsSize: variation.paramsSize,
             }));
-            console.log("aaaaaa", variationsS);
+            console.log("VARVRAVRARRVARARVRAVRVRAVRAVRA", variationsS);
             setSelectedCategories(selectedCategories)
             setVariations(variationsS);
             if (onCatChange) {
