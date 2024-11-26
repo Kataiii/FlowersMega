@@ -65,8 +65,20 @@ const Catalog: React.FC = () => {
                     </div>
                 </div>
                 <div style={{ width: "100%" }}>
-                    <Pagination total={data?.count || 0} pageSize={pageSize} current={page} onChange={handlePageChange} style={{ textAlign: "center" }} />
+                    <Pagination
+                        total={data?.count || 0}
+                        pageSize={pageSize}
+                        current={page}
+                        onChange={handlePageChange}
+                        onShowSizeChange={(current, size) => {
+                            setPageSize(size);
+                            handlePageChange(current, size);
+                        }}
+                        showSizeChanger
+                        style={{ textAlign: "center" }}
+                    />
                 </div>
+
             </Container>
         </div>
     )
