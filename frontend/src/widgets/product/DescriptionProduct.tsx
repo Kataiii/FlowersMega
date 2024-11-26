@@ -48,7 +48,7 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
                 // @ts-ignore
                 product.categories[0].id === Number(categoryIdData) ? (
                     <div style={{ height: "98%", width: "50%", backgroundColor: "var(--block-bg-color)", padding: "24px 16px 50px", borderRadius: 6, display: "flex", flexDirection: "column", gap: 24 }}>
-                        <span style={{ fontFamily: "Inter", fontWeight: "bold", fontSize: "32px" }}>{product.productSize.prise} ₽</span>
+                        <span style={{ fontFamily: "Inter", fontWeight: "bold", fontSize: "32px" }}>{product.productSize.extraPrice} ₽</span>
                         <PostcardAddBlock idProductSize={product.productSize.id ?? 0} />
 
                         <div style={{ display: "inline-flex" }}>
@@ -70,7 +70,7 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
                             ))}
                         </div>
                         <p style={{ fontFamily: "Inter", fontWeight: 600, fontSize: 24, color: "var(--secondary-text-color)" }}>
-                            {product.productSize.prise.toLocaleString()} ₽
+                            {product.productSize.extraPrice.toLocaleString()} ₽
                         </p>
                         <p style={{ fontFamily: "Inter", fontWeight: 400, fontSize: 16, color: "var(--secondary-text-color)" }}>
                             Размер букета {product.productSize.paramsSize}

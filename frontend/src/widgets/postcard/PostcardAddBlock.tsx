@@ -45,7 +45,7 @@ const PostcardAddBlock: React.FC<PostcardAddBlockProps> = ({ idProductSize }) =>
     // };
 
     return (
-        <div style={{ border: "2px solid var(--primary-bg-color)", width: "100%", height: "60vh", borderRadius: "16px", display: "flex", flexDirection: "column", padding: "8px", gap: "8px" }}>
+        <div style={{ border: "2px solid var(--primary-bg-color)", width: "100%", height: "fit-content", borderRadius: "16px", display: "flex", flexDirection: "column", padding: "8px", gap: "8px" }}>
             <p style={{ fontFamily: "Inter", fontSize: "16px", fontWeight: 600, height: "5%", color: "var(--primary-review-text)", padding: "8px" }}>
                 Добавление в корзину
             </p>
@@ -71,7 +71,8 @@ const PostcardAddBlock: React.FC<PostcardAddBlockProps> = ({ idProductSize }) =>
                 ))}
             </div>
             <Button type="dashed"
-                style={{ width: "100%", height: "8%" }}>
+                color="primary"
+                style={{ width: "100%", height: "35px" }}>
                 <ButtonText style={{ display: "inline" }}
                     onClick={handleAddVariation}
                 >Добавить открытку</ButtonText> <PlusOutlined /> </Button>
