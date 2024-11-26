@@ -52,43 +52,58 @@ const BlockReviews: React.FC = () => {
     };
     console.log(data, 'XDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD')
     return (
-        <Container>
-            <TitleSection content="Отзывы клиентов" />
-            {
-                isLoading
-                    ? <p>Загрузка...</p>
-                    :
+        data?.count === 0 ? null : (
+            <Container>
+                <TitleSection content="Отзывы клиентов" />
+                {isLoading ? (
+                    <p>Загрузка...</p>
+                ) : (
                     <>
-                        {data?.count === 0 ?
-                            null
-                            : (
+                        <div style={{ position: "relative", display: "flex", flexDirection: "row", gap: "6px" }}>
+                            {/* Левая стрелка */}
+                            {page > 1 && (
+                                <Arrow
+                                    style={{
+                                        width: 50,
+                                        height: 50,
+                                        position: "absolute",
+                                        zIndex: 10,
+                                        top: "50%",
+                                        left: 0,
+                                        transform: "translate(-50%, -50%) rotate(0)",
+                                        cursor: "pointer",
+                                    }}
+                                    onClick={() => setPage(prev => prev - 1)}
+                                />
+                            )}
 
-                                <div style={{ position: "relative", display: "flex", flexDirection: "row", gap: "6px" }}>
-                                    {
-                                        <>
-                                            {
-                                                page === Math.ceil((data?.count ?? 0) / pageSize) ? null : <Arrow style={{ width: 50, height: 50, position: "absolute", zIndex: 10, top: "50%", left: "100%", transform: "translate(-50%, 0) rotate(180deg)", cursor: "pointer" }} onClick={() => setPage(prev => prev + 1)} />
-                                            }
+                            {/* Карточки отзывов */}
+                            {data?.reviews?.map(item => (
+                                <ReviewCardMain key={`review_card-${item.id}`} review={item} />
+                            ))}
 
-                                            {console.log(data?.count)}
-                                            {
-                                                data?.reviews.map((item, index) => {
-                                                    return <ReviewCardMain key={`review_card-${item.id}`} review={item} />
-                                                })
-                                            }
-                                            {
-                                                page === 1 ? null : <Arrow style={{ width: 50, height: 50, position: "absolute", zIndex: 10, top: "50%", left: 0, transform: "translate(-50%, 0) rotate(0)", cursor: "pointer" }} onClick={() => setPage(prev => prev - 1)} />
-                                            }
-                                        </>
-                                    }
-                                </div>
-                            )
-                        }
-
+                            {/* Правая стрелка */}
+                            {page < Math.ceil((data?.count ?? 0) / pageSize) && (
+                                <Arrow
+                                    style={{
+                                        width: 50,
+                                        height: 50,
+                                        position: "absolute",
+                                        zIndex: 10,
+                                        top: "50%",
+                                        left: "100%",
+                                        transform: "translate(-50%, -50%) rotate(180deg)",
+                                        cursor: "pointer",
+                                    }}
+                                    onClick={() => setPage(prev => prev + 1)}
+                                />
+                            )}
+                        </div>
                     </>
-            }
-        </Container>
-    )
+                )}
+            </Container>
+        )
+    );
 }
 
 export default BlockReviews;
