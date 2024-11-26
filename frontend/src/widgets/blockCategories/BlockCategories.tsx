@@ -8,11 +8,12 @@ import TitleSection from "../../shared/ui/titleSection/TitleSection";
 import { CATALOG_PATH, CATEGORY_PATH } from "../../shared/utils/constants";
 import { Category, useCategoriesControllerGetPaginationQuery } from "../../store/category";
 
-const ContainerCategories = styled.div<{ $countColumns: number; }>`
+const ContainerCategories = styled.div`
     display: grid;
-    grid-template-columns: repeat(${props => props.$countColumns}, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Карточки занимают не менее 200px */
     gap: 15px;
 `;
+
 
 const Wrapper = styled.div`
     background-color: var(--block-bg-color);
@@ -67,7 +68,7 @@ const BlockCategories: React.FC = () => {
                         ? <p>Загрузка...</p>
                         :
                         <Wrapper>
-                            <ContainerCategories $countColumns={pageSize}>
+                            <ContainerCategories>
                                 {
                                     data && categories.map((item, index) => {
                                         return <CardCategory key={`categories-${index}`} category={item} clickHandler={() => navigate({

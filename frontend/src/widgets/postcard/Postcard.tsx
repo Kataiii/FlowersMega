@@ -10,7 +10,7 @@ interface PostcardProps {
     onRemove: () => void;
 }
 
-const Podstcard: React.FC<PostcardProps> = ({ value, onChange, onRemove, index }) => {
+const Postcard: React.FC<PostcardProps> = ({ value, onChange, onRemove, index }) => {
     const [position, setPosition] = useState();
 
 
@@ -37,4 +37,4 @@ const Podstcard: React.FC<PostcardProps> = ({ value, onChange, onRemove, index }
 
     )
 }
-export default Podstcard;
+export default Postcard;

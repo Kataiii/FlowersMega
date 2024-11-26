@@ -28,6 +28,8 @@ const Catalog: React.FC = () => {
     const [page, setPage] = useState(1);
     const { data: postcardId } = useSizeContollerGetByNameQuery({ name: "-" });
     const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ limit: pageSize, page: page, search: selectedProduct ? selectedProduct : '', filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: categoryD ? Number(categoryIdData) : undefined });
+    console.log(postcardId, "POSTCRRD SIE ID")
+    console.log(data?.products.filter(item => item.productSize.idSize === 5))
 
     const handlePageChange = (newPage: number, newPageSize?: number) => {
         setPage(newPage);
@@ -50,7 +52,7 @@ const Catalog: React.FC = () => {
                             {
                                 isLoading
                                     ? <p>Загрузка...</p>
-                                    : data && data.products.map((item, index) => item.productSize.idSize !== postcardId ? (
+                                    : data && data.products.map((item, index) => item.productSize.idSize == postcardId ? (
                                         <>
                                             {console.log(1)}
                                             <SmartProductCard key={`productSizes-${index}`} product={item} />
@@ -63,8 +65,20 @@ const Catalog: React.FC = () => {
                     </div>
                 </div>
                 <div style={{ width: "100%" }}>
-                    <Pagination total={data?.count || 0} pageSize={pageSize} current={page} onChange={handlePageChange} style={{ textAlign: "center" }} />
+                    <Pagination
+                        total={data?.count || 0}
+                        pageSize={pageSize}
+                        current={page}
+                        onChange={handlePageChange}
+                        onShowSizeChange={(current, size) => {
+                            setPageSize(size);
+                            handlePageChange(current, size);
+                        }}
+                        showSizeChanger
+                        style={{ textAlign: "center" }}
+                    />
                 </div>
+
             </Container>
         </div>
     )

@@ -20,9 +20,9 @@ import { ItemsFilterModule } from 'src/items-filter/items-filter.module';
   providers: [ProductsSizesService, ProductsSizesFullService],
   controllers: [ProductsSizesController],
   imports: [
-    SequelizeModule.forFeature([ProductSize,]),
+    SequelizeModule.forFeature([ProductSize]),
     ProductsModule,
-    ExtraPriceModule,
+    forwardRef(() => ExtraPriceModule),
     SizesModule,
     forwardRef(() => ReviewsModule),
     CategoriesProductsModule,
@@ -30,7 +30,7 @@ import { ItemsFilterModule } from 'src/items-filter/items-filter.module';
     TypesProductModule,
     CategoriesProductssizesModule,
     CategoriesModule,
-    ItemsFilterModule
+    ItemsFilterModule,
   ],
   exports: [
     ProductsSizesService,

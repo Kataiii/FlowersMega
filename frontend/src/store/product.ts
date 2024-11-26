@@ -425,6 +425,7 @@ export type ProductSize = {
   count?: number;
   /** Prise of product */
   prise: number;
+  extraPrice: number;
 };
 export type CreateProductSizeDto = {
   /** Unique identifier product */

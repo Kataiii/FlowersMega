@@ -20,6 +20,7 @@ import { reviewApi } from "./review";
 import { sizeApi } from "./size";
 import { typeProductApi } from "./typeProduct";
 import { userApi } from "./user";
+import { postcardsReducer } from "../entities/postcard/redux/slice";
 
 const persistConfig: PersistConfig<RootState> = {
     key: 'root',
@@ -33,6 +34,7 @@ const rootReducer = combineReducers({
     cartReducer,
     favoritesReducer,
     filterReducer,
+    postcardsReducer,
     [categoryApi.reducerPath]: categoryApi.reducer,
     [categoryProductApi.reducerPath]: categoryProductApi.reducer,
     [cityApi.reducerPath]: cityApi.reducer,

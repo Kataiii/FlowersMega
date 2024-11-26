@@ -79,7 +79,8 @@ import { CategoriesProductssizesModule } from './categories-productssizes/catego
         AuthModule,
         ProductsSizesModule,
         TelegramUsersModule,
-        CategoriesProductssizesModule
+        CategoriesProductssizesModule,
+        ProductsSizesModule
     ],
 })
 export class AppModule { }
