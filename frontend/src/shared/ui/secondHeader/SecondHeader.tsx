@@ -60,7 +60,7 @@ const SecondHeader: React.FC<SecondHeaderProps> = ({ onSearchChange }) => {
     const [searchResults, setSearchResults] = useState<{ category: string[], products: string[] }>();
     const debouncer = new Debouncer();
     const navigate = useNavigate();
-
+    const toggleCatalog = () => setIsCatalogOpen(prev => !prev);
     useOutsideClick(divContainer, () => setIsOpen(false));
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -174,11 +174,7 @@ const SecondHeader: React.FC<SecondHeaderProps> = ({ onSearchChange }) => {
                 <CartButton />
                 <FavoriteButton />
             </div>
-            {
-                isCatalogOpen
-                    ? <CatalogPanel />
-                    : null
-            }
+            {isCatalogOpen && <CatalogPanel onClose={() => setIsCatalogOpen(false)} />}
         </Container>
     );
 };

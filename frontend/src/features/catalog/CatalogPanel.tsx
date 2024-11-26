@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { styled } from "styled-components";
 import FilterPanel from "../../entities/filter/ui/FilterPanel";
 import { Title } from "../../shared/ui/forAdditionalPages/Title";
@@ -19,36 +19,54 @@ const Container = styled.div`
     gap: 70px;
 `;
 
-const CatalogPanel: React.FC = () => {
+interface CatalogPanelProps {
+    onClose: () => void;
+}
+
+const CatalogPanel: React.FC<CatalogPanelProps> = ({ onClose }) => {
+    const panelRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (panelRef.current && !panelRef.current.contains(event.target as Node)) {
+                onClose();
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [onClose]);
+
     const { isLoading, data } = useCategoriesControllerGetAllQuery();
     const [activeItem, setActiveItem] = useState<Category>();
 
     return (
-        <Container>
-            {
-                isLoading
-                    ? <p>Загрузка...</p>
-                    : <div style={{ width: "25%" }}>
-
-                        {
-                            data && data.map((item, index) => {
-                                return <RadioButton
-                                    content={item.name}
-                                    key={`radio_buuton-${index}`}
-                                    value={item.id ?? ''}
-                                    isActive={activeItem?.id === item.id}
-                                    clickHandler={() => setActiveItem(item)}
-                                />
-                            })
-                        }
-                    </div>
-            }
+        <Container ref={panelRef}>
+            {isLoading ? (
+                <p>Загрузка...</p>
+            ) : (
+                <div style={{ width: "25%" }}>
+                    {data &&
+                        data.map((item, index) => (
+                            <RadioButton
+                                content={item.name}
+                                key={`radio_button-${index}`}
+                                value={item.id ?? ""}
+                                isActive={activeItem?.id === item.id}
+                                clickHandler={() => setActiveItem(item)}
+                            />
+                        ))}
+                </div>
+            )}
             <div style={{ flexGrow: 5 }}>
                 <Title style={{ fontSize: 24 }}>{activeItem?.name}</Title>
-                {activeItem ? <FilterPanel category={activeItem} /> : <></>}
+                {activeItem ? <FilterPanel category={activeItem} /> : null}
             </div>
         </Container>
-    )
-}
+    );
+};
 
 export default CatalogPanel;
