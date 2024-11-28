@@ -9,6 +9,13 @@ export class CreateProductSizeSmallDto {
     paramsSize: string;
 }
 
+export class UpdateProductSizeSmallDto {
+    id: number
+    idSize?: number;
+    prise?: number;
+    paramsSize?: string;
+}
+
 export class FilterWithItems {
     filter: Filter;
     tags: ItemFilter[];
@@ -35,4 +42,30 @@ export class CreateFullProductSizeDto {
 
     @ApiProperty({ type: [FilterWithItems], description: 'Array filters with items', required: true })
     filters: ItemFilter[];
+}
+
+export class UpdareFullProductSizeDto {
+    @ApiProperty({ example: 1, description: 'Id product', required: true })
+    id: number;
+
+    @ApiProperty({ example: "Розы красные", description: 'Name product', required: true })
+    name?: string;
+
+    @ApiProperty({ example: 1, description: 'id type product', required: true })
+    type?: number;
+
+    @ApiProperty({ example: "Описание какое-то", description: 'Description product', required: true })
+    description?: string;
+
+    @ApiProperty({ example: "Розы, упаковка", description: "Structure of product", required: true })
+    structure?: string;
+
+    @ApiProperty({ type: [CreateProductSizeSmallDto], description: 'Small dto for product size', required: true })
+    productSize?: CreateProductSizeSmallDto[];
+
+    @ApiProperty({ type: [Category], description: 'Array categories', required: true })
+    categories?: Category[];
+
+    @ApiProperty({ type: [FilterWithItems], description: 'Array filters with items', required: true })
+    filters?: ItemFilter[];
 }

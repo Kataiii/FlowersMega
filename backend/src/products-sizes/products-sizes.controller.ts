@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Product } from 'src/products/products.model';
 import { AllSizesDto } from './dto/allSizes.dto';
-import { CreateFullProductSizeDto } from './dto/createFullProduct.dto';
+import { CreateFullProductSizeDto, UpdareFullProductSizeDto } from './dto/createFullProduct.dto';
 import { CreateProductSizeDto, CreateProductSizeInfoDto } from './dto/createProductsSizes.dto';
 import { FullProductSizeDto } from './dto/fullProductsSizes.dto';
 import { GetPaginationProductSizeDto } from './dto/getPagination.dto';
@@ -101,6 +101,74 @@ export class ProductsSizesController {
         console.log(dto);
         console.log(photo);
         return await this.productsSizesFullService.createFullProduct(dto, photo);
+    }
+
+    @ApiBearerAuth('access-token')
+    @Roles("admin")
+    @UseGuards(JwtAuthGuard, RolesAuthGuard)
+    @ApiOperation({ summary: "Update full product" })
+    @ApiResponse({ status: 200, type: Product })
+    @Patch('/full-product')
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                name: { type: 'string' },
+                type: { type: 'number' },
+                description: { type: 'string' },
+                structure: { type: 'string' },
+                photo: {
+                    type: 'string',
+                    format: 'binary'
+                },
+                productSize: {
+                    type: 'array',
+                    items:
+                    {
+                        type: 'object',
+                        format: 'object',
+                        properties: {
+                            idSize: { type: 'number' },
+                            prise: { type: 'number' },
+                            paramsSize: { type: 'string' }
+                        }
+                    }
+                },
+                categories: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        format: 'object',
+                        properties: {
+                            id: { type: 'number' },
+                            name: { type: 'string' },
+                            photo: { type: 'string' }
+                        }
+                    }
+                },
+
+                filters: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        format: 'object',
+                        properties: {
+                            id: { type: 'number' },
+                            name: { type: 'string' },
+                            idFilter: { type: 'number' }
+                        }
+                    }
+                }
+
+            }
+        }
+    })
+    @UseInterceptors(FileInterceptor('photo'))
+    async patchFullProduct(@Body() dto: UpdareFullProductSizeDto, @UploadedFile() photo) {
+        console.log(dto);
+        console.log(photo);
+        return await this.productsSizesFullService.updateFullProduct(dto, photo);
     }
 
     @ApiOperation({ summary: 'Get all products sizes' })

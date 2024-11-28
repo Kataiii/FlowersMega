@@ -156,25 +156,9 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
     formData.append("categories",  JSON.stringify(categoriesString).slice(1, JSON.stringify(categoriesString).length - 1));
     formData.append("filters",  JSON.stringify(filtersString).slice(1, JSON.stringify(filtersString).length - 1));
 
-    const formData1 = {
-      name: values.name,
-      type: values.type,
-      description: values.description,
-      structure: values.structure,
-      // @ts-ignore
-      photo: file ? file : data?.images?.[0]?.url || "",
-      productSize: JSON.stringify(productSizes).slice(1, JSON.stringify(productSizes).length - 1),
-      categories: JSON.stringify(categoriesString).slice(1, JSON.stringify(categoriesString).length - 1),
-      filters:  JSON.stringify(filtersString).slice(1, JSON.stringify(filtersString).length - 1),
-      // updatedAt: values.updatedAt,
-    };
-
     console.log("formData id ", id);
     console.log("formData ", formData);
     try {
-      // const response = await createProductWithDetails({
-      //   body: formData,
-      // }).unwrap();
       const response = await axios.postForm(`${API_URL}/products-sizes/full-product `, formData, {
         headers: {
           Authorization: `Bearer ${token}`
