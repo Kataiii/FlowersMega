@@ -23,11 +23,15 @@ export class TgBotService {
 
         // Обработчик команды "/status"
         this.bot.onText(/\/status/, (msg: any) => {
+            console.log(msg);
+            console.log("AAAAAAAAAAAa");
             this.handleStatusCommand(msg);
         });
 
         // Обработчик команды "/subscribe [token]"
         this.bot.onText(/\/subscribe (.+)/, (msg: any, match: any) => {
+            console.log(msg);
+            console.log(match[1]);
             const token = match[1]; // Получаем токен из команды
             console.log(`"${token}" = TGBOT`);
             this.authenticateUser(msg, token);

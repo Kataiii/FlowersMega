@@ -572,16 +572,17 @@ export class ProductsSizesFullService {
                 structure: dto.structure,
                 idTypeProduct: dto.type,
             },
-            [photo]
+            photo ? [photo] : undefined
         );
+        console.log(prosuctsSizes);
         await Promise.all(
             prosuctsSizes.map(async (item) => {
-                // console.log(item);
                 return await this.productsSizesRepository.create({
                     idProduct: product.id,
                     idSize: item.idSize,
                     paramsSize: item.paramsSize,
                     prise: item.prise,
+                    extraPrice: item.prise
                 });
             })
         );

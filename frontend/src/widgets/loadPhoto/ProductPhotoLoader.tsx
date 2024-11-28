@@ -3,6 +3,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Image, Upload } from 'antd';
 import type { UploadFile, UploadProps } from 'antd';
 import type { RcFile } from 'antd/es/upload/interface';
+import { Buffer } from 'buffer';
 
 const getBase64 = (file: RcFile): Promise<string> =>
     new Promise((resolve, reject) => {
@@ -13,8 +14,27 @@ const getBase64 = (file: RcFile): Promise<string> =>
     });
 
 interface ProductPhotoLoaderProps {
-    onUploadSuccess: (url: string) => void; // Пропс для передачи URL родителю
+    onUploadSuccess: (file: File) => void; // Пропс для передачи URL родителю
 }
+
+const base64ToFile = (base64String: string, fileName: string) => {
+        // Удаление символов "data:" и "base64," из строки base64
+        const data = base64String.replace(/^data:([a-v]+\/[a-z+]+);base64,/, '');
+        
+        // Преобразование base64 в ArrayBuffer
+        const arrayBuffer = Buffer.from(data, 'base64');
+        
+        // Создание Blob из ArrayBuffer
+        const blob = new Blob([arrayBuffer]);
+        const tmp = base64String.match(/^data:([a-v]+\/[a-z+]+);base64,/);
+        // Создание File объекта
+        const file = new File([blob], fileName, {
+        type: tmp ? tmp[1] : undefined,
+        lastModified: Date.now()
+        });
+        
+        return file;
+  }
 
 const ProductPhotoLoader: React.FC<ProductPhotoLoaderProps> = ({ onUploadSuccess }) => {
     const [previewOpen, setPreviewOpen] = useState(false);
@@ -32,12 +52,13 @@ const ProductPhotoLoader: React.FC<ProductPhotoLoaderProps> = ({ onUploadSuccess
 
     const handleChange: UploadProps['onChange'] = async ({ fileList: newFileList }) => {
         setFileList(newFileList);
-
+        console.log("Filelist ", newFileList);
         // При выборе файла конвертируем его в base64
         const file = newFileList[0]?.originFileObj as RcFile;
         if (file) {
             const base64 = await getBase64(file);
-            onUploadSuccess(base64); // Передаем base64 строку в родительский компонент
+            console.log(base64);
+            onUploadSuccess(base64ToFile(base64, "image.png")); // Передаем base64 строку в родительский компонент
         }
     };
 

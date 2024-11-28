@@ -98,6 +98,8 @@ export class ProductsSizesController {
     })
     @UseInterceptors(FileInterceptor('photo'))
     async createFullProduct(@Body() dto: CreateFullProductSizeDto, @UploadedFile() photo) {
+        console.log(dto);
+        console.log(photo);
         return await this.productsSizesFullService.createFullProduct(dto, photo);
     }
 
@@ -151,6 +153,7 @@ export class ProductsSizesController {
     @ApiResponse({ status: 200, type: FullProductSizeDto })
     @Get("/full-product/:id")
     async getProductSizeForCardById(@Param("id") id: number) {
+        if(isNaN(id)) return null;
         return await this.productsSizesFullService.getFullById(id);
     }
 

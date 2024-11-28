@@ -26,12 +26,14 @@ export class ProductsService {
             idTypeProduct: dto.idTypeProduct,
             structure: dto.structure
         });
-        images.forEach(async (item) => {
-            await this.imagesService.create({
-                idProduct: product.id,
-                image: item
-            });
-        })
+        if(images && images.length > 0){
+            images.forEach(async (item) => {
+                await this.imagesService.create({
+                    idProduct: product.id,
+                    image: item
+                });
+            })
+        }
         return await this.productsRepository.findOne({ where: { id: product.id }, include: [{ all: true }] });
     }
 

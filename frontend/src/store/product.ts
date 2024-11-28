@@ -201,8 +201,11 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/products-sizes/full-product`,
         method: "POST",
         body: queryArg.body,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
       }),
-      invalidatesTags: ['Products']
+      // invalidatesTags: ['Products']
     }),
     productsControllerDeleteById: build.mutation<
       ProductsControllerDeleteByIdApiResponse,
@@ -372,20 +375,22 @@ export type productSizesControllerGetProductsWithPaginationApiArg = {
 }
 export type ProductsControllerCreateWithDetailsApiResponse = /** status 201 */ Product;
 export type ProductsControllerCreateWithDetailsApiArg = {
-  body: {
-    name: string;
-    type: number;
-    description: string;
-    structure: string;
-    photo: string;
-    productSize: {
-      idSize: number;
-      prise: number;
-      paramsSize: string;
-    }[];
-    categories: string;
-    filters: string;
-  };
+  body: FormData
+  // {
+  //   name: string;
+  //   type: number;
+  //   description: string;
+  //   structure: string;
+  //   photo: FormData;
+  //   // productSize: {
+  //   //   idSize: number;
+  //   //   prise: number;
+  //   //   paramsSize: string;
+  //   // }[];
+  //   productSize: string;
+  //   categories: string;
+  //   filters: string;
+  // };
 };
 
 export type ProductsControllerDeleteByIdApiResponse = void;

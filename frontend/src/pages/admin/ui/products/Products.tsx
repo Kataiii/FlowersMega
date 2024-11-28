@@ -130,7 +130,7 @@ const Products: React.FC = () => {
                 <Button
                     shape="round"
                     type="primary"
-                    onClick={() => navigate(`/admin/product/${null}`, { state: { previousLocation: locate.pathname } })}
+                    onClick={() => navigate(`/admin/product/create`, { state: { previousLocation: locate.pathname } })}
                 >
                     <ButtonText>
                         Добавить товар <PlusCircleOutlined />

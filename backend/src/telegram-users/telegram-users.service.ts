@@ -1,9 +1,6 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ProductSize } from 'src/products-sizes/products-sizes.model';
 import { TelegramUser } from './telegram-users.model';
-import { env } from 'process';
-import { where } from 'sequelize';
 
 @Injectable()
 export class TelegramUsersService {

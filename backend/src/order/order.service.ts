@@ -36,6 +36,7 @@ export class OrderService {
             endTimeDelivery: dto.endTimeDelivery,
             comment: dto.comment
         });
+        console.log("order ", order.id);
 
         dto.itemsOrder && dto.itemsOrder.forEach(async (item) => {
             await this.ordersProductsSizesService.create({
@@ -52,7 +53,7 @@ export class OrderService {
         this.tgBotService.sendMessage(
             `
 Flower's Mega ${dto.addressDelivery.split(',')[0]}
-Новый заказ: #${dto.name}
+Новый заказ: #${order.id}
 
 ЗАКАЗЧИК
 Имя заказчика: ${dto.nameCustomer}
