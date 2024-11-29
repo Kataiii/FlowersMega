@@ -34,7 +34,8 @@ export class OrderService {
             addressDelivery: dto.addressDelivery,
             startTimeDelivery: dto.startTimeDelivery,
             endTimeDelivery: dto.endTimeDelivery,
-            comment: dto.comment
+            comment: dto.comment,
+            postcards: dto.postcards
         });
 
         dto.itemsOrder && dto.itemsOrder.forEach(async (item) => {
@@ -48,7 +49,14 @@ export class OrderService {
         const productsSizes = await Promise.all(dto.itemsOrder.map(async (item) => {
             return await this.productsSizesFullService.getFullById(item.product.id);
         }));
-
+        let textPostcards = dto.postcards.map(item => {
+            const productSizeId = item.updatedId.split('-');
+            return {
+                id: item.id,
+                text: item.text,
+                productSizeId: productSizeId[productSizeId.length - 1]
+            }
+        })
         this.tgBotService.sendMessage(
             `
 Flower's Mega ${dto.addressDelivery.split(',')[0]}
@@ -66,7 +74,19 @@ E-mail заказчика: ${dto.emailCustomer}
 Дата доставки: ${dto.dateDelivery.toLocaleDateString()} ${dto.startTimeDelivery} - ${dto.endTimeDelivery}
 
 ДЕТАЛИ ЗАКАЗА
-${productsSizes.map((item, index) => { return `"${item.product.name}" (${item.size.name}) × ${dto.itemsOrder[index].count} : ${item.productSize.prise * dto.itemsOrder[index].count} руб.` }).toString().split(",").join("\n")
+${productsSizes.map((item, index) => {
+                return `"${item.product.name}" (${item.size.name}) × 
+    ${dto.itemsOrder[index].count} : ${item.productSize.prise * dto.itemsOrder[index].count} руб.\n
+    ${textPostcards.forEach(postcard => {
+                    if (Number(postcard.productSizeId) === item.productSize.id) {
+                        `Добавить подпись к открытке: \n
+                        ${postcard.text}
+                    `
+                        textPostcards = textPostcards.filter(item => item.id !== postcard.id)
+                    }
+                })}
+    
+    `  }).toString().split(",").join("\n")
             }
 
 ${dto.comment !== undefined

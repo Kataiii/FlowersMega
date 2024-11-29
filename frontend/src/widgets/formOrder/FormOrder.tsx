@@ -13,14 +13,16 @@ import Button from "../../shared/ui/button/Button";
 import { selectActiveCity } from "../../entities/city/redux/selectors";
 import styles from "./FormOrder.module.css";
 import Transforms from "../../shared/utils/transforms";
-import { ItemOrder, OrdersControllerCreateApiArg, useOrdersControllerCreateMutation } from "../../store/order";
+import { ItemOrder, OrdersControllerCreateApiArg, Postcard, useOrdersControllerCreateMutation } from "../../store/order";
 import { cartSelectors } from "../../entities/cart/redux/selectors";
 import OrderEmpty from "../../entities/order/ui/OrderEmpty";
 import ModalEmpty from "../../shared/ui/modalEmpty/ModalEmpty";
 import { useNavigate } from "react-router-dom";
 import { CATALOG_PATH } from "../../shared/utils/constants";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteAllFromCart } from "../../entities/cart/redux/slice";
+import { postcardsSelectors } from "../../entities/postcard/redux/selectors";
+import { clearStore } from "../../entities/postcard/redux/slice";
 
 const TitleForm = styled.h4`
     font-family: "Inter";
@@ -56,16 +58,24 @@ const FormOrder: React.FC = () => {
     const [createOrder, { isSuccess }] = useOrdersControllerCreateMutation();
     const user = useAppSelector(selectUser);
     const city = useAppSelector(selectActiveCity);
-    const [ isOpen, setIsOpen ] = useState<boolean>(false);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
+    const postcards = useSelector(postcardsSelectors.selectAll);
     const productsInCart = useAppSelector(cartSelectors.selectAll);
     const totalCost = useMemo(
         () => productsInCart.map(p => p.count * (p.prise ?? 0)).reduce((prev, curr) => prev + curr, 0),
         [productsInCart]
     )
-
+    const handleOrderSubmit = () => {
+        dispatch(clearStore());
+    };
+    // const getUpdatedPostcards = () => {
+    //     return postcards.map((postcard) => {
+    //         const newId = `${postcard.id}-productSize-${product.id}`;
+    //         return { ...postcard, updatedId: newId };
+    //     });
+    // };
     const [form] = Form.useForm();
 
     const onFinish = async (values: FormValues) => {
@@ -90,8 +100,8 @@ const FormOrder: React.FC = () => {
                 canCall: tryValues.notCall,
                 idCity: isExsistingCity ? (city?.id ?? -1) : -1,
                 addressDelivery: Transforms.transformAddress(
-                    values.addressArea, 
-                    values.addressStreet, 
+                    values.addressArea,
+                    values.addressStreet,
                     values.addressHouse,
                     values.addressCorpus,
                     values.addressEntrance,
@@ -100,7 +110,7 @@ const FormOrder: React.FC = () => {
                 ),
                 startTimeDelivery: tryValues.startTimeDelivery,
                 endTimeDelivery: tryValues.endTimeDelivery,
-                comment: tryValues.comment, 
+                comment: tryValues.comment,
                 itemsOrder: productsInCart.map(item => {
                     return {
                         count: item.count,
@@ -109,10 +119,17 @@ const FormOrder: React.FC = () => {
                             idProduct: item.idProduct,
                             idSize: item.idSize,
                             paramsSize: item.paramsSize,
-                            count:  item.count,
+                            count: item.count,
                             prise: item.prise
                         }
                     } as ItemOrder
+                }),
+                postcards: postcards.map(postcard => {
+                    return {
+                        id: postcard.id,
+                        text: postcard.text,
+                        updatedId: postcard.updatedId
+                    } as Postcard
                 })
             }
         }
@@ -131,7 +148,7 @@ const FormOrder: React.FC = () => {
     }
 
     useEffect(() => {
-        if(isSuccess) setIsOpen(true);
+        if (isSuccess) setIsOpen(true);
     }, [isSuccess]);
 
     return (
@@ -258,13 +275,13 @@ const FormOrder: React.FC = () => {
                         }}
                         block
                     />
-                    <Form.Item style={{marginBottom: 8}} label="Область, населенный пункт" initialValue={isExsistingCity && city ? city.name : ""} name="addressArea" rules={[{ required: true, message: "Введите населенный пункт" }]}>
-                    {
-                        isExsistingCity
-                            ?   <Input size="large" placeholder="Населенный пункт" />
-                            :   <Input size="large" placeholder="Область, населенный пункт" />
-                    }
-                     </Form.Item>
+                    <Form.Item style={{ marginBottom: 8 }} label="Область, населенный пункт" initialValue={isExsistingCity && city ? city.name : ""} name="addressArea" rules={[{ required: true, message: "Введите населенный пункт" }]}>
+                        {
+                            isExsistingCity
+                                ? <Input size="large" placeholder="Населенный пункт" />
+                                : <Input size="large" placeholder="Область, населенный пункт" />
+                        }
+                    </Form.Item>
 
                     <div style={{ display: "flex", gap: 15 }}>
                         <Form.Item style={{ flexGrow: 4, marginBottom: 8 }} label="Улица" name="addressStreet" rules={[{ required: true, message: "Введите улицу" }]}>
@@ -294,22 +311,23 @@ const FormOrder: React.FC = () => {
                     <TitleForm>Дата и время доставки</TitleForm>
                     <div style={{ display: "flex", gap: 15 }}>
                         <Form.Item
-                            className={styles.WrapDate} 
-                            label="Дата доставки" 
-                            name="dateDelivery" 
+                            className={styles.WrapDate}
+                            label="Дата доставки"
+                            name="dateDelivery"
                             style={{ flexGrow: 1, display: "flex" }}
                             rules={[{ type: 'object' as const, required: true, message: 'Выберите дату доставки' }]}>
-                                <DatePicker style={{width: "100%"}} size="large" disabledDate={disabledDate} format={"DD.MM.YYYY"} />
+                            <DatePicker style={{ width: "100%" }} size="large" disabledDate={disabledDate} format={"DD.MM.YYYY"} />
                         </Form.Item>
                         <div style={{ width: 250, display: "flex", flexDirection: "column", gap: 8 }}>
                             <p>Время доставки</p>
-                            <div style={{ 
-                                display: "flex", 
-                                alignItems: "center", 
-                                gap: 10, 
+                            <div style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 10,
                                 border: "1px solid var(--primary-bg-color)",
                                 borderRadius: 4,
-                                padding: "0 8px" }}>
+                                padding: "0 8px"
+                            }}>
                                 <p style={{
                                     fontFamily: "Inter",
                                     fontWeight: 400,
@@ -317,10 +335,10 @@ const FormOrder: React.FC = () => {
                                     color: "var(--primary-bg-color)"
                                 }}>с</p>
                                 <Form.Item
-                                    style={{marginBottom: 0}}
+                                    style={{ marginBottom: 0 }}
                                     name="startTimeDelivery"
                                     rules={[{ type: 'object' as const, required: true, message: 'Выберите время доставки' }]}>
-                                    <TimePicker style={{border: "none"}} placeholder="00:00" size="large" format={'HH:mm'} />
+                                    <TimePicker style={{ border: "none" }} placeholder="00:00" size="large" format={'HH:mm'} />
                                 </Form.Item>
                                 <p style={{
                                     fontFamily: "Inter",
@@ -329,10 +347,10 @@ const FormOrder: React.FC = () => {
                                     color: "var(--primary-bg-color)"
                                 }}>до</p>
                                 <Form.Item
-                                    style={{marginBottom: 0}}
+                                    style={{ marginBottom: 0 }}
                                     name="endTimeDelivery"
                                     rules={[{ type: 'object' as const, required: true, message: 'Выберите время доставки' }]}>
-                                    <TimePicker style={{border: "none"}} placeholder="00:00" size="large" format={'HH:mm'} />
+                                    <TimePicker style={{ border: "none" }} placeholder="00:00" size="large" format={'HH:mm'} />
                                 </Form.Item>
                             </div>
                         </div>
@@ -350,22 +368,22 @@ const FormOrder: React.FC = () => {
                 </div>
 
                 <div style={{ width: "50%", margin: "0 auto", paddingTop: 20, paddingBottom: 30 }}>
-                    <Button buttonContent="Оформить заказ" clickHandler={() => { }} />
+                    <Button buttonContent="Оформить заказ" clickHandler={() => { setTimeout(handleOrderSubmit), 2000 }} />
                 </div>
             </Form>
             {
                 isSuccess
-                ? <ModalEmpty isOpen={isOpen} setIsOpen={()  => setIsOpen(false)}>
+                    ? <ModalEmpty isOpen={isOpen} setIsOpen={() => setIsOpen(false)}>
                         <Result
                             status="success"
                             title="Ваш заказ создан!"
                             subTitle="Скоро с вами свяжется менеджер для подтверждения заказа"
                             extra={[
-                                <Button buttonContent="Вернуться в каталог" clickHandler={() => navigate(CATALOG_PATH)}/>
+                                <Button buttonContent="Вернуться в каталог" clickHandler={() => navigate(CATALOG_PATH)} />
                             ]}
                         />
                     </ModalEmpty>
-                : null
+                    : null
             }
         </ConfigProvider>
     )

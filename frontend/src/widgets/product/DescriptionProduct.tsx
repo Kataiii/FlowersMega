@@ -49,7 +49,7 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
                 product.categories[0].id === Number(categoryIdData) ? (
                     <div style={{ height: "98%", width: "50%", backgroundColor: "var(--block-bg-color)", padding: "24px 16px 50px", borderRadius: 6, display: "flex", flexDirection: "column", gap: 24 }}>
                         <span style={{ fontFamily: "Inter", fontWeight: "bold", fontSize: "32px" }}>{product.productSize.extraPrice} ₽</span>
-                        <PostcardAddBlock idProductSize={product.productSize.id ?? 0} />
+                        <PostcardAddBlock style={{ maxHeight: "615px" }} showHeader={true} product={{ ...product.productSize, product: product }} />
 
                         <div style={{ display: "inline-flex" }}>
                             <p style={{ fontFamily: "Inter", fontWeight: "400", fontSize: "16px" }}><span style={{ color: "var(--primary-bg-color)", fontWeight: "600" }}>Примечание:</span> все добавленные на этой странице открытки будут отправлены в вашу корзину (изменить текст добавленных открыток можно будет также на странице корзины)</p><span style={{ fontFamily: "Inter" }}></span>

@@ -6,14 +6,5 @@ export const postcardsSelectors = postcardsEntityAdapter.getSelectors<RootState>
     (state) => state.postcardsReducer
 );
 
-export const selectPostcardsByProductSize = createSelector(
-    [
-        postcardsSelectors.selectAll,
-        (state: RootState, idProductSize: number) => idProductSize,
-    ],
-    (postcards, idProductSize) =>
-        postcards.filter((postcard) => postcard.idProductSize === idProductSize)
-);
-
-export const selectPostcardById = (state: RootState, id: number) =>
+export const selectPostcardById = (state: RootState, id: string) =>
     postcardsSelectors.selectById(state, id);

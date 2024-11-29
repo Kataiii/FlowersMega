@@ -4,81 +4,109 @@ import { ButtonText } from "../../pages/admin/ui/products/Products";
 import Postcard from "./Postcard";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addPostcard, removePostcard, updatePostcard } from "../../entities/postcard/redux/slice";
+import { addPostcard, removePostcard, updatePostcard, updatePostcardId } from "../../entities/postcard/redux/slice";
 import { postcardsSelectors } from "../../entities/postcard/redux/selectors";
+import { addOneToCart, deleteOneFromCart } from "../../entities/cart/redux/slice";
+import { nanoid } from "@reduxjs/toolkit";
+import { ProductSize, useProductsControllerGetByIdQuery } from "../../store/product";
+import { CartProduct } from "../../entities/cart/types";
 
 interface PostcardAddBlockProps {
-    idProductSize: number;
+    product: Omit<CartProduct, 'count'>,
+    style?: React.CSSProperties,
+    showHeader?: boolean,
 }
 
-const PostcardAddBlock: React.FC<PostcardAddBlockProps> = ({ idProductSize }) => {
-    const dispatch = useDispatch();
-    const postcards = useSelector((state: any) =>
-        postcardsSelectors.selectAll(state).filter((p) => p.idProductSize === idProductSize)
-    );
-    const handleAddVariation = () => {
+import { useEffect } from "react";
 
-        dispatch(addPostcard({ idProductSize: idProductSize, text: "" }));
-        console.log(postcards);
+const PostcardAddBlock: React.FC<PostcardAddBlockProps> = ({ product, style, showHeader }) => {
+    const dispatch = useDispatch();
+    const postcards = useSelector(postcardsSelectors.selectAll);
+    const { isLoading, data } = useProductsControllerGetByIdQuery({ id: product.idProduct });
+
+    const handleAddPostcard = () => {
+        const text = "";
+        dispatch(addPostcard({ text }));
+        dispatch(addOneToCart(product));
     };
 
-    const handleRemoveVariation = (index: number) => {
-        dispatch(removePostcard({ id: index }));
-    }
+    const handleUpdatePostcard = (id: string, updatedText: string) => {
+        dispatch(updatePostcard({ id, text: updatedText }));
+    };
 
-    // const handleChangeVariation = (index: number, updatedText: string) => {
-    //     setVariations(
-    //         variations.map((v, i) => (i === index ? updatedText : v))
-    //     );
-    //     dispatch(
-    //         updatePostcard({
-    //             idProductSize: position,
-    //             index,
-    //             text: updatedText,
-    //         })
-    //     );
-    // };
+    const handleRemovePostcard = (id: string) => {
+        dispatch(removePostcard({ id }));
+        dispatch(deleteOneFromCart(product));
+    };
 
-    // const handleRemoveVariation = (index: number) => {
-    //     const updatedVariations = variations.filter((_, i) => i !== index);
-    //     setVariations(updatedVariations);
-    // };
+    useEffect(() => {
+
+        postcards.forEach((postcard) => {
+            const newId = `${postcard.id}-productSize-${product.id}`;
+            if (postcard.updatedId !== newId) {
+                dispatch(updatePostcardId({ oldId: postcard.id, newId }));
+            }
+        });
+    }, [product.id, postcards, dispatch]);
 
     return (
-        <div style={{ border: "2px solid var(--primary-bg-color)", width: "100%", height: "fit-content", borderRadius: "16px", display: "flex", flexDirection: "column", padding: "8px", gap: "8px" }}>
-            <p style={{ fontFamily: "Inter", fontSize: "16px", fontWeight: 600, height: "5%", color: "var(--primary-review-text)", padding: "8px" }}>
-                Добавление в корзину
-            </p>
-            <div style={{
-                maxHeight: "90%",
-                height: "100%",
-                overflowY: "auto",
+        <div
+            style={{
+                border: "2px solid var(--primary-bg-color)",
+                width: "100%",
+                height: "fit-content",
+                borderRadius: "16px",
                 display: "flex",
                 flexDirection: "column",
+                padding: "8px",
                 gap: "8px",
-                scrollbarColor: "var(--primary-bg-color) var(--main-bg-color)",
-                scrollbarWidth: "thin",
-            }}>
-                {postcards.map((variation, index) => (
+                ...style,
+            }}
+        >
+            {showHeader && <p
+                style={{
+                    fontFamily: "Inter",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    height: "5%",
+                    color: "var(--primary-review-text)",
+                    padding: "8px",
+                }}
+            >
+                Добавление в корзину
+            </p>}
+            <div
+                style={{
+                    paddingTop: "8px",
+                    maxHeight: "90%",
+                    height: "100%",
+                    overflowY: "auto",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
+                    scrollbarColor: "var(--primary-bg-color) var(--main-bg-color)",
+                    scrollbarWidth: "thin",
+                }}
+            >
+                {postcards.map((postcard, index) => (
                     <Postcard
-                        key={index}
-                        index={++index}
-                        value={variation} onChange={function (updatedVariation: any): void {
-                            throw new Error("Function not implemented.");
-                        }}// onChange={(updateVariation) => handleChangeVariation(index, updateVariation)}
-                        onRemove={() => handleRemoveVariation(index)}
+                        key={postcard.updatedId || postcard.id}
+                        value={{ postcard, pos: index }}
+                        onChange={(updatedText) => handleUpdatePostcard(postcard.id, updatedText)}
+                        onRemove={() => handleRemovePostcard(postcard.id)}
                     />
                 ))}
             </div>
-            <Button type="dashed"
+            <Button
+                type="dashed"
                 color="primary"
-                style={{ width: "100%", height: "35px" }}>
-                <ButtonText style={{ display: "inline" }}
-                    onClick={handleAddVariation}
-                >Добавить открытку</ButtonText> <PlusOutlined /> </Button>
-        </div >
+                style={{ width: "100%", height: "35px" }}
+                onClick={handleAddPostcard}
+            >
+                <ButtonText style={{ display: "inline" }}>Добавить открытку</ButtonText> <PlusOutlined />
+            </Button>
+        </div>
+    );
+};
 
-    )
-}
-
-export default PostcardAddBlock;    
+export default PostcardAddBlock;
