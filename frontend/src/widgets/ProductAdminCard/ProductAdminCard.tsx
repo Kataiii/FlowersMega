@@ -66,7 +66,7 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
                         return {
                             key: info.productSize.id,
                             sizeName: size.name,
-                            paramSize: info.productSize.paramsSize,
+                            paramsSize: info.productSize.paramsSize,
                             price: info.productSize.prise,
                         };
                     }
@@ -95,7 +95,7 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
         },
     ];
 
-
+    console.log(dataSource, "DataSource");
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             <div
