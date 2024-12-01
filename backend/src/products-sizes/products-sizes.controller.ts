@@ -98,8 +98,6 @@ export class ProductsSizesController {
     })
     @UseInterceptors(FileInterceptor('photo'))
     async createFullProduct(@Body() dto: CreateFullProductSizeDto, @UploadedFile() photo) {
-        console.log(dto);
-        console.log(photo);
         return await this.productsSizesFullService.createFullProduct(dto, photo);
     }
 
@@ -114,6 +112,7 @@ export class ProductsSizesController {
         schema: {
             type: 'object',
             properties: {
+                id: { type: 'number' },
                 name: { type: 'string' },
                 type: { type: 'number' },
                 description: { type: 'string' },
@@ -169,6 +168,16 @@ export class ProductsSizesController {
         console.log(dto);
         console.log(photo);
         return await this.productsSizesFullService.updateFullProduct(dto, photo);
+    }
+
+    @UseGuards(JwtAuthGuard, RolesAuthGuard)
+    @ApiOperation({ summary: "Trigger for update data" })
+    @ApiResponse({ status: 200, type: Product })
+    @Post('/full-product/update') 
+    @ApiBearerAuth('access-token')
+    @Roles("admin")
+    async triggerUpdateData(){
+        return;
     }
 
     @ApiOperation({ summary: 'Get all products sizes' })

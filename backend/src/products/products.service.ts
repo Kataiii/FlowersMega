@@ -38,16 +38,13 @@ export class ProductsService {
     }
 
     async update(dto: UpdateProductDto, images: File[]) {
-        const product = await this.productsRepository.update(dto, { where: { id: dto.id } });
-        //TODO сделать обновление картинки
-        // if(images && images.length > 0){
-        //     images.forEach(async (item) => {
-        //         await this.imagesService.update({
-        //             idProduct: dto.id,
-        //             image: item
-        //         });
-        //     })
-        // }
+        await this.productsRepository.update(dto, { where: { id: dto.id } });
+        if(images && images.length > 0){
+            await this.imagesService.update({
+                idProduct: dto.id,
+                images: images
+            });
+        }
         return await this.productsRepository.findOne({ where: { id: dto.id }, include: [{ all: true }] });
     }
 

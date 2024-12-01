@@ -23,7 +23,7 @@ const injectedRtkApi = api.injectEndpoints({
       ProductsControllerGetByIdApiArg
     >({
       query: (queryArg) => ({ url: `/products/${queryArg.id}` }),
-      providesTags: ['Review']
+      providesTags: ['Review', "Products"]
     }),
     productsSizesControllerSearch: build.query<
       ProductsSizesControllerSearchApiResponse,
@@ -154,7 +154,8 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => ({
         url: `/products-sizes/all-sizes/${queryArg.id}`
-      })
+      }),
+      providesTags: ['Products']
     }),
     productsSizesControllerGetByProductIdAndSizeId: build.query<
       ProductsSizesControllerGetByProductIdAndSizeIdApiResponse,
@@ -198,14 +199,11 @@ const injectedRtkApi = api.injectEndpoints({
       ProductsControllerCreateWithDetailsApiArg
     >({
       query: (queryArg) => ({
-        url: `/products-sizes/full-product`,
+        url: `/products-sizes/full-product/update`,
         method: "POST",
         body: queryArg.body,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        }
       }),
-      // invalidatesTags: ['Products']
+      invalidatesTags: ['Products']
     }),
     productsControllerDeleteById: build.mutation<
       ProductsControllerDeleteByIdApiResponse,
@@ -226,6 +224,7 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/products/${queryArg.id}/product-sizes/count`,
         method: "GET",
       }),
+      providesTags: ['Products']
     }),
     categoryControllerGetIdByName: build.query<
       CategoryControllerGetIdByNameApiResponse,
@@ -373,24 +372,9 @@ export type productSizesControllerGetProductsWithPaginationApiArg = {
   categories?: number[];
   filters?: number[];
 }
-export type ProductsControllerCreateWithDetailsApiResponse = /** status 201 */ Product;
+export type ProductsControllerCreateWithDetailsApiResponse = /** status 201 */ void;
 export type ProductsControllerCreateWithDetailsApiArg = {
-  body: FormData
-  // {
-  //   name: string;
-  //   type: number;
-  //   description: string;
-  //   structure: string;
-  //   photo: FormData;
-  //   // productSize: {
-  //   //   idSize: number;
-  //   //   prise: number;
-  //   //   paramsSize: string;
-  //   // }[];
-  //   productSize: string;
-  //   categories: string;
-  //   filters: string;
-  // };
+  body: undefined
 };
 
 export type ProductsControllerDeleteByIdApiResponse = void;

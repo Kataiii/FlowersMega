@@ -33,6 +33,7 @@ import ProductPhotoLoader from "../../../../widgets/loadPhoto/ProductPhotoLoader
 import axios from "axios";
 import { RootState, useAppSelector } from "../../../../store/store";
 import { selectToken } from "../../../../entities/credential/redux/selectors";
+import Error from "../../../../shared/assets/no-image.png";
 
 interface ProductProps {
   onCatChange?: (categories: any[]) => void;
@@ -97,6 +98,7 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
   });
   const [disabled, setDisabled] = useState(true);
   const [form] = Form.useForm();
+  const [createProductWithDetails] = useProductsControllerCreateWithDetailsMutation();
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [variations, setVariations] = useState<any[]>([]);
@@ -107,8 +109,6 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
     useCategoriesControllerGetAllQuery();
   const { data: productVariations, isLoading: productVariationsLoading } =
     useProductsSizesControllerGetAllSizesByProductIdQuery({ id: Number(id) });
-  const [createProductWithDetails] =
-    useProductsControllerCreateWithDetailsMutation();
   const [file, setFile] = useState<File | null>(null);
   const [deleteProduct] = useProductsControllerDeleteByIdMutation();
   const productSizesCount = useProductsControllerGetProductSizesCountQuery({
@@ -156,15 +156,26 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
     formData.append("categories",  JSON.stringify(categoriesString).slice(1, JSON.stringify(categoriesString).length - 1));
     formData.append("filters",  JSON.stringify(filtersString).slice(1, JSON.stringify(filtersString).length - 1));
 
-    console.log("formData id ", id);
-    console.log("formData ", formData);
     try {
-      const response = await axios.postForm(`${API_URL}/products-sizes/full-product `, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        withCredentials: true
-      })
+      let response;
+      if(id && locate.pathname !== "/admin/product/create"){
+        formData.append("id", id ?? "-1");
+        response = await axios.patchForm(`${API_URL}/products-sizes/full-product`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          withCredentials: true
+        })
+      }
+      else{
+        response = await axios.postForm(`${API_URL}/products-sizes/full-product `, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          withCredentials: true
+        })
+      }
+      await createProductWithDetails({body: undefined});
       console.log("Product created successfully:", response);
     } catch (error) {
       console.error("Error creating product:", error);
@@ -320,17 +331,19 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
               label={<ValueText>Фотография</ValueText>}
             >
               {/* @ts-ignore */}
-              {data?.images?.[0]?.url ? (
+              {disabled && locate.pathname !== "/admin/product/create" ? (
                 // @ts-ignore
                 <Image
                   style={{ width: 150, height: 155, borderRadius: 6 }}
                   //@ts-ignore
-                  src={`${API_URL}/products/images/${data.id}/${data?.images[0].url}`}
+                  src={data && data?.images[0] ? `${API_URL}/products/images/${data.id}/${data?.images[0].url}` : undefined}
+                  fallback={Error}
                 />
-              ) : locate.pathname === "/admin/product/create" && (
+              ) : (
                 <ImageBlockOutside>
                   <ImageBlockInside>
-                    <ProductPhotoLoader onUploadSuccess={(file: File) => {console.log(file); setFile(file)}}/>
+                    {/* @ts-ignore */}
+                    <ProductPhotoLoader previewUrl={ data&& data?.images[0] ? `${API_URL}/products/images/${data.id}/${data?.images[0].url}` : undefined} onUploadSuccess={(file: File) => {setFile(file)}}/>
                   </ImageBlockInside>
                 </ImageBlockOutside>
               )}
@@ -398,11 +411,12 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
                     onClick={() => {
                       handleEdit();
                     }}
+                    style={{marginRight: 10}}
                   >
                     <ButtonText>Редактировать</ButtonText>
                   </Button>
                 ) : (
-                  <Button type="primary">
+                  <Button type="primary" onClick={() => form.submit()} style={{marginRight: 10}}>
                     <ButtonText>Сохранить изменения</ButtonText>
                   </Button>
                 )}

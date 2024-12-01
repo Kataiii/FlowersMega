@@ -20,13 +20,18 @@ export class ImagesService {
     }
 
     async update(dto: UpdateImageDto) {
-        let fileName = undefined;
-        if(dto.image){
-            fileName = await this.filesService.createImageProduct(dto.image, dto.idProduct);
+        if(dto.images){
+            const imgUrls = await this.imagesRepository.findAll({where: {idProduct: dto.idProduct}});
+            await Promise.all(dto.images.map(async(item, index) => {
+                if(imgUrls[index]?.url){
+                    await this.filesService.updateImage(imgUrls[index].url, dto.idProduct.toString(), item);
+                } else {
+                    await this.create({
+                        idProduct: dto.idProduct,
+                        image: item
+                    })
+                }
+            }))
         }
-        return await this.imagesRepository.update({
-            idProduct: dto.idProduct,
-            url: fileName
-        }, { where: { id: dto.id } });
     }
 }

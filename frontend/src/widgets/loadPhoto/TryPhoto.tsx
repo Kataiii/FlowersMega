@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { Flex, message, Upload } from 'antd';
 import type { GetProp, UploadProps } from 'antd';
-import styles from "./TryPhoto.module.css";
 import Button from '../../shared/ui/button/Button';
 import SecondaryButton from '../../shared/ui/button/SecondaryButton';
 import { ResponseDto } from '../../store/user';
@@ -11,6 +10,7 @@ import { API_URL } from '../../shared/utils/constants';
 import { useAppDispatch, useAppSelector } from '../../store/store';
 import { selectToken } from '../../entities/credential/redux/selectors';
 import { addCredentialsUser } from '../../entities/credential/redux/slice';
+import { AvatarUploader } from './TryPhoto.style';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -95,8 +95,9 @@ const TryPhoto: React.FC = () => {
   return (
     <>
     <Flex gap="middle" wrap>
-      <div className={styles.avatarUploader}>
+      <AvatarUploader>
         <Upload
+          style={{width: 180}}
           name="avatar"
           listType="picture-circle"
           showUploadList={false}
@@ -107,7 +108,7 @@ const TryPhoto: React.FC = () => {
         >
           {imageUrl ? <img src={imageUrl} alt="avatar" /> : uploadButton}
         </Upload>
-      </div>
+      </AvatarUploader>
     </Flex>
     <div style={{display: "flex", gap: 15, paddingTop: 20}}>
       <Button buttonContent="Сохранить аватар" clickHandler={loadPhotoButton}/>
