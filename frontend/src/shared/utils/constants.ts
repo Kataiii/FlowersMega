@@ -40,8 +40,8 @@ export const PHONE = "8 986 986 99 96";
 export const EMAIL = "info.luckyflora@mail.ru";
 
 export enum targetA {
-    _blank,
-    _self
+    _blank = "_blank",
+    _self = "_self",
 }
 
 export const mapBreads = new Map<string, string>([
