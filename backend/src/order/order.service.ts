@@ -90,7 +90,7 @@ ${productsSizes.map((item, index) => {
             }
 
 ${dto.comment !== undefined
-                ? "Примечания к заказу: ${dto.comment}"
+                ? `Примечания к заказу: ${dto.comment}`
                 : ""}
 
 ИТОГО: ${order.cost} руб.
