@@ -3,6 +3,7 @@ import { StyledForm, ValueText } from "../../../pages/admin/ui/products/Product"
 import SizeDropdown from "../dropdown/SizeDropdown";
 import { CloseOutlined } from "@ant-design/icons";
 import { ProductSize, Size } from "../../../store/product";
+import { useState } from "react";
 
 interface VariationProps {
     variation: ProductSize;
@@ -12,7 +13,7 @@ interface VariationProps {
 }
 
 const Variation: React.FC<VariationProps> = ({ variation, onRemove, onChange, disabled }) => {
-
+    const [price, setPrice] = useState(variation.extraPrice);
     const handleSizeChange = (value: number | undefined) => {
 
         onChange({
@@ -22,6 +23,7 @@ const Variation: React.FC<VariationProps> = ({ variation, onRemove, onChange, di
     };
 
     const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
         onChange({ ...variation, prise: Number(e.target.value) });
     };
 
@@ -58,10 +60,10 @@ const Variation: React.FC<VariationProps> = ({ variation, onRemove, onChange, di
                     <Input
                         type="number"
                         disabled={disabled}
-                        value={variation.extraPrice}
+                        value={price}
                         placeholder="Введите стоимость товара в рублях..."
                         style={{ width: "480px" }}
-                        onChange={handlePriceChange}
+                        onChange={(e) => { handlePriceChange(e); setPrice(Number(e.target.value)); }}
                         onKeyPress={(event) => {
                             if (!/[0-9]/.test(event.key)) {
                                 event.preventDefault();
