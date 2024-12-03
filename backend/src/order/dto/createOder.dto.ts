@@ -14,10 +14,10 @@ export class CreateOrderDto{
     name: string;
 
     @ApiProperty({example: new Date(), description: 'Date order', required: true})
-    dateOrder: Date;
+    dateOrder: string;
 
     @ApiProperty({example: new Date(), description: 'Date delivery', required: true})
-    dateDelivery: Date;
+    dateDelivery: string;
 
     @ApiProperty({example: 1000.00, description: 'Cost order', required: true})
     cost: number;

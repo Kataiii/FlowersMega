@@ -45,8 +45,13 @@ export class TgBotService {
 
     // Обработка команды /status
     private async handleStatusCommand(msg: any): Promise<void> {
-        const isAuthenticated = await this.telegramUsersService.checkAccess(msg.chat.username, process.env.TELEGRAM_BOT_COMMANDS_ACCESS);
-        this.bot.sendMessage(msg.chat.id, isAuthenticated.message);
+        try{
+            const isAuthenticated = await this.telegramUsersService.checkAccess(msg.chat.id, process.env.TELEGRAM_BOT_COMMANDS_ACCESS);
+            this.bot.sendMessage(msg.chat.id, isAuthenticated.message);
+        }
+        catch(e){
+            console.log(e);
+        }
     }
 
     // Аутентификация пользователя по токену
