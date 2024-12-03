@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Op, Sequelize } from 'sequelize';
 import { Image } from 'src/images/images.model';
 import { ImagesService } from 'src/images/images.service';
-import { CreateProductDto } from './dto/createProduct.dto';
+import { CreateProductDto, UpdateProductDto } from './dto/createProduct.dto';
 import { Product } from './products.model';
 import { ProductSize } from 'src/products-sizes/products-sizes.model';
 import { Category } from 'src/categories/categories.model';
@@ -26,13 +26,26 @@ export class ProductsService {
             idTypeProduct: dto.idTypeProduct,
             structure: dto.structure
         });
-        images.forEach(async (item) => {
-            await this.imagesService.create({
-                idProduct: product.id,
-                image: item
-            });
-        })
+        if(images && images.length > 0){
+            images.forEach(async (item) => {
+                await this.imagesService.create({
+                    idProduct: product.id,
+                    image: item
+                });
+            })
+        }
         return await this.productsRepository.findOne({ where: { id: product.id }, include: [{ all: true }] });
+    }
+
+    async update(dto: UpdateProductDto, images: File[]) {
+        await this.productsRepository.update(dto, { where: { id: dto.id } });
+        if(images && images.length > 0){
+            await this.imagesService.update({
+                idProduct: dto.id,
+                images: images
+            });
+        }
+        return await this.productsRepository.findOne({ where: { id: dto.id }, include: [{ all: true }] });
     }
 
     async getAll() {

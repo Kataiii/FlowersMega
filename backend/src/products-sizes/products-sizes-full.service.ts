@@ -10,6 +10,8 @@ import {
     CreateFullProductSizeDto,
     CreateProductSizeSmallDto,
     FilterWithItems,
+    UpdareFullProductSizeDto,
+    UpdateProductSizeSmallDto,
 } from "./dto/createFullProduct.dto";
 import { ProductSize } from "./products-sizes.model";
 import { Op, or, where } from "sequelize";
@@ -572,26 +574,32 @@ export class ProductsSizesFullService {
                 structure: dto.structure,
                 idTypeProduct: dto.type,
             },
-            [photo]
+            photo ? [photo] : undefined
         );
-        await Promise.all(
+        console.log(prosuctsSizes);
+        const productSizesData = await Promise.all(
             prosuctsSizes.map(async (item) => {
-                // console.log(item);
                 return await this.productsSizesRepository.create({
                     idProduct: product.id,
                     idSize: item.idSize,
                     paramsSize: item.paramsSize,
                     prise: item.prise,
+                    extraPrice: item.prise
                 });
             })
         );
         await Promise.all(
             categories.map(async (item) => {
-                return await this.categoriesProductService.create({
+                await this.categoriesProductService.create({
                     idProduct: product.id,
-                    //@ts-ignore
                     idCategory: item.id,
                 });
+                productSizesData.forEach(async(el) => {
+                    await this.categoriesProductsSizesService.create({
+                        idProductSize: el.id,
+                        idCategory: item.id
+                    })
+                })
             })
         );
 
@@ -603,6 +611,59 @@ export class ProductsSizesFullService {
                 });
             })
         );
+
+        return product;
+    }
+
+    async updateFullProduct(dto: UpdareFullProductSizeDto, photo: File) {
+        const productsSizes = JSON.parse(
+            `[${dto.productSize.toString()}]`
+        ) as UpdateProductSizeSmallDto[];
+        const categories = JSON.parse(
+            `[${dto.categories.toString()}]`
+        ) as Category[];
+        const filters = JSON.parse(`[${dto.filters.toString()}]`) as ItemFilter[];
+
+        const product = await this.productsService.update(
+            {
+                id: dto.id,
+                name: dto.name,
+                description: dto.description,
+                structure: dto.structure,
+                idTypeProduct: dto.type,
+            },
+            photo ? [photo] : undefined
+        );
+
+        const productSizesData = await this.productsSizesRepository.findAll({where: {idProduct: product.id}});
+        const productSizesDublicates = productSizesData.map(item => item.idSize).filter(item => productsSizes.map(item => item.idSize).includes(item));
+        await Promise.all(productSizesData.map(async(item) => {
+            const size = productSizesDublicates.find(el => el === item.idSize);
+            const newProductSize = productsSizes.find(el => el.idSize === size);
+            if(!size) await this.productsSizesRepository.destroy({where: {id: item.id}})
+            else if(item.paramsSize !== newProductSize.paramsSize || 
+                item.prise !== newProductSize.prise
+            ){
+                productsSizes.find(el => el.idSize === size).paramsSize
+                await this.productsSizesRepository.update({
+                    paramsSize: newProductSize.paramsSize,
+                    prise: newProductSize.prise,
+                    extraPrice: newProductSize.prise
+                }, {where: {id: item.id}});
+            }
+        }))
+
+        await Promise.all(productsSizes.map(async(item) => {
+            if(!productSizesDublicates.find(el => el === item.idSize)) await this.productsSizesRepository.create({...item, extraPrice: item.prise, idProduct: product.id});
+        }))
+
+        const newProductSizes = await this.productsSizesRepository.findAll({where: {idProduct: product.id}})
+        await this.categoriesProductService.update(categories, product.id);
+        await Promise.all(newProductSizes.map(async(item, index) => {
+            await this.categoriesProductsSizesService.update(categories, item.id);
+        }))
+
+        await this.productsItemsFilterService.update(filters, product.id);
 
         return product;
     }

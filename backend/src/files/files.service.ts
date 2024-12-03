@@ -70,4 +70,13 @@ export class FilesService {
             if (error) console.log(error);
         });
     }
+
+    async updateImage(fileName: string, productId: string, file){
+        const filePath = path.resolve(__dirname, '..', '..', 'static', "products", "images", productId, fileName);
+        await fs.unlink(filePath, (error) => {
+            if(error) console.log(error);
+        })
+        fs.writeFileSync(filePath, file.buffer);
+        return fileName;
+    }
 }

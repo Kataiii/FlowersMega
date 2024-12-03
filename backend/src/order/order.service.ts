@@ -18,10 +18,13 @@ export class OrderService {
     ) { }
 
     async create(dto: CreateOrderDto) {
+        console.log(dto);
+        const dateOrder = new Date(dto.dateOrder);
+        const dateDelivery = new Date(dto.dateDelivery);
         const order = await this.ordersRepository.create({
             name: dto.name,
-            dateOrder: dto.dateOrder,
-            dateDelivery: dto.dateDelivery,
+            dateOrder: dateOrder,
+            dateDelivery: dateDelivery,
             cost: dto.cost,
             idUser: dto.idUser,
             nameCustomer: dto.nameCustomer,
@@ -37,7 +40,9 @@ export class OrderService {
             comment: dto.comment,
             postcards: dto.postcards
         });
-
+        console.log("order ", order.id);
+        console.log("dateOrder ", dateOrder);
+        console.log("dateDelivery ", dateDelivery);
         dto.itemsOrder && dto.itemsOrder.forEach(async (item) => {
             await this.ordersProductsSizesService.create({
                 idOrder: order.id,
@@ -60,7 +65,7 @@ export class OrderService {
         this.tgBotService.sendMessage(
             `
 Flower's Mega ${dto.addressDelivery.split(',')[0]}
-Новый заказ: #${dto.name}
+Новый заказ: #${order.id}
 
 ЗАКАЗЧИК
 Имя заказчика: ${dto.nameCustomer}
@@ -71,7 +76,7 @@ E-mail заказчика: ${dto.emailCustomer}
 Имя получателя: ${dto.nameRecipient} 
 Телефон получателя: ${dto.phoneRecipient} 
 Адрес доставки: ${dto.addressDelivery}
-Дата доставки: ${dto.dateDelivery.toLocaleDateString()} ${dto.startTimeDelivery} - ${dto.endTimeDelivery}
+Дата доставки: ${dateDelivery.toLocaleDateString()} ${dto.startTimeDelivery} - ${dto.endTimeDelivery}
 
 ДЕТАЛИ ЗАКАЗА
 ${productsSizes.map((item, index) => {

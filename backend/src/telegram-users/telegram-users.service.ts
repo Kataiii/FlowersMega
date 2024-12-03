@@ -1,9 +1,6 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { ProductSize } from 'src/products-sizes/products-sizes.model';
 import { TelegramUser } from './telegram-users.model';
-import { env } from 'process';
-import { where } from 'sequelize';
 
 @Injectable()
 export class TelegramUsersService {
@@ -33,6 +30,7 @@ export class TelegramUsersService {
     }
 
     async checkAccess(chat_id: number, access_key: string){
+        console.log(chat_id);
         if(access_key !== process.env.TELEGRAM_BOT_COMMANDS_ACCESS) throw new UnauthorizedException();
         const existingUser = await this.telegramUsersRepository.findOne({ where: { chat_id: chat_id } });
             if (!existingUser) {
@@ -53,8 +51,8 @@ export class TelegramUsersService {
     }
 
     async unsubscribe(chat_id: number){
-        const existingUser = this.telegramUsersRepository.findOne({where: {chat_id: chat_id}});
-        if(existingUser && (await existingUser).is_active){
+        const existingUser = await this.telegramUsersRepository.findOne({where: {chat_id: chat_id}});
+        if(existingUser?.is_active){
             this.telegramUsersRepository.update({is_active: false}, {where: {chat_id: chat_id}});
             return true;
         }

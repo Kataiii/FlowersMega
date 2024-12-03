@@ -4,10 +4,9 @@ import { productSizesControllerGetProductsWithPaginationApiResponse, useProducts
 import { Numerals } from "../../shared/utils/numerals";
 import { API_URL } from "../../shared/utils/constants";
 import { useMemo, useState } from "react";
-import { useProductsSizesControllerGetProductSizeForCardByIdQuery, useSizesControllerGetAllQuery } from "../../store/size";
+import { useSizesControllerGetAllQuery } from "../../store/size";
 import { ButtonText } from "../../pages/admin/ui/products/Products";
 import { styled } from "styled-components";
-import { retry } from "@reduxjs/toolkit/query";
 
 
 const ExpandableContent = styled.div<{ isExpanded: boolean }>`
@@ -45,11 +44,8 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
     const { data: productSizes } = useProductsSizesControllerGetByProductIdQuery({ id: Number(id) });
     const { data } = useProductsControllerGetByIdQuery({ id: Number(id) });
     const { data: sizes, isLoading: isSizesLoading } = useSizesControllerGetAllQuery();
-    // const { data: productInfo } = useProductsSizesControllerGetProductSizeForCardByIdQuery({ id: Number(id) });
     const [isExpanded, setIsExpanded] = useState(false);
 
-    // console.log(productSizes, "PPPPPPPPPPPPPPPPPPPPPPPPPP");
-    // console.log(productSizedPag, "PPPPPPPPPPPPPPPPPPPPPPPPPPPP");
     const dataSource = useMemo(() => {
         if (!productSizedPag || !sizes || !id) return [];
 
@@ -76,7 +72,6 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
             .filter((item): item is NonNullable<typeof item> => item !== null);
     }, [productSizedPag, sizes, id]);
 
-    // console.log(dataSource, "LMAKWINFOIENIRENIREIERIJERIJ");
     const columns = [
         {
             title: "Размер",
@@ -110,10 +105,7 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
                     style={{
                         display: "grid",
                         gridTemplateColumns: "3fr 1fr 1fr",
-                        // flexDirection: "row",
                         gap: "8px",
-                        // alignItems: "center",
-                        // justifyContent: "space-between",
                     }}
                 >
                     <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
@@ -166,8 +158,6 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ id, name, type, onC
                         />
                     </div>
                 </ExpandableContent>
-
-
             </div>
         </div>
     );
