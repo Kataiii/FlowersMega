@@ -16,6 +16,7 @@ const getBase64 = (file: RcFile): Promise<string> =>
 interface ProductPhotoLoaderProps {
   onUploadSuccess: (file: File) => void; // Пропс для передачи URL родителю
   previewUrl?: string;
+  onDeleteSuccess: () => void;
 }
 
 const base64ToFile = (base64String: string, fileName: string) => {
@@ -40,6 +41,7 @@ const base64ToFile = (base64String: string, fileName: string) => {
 const ProductPhotoLoader: React.FC<ProductPhotoLoaderProps> = ({
   onUploadSuccess,
   previewUrl,
+  onDeleteSuccess
 }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -68,6 +70,11 @@ const ProductPhotoLoader: React.FC<ProductPhotoLoaderProps> = ({
     }
   };
 
+  const handleDelete = () => {
+    setPreviewImage('');
+    onDeleteSuccess();
+  };
+
   const uploadButton = (
     <button style={{ border: 0, background: "none" }} type="button">
       <PlusOutlined />
@@ -87,7 +94,7 @@ const ProductPhotoLoader: React.FC<ProductPhotoLoaderProps> = ({
       ]);
     }
   }, []);
-
+  console.log(previewUrl, "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
   return (
     <>
       <Upload
@@ -95,6 +102,7 @@ const ProductPhotoLoader: React.FC<ProductPhotoLoaderProps> = ({
         fileList={fileList}
         onPreview={handlePreview}
         onChange={handleChange}
+        // onRemove={handleDelete}
         beforeUpload={() => false} // Отключаем автоматическую загрузку на сервер
       >
         {fileList.length >= 1 ? null : uploadButton}

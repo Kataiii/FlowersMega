@@ -10,14 +10,14 @@ const injectedRtkApi = api.injectEndpoints({
         method: "POST",
         body: queryArg.createSizeDto,
       }),
-      invalidatesTags: ["Sizes"],
+      // invalidatesTags: ["Sizes"],
     }),
     sizesControllerGetAll: build.query<
       SizesControllerGetAllApiResponse,
       SizesControllerGetAllApiArg
     >({
       query: () => ({ url: `/sizes` }),
-      providesTags: ["Sizes"],
+      // providesTags: ["Sizes"],
     }),
     sizeContollerGetByName: build.query<
       SizeContollerGetByNameApiResponse,
@@ -40,7 +40,7 @@ const injectedRtkApi = api.injectEndpoints({
         method: "DELETE",
         body: { id: queryArg.id }
       }),
-      invalidatesTags: ["Sizes"],
+      // invalidatesTags: ["Sizes"],
     }),
     productsSizesControllerCreate: build.mutation<
       ProductsSizesControllerCreateApiResponse,

@@ -10,7 +10,7 @@ const injectedRtkApi = api.injectEndpoints({
                 method: "POST",
                 body: queryArg.body,
             }),
-            invalidatesTags: ['ExtraPrice']
+            // invalidatesTags: ['ExtraPrice']
         }),
         extraPriceControllerDelete: build.mutation<
             ExtraPriceControllerDeleteApiResponce,
@@ -20,7 +20,7 @@ const injectedRtkApi = api.injectEndpoints({
                 url: `/extra-price/${queryArg.idCategory}`,
                 method: "DELETE",
             }),
-            invalidatesTags: ['ExtraPrice']
+            // invalidatesTags: ['ExtraPrice']
         }),
         extraPriceControllerGetAll: build.query<
             ExtraPriceControllerGetAllApiResponce,
@@ -30,7 +30,7 @@ const injectedRtkApi = api.injectEndpoints({
                 url: "/extra-price/",
                 method: "GET",
             }),
-            providesTags: ['ExtraPrice']
+            // providesTags: ['ExtraPrice']
         }),
         extraPriveControllerGetByCategoryId: build.query<
             ExtraPriceControllerGetByCategoryIdApiResponce,
@@ -40,7 +40,7 @@ const injectedRtkApi = api.injectEndpoints({
                 url: `/extra-price/${queryArg.idCategory}`,
                 method: "GET",
             }),
-            providesTags: ['ExtraPrice']
+            // providesTags: ['ExtraPrice']
         })
     })
 

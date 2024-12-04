@@ -42,7 +42,7 @@ const Products: React.FC = () => {
     const navigate = useNavigate();
     const locate = useLocation();
     // const { isLoading, data: products } = useProductsControllerGetAllQuery();
-    const [sortOrder, setSortOrder] = useState<string>("updatedAt ASC");
+    const [sortOrder, setSortOrder] = useState<string>("updatedAt DESC");
     const [searchId, setSearchId] = useState<string>("");
     const [finalSearchId, setFinalSearchId] = useState<string>("");
     const [categories, setCategories] = useState<number[]>([]);
@@ -89,21 +89,21 @@ const Products: React.FC = () => {
         setFilters(selectedFilters);
     }, []);
 
-    const productData = useMemo(() => {
-        if (!productSizedPag) return [];
-        return productSizedPag.products.map((product) => ({
-            ...product
-        }));
-    }, [productSizedPag]);
+    // const productData = useMemo(() => {
+    //     if (!productSizedPag) return [];
+    //     return productSizedPag.products.map((product) => ({
+    //         ...product
+    //     }));
+    // }, [productSizedPag]);
 
-    const sortedData = useMemo(() => {
-        const sorted = [...productData];
-        return sorted;
-    }, [productData, sortOrder]);
+    // const sortedData = useMemo(() => {
+    //     const sorted = [...productData];
+    //     return sorted;
+    // }, [productData, sortOrder]);
 
     const handlePageChange = (newPage: number, newPageSize?: number) => {
-        setPage(newPage);
-        if (newPageSize) {
+        if (page !== newPage) setPage(newPage);
+        if (newPageSize && newPageSize !== pageSize) {
             setPageSize(newPageSize);
         }
     };
@@ -178,7 +178,7 @@ const Products: React.FC = () => {
                     </div>
                     <Select
                         defaultActiveFirstOption={true}
-                        defaultValue="updatedAt ASC"
+                        defaultValue="updatedAt DESC"
                         style={{ width: 150, height: 25 }}
                         options={[
                             { value: "updatedAt ASC", label: "Дата (старые)" },
@@ -190,7 +190,9 @@ const Products: React.FC = () => {
                     />
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px" }}>
-                    {sortedData.map((product, index) => (
+                    {productSizedPag?.products.map((product) => ({
+                        ...product
+                    })).map((product, index) => (
                         <ProductAdminCard
                             key={product.products.id}
                             id={product.products.id}

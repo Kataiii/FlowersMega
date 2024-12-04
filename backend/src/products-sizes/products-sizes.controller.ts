@@ -167,16 +167,18 @@ export class ProductsSizesController {
     async patchFullProduct(@Body() dto: UpdareFullProductSizeDto, @UploadedFile() photo) {
         console.log(dto);
         console.log(photo);
-        return await this.productsSizesFullService.updateFullProduct(dto, photo);
+        const product = await this.productsSizesFullService.updateFullProduct(dto, photo);
+        console.log(product.images[0], 'UUUUUUUUUUUUUUUUUUUUUUUUUUUUU');
+        return product;
     }
 
     @UseGuards(JwtAuthGuard, RolesAuthGuard)
     @ApiOperation({ summary: "Trigger for update data" })
     @ApiResponse({ status: 200, type: Product })
-    @Post('/full-product/update') 
+    @Post('/full-product/update')
     @ApiBearerAuth('access-token')
     @Roles("admin")
-    async triggerUpdateData(){
+    async triggerUpdateData() {
         return;
     }
 
@@ -230,7 +232,7 @@ export class ProductsSizesController {
     @ApiResponse({ status: 200, type: FullProductSizeDto })
     @Get("/full-product/:id")
     async getProductSizeForCardById(@Param("id") id: number) {
-        if(isNaN(id)) return null;
+        if (isNaN(id)) return null;
         return await this.productsSizesFullService.getFullById(id);
     }
 

@@ -34,6 +34,7 @@ import axios from "axios";
 import { RootState, useAppSelector } from "../../../../store/store";
 import { selectToken } from "../../../../entities/credential/redux/selectors";
 import Error from "../../../../shared/assets/no-image.png";
+import ts from "typescript";
 
 interface ProductProps {
   onCatChange?: (categories: any[]) => void;
@@ -130,9 +131,9 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
   );
 
   const handleFormFinish = async (values: any) => {
-    const filtersString = filters.map((filter: Filter & {tags: ItemFilter[]}) => filter.tags).flat();
+    const filtersString = filters.map((filter: Filter & { tags: ItemFilter[] }) => filter.tags).flat();
 
-    const categoriesString = 
+    const categoriesString =
       selectedCategories.map((category: any) => ({
         id: category.id,
         name: category.name,
@@ -147,18 +148,27 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
 
     const formData = new FormData();
     formData.append("name", values.name);
-    formData.append("type",  values.type);
-    formData.append("description",  values.description);
-    formData.append("structure",  values.structure);
+    formData.append("type", values.type);
+    formData.append("description", values.description);
+    formData.append("structure", values.structure);
+    console.log(file, 'NUUUUUUUUUUUUUUUUUUUUUUUUUU GILE')
     // @ts-ignore
-    formData.append("photo",  file ? file : data?.images?.[0]?.url || "");
-    formData.append("productSize",  JSON.stringify(productSizes).slice(1, JSON.stringify(productSizes).length - 1));
-    formData.append("categories",  JSON.stringify(categoriesString).slice(1, JSON.stringify(categoriesString).length - 1));
-    formData.append("filters",  JSON.stringify(filtersString).slice(1, JSON.stringify(filtersString).length - 1));
+    console.log(data?.images?.[0]?.url, "NUUUUUUUUUUUUUUUUUUUUUUUUUU")
+    // Проверяем состояние изображения
+    if (file) {
+      formData.append("photo", file);
+      // @ts-ignore
+    } else {
+      formData.append("photo", "null");
+    }
 
+    formData.append("productSize", JSON.stringify(productSizes).slice(1, JSON.stringify(productSizes).length - 1));
+    formData.append("categories", JSON.stringify(categoriesString).slice(1, JSON.stringify(categoriesString).length - 1));
+    formData.append("filters", JSON.stringify(filtersString).slice(1, JSON.stringify(filtersString).length - 1));
+    console.log(formData, "FINAL DATA FOR SENDING")
     try {
       let response;
-      if(id && locate.pathname !== "/admin/product/create"){
+      if (id && locate.pathname !== "/admin/product/create") {
         formData.append("id", id ?? "-1");
         response = await axios.patchForm(`${API_URL}/products-sizes/full-product`, formData, {
           headers: {
@@ -167,7 +177,7 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
           withCredentials: true
         })
       }
-      else{
+      else {
         response = await axios.postForm(`${API_URL}/products-sizes/full-product `, formData, {
           headers: {
             Authorization: `Bearer ${token}`
@@ -175,8 +185,9 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
           withCredentials: true
         })
       }
-      await createProductWithDetails({body: undefined});
+      await createProductWithDetails({ body: undefined });
       console.log("Product created successfully:", response);
+
     } catch (error) {
       console.error("Error creating product:", error);
     }
@@ -256,6 +267,48 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
     }
   }, [data]);
 
+  // const handlePhotoDelete = async () => {
+  //   try {
+  //     console.log("11111111111111111111111111111111111");
+  //     // @ts-ignore
+  //     if (data?.images?.[0]?.url) {
+  //       // @ts-ignore
+  //       await axios.delete(`${API_URL}/products/images/${data.id}/${data.images[0].url}`, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //         withCredentials: true,
+  //       });
+  //       console.log("Image deleted successfully.");
+  //     } else {
+  //       console.log("No image to delete.");
+  //     }
+  //     setFile(null); // Очистить локальное состояние
+  //   } catch (error) {
+  //     console.error("Error deleting image:", error);
+  //   }
+  // };
+  // const handleDeletePhoto = async () => {
+  //   const updatedProductData = {
+  //     ...data, 
+  //     photo: null,
+  //   };
+  //   try {
+  //     await createProductWithDetails({ body: updatedProductData }).unwrap();
+  //     console.log('Фото успешно удалено');
+  //   } catch (err) {
+  //     console.error('Ошибка при удалении фото', err);
+  //   }
+  // };
+  // const handleDeleteImage = () => {
+  //   // @ts-ignore
+  //   if (data?.images?.[0]) {
+  //     // @ts-ignore
+  //     data.images[0].url = ""; // Очищаем URL изображения
+  //   }
+  //   setFile(null); // Убираем загруженный файл
+  // };
+
   return (
     <Container>
       {isLoading && categoriesLoading && data ? (
@@ -330,6 +383,13 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
               style={{ alignSelf: "flex-start" }}
               label={<ValueText>Фотография</ValueText>}
             >
+              {
+                <>
+
+                  {// @ts-ignore
+                    console.log(data && data?.images[0], "TATATAATATATATTATA")}
+                </>
+              }
               {/* @ts-ignore */}
               {disabled && locate.pathname !== "/admin/product/create" ? (
                 // @ts-ignore
@@ -342,8 +402,12 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
               ) : (
                 <ImageBlockOutside>
                   <ImageBlockInside>
-                    {/* @ts-ignore */}
-                    <ProductPhotoLoader previewUrl={ data&& data?.images[0] ? `${API_URL}/products/images/${data.id}/${data?.images[0].url}` : undefined} onUploadSuccess={(file: File) => {setFile(file)}}/>
+                    <>
+                      {/* @ts-ignore */}
+                      <ProductPhotoLoader previewUrl={data?.images?.[0] ? `${API_URL}/products/images/${data.id}/${data.images[0].url}` : undefined} onUploadSuccess={(file: File) => setFile(file)} />
+
+                    </>
+
                   </ImageBlockInside>
                 </ImageBlockOutside>
               )}
@@ -411,12 +475,12 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
                     onClick={() => {
                       handleEdit();
                     }}
-                    style={{marginRight: 10}}
+                    style={{ marginRight: 10 }}
                   >
                     <ButtonText>Редактировать</ButtonText>
                   </Button>
                 ) : (
-                  <Button type="primary" onClick={() => form.submit()} style={{marginRight: 10}}>
+                  <Button type="primary" onClick={() => form.submit()} style={{ marginRight: 10 }}>
                     <ButtonText>Сохранить изменения</ButtonText>
                   </Button>
                 )}
@@ -477,7 +541,7 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
                   await deleteProduct({ id: Number(id) });
                   setIsModalOpen(false);
                   navigate(`/admin/products`);
-                } catch (error) {}
+                } catch (error) { }
               }}
               style={{ width: "49%" }}
             >

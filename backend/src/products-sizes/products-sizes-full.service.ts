@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Body, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { CategoriesProductsService } from "src/categories-products/categories-products.service";
 import { Category } from "src/categories/categories.model";
@@ -25,6 +25,7 @@ import { CategoriesProductsSizes } from "src/categories-productssizes/categories
 import { ItemsFilterService } from "src/items-filter/items-filter.service";
 import { ExtraPrice } from "src/extra-price/extra-price.model";
 import { Product } from "src/products/products.model";
+import * as path from 'path';
 
 export class CustomFile implements File {
     buffer: Buffer;
@@ -594,7 +595,7 @@ export class ProductsSizesFullService {
                     idProduct: product.id,
                     idCategory: item.id,
                 });
-                productSizesData.forEach(async(el) => {
+                productSizesData.forEach(async (el) => {
                     await this.categoriesProductsSizesService.create({
                         idProductSize: el.id,
                         idCategory: item.id
@@ -615,7 +616,7 @@ export class ProductsSizesFullService {
         return product;
     }
 
-    async updateFullProduct(dto: UpdareFullProductSizeDto, photo: File) {
+    async updateFullProduct(dto: UpdareFullProductSizeDto, photo: File | null, @Body() body?: any) {
         const productsSizes = JSON.parse(
             `[${dto.productSize.toString()}]`
         ) as UpdateProductSizeSmallDto[];
@@ -635,31 +636,44 @@ export class ProductsSizesFullService {
             photo ? [photo] : undefined
         );
 
-        const productSizesData = await this.productsSizesRepository.findAll({where: {idProduct: product.id}});
+        if (!photo) {
+            const imageUrl = product.images?.[0]?.url;
+            if (imageUrl) {
+                const filePath = path.resolve(__dirname, '..', '..', 'static', "products", "images", product.id.toString(), imageUrl);
+                fs.unlink(filePath, (err) => {
+                    if (err) console.error(`Ошибка удаления файла: ${err.message}`);
+                });
+                product.images[0].url = null; // Обнуляем URL
+                await product.save();
+                console.log()
+            }
+        }
+        console.log(product.images[0].url, "A KAK TUT ONO OKAZALOSSSS")
+        const productSizesData = await this.productsSizesRepository.findAll({ where: { idProduct: product.id } });
         const productSizesDublicates = productSizesData.map(item => item.idSize).filter(item => productsSizes.map(item => item.idSize).includes(item));
-        await Promise.all(productSizesData.map(async(item) => {
+        await Promise.all(productSizesData.map(async (item) => {
             const size = productSizesDublicates.find(el => el === item.idSize);
             const newProductSize = productsSizes.find(el => el.idSize === size);
-            if(!size) await this.productsSizesRepository.destroy({where: {id: item.id}})
-            else if(item.paramsSize !== newProductSize.paramsSize || 
+            if (!size) await this.productsSizesRepository.destroy({ where: { id: item.id } })
+            else if (item.paramsSize !== newProductSize.paramsSize ||
                 item.prise !== newProductSize.prise
-            ){
+            ) {
                 productsSizes.find(el => el.idSize === size).paramsSize
                 await this.productsSizesRepository.update({
                     paramsSize: newProductSize.paramsSize,
                     prise: newProductSize.prise,
                     extraPrice: newProductSize.prise
-                }, {where: {id: item.id}});
+                }, { where: { id: item.id } });
             }
         }))
 
-        await Promise.all(productsSizes.map(async(item) => {
-            if(!productSizesDublicates.find(el => el === item.idSize)) await this.productsSizesRepository.create({...item, extraPrice: item.prise, idProduct: product.id});
+        await Promise.all(productsSizes.map(async (item) => {
+            if (!productSizesDublicates.find(el => el === item.idSize)) await this.productsSizesRepository.create({ ...item, extraPrice: item.prise, idProduct: product.id });
         }))
 
-        const newProductSizes = await this.productsSizesRepository.findAll({where: {idProduct: product.id}})
+        const newProductSizes = await this.productsSizesRepository.findAll({ where: { idProduct: product.id } })
         await this.categoriesProductService.update(categories, product.id);
-        await Promise.all(newProductSizes.map(async(item, index) => {
+        await Promise.all(newProductSizes.map(async (item, index) => {
             await this.categoriesProductsSizesService.update(categories, item.id);
         }))
 
