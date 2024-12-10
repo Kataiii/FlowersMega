@@ -1,4 +1,4 @@
-import { Body, Injectable } from "@nestjs/common";
+import { Body, forwardRef, Inject, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { CategoriesProductsService } from "src/categories-products/categories-products.service";
 import { Category } from "src/categories/categories.model";
@@ -26,6 +26,7 @@ import { ItemsFilterService } from "src/items-filter/items-filter.service";
 import { ExtraPrice } from "src/extra-price/extra-price.model";
 import { Product } from "src/products/products.model";
 import * as path from 'path';
+import { ProductsSizesService } from "./products-sizes.service";
 
 export class CustomFile implements File {
     buffer: Buffer;
@@ -87,7 +88,8 @@ export class ProductsSizesFullService {
         private categoriesService: CategoriesService,
         private itemFilterService: ItemsFilterService,
         private typeProductService: TypesProductService,
-        private categoriesProductsSizesService: CategoriesProductssizesService
+        private categoriesProductsSizesService: CategoriesProductssizesService,
+        @Inject(forwardRef(() => ProductsSizesService)) private productsSizesService: ProductsSizesService,
     ) { }
 
     // async onModuleInit() {
@@ -612,6 +614,8 @@ export class ProductsSizesFullService {
                 });
             })
         );
+
+        await this.productsSizesService.updatePrices();
 
         return product;
     }
