@@ -2,12 +2,35 @@ import { ABOUT_PATH, CATALOG_PATH, CONTACTS_PATH, EMAIL, HELP_PATH, HOME_PATH, P
 import Container from "../containerMain/ContainerMain";
 import Link from "../link/Link";
 import { ReactComponent as Logo } from "../../assets/logo.svg";
-import { useNavigate } from "react-router-dom";
+import { createSearchParams, useNavigate } from "react-router-dom";
 import { ReactComponent as Phone } from "../../assets/phone_footer.svg";
 import { ReactComponent as Mail } from "../../assets/mail_footer.svg";
+import { useFiltersControllerGetAllQuery } from "../../../store/filter";
+import { useDispatch } from "react-redux";
+import { addAllToFilters } from "../../../entities/filter/redux/slice";
+import { ItemFilter } from "../../../store/product";
 
 const Footer: React.FC = () => {
     const navigate = useNavigate();
+    const { isLoading, data } = useFiltersControllerGetAllQuery();
+    const dispatch = useDispatch();
+
+    const handleSelectAll = (filterItems: ItemFilter[]) => {
+        dispatch(addAllToFilters(filterItems));
+
+        const searchParams = createSearchParams(
+            filterItems.reduce((acc: Record<string, string>, item: ItemFilter) => {
+                if (item.id) acc[`itemId_${item.id}`] = item.id.toString();
+                return acc;
+            }, {})
+        ).toString();
+
+        navigate({
+            pathname: `${CATALOG_PATH}`,
+            // search: searchParams,
+        });
+    };
+
 
     return (
         <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -36,10 +59,13 @@ const Footer: React.FC = () => {
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <h4 style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0 }}>Каталог</h4>
-                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(CATALOG_PATH)}>Цветы</p>
+                            {data && data.map((filter) => (
+                                <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => { navigate(CATALOG_PATH); handleSelectAll(filter?.items || []) }}>{filter?.name}</p>
+                            ))}
+                            {/* <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(CATALOG_PATH)}>Цветы</p>
                             <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(CATALOG_PATH)}>Кому подарок</p>
                             <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(CATALOG_PATH)}>Повод</p>
-                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(CATALOG_PATH)}>Стиль</p>
+                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(CATALOG_PATH)}>Стиль</p> */}
                         </div>
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>

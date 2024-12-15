@@ -1,35 +1,54 @@
-import { ConfigProvider, Form, Input } from "antd";
+import { ConfigProvider, Form, Input, Modal } from "antd";
 import { RuleObject } from "antd/es/form";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import { useNavigate } from "react-router-dom";
-import { registThunk } from "../../../entities/credential/redux/asyncThunk";
+import { loginThunk, registThunk } from "../../../entities/credential/redux/asyncThunk";
 import { selectAuth } from "../../../entities/credential/redux/selectors";
 import Button from "../../../shared/ui/button/Button";
 import SecondaryButton from "../../../shared/ui/button/SecondaryButton";
 import { Title } from "../../../shared/ui/forAdditionalPages/Title";
-import { AUTH_PATH, HOME_PATH, PROFILE_PATH } from "../../../shared/utils/constants";
+import { AUTH_PATH, HOME_PATH, PROFILE_PATH, REGIST_PATH } from "../../../shared/utils/constants";
 import { errorMessageEmail, regExEmail } from "../../../shared/utils/validationConstants";
 import { useAppDispatch, useAppSelector } from "../../../store/store";
+import ModalRoute from "../../../shared/ui/modalRoute/ModalRoute";
+import ModalEmpty from "../../../shared/ui/modalEmpty/ModalEmpty";
+import { styled } from "styled-components";
+
+export const Text = styled.p`
+  font-size: 12px;
+  font-weight: 400;
+`;
 
 const Regist: React.FC = () => {
     const navigate = useNavigate();
     const [form] = Form.useForm();
-    const [ nextPassword, setNextPassword ] = useState<string>("");
+    const [nextPassword, setNextPassword] = useState<string>("");
     const dispatch = useAppDispatch();
     const isAuth = useAppSelector(selectAuth);
-
-    const onFinish = (values: any) => {
-        dispatch(registThunk(values));
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const onFinish = async (values: any) => {
+        try {
+            const resultAction = await dispatch(registThunk(values));
+            if (registThunk.rejected.match(resultAction)) {
+                if (resultAction.payload === "Such an account already exists") {
+                    setIsModalOpen(true);
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const validationPassword = (rule: RuleObject, value: any, callback: (error?: string | undefined) => void) => {
-        if(nextPassword === value) {
+        if (nextPassword === value) {
             callback();
             return;
         }
         callback("Нет совпадения");
     }
+
+
 
     useEffect(() => {
         if (isAuth) navigate(PROFILE_PATH);
@@ -93,7 +112,7 @@ const Regist: React.FC = () => {
                     </Form.Item>
 
                     <Form.Item
-                        style={{margin: 0}}
+                        style={{ margin: 0 }}
                         label="Ваш телефон"
                         name="phone"
                         rules={[
@@ -132,7 +151,7 @@ const Regist: React.FC = () => {
                         name="repeatPassword"
                         rules={[
                             { required: true, message: "Введите ваш пароль" },
-                            {validator: validationPassword, message: "Пароли не совпадают"}
+                            { validator: validationPassword, message: "Пароли не совпадают" }
                         ]}>
                         <Input.Password
                             placeholder="Введите ваш пароль"
@@ -145,10 +164,31 @@ const Regist: React.FC = () => {
                         </div>
 
                         <Form.Item style={{ flexGrow: 1, margin: 0 }}>
-                            <Button buttonContent="Зарегистрироваться" clickHandler={() => { }} />
+                            <Button
+                                buttonContent="Зарегистрироваться"
+                                clickHandler={() => { }}
+                            />
                         </Form.Item>
                     </div>
                 </Form>
+                <ModalEmpty isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+                    <div>
+                        <Title style={{ fontSize: 24 }}>Ошибка регистрации</Title>
+                        <Text style={{ color: "red", fontFamily: "Inter" }}>Аккаунт с такими данными уже существует, пройдите авторизацию</Text>
+                        <div style={{ display: "flex", gap: 15, justifyContent: "space-between", alignItems: "center", paddingTop: 15 }}>
+                            <div style={{ flexGrow: 1 }}>
+                                <SecondaryButton buttonContent={"Войти в кабинет"} clickHandler={() => navigate(AUTH_PATH, { state: { previousLocation: HOME_PATH } })} />
+                            </div>
+
+                            <div style={{ flexGrow: 1 }}>
+                                <Button
+                                    buttonContent="Зарегистрироваться"
+                                    clickHandler={() => setIsModalOpen(false)}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </ModalEmpty>
             </div>
         </ConfigProvider>
     )
