@@ -2,6 +2,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Container from "../../../../shared/ui/containerMain/ContainerMain";
 import {
   ItemFilter,
+  ProductSize,
   useProductsControllerCreateWithDetailsMutation,
   useProductsControllerDeleteByIdMutation,
   useProductsControllerGetByIdQuery,
@@ -108,13 +109,8 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
     useFiltersControllerGetAllQuery();
   const { data: categories, isLoading: categoriesLoading } =
     useCategoriesControllerGetAllQuery();
-  const { data: productVariations, isLoading: productVariationsLoading } =
-    useProductsSizesControllerGetAllSizesByProductIdQuery({ id: Number(id) });
   const [file, setFile] = useState<File | null>(null);
   const [deleteProduct] = useProductsControllerDeleteByIdMutation();
-  const productSizesCount = useProductsControllerGetProductSizesCountQuery({
-    id: Number(id),
-  });
   const token = useAppSelector(selectToken);
 
   const [selectedCategories, setSelectedCategories] = useState<
@@ -208,7 +204,7 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
   };
 
   useEffect(() => {
-    if (data && productVariations) {
+    if (data) {
       const filterMap = new Map<
         number,
         { filter: { id: number; name: string }; tags: any[] }
@@ -243,8 +239,9 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
 
       // @ts-ignore
       setFilters(mappedFilters);
-      const variationsS = productVariations.productsSizes.flatMap(
-        (variation) => ({
+      //@ts-ignore
+      const variationsS = data.productSizes.flatMap(
+        (variation: ProductSize) => ({
           idSize: variation.idSize,
           extraPrice: variation.extraPrice,
           paramsSize: variation.paramsSize,
@@ -259,7 +256,7 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
         onFilterChange(filters);
       }
     }
-  }, [productVariations, data]);
+  }, [data]);
 
   useEffect(() => {
     {
@@ -489,7 +486,6 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
                   danger
                   onClick={() => {
                     setIsModalOpen(true);
-                    console.log(productSizesCount);
                   }}
                 >
                   <ButtonText>Удалить</ButtonText>
@@ -520,11 +516,8 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
           <DeleteModalHead>
             Вы уверены, что хотите удалить "{data?.name}"
           </DeleteModalHead>
-          <Text style={{ color: "red", fontFamily: "Inter" }}>
-            Это действие удалит {productSizesCount.data?.count}{" "}
-            {Numerals.numeralsSizes(productSizesCount.data?.count ?? 0)} со
-            связанным товаром
-          </Text>
+          {/* @ts-ignore */}
+          <Text style={{ color: "red", fontFamily: "Inter" }}>Это действие удалит {data?.productSizes.length}{" "}{Numerals.numeralsSizes(data?.productSizes.length ?? 0)} сосвязанным товаром</Text>
           <div
             style={{
               width: "100%",
