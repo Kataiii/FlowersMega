@@ -32,7 +32,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   data,
   name,
   disabled,
-  value = [],
+  value,
   onChange,
   style,
   isHasVariants
@@ -43,7 +43,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
       id: item.id,
       name: item.name,
     })) : []);
-  const [selectedCategories, setSelectedCategories] = useState<{ id?: number; name: string; photo: string }[]>(value);
+  const [selectedCategories, setSelectedCategories] = useState<{ id?: number; name: string; photo: string }[]>(value ?? []);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
   const [hoveredItem, setHoveredItem] = useState<number | null>(null);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -52,36 +52,39 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   const [addCategory] = useCategoriesControllerCreateMutation();
   const [deleteCategory] = useCategoriesControllerDeleteMutation();
 
-
+  useEffect(() => {
+    setSelectedCategories(value ?? []);
+  }, [value])
+    console.log("VAAAAAAAAAAAAAAAAAAAAAAAAAA ", value);
   // const formattedItems = useMemo(() => data.map((item) => ({
   //   id: item.id,
   //   name: item.name,
   // })), [data]);
 
-  useEffect(() => {
-    if (data) {
+  // useEffect(() => {
+  //   if (data) {
 
-      const mappedSelectedCategories = value.map((item) => ({
-        id: item.id,
-        name: item.name,
-        photo: item.photo,
-      }));
+  //     const mappedSelectedCategories = value?.map((item) => ({
+  //       id: item.id,
+  //       name: item.name,
+  //       photo: item.photo,
+  //     }));
 
-      // setItems((prevItems) => {
-      //   if (JSON.stringify(prevItems) !== JSON.stringify(mappedItems)) {
-      //     return mappedItems;
-      //   }
-      //   return prevItems;
-      // });
+  //     // setItems((prevItems) => {
+  //     //   if (JSON.stringify(prevItems) !== JSON.stringify(mappedItems)) {
+  //     //     return mappedItems;
+  //     //   }
+  //     //   return prevItems;
+  //     // });
 
-      setSelectedCategories((prevSelectedCategories) => {
-        if (JSON.stringify(prevSelectedCategories) !== JSON.stringify(mappedSelectedCategories)) {
-          return mappedSelectedCategories;
-        }
-        return prevSelectedCategories;
-      });
-    }
-  }, []);
+  //     setSelectedCategories(prevSelectedCategories => {
+  //       if (JSON.stringify(prevSelectedCategories) !== JSON.stringify(mappedSelectedCategories)) {
+  //         return mappedSelectedCategories ?? [];
+  //       }
+  //       return prevSelectedCategories;
+  //     });
+  //   }
+  // }, []);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);

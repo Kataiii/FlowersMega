@@ -6,15 +6,13 @@ import {
   useProductsControllerCreateWithDetailsMutation,
   useProductsControllerDeleteByIdMutation,
   useProductsControllerGetByIdQuery,
-  useProductsControllerGetProductSizesCountQuery,
-  useProductsSizesControllerGetAllSizesByProductIdQuery,
 } from "../../../../store/product";
 import { Flex, Spin, Image, Input, Form, Button, Modal } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { styled } from "styled-components";
 import { API_URL } from "../../../../shared/utils/constants";
 import TypeDropdown from "../../../../shared/ui/dropdown/TypeDropdown";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import CategoryDropdown from "../../../../shared/ui/dropdown/CategoryDropdown";
 import FilterDropdown from "../../../../shared/ui/dropdown/FilterDropdown";
 import VariationsBlock from "../../../../shared/ui/variations/VariationsBlock";
@@ -32,10 +30,9 @@ import {
 } from "./Product.styled";
 import ProductPhotoLoader from "../../../../widgets/loadPhoto/ProductPhotoLoader";
 import axios from "axios";
-import { RootState, useAppSelector } from "../../../../store/store";
+import { useAppSelector } from "../../../../store/store";
 import { selectToken } from "../../../../entities/credential/redux/selectors";
 import Error from "../../../../shared/assets/no-image.png";
-import ts from "typescript";
 
 interface ProductProps {
   onCatChange?: (categories: any[]) => void;
@@ -113,18 +110,7 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
   const [deleteProduct] = useProductsControllerDeleteByIdMutation();
   const token = useAppSelector(selectToken);
 
-  const [selectedCategories, setSelectedCategories] = useState<
-    { name: string; photo: string }[]
-  >(
-    //@ts-ignore
-    data?.categories.map((category) => {
-      return {
-        id: category.id,
-        name: category.name,
-        photo: "category.image ",
-      };
-    })
-  );
+  const [selectedCategories, setSelectedCategories] = useState<any[]>([]);
 
   const handleFormFinish = async (values: any) => {
     const filtersString = filters.map((filter: Filter & { tags: ItemFilter[] }) => filter.tags).flat();
@@ -204,7 +190,7 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
   };
 
   useEffect(() => {
-    if (data) {
+    if (!isLoading) {
       const filterMap = new Map<
         number,
         { filter: { id: number; name: string }; tags: any[] }
@@ -247,7 +233,15 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
           paramsSize: variation.paramsSize,
         })
       );
-      setSelectedCategories(selectedCategories);
+      //@ts-ignore
+      const categoriesS = data?.categories.map((category) => {
+        return {
+          id: category.id,
+          name: category.name,
+          photo: "category.image ",
+        };
+      }) ?? [];
+      setSelectedCategories(prev => categoriesS);
       setVariations(variationsS);
       if (onCatChange) {
         onCatChange(selectedCategories);
@@ -256,13 +250,9 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
         onFilterChange(filters);
       }
     }
-  }, [data]);
 
-  useEffect(() => {
-    {
-      data ? setDisabled(true) : setDisabled(false);
-    }
-  }, [data]);
+    data ? setDisabled(true) : setDisabled(false);
+  }, [isLoading]);
 
   // const handlePhotoDelete = async () => {
   //   try {
@@ -308,7 +298,7 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
 
   return (
     <Container>
-      {isLoading && categoriesLoading && data ? (
+      {(isLoading || categoriesLoading || filtersLoading) ? (
         <Flex align="center" gap="middle">
           <Spin indicator={<LoadingOutlined spin />} size="large" />
         </Flex>

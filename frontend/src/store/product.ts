@@ -23,7 +23,7 @@ const injectedRtkApi = api.injectEndpoints({
       ProductsControllerGetByIdApiArg
     >({
       query: (queryArg) => ({ url: `/products/${queryArg.id}` }),
-      // providesTags: ["PaginationAdminProd"]
+      providesTags: ["CreateProduct"]
     }),
     productsSizesControllerSearch: build.query<
       ProductsSizesControllerSearchApiResponse,
@@ -73,7 +73,7 @@ const injectedRtkApi = api.injectEndpoints({
       ProductsSizesControllerGetByIdApiArg
     >({
       query: (queryArg) => ({ url: `/products-sizes/${queryArg.id}` }),
-      // providesTags: ['ExtraPrice']
+      providesTags: ['ExtraPrice']
     }),
     productsSizesControllerGetByProductId: build.query<
       ProductsSizesControllerGetByProductIdApiResponse,
@@ -193,7 +193,7 @@ const injectedRtkApi = api.injectEndpoints({
         }
 
       },
-      providesTags: ['CreateProduct']
+      providesTags: ['CreateProduct', "DeleteProduct", "ExtraPrice"]
     }),
     productsControllerCreateWithDetails: build.mutation<
       ProductsControllerCreateWithDetailsApiResponse,
@@ -216,6 +216,7 @@ const injectedRtkApi = api.injectEndpoints({
         method: "DELETE",
 
       }),
+      invalidatesTags: ["DeleteProduct"]
       // invalidatesTags: ['Products']
     }),
     productsControllerGetProductSizesCount: build.query<
