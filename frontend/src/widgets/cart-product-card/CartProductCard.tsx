@@ -28,16 +28,18 @@ export const CartProductCard: React.FC<CartProductCardProps> = ({ product }) => 
     return (
         <>
             {categoryMatch ? (
-                <div style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    borderTop: "1px solid var(--secondary-bg-color)",
-                    borderBottom: "1px solid var(--secondary-bg-color)",
-                    width: "100%",
-                    padding: "15px 0",
-                    justifyContent: "space-between",
-                    alignItems: 'center'
-                }}>
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns: '500px auto auto',
+                        gridGap: '32px',
+                        alignItems: 'center',
+                        padding: '15px 0',
+                        borderTop: "1px solid var(--secondary-bg-color)",
+                        borderBottom: "1px solid var(--secondary-bg-color)",
+                        margin: '5px 0',
+                    }}
+                >
                     <div style={{ display: " flex", gap: 32 }}>
                         <div style={{ width: 106, height: 106, borderRadius: 6 }}>
                             {/* @ts-ignore */}
@@ -48,15 +50,13 @@ export const CartProductCard: React.FC<CartProductCardProps> = ({ product }) => 
                             <div style={{ fontFamily: "Inter", fontWeight: 400, fontSize: 20, color: "var(--secondary-text-color)" }}>
                                 {product.product?.name}
                             </div>
-
                         </div>
-
                     </div>
-                    <div style={{ width: "50%" }}>
+                    <div style={{ width: "100%", margin: "0px 15px", justifyItems: 'center', justifyContent: 'center' }}>
                         <PostcardAddBlock style={{ maxHeight: '270px', width: "85%" }} product={{ ...product, product: product.product }} />
                     </div>
 
-                    <div style={{ display: "flex", gap: 8, padding: "0 8px", alignItems: "start" }}>
+                    <div style={{ display: "flex", gap: 8, padding: "0 8px", alignItems: "center", justifyContent: 'end' }}>
                         <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
                             <p style={{ fontFamily: "Inter", fontSize: 15, fontWeight: 400, color: "var(--secondary-text-color)" }}>
                                 {product.prise.toLocaleString()} ₽ × {product.count} шт. =
