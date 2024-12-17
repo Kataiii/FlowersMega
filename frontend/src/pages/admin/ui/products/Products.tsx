@@ -15,6 +15,7 @@ import { SortText } from "../orders/Orders";
 import ExtraPriceBlock from "../../../../widgets/extraPrice/ExtraPriceBlock";
 import PostcardAddBlock from "../../../../widgets/postcard/PostcardAddBlock";
 import { Debouncer } from "../../../../shared/utils/debounce";
+import { useSizesControllerGetAllQuery } from "../../../../store/size";
 
 
 
@@ -52,7 +53,8 @@ const Products: React.FC = () => {
     const { data: filtersData, isLoading: isFiltersLoading } = useFiltersControllerGetAllQuery();
     const { data: categoriesData, isLoading: isCategoriesLoading } = useCategoriesControllerGetAllQuery();
     const { data: productType } = useTypesProductControllerGetAllQuery();
-    const { data: productSizedPag } = useProductSizesControllerGetProductsWithPaginationQuery(
+    const { data: sizes, isLoading: isSizesLoading } = useSizesControllerGetAllQuery();
+    const { data: productSizedPag, isLoading: isProductsPaginationLoading } = useProductSizesControllerGetProductsWithPaginationQuery(
         {
             page: page, limit: pageSize,
             search: finalSearchId,
@@ -189,19 +191,24 @@ const Products: React.FC = () => {
                         onChange={handleSortChange}
                     />
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px" }}>
-                    {productSizedPag?.products.map((product) => ({
-                        ...product
-                    })).map((product, index) => (
-                        <ProductAdminCard
-                            key={product.products.id}
-                            id={product.products.id}
-                            name={product.products.name}
-                            productSizedPag={productSizedPag}
-                            type={productType?.find((type) => product.products.idTypeProduct === type.id)?.name}
-                        />
-                    ))}
-                </div>
+                <>
+                {
+                    isProductsPaginationLoading || isSizesLoading
+                    ? <p>Загрузка...</p>
+                    : <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px" }}>
+                            {productSizedPag?.products.map((product) => ({
+                                ...product
+                            })).map((product, index) => (
+                                <ProductAdminCard
+                                    key={product.products.id}
+                                    product={product}
+                                    sizes={sizes}
+                                    type={productType?.find((type) => product.products.idTypeProduct === type.id)?.name}
+                                />
+                            ))}
+                        </div>
+                }
+                </>
                 {/* @ts-ignore */}
                 <Pagination showLessItems={true} current={page} pageSize={pageSize} total={productSizedPag?.count || 0} onChange={handlePageChange} style={{ marginTop: "16px", textAlign: "center" }} />
                 <>
