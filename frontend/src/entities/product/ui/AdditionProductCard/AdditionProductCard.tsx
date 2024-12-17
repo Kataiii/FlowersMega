@@ -1,15 +1,17 @@
+import { Button } from "antd";
 import { API_URL } from "../../../../shared/utils/constants";
+import { Category, useCategoriesProductsControllerGetAllQuery } from "../../../../store/product";
+import { ButtonText } from "../../../../pages/admin/ui/products/Products";
 import { Numerals } from "../../../../shared/utils/numerals";
-import { Category } from "../../../../store/category";
-import { useCategoriesProductsControllerGetAllQuery } from "../../../../store/product";
 
-type CardCategoryProps = {
+type Props = {
     category: Category | null;
     clickHandler: () => void;
+    name: string;
+    count: number;
 }
 
-const CardCategory: React.FC<CardCategoryProps> = ({ category, clickHandler }) => {
-    const { isLoading, data } = useCategoriesProductsControllerGetAllQuery({ id: category?.id ?? -1 });
+const AdditionProductCard: React.FC<Props> = ({ category, clickHandler, name, count }) => {
 
     return (
         <div
@@ -35,22 +37,26 @@ const CardCategory: React.FC<CardCategoryProps> = ({ category, clickHandler }) =
                     width: '96%',
                     height: '64%',
                     borderRadius: '6px',
-                    objectFit: 'cover'
+                    objectFit: 'contain'
                 }}
                 src={`${API_URL}/categories/${category?.id}/${category?.url}`}
                 alt={category?.name}
             />
             <p
                 style={{
+                    margin: "auto",
                     textAlign: "center",
                     fontFamily: 'Inter',
                     fontWeight: 600,
-                    fontSize: '16px',
+                    fontSize: '24px',
                     color: 'var(--secondary-text-color)'
                 }}
             >
-                {category?.name}
+                {name}
             </p>
+
+
+
             <p
                 style={{
                     textAlign: "center",
@@ -60,13 +66,11 @@ const CardCategory: React.FC<CardCategoryProps> = ({ category, clickHandler }) =
                     color: "#0000004D"
                 }}
             >
-                {isLoading
-                    ? "Загрузка..."
-                    : `${data === 0 ? " " : data + " " + Numerals.numeralsProducts(Number(data))}`}
+                {`${count === 0 ? " " : count + " " + Numerals.numeralsProducts(Number(count))}`}
             </p>
+            <Button style={{ width: "100%", height: "50px" }} type="primary"><ButtonText style={{ fontSize: "18px" }}>Выбрать</ButtonText></Button>
         </div >
     );
-};
 
-
-export default CardCategory;
+}
+export default AdditionProductCard;
