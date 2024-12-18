@@ -1,63 +1,112 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { ButtonText } from "../../pages/admin/ui/products/Products";
-import Podstcard from "./Podstcard";
+import Postcard from "./Postcard";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addPostcard, removePostcard, updatePostcard, updatePostcardId } from "../../entities/postcard/redux/slice";
+import { postcardsSelectors } from "../../entities/postcard/redux/selectors";
+import { addOneToCart, deleteOneFromCart } from "../../entities/cart/redux/slice";
+import { nanoid } from "@reduxjs/toolkit";
+import { ProductSize, useProductsControllerGetByIdQuery } from "../../store/product";
+import { CartProduct } from "../../entities/cart/types";
 
-const PostcardAddBlock: React.FC = () => {
-    const [variations, setVariations] = useState<any[]>([]);
-    const [position, setPosition] = useState<number>(0);
-
-    const handleAddVariation = () => {
-        const newVariation = {};
-        const updatedVariations = [...variations, newVariation];
-        setVariations(updatedVariations);
-    };
-
-    const handleChangeVariation = (index: number, updatedVariation: any) => {
-        const updatedVariations = variations.map((v, i) =>
-            i === index ? updatedVariation : v
-        );
-        setVariations(updatedVariations);
-    };
-
-    const handleRemoveVariation = (index: number) => {
-        const updatedVariations = variations.filter((_, i) => i !== index);
-        setVariations(updatedVariations);
-    };
-
-    return (
-        <div style={{ border: "2px solid var(--primary-bg-color)", width: "100%", height: "60vh", borderRadius: "16px", display: "flex", flexDirection: "column", padding: "8px", gap: "8px" }}>
-            <p style={{ fontFamily: "Inter", fontSize: "16px", fontWeight: 600, height: "5%", color: "var(--primary-review-text)", padding: "8px" }}>
-                Добавление в корзину
-            </p>
-            <div style={{
-                maxHeight: "90%",
-                height: "100%",
-                overflowY: "auto",
-                display: "flex",
-                flexDirection: "column",
-                gap: "8px",
-                scrollbarColor: "var(--primary-bg-color) var(--main-bg-color)",
-                scrollbarWidth: "thin",
-            }}>
-                {variations.map((variation, index) => (
-                    <Podstcard
-                        key={index}
-                        index={++index}
-                        value={variation}
-                        onChange={(updateVariation) => handleChangeVariation(index, updateVariation)}
-                        onRemove={() => handleRemoveVariation(index)} />
-                ))}
-            </div>
-            <Button type="dashed"
-                style={{ width: "100%", height: "8%" }}>
-                <ButtonText style={{ display: "inline" }}
-                    onClick={handleAddVariation}
-                >Добавить открытку</ButtonText> <PlusOutlined /> </Button>
-        </div >
-
-    )
+interface PostcardAddBlockProps {
+    product: Omit<CartProduct, 'count'>,
+    style?: React.CSSProperties,
+    showHeader?: boolean,
 }
 
-export default PostcardAddBlock;    
+import { useEffect } from "react";
+
+const PostcardAddBlock: React.FC<PostcardAddBlockProps> = ({ product, style, showHeader }) => {
+    const dispatch = useDispatch();
+    const postcards = useSelector(postcardsSelectors.selectAll);
+    const { isLoading, data } = useProductsControllerGetByIdQuery({ id: product.idProduct });
+
+    const handleAddPostcard = () => {
+        const text = "";
+        dispatch(addPostcard({ text }));
+        dispatch(addOneToCart(product));
+    };
+
+    const handleUpdatePostcard = (id: string, updatedText: string) => {
+        dispatch(updatePostcard({ id, text: updatedText }));
+    };
+
+    const handleRemovePostcard = (id: string) => {
+        dispatch(removePostcard({ id }));
+        dispatch(deleteOneFromCart(product));
+    };
+
+    useEffect(() => {
+
+        postcards.forEach((postcard) => {
+            const newId = `${postcard.id}-productSize-${product.id}`;
+            if (postcard.updatedId !== newId) {
+                dispatch(updatePostcardId({ oldId: postcard.id, newId }));
+            }
+        });
+    }, [product.id, postcards, dispatch]);
+
+    return (
+        <div
+            style={{
+                border: "2px solid var(--primary-bg-color)",
+                width: "100%",
+                height: "fit-content",
+                borderRadius: "16px",
+                display: "flex",
+                flexDirection: "column",
+                padding: "8px",
+                gap: "8px",
+                ...style,
+            }}
+        >
+            {showHeader && <p
+                style={{
+                    fontFamily: "Inter",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    height: "5%",
+                    color: "var(--primary-review-text)",
+                    padding: "8px",
+                }}
+            >
+                Добавление в корзину
+            </p>}
+            <div
+                style={{
+                    paddingTop: "8px",
+                    maxHeight: "90%",
+                    height: "100%",
+                    overflowY: "auto",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
+                    scrollbarColor: "var(--primary-bg-color) var(--main-bg-color)",
+                    scrollbarWidth: "thin",
+                }}
+            >
+                {postcards.map((postcard, index) => (
+                    <Postcard
+                        key={postcard.updatedId || postcard.id}
+                        value={{ postcard, pos: index }}
+                        onChange={(updatedText) => handleUpdatePostcard(postcard.id, updatedText)}
+                        onRemove={() => handleRemovePostcard(postcard.id)}
+                    />
+                ))}
+            </div>
+            <Button
+                type="dashed"
+                color="primary"
+                style={{ width: "100%", height: "35px" }}
+                onClick={handleAddPostcard}
+            >
+                <ButtonText style={{ display: "inline" }}>Добавить открытку</ButtonText> <PlusOutlined />
+            </Button>
+        </div>
+    );
+};
+
+export default PostcardAddBlock;

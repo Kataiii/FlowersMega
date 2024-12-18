@@ -12,19 +12,25 @@ import { ProductsItemsFilterModule } from 'src/products-items-filter/products-it
 import { ExtraPriceService } from 'src/extra-price/extra-price.service';
 import { ExtraPriceModule } from 'src/extra-price/extra-price.module';
 import { TypesProductModule } from 'src/types-product/types-product.module';
+import { CategoriesProductssizesModule } from 'src/categories-productssizes/categories-productssizes.module';
+import { CategoriesModule } from 'src/categories/categories.module';
+import { ItemsFilterModule } from 'src/items-filter/items-filter.module';
 
 @Module({
   providers: [ProductsSizesService, ProductsSizesFullService],
   controllers: [ProductsSizesController],
   imports: [
-    SequelizeModule.forFeature([ProductSize,]),
+    SequelizeModule.forFeature([ProductSize]),
     ProductsModule,
-    ExtraPriceModule,
+    forwardRef(() => ExtraPriceModule),
     SizesModule,
     forwardRef(() => ReviewsModule),
     CategoriesProductsModule,
     ProductsItemsFilterModule,
     TypesProductModule,
+    CategoriesProductssizesModule,
+    CategoriesModule,
+    ItemsFilterModule,
   ],
   exports: [
     ProductsSizesService,

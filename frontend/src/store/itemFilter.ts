@@ -10,14 +10,14 @@ const injectedRtkApi = api.injectEndpoints({
         method: "POST",
         body: arg,
       }),
-      invalidatesTags: ["Tag", "Filter"],
+      // invalidatesTags: ["Tag", "Filter"],
     }),
     itemFilterControllerGetAll: build.query<
       ItemFilterControllerGetAllApiResponse,
       ItemFilterControllerGetAllApiArg
     >({
       query: () => ({ url: `/items-filter/` }),
-      providesTags: ['Filter', 'Tag'],
+      // providesTags: ['Filter', 'Tag'],
     }),
     itemFilterControllerDelete: build.mutation<
       ItemFilterControllerDeleteApiResponse,
@@ -28,7 +28,7 @@ const injectedRtkApi = api.injectEndpoints({
         method: "DELETE",
         body: { id: queryArg.id }
       }),
-      invalidatesTags: ["Tag", "Filter"],
+      // invalidatesTags: ["Tag", "Filter"],
 
     })
   }),

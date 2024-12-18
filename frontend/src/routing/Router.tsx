@@ -77,14 +77,10 @@ const Router: React.FC = () => {
     return (
         <>
             <Routes location={previousLocation || location}>
-                <Route path={ADMIN_PATH} element={<RoleGuard>
-                    <>
-                        <AdminMain />
-                        <Route path={''} element={<AdminOrders />} />
-                        <Route path={ADMIN_PRODUCTS_PATH} element={<AdminProducts />} />
-                        <Route path={ADMIN_REVIEWS_PATH} element={<AdminReviews />} />
-                    </>
-                </RoleGuard>}>
+                <Route path={ADMIN_PATH} element={<AuthGuard><RoleGuard><AdminMain /></RoleGuard></AuthGuard>}>
+                    <Route index element={<AdminOrders />} />
+                    <Route path={ADMIN_PRODUCTS_PATH} element={<AdminProducts />} />
+                    <Route path={ADMIN_REVIEWS_PATH} element={<AdminReviews />} />
                 </Route>
                 <Route path={ADMIN_LOGIN} element={<Login />} />
                 <Route path={HOME_PATH} element={<App />}>
@@ -152,6 +148,9 @@ const Router: React.FC = () => {
                         <Route path={ADMIN_PRODUCT_PATH} element={<ModalRoute prevLocation={previousLocation} width="800px">
                             <AdminProduct />
                         </ModalRoute>} />
+                        <Route path="/admin/product/create" element={<ModalRoute prevLocation={previousLocation} width="800px">
+                            <AdminProduct />
+                        </ModalRoute>}/>
                         <Route path={ADMIN_REVIEW_PATH} element={<ModalRoute prevLocation={previousLocation} width="815px">
                             <Review />
                         </ModalRoute>} />

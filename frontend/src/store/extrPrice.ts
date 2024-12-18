@@ -30,7 +30,7 @@ const injectedRtkApi = api.injectEndpoints({
                 url: "/extra-price/",
                 method: "GET",
             }),
-            providesTags: ['ExtraPrice']
+            // providesTags: ['ExtraPrice']
         }),
         extraPriveControllerGetByCategoryId: build.query<
             ExtraPriceControllerGetByCategoryIdApiResponce,

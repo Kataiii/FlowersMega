@@ -15,6 +15,7 @@ import { SortText } from "../orders/Orders";
 import ExtraPriceBlock from "../../../../widgets/extraPrice/ExtraPriceBlock";
 import PostcardAddBlock from "../../../../widgets/postcard/PostcardAddBlock";
 import { Debouncer } from "../../../../shared/utils/debounce";
+import { useSizesControllerGetAllQuery } from "../../../../store/size";
 
 
 
@@ -42,7 +43,7 @@ const Products: React.FC = () => {
     const navigate = useNavigate();
     const locate = useLocation();
     // const { isLoading, data: products } = useProductsControllerGetAllQuery();
-    const [sortOrder, setSortOrder] = useState<string>("updatedAt ASC");
+    const [sortOrder, setSortOrder] = useState<string>("updatedAt DESC");
     const [searchId, setSearchId] = useState<string>("");
     const [finalSearchId, setFinalSearchId] = useState<string>("");
     const [categories, setCategories] = useState<number[]>([]);
@@ -52,7 +53,8 @@ const Products: React.FC = () => {
     const { data: filtersData, isLoading: isFiltersLoading } = useFiltersControllerGetAllQuery();
     const { data: categoriesData, isLoading: isCategoriesLoading } = useCategoriesControllerGetAllQuery();
     const { data: productType } = useTypesProductControllerGetAllQuery();
-    const { data: productSizedPag } = useProductSizesControllerGetProductsWithPaginationQuery(
+    const { data: sizes, isLoading: isSizesLoading } = useSizesControllerGetAllQuery();
+    const { data: productSizedPag, isLoading: isProductsPaginationLoading } = useProductSizesControllerGetProductsWithPaginationQuery(
         {
             page: page, limit: pageSize,
             search: finalSearchId,
@@ -89,21 +91,21 @@ const Products: React.FC = () => {
         setFilters(selectedFilters);
     }, []);
 
-    const productData = useMemo(() => {
-        if (!productSizedPag) return [];
-        return productSizedPag.products.map((product) => ({
-            ...product
-        }));
-    }, [productSizedPag]);
+    // const productData = useMemo(() => {
+    //     if (!productSizedPag) return [];
+    //     return productSizedPag.products.map((product) => ({
+    //         ...product
+    //     }));
+    // }, [productSizedPag]);
 
-    const sortedData = useMemo(() => {
-        const sorted = [...productData];
-        return sorted;
-    }, [productData, sortOrder]);
+    // const sortedData = useMemo(() => {
+    //     const sorted = [...productData];
+    //     return sorted;
+    // }, [productData, sortOrder]);
 
     const handlePageChange = (newPage: number, newPageSize?: number) => {
-        setPage(newPage);
-        if (newPageSize) {
+        if (page !== newPage) setPage(newPage);
+        if (newPageSize && newPageSize !== pageSize) {
             setPageSize(newPageSize);
         }
     };
@@ -130,7 +132,7 @@ const Products: React.FC = () => {
                 <Button
                     shape="round"
                     type="primary"
-                    onClick={() => navigate(`/admin/product/${null}`, { state: { previousLocation: locate.pathname } })}
+                    onClick={() => navigate(`/admin/product/create`, { state: { previousLocation: locate.pathname } })}
                 >
                     <ButtonText>
                         Добавить товар <PlusCircleOutlined />
@@ -178,7 +180,7 @@ const Products: React.FC = () => {
                     </div>
                     <Select
                         defaultActiveFirstOption={true}
-                        defaultValue="updatedAt ASC"
+                        defaultValue="updatedAt DESC"
                         style={{ width: 150, height: 25 }}
                         options={[
                             { value: "updatedAt ASC", label: "Дата (старые)" },
@@ -189,17 +191,24 @@ const Products: React.FC = () => {
                         onChange={handleSortChange}
                     />
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px" }}>
-                    {sortedData.map((product, index) => (
-                        <ProductAdminCard
-                            key={product.products.id}
-                            id={product.products.id}
-                            name={product.products.name}
-                            productSizedPag={productSizedPag}
-                            type={productType?.find((type) => product.products.idTypeProduct === type.id)?.name}
-                        />
-                    ))}
-                </div>
+                <>
+                {
+                    isProductsPaginationLoading || isSizesLoading
+                    ? <p>Загрузка...</p>
+                    : <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px" }}>
+                            {productSizedPag?.products.map((product) => ({
+                                ...product
+                            })).map((product, index) => (
+                                <ProductAdminCard
+                                    key={product.products.id}
+                                    product={product}
+                                    sizes={sizes}
+                                    type={productType?.find((type) => product.products.idTypeProduct === type.id)?.name}
+                                />
+                            ))}
+                        </div>
+                }
+                </>
                 {/* @ts-ignore */}
                 <Pagination showLessItems={true} current={page} pageSize={pageSize} total={productSizedPag?.count || 0} onChange={handlePageChange} style={{ marginTop: "16px", textAlign: "center" }} />
                 <>

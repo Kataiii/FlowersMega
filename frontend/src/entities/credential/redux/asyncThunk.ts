@@ -5,23 +5,40 @@ import { AuthDto, AuthResponseDto, RecoveryDto, RegistDto } from "../../../store
 
 export const loginThunk = createAsyncThunk(
     'login',
-    async (dto: AuthDto) => {
-        const response: AuthResponseDto = (await axios.post(`${API_URL}/auth/login`, dto, {
-            withCredentials: true
-        })).data;
-        return response;
+    async (dto: AuthDto, { rejectWithValue }) => {
+        try {
+            const response: AuthResponseDto = (await axios.post(`${API_URL}/auth/login`, dto, {
+                withCredentials: true
+            })).data;
+            return response;
+        } catch (error: any) {
+            console.log(error, "XD?");
+            if (error?.response?.status === 401 && error?.response?.data?.message === "Invalid password or login") {
+                return rejectWithValue("Such an account not exists");
+            }
+        }
+
     }
 );
 
 export const registThunk = createAsyncThunk(
     'regist',
-    async (dto: RegistDto) => {
-        const response: AuthResponseDto = (await axios.post(`${API_URL}/auth/register`, dto, {
-            withCredentials: true
-        })).data;
-        return response;
+    async (dto: RegistDto, { rejectWithValue }) => {
+        try {
+            const response: AuthResponseDto = (await axios.post(`${API_URL}/auth/register`, dto, {
+                withCredentials: true
+            })).data;
+            return response;
+        } catch (error: any) {
+            // console.log(error, "XD?");
+            if (error?.response?.status === 400 && error?.response?.data?.message === "Such an account already exists") {
+                return rejectWithValue("Such an account already exists");
+            }
+            return rejectWithValue(error?.response?.data || error?.message);
+        }
     }
 );
+
 
 export const logoutThunk = createAsyncThunk(
     'logout',

@@ -1,4 +1,4 @@
-import { forwardRef, HttpException, HttpStatus, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { forwardRef, HttpException, HttpStatus, Inject, Injectable, Response, UnauthorizedException } from '@nestjs/common';
 import { TokensService } from '../tokens/tokens.service';
 import { UsersService } from '../users/users.service';
 import { AuthDto } from './dto/auth.dto';
@@ -28,6 +28,14 @@ export class AuthService {
             accessToken: accessToken,
             user: userDto
         };
+    }
+
+    async checkIsAdmin(accessToken: string){
+        const payload = await this.usersService.checkAccountData(accessToken);
+        console.log(payload);
+        if(!payload) return null;
+        const role = payload.roles.find(item => item.name === "admin");
+        return role;
     }
 
     async register(dto: RegistDto, ip) {

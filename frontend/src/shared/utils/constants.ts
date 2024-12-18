@@ -33,14 +33,15 @@ export const ADMIN_REVIEWS_PATH = "/admin/reviews";
 export const ADMIN_REVIEW_PATH = "/admin/review/:id";
 export const ADMIN_LOGIN = "/admin/login";
 
+// export const API_URL = "http://luckyflora.ru/api/";
 export const API_URL = "http://localhost:5000";
 
-export const PHONE = "8 800 000 00 00";
-export const EMAIL = "info@flowersmega.ru";
+export const PHONE = "8 986 986 99 96";
+export const EMAIL = "info.luckyflora@mail.ru";
 
 export enum targetA {
-    _blank,
-    _self
+    _blank = "_blank",
+    _self = "_self",
 }
 
 export const mapBreads = new Map<string, string>([

@@ -23,7 +23,7 @@ const injectedRtkApi = api.injectEndpoints({
       ProductsControllerGetByIdApiArg
     >({
       query: (queryArg) => ({ url: `/products/${queryArg.id}` }),
-      providesTags: ['Review']
+      providesTags: ["CreateProduct"]
     }),
     productsSizesControllerSearch: build.query<
       ProductsSizesControllerSearchApiResponse,
@@ -52,7 +52,7 @@ const injectedRtkApi = api.injectEndpoints({
         method: "POST",
         body: queryArg.createProductSizeDto,
       }),
-      invalidatesTags: ['Products']
+      // invalidatesTags: ['Products']
     }),
     productsSizesControllerGetAll: build.query<
       ProductsSizesControllerGetAllApiResponse,
@@ -118,7 +118,7 @@ const injectedRtkApi = api.injectEndpoints({
           params: params,
         }
       },
-      providesTags: ['Products', 'ExtraPrice']
+      // providesTags: ['ExtraPrice']
     }),
     reviewsControllerGetByProductSizeId: build.query<
       ReviewsControllerGetByProductSizeIdApiResponse,
@@ -154,7 +154,8 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => ({
         url: `/products-sizes/all-sizes/${queryArg.id}`
-      })
+      }),
+      // providesTags: ['Products']
     }),
     productsSizesControllerGetByProductIdAndSizeId: build.query<
       ProductsSizesControllerGetByProductIdAndSizeIdApiResponse,
@@ -170,6 +171,7 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => {
         const params: Record<string, any> = {};
+        console.log(queryArg.page);
         if (queryArg.search) {
           params.search = queryArg.search;
         }
@@ -191,18 +193,19 @@ const injectedRtkApi = api.injectEndpoints({
         }
 
       },
-      providesTags: ['Products']
+      providesTags: ['CreateProduct', "DeleteProduct", "ExtraPrice"]
     }),
     productsControllerCreateWithDetails: build.mutation<
       ProductsControllerCreateWithDetailsApiResponse,
       ProductsControllerCreateWithDetailsApiArg
     >({
       query: (queryArg) => ({
-        url: `/products-sizes/full-product`,
+        url: `/products-sizes/full-product/update`,
         method: "POST",
         body: queryArg.body,
       }),
-      invalidatesTags: ['Products']
+      // invalidatesTags: ["PaginationAdminProd"]
+      invalidatesTags: ["CreateProduct"]
     }),
     productsControllerDeleteById: build.mutation<
       ProductsControllerDeleteByIdApiResponse,
@@ -213,7 +216,8 @@ const injectedRtkApi = api.injectEndpoints({
         method: "DELETE",
 
       }),
-      invalidatesTags: ['Products']
+      invalidatesTags: ["DeleteProduct"]
+      // invalidatesTags: ['Products']
     }),
     productsControllerGetProductSizesCount: build.query<
       ProductsControllerGetProductSizesCountApiResponse,
@@ -223,6 +227,7 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/products/${queryArg.id}/product-sizes/count`,
         method: "GET",
       }),
+      // providesTags: ['Products']
     }),
     categoryControllerGetIdByName: build.query<
       CategoryControllerGetIdByNameApiResponse,
@@ -370,22 +375,9 @@ export type productSizesControllerGetProductsWithPaginationApiArg = {
   categories?: number[];
   filters?: number[];
 }
-export type ProductsControllerCreateWithDetailsApiResponse = /** status 201 */ Product;
+export type ProductsControllerCreateWithDetailsApiResponse = /** status 201 */ void;
 export type ProductsControllerCreateWithDetailsApiArg = {
-  body: {
-    name: string;
-    type: number;
-    description: string;
-    structure: string;
-    photo: string;
-    productSize: {
-      idSize: number;
-      prise: number;
-      paramsSize: string;
-    }[];
-    categories: string;
-    filters: string;
-  };
+  body: undefined
 };
 
 export type ProductsControllerDeleteByIdApiResponse = void;
@@ -425,6 +417,7 @@ export type ProductSize = {
   count?: number;
   /** Prise of product */
   prise: number;
+  extraPrice: number;
 };
 export type CreateProductSizeDto = {
   /** Unique identifier product */

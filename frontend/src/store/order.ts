@@ -100,8 +100,15 @@ export type OrdersControllerCreateApiArg = {
 		endTimeDelivery: string;
 		comment?: string;
 		itemsOrder: ItemOrder[];
+		postcards?: Postcard[]
 	};
 };
+
+export type Postcard = {
+	id: string;
+	text: string;
+	updatedId: string;
+}
 
 export type ItemOrder = {
 	product: ProductSize;
@@ -127,6 +134,7 @@ export type Order = {
 	endTimeDelivery: string;
 	comment?: string;
 	itemsOrder: ItemOrder[];
+	postcards: Postcard[];
 };
 export const {
 	useOrdersControllerCreateMutation,

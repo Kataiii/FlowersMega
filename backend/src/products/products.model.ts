@@ -5,6 +5,7 @@ import { Category } from "src/categories/categories.model";
 import { Image } from "src/images/images.model";
 import { ItemFilter } from "src/items-filter/items-filter.model";
 import { ProductsItemsFilter } from "src/products-items-filter/products-items-filter.model";
+import { ProductSize } from "src/products-sizes/products-sizes.model";
 import { TypeProduct } from "src/types-product/types-product.model";
 
 interface ProductCreationAttrs {
@@ -45,4 +46,7 @@ export class Product extends Model<Product, ProductCreationAttrs> {
 
     @BelongsToMany(() => Category, () => CategoriesProducts)
     categories: Category[];
+
+    @HasMany(() => ProductSize)
+    productSizes: ProductSize[];
 }

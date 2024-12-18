@@ -7,9 +7,9 @@ import { Size } from './sizes.model';
 export class SizesService {
     constructor(@InjectModel(Size) private sizesRepository: typeof Size) { }
 
-    async onModuleInit() {
-        await this.seeds();
-    }
+    // async onModuleInit() {
+    //     await this.seeds();
+    // }
 
 
     async seeds() {

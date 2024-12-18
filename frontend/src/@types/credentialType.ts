@@ -10,6 +10,7 @@ export type CredentailState = {
     user: ResponseDto | null;
     accessToken: string | null;
     isAuth: boolean;
+    isAdmin: boolean;
     loginStatus: RequestStatus,
     registerStatus: RequestStatus
 }

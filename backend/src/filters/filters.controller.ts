@@ -37,6 +37,9 @@ export class FiltersController {
     @ApiResponse({ status: 200, type: FiltersMaxPriceDto })
     @Get('/filters-with-price/:id?')
     async getFiltersWithMaxPrice(@Param('id') idCategory?: number) {
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         console.log(idCategory, "xDDDXDXDXDXDXDXDXDXDXDD");
         return await this.filtersService.getAllFIltersWithMAxPrice(idCategory);
     }

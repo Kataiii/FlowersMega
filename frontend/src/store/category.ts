@@ -11,14 +11,14 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
 
       }),
-      invalidatesTags: ['Category']
+      // invalidatesTags: ['Category']
     }),
     categoriesControllerGetAll: build.query<
       CategoriesControllerGetAllApiResponse,
       CategoriesControllerGetAllApiArg
     >({
       query: () => ({ url: `/categories` }),
-      providesTags: ['Category'],
+      // providesTags: ['Category'],
     }),
     categoriesControllerGetById: build.query<
       CategoriesControllerGetByIdApiResponse,
@@ -51,7 +51,7 @@ const injectedRtkApi = api.injectEndpoints({
         method: "DELETE",
         body: { id: queryArg.id },
       }),
-      invalidatesTags: ['Category']
+      // invalidatesTags: ['Category']
 
     })
   }),

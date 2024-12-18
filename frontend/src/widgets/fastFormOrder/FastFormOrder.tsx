@@ -52,13 +52,13 @@ type FastFormOrderProps = {
     item: CartProduct;
 }
 
-const FastFormOrder: React.FC<FastFormOrderProps> = ({item}) => {
+const FastFormOrder: React.FC<FastFormOrderProps> = ({ item }) => {
     const [isRecipientCustomer, setIsRecipientCustomer] = useState<boolean>(false);
     const [isExsistingCity, setIsExsistingCity] = useState<boolean>(true);
     const [createOrder, { isSuccess }] = useOrdersControllerCreateMutation();
     const user = useAppSelector(selectUser);
     const city = useAppSelector(selectActiveCity);
-    const [ isOpen, setIsOpen ] = useState<boolean>(false);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -86,8 +86,8 @@ const FastFormOrder: React.FC<FastFormOrderProps> = ({item}) => {
                 canCall: tryValues.notCall,
                 idCity: isExsistingCity ? (city?.id ?? -1) : -1,
                 addressDelivery: Transforms.transformAddress(
-                    values.addressArea, 
-                    values.addressStreet, 
+                    values.addressArea,
+                    values.addressStreet,
                     values.addressHouse,
                     values.addressCorpus,
                     values.addressEntrance,
@@ -96,17 +96,20 @@ const FastFormOrder: React.FC<FastFormOrderProps> = ({item}) => {
                 ),
                 startTimeDelivery: tryValues.startTimeDelivery,
                 endTimeDelivery: tryValues.endTimeDelivery,
-                comment: tryValues.comment, 
+                comment: tryValues.comment,
                 itemsOrder: [
-                    {count: 1,
-                    product: {
-                        id: item.id,
-                        idProduct: item.idProduct,
-                        idSize: item.idSize,
-                        paramsSize: item.paramsSize,
-                        count:  1,
-                        prise: item.prise
-                    }}
+                    {
+                        count: 1,
+                        product: {
+                            id: item.id,
+                            idProduct: item.idProduct,
+                            idSize: item.idSize,
+                            paramsSize: item.paramsSize,
+                            count: 1,
+                            prise: item.prise,
+                            extraPrice: item.extraPrice,
+                        }
+                    }
                 ]
             }
         }
@@ -124,7 +127,7 @@ const FastFormOrder: React.FC<FastFormOrderProps> = ({item}) => {
     }
 
     useEffect(() => {
-        if(isSuccess) setIsOpen(true);
+        if (isSuccess) setIsOpen(true);
     }, [isSuccess]);
 
     return (
@@ -251,13 +254,13 @@ const FastFormOrder: React.FC<FastFormOrderProps> = ({item}) => {
                         }}
                         block
                     />
-                    <Form.Item style={{marginBottom: 8}} label="Область, населенный пункт" initialValue={isExsistingCity && city ? city.name : ""} name="addressArea" rules={[{ required: true, message: "Введите населенный пункт" }]}>
-                    {
-                        isExsistingCity
-                            ?   <Input size="large" placeholder="Населенный пункт" />
-                            :   <Input size="large" placeholder="Область, населенный пункт" />
-                    }
-                     </Form.Item>
+                    <Form.Item style={{ marginBottom: 8 }} label="Область, населенный пункт" initialValue={isExsistingCity && city ? city.name : ""} name="addressArea" rules={[{ required: true, message: "Введите населенный пункт" }]}>
+                        {
+                            isExsistingCity
+                                ? <Input size="large" placeholder="Населенный пункт" />
+                                : <Input size="large" placeholder="Область, населенный пункт" />
+                        }
+                    </Form.Item>
 
                     <div style={{ display: "flex", gap: 15 }}>
                         <Form.Item style={{ flexGrow: 4, marginBottom: 8 }} label="Улица" name="addressStreet" rules={[{ required: true, message: "Введите улицу" }]}>
@@ -287,22 +290,23 @@ const FastFormOrder: React.FC<FastFormOrderProps> = ({item}) => {
                     <TitleForm>Дата и время доставки</TitleForm>
                     <div style={{ display: "flex", gap: 15 }}>
                         <Form.Item
-                            className={styles.WrapDate} 
-                            label="Дата доставки" 
-                            name="dateDelivery" 
+                            className={styles.WrapDate}
+                            label="Дата доставки"
+                            name="dateDelivery"
                             style={{ flexGrow: 1, display: "flex" }}
                             rules={[{ type: 'object' as const, required: true, message: 'Выберите дату доставки' }]}>
-                                <DatePicker style={{width: "100%"}} size="large" disabledDate={disabledDate} format={"DD.MM.YYYY"} />
+                            <DatePicker style={{ width: "100%" }} size="large" disabledDate={disabledDate} format={"DD.MM.YYYY"} />
                         </Form.Item>
                         <div style={{ width: 250, display: "flex", flexDirection: "column", gap: 8 }}>
                             <p>Время доставки</p>
-                            <div style={{ 
-                                display: "flex", 
-                                alignItems: "center", 
-                                gap: 10, 
+                            <div style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 10,
                                 border: "1px solid var(--primary-bg-color)",
                                 borderRadius: 4,
-                                padding: "0 8px" }}>
+                                padding: "0 8px"
+                            }}>
                                 <p style={{
                                     fontFamily: "Inter",
                                     fontWeight: 400,
@@ -310,10 +314,10 @@ const FastFormOrder: React.FC<FastFormOrderProps> = ({item}) => {
                                     color: "var(--primary-bg-color)"
                                 }}>с</p>
                                 <Form.Item
-                                    style={{marginBottom: 0}}
+                                    style={{ marginBottom: 0 }}
                                     name="startTimeDelivery"
                                     rules={[{ type: 'object' as const, required: true, message: 'Выберите время доставки' }]}>
-                                    <TimePicker style={{border: "none"}} placeholder="00:00" size="large" format={'HH:mm'} />
+                                    <TimePicker style={{ border: "none" }} placeholder="00:00" size="large" format={'HH:mm'} />
                                 </Form.Item>
                                 <p style={{
                                     fontFamily: "Inter",
@@ -322,10 +326,10 @@ const FastFormOrder: React.FC<FastFormOrderProps> = ({item}) => {
                                     color: "var(--primary-bg-color)"
                                 }}>до</p>
                                 <Form.Item
-                                    style={{marginBottom: 0}}
+                                    style={{ marginBottom: 0 }}
                                     name="endTimeDelivery"
                                     rules={[{ type: 'object' as const, required: true, message: 'Выберите время доставки' }]}>
-                                    <TimePicker style={{border: "none"}} placeholder="00:00" size="large" format={'HH:mm'} />
+                                    <TimePicker style={{ border: "none" }} placeholder="00:00" size="large" format={'HH:mm'} />
                                 </Form.Item>
                             </div>
                         </div>
@@ -348,17 +352,17 @@ const FastFormOrder: React.FC<FastFormOrderProps> = ({item}) => {
             </Form>
             {
                 isSuccess
-                ? <ModalEmpty isOpen={isOpen} setIsOpen={()  => setIsOpen(false)}>
+                    ? <ModalEmpty isOpen={isOpen} setIsOpen={() => setIsOpen(false)}>
                         <Result
                             status="success"
                             title="Ваш заказ создан!"
                             subTitle="Скоро с вами свяжется менеджер для подтверждения заказа"
                             extra={[
-                                <Button buttonContent="Вернуться в каталог" clickHandler={() => navigate(CATALOG_PATH)}/>
+                                <Button buttonContent="Вернуться в каталог" clickHandler={() => navigate(CATALOG_PATH)} />
                             ]}
                         />
                     </ModalEmpty>
-                : null
+                    : null
             }
         </ConfigProvider>
     )

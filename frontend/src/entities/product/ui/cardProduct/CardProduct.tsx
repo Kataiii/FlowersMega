@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { API_URL, PRODUCT_PATH } from "../../../../shared/utils/constants";
 import { FullProductSizeDto, Product, ProductSize, useProductsControllerGetByIdQuery } from "../../../../store/product";
-import { Size, useSizeContollerGetByNameQuery, useSizesControllerGetByIdQuery } from "../../../../store/size";
-import AddCart from "../../../../shared/assets/add_cart.svg";
-import Cursor from "../../../../shared/assets/cursor.svg";
+import { useSizeContollerGetByNameQuery } from "../../../../store/size";
+import { ReactComponent as Cursor } from "../../../../shared/assets/cursor.svg";
 import { useNavigate } from "react-router-dom";
 import { Image, Rate } from "antd";
 import { Numerals } from "../../../../shared/utils/numerals";
@@ -73,7 +72,7 @@ const CardProduct: React.FC<CardProductProps> = ({ product, addToCartButton, add
     return (
         <div style={{ width: '100%', borderRadius: "14px", padding: "8px", backgroundColor: "var(--block-bg-color)", display: "flex", flexDirection: "column", gap: "16px", position: "relative", justifyContent: "space-between" }}>
             {/* @ts-ignore*/}
-            <Image style={{ width: "100%", height: "270px", borderRadius: "6px", cursor: "pointer" }} src={`${API_URL}/products/images/${product?.productSize.idProduct}/${product?.product.image.url}`} onClick={() => navigate(`${PRODUCT_PATH}/${product.product.name}/${product.size?.name}`, { state: { idProduct: product.productSize.idProduct, idSize: product.productSize.idSize } })} alt={product.product.name} />
+            <Image preview={{ visible: false }} style={{ width: "100%", height: "270px", borderRadius: "6px", cursor: "pointer" }} src={`${API_URL}/products/images/${product?.productSize.idProduct}/${product?.product.image.url}`} onClick={() => navigate(`${PRODUCT_PATH}/${product.product.name}/${product.size?.name}`, { state: { idProduct: product.productSize.idProduct, idSize: product.productSize.idSize } })} alt={product.product.name} />
             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                 <Rate style={{ color: "var(--primary-bg-color)" }} value={product.reviewsInfo?.averageRating ?? 0} disabled />
                 <p style={{ fontFamily: "Inter", display: "inline", fontSize: 14, fontWeight: 600, color: "var(--text-modal)" }}>{product.reviewsInfo?.count === 0 ? "нет отзывов" : `${product.reviewsInfo?.count} ${Numerals.numeralsReviews((product.reviewsInfo?.count ?? -1) % 10)}`}</p>
@@ -87,7 +86,7 @@ const CardProduct: React.FC<CardProductProps> = ({ product, addToCartButton, add
                 <div style={{ display: "flex", justifyContent: "space-between", gap: "10px" }}>
                     {addToCartButton}
                     <ButtonColor onClick={() => setIsOpen(true)}>
-                        <img src={Cursor} alt="cursor" />
+                        <Cursor alt="cursor" />
                         В 1 клик
                     </ButtonColor>
                 </div>

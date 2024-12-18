@@ -14,7 +14,6 @@ interface SizeDropdownProps {
 
 const SizeDropdown: React.FC<SizeDropdownProps> = ({ onChange, value, disabled }) => {
     const { data: sizeData } = useSizesControllerGetAllQuery();
-    const { data: infoSize } = useSizesControllerGetByIdQuery({ id: value ? value : 1 });
     const [searchValue, setSearchValue] = useState<string>("");
     const [items, setItems] = useState<Size[]>([]);
     const [deleteSize] = useSizesControllerDeleteMutation();
@@ -53,7 +52,7 @@ const SizeDropdown: React.FC<SizeDropdownProps> = ({ onChange, value, disabled }
         <Select
             showSearch
             placeholder="Выберите размер"
-            value={infoSize?.name}
+            value={sizeData?.find(size => size.id === value)?.name}
             disabled={disabled}
             style={{ width: 200 }}
             onSearch={handleSearch}

@@ -16,3 +16,8 @@ export const selectAuth = createSelector(
     [(state: RootState) => state.credentialReducer.isAuth],
     (isAuth) => isAuth
 )
+
+export const selectAdmin = createSelector(
+    [(state: RootState) => state.credentialReducer.isAdmin],
+    (isAdmin) => isAdmin
+)

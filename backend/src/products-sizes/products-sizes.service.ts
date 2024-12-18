@@ -45,6 +45,53 @@ export class ProductsSizesService {
         return productsSizes;
     }
 
+    async updatePrices() {
+        const bestPrices = await this.extraPriceForCategories.whichOneTheBest();
+        console.log(bestPrices, "BEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEST AHAHHAHAHAHAHHA")
+        const allProductSizes = await this.productsSizesRepository.findAll({
+            include: [{ all: true }]
+        });
+
+        const productsCardInfo = await Promise.all(allProductSizes.map(async (item) => {
+            const product = await this.productsService.getById(item.idProduct);
+            return {
+                productSize: {
+                    id: item.id,
+                    idProduct: item.idProduct,
+                    idSize: item.idSize,
+                    paramsSize: item.paramsSize,
+                    count: item.count,
+                    prise: item.prise,
+                    orders: item.orders,
+                },
+                product: product
+            }
+
+        }));
+        const updatedProductSizes = productsCardInfo.map(async (sample) => {
+            const categories = sample.product?.categories || [];
+            // console.log(categories, "NU CATEGORIII VRODE")
+            let priceMultiplier = bestPrices.get('all') || 0;
+
+            if (categories.length === 0) {
+                priceMultiplier = bestPrices.get('all') || priceMultiplier;
+            } else if (categories.length === 1) {
+                priceMultiplier = bestPrices.get(categories[0].id.toString()) || priceMultiplier;
+            } else {
+
+                const multipliers = categories.map(cat => bestPrices.get(cat.id.toString()) || priceMultiplier);
+                priceMultiplier = Math.max(...multipliers);
+            }
+            const updatedPrice = Math.floor(sample.productSize.prise + (sample.productSize.prise / 100) * priceMultiplier);
+            return this.productsSizesRepository.update(
+                { extraPrice: updatedPrice },
+                { where: { id: sample.productSize.id } }
+            );
+        });
+
+        await Promise.all(updatedProductSizes);
+    }
+
     async getAllWithPagination(page: number, limit: number, field?: string, type?: string) {
         const count = (await this.productsSizesRepository.findAndCountAll()).count;
         const order = field && type ? [[field, type]] : [['updatedAt', 'ASC']];
@@ -92,6 +139,7 @@ export class ProductsSizesService {
                     paramsSize: item.paramsSize,
                     count: item.count,
                     prise: item.prise,
+                    extraPrice: item.extraPrice,
                     orders: item.orders,
                 },
                 product: product
@@ -101,38 +149,39 @@ export class ProductsSizesService {
         }));
         // console.log(productsCardInfo, "WANNA CHECK");
 
-        const updatedProducts = productsCardInfo.map(item => {
+        // const updatedProducts = productsCardInfo.map(item => {
 
-            const productSize = { ...item.productSize };
+        //     const productSize = { ...item.productSize };
 
-            const categories = item.product.categories || [];
-            let priceMultiplier = extraPriceForCategories.get('all') || 0;
+        //     const categories = item.product.categories || [];
+        //     let priceMultiplier = extraPriceForCategories.get('all') || 0;
 
-            if (categories.length === 0) {
-                priceMultiplier = extraPriceForCategories.get('all') || priceMultiplier;
-            } else if (categories.length === 1) {
-                priceMultiplier = extraPriceForCategories.get(categories[0].id.toString()) || priceMultiplier;
-            } else {
-                const multipliers = categories.map(cat => extraPriceForCategories.get(cat.id.toString()) || priceMultiplier);
-                priceMultiplier = Math.max(...multipliers);
-            }
-            // console.log("Old price:", productSize.prise);
-            // console.log("Price multiplier:", priceMultiplier);
+        //     if (categories.length === 0) {
+        //         priceMultiplier = extraPriceForCategories.get('all') || priceMultiplier;
+        //     } else if (categories.length === 1) {
+        //         priceMultiplier = extraPriceForCategories.get(categories[0].id.toString()) || priceMultiplier;
+        //     } else {
+        //         const multipliers = categories.map(cat => extraPriceForCategories.get(cat.id.toString()) || priceMultiplier);
+        //         priceMultiplier = Math.max(...multipliers);
+        //     }
+        //     // console.log("Old price:", productSize.prise);
+        //     // console.log("Price multiplier:", priceMultiplier);
 
-            const updatedPrice = Math.floor(productSize.prise + (productSize.prise / 100) * priceMultiplier);
+        //     const updatedPrice = Math.floor(productSize.prise + (productSize.prise / 100) * priceMultiplier);
 
-            // console.log("New price:", updatedPrice);
-            return {
-                ...item,
-                productSize: {
-                    ...productSize,
-                    prise: updatedPrice,
-                }
-            };
-        });
-        // console.log(updatedProducts, "LMAO?");
-        if (productsSizes === null) throw new HttpException("Products sizes not found", HttpStatus.NOT_FOUND);
-        return updatedProducts;
+        //     // console.log("New price:", updatedPrice);
+        //     return {
+        //         ...item,
+        //         productSize: {
+        //             ...productSize,
+        //             prise: updatedPrice,
+        //         }
+        //     };
+        // });
+        // // console.log(updatedProducts, "LMAO?");
+        // if (productsSizes === null) throw new HttpException("Products sizes not found", HttpStatus.NOT_FOUND);
+        // return updatedProducts;
+        return productsCardInfo;
     }
 
     async getMaxPrice() {
@@ -148,7 +197,10 @@ export class ProductsSizesService {
 
         const info = await Promise.all(productSizes.map(async (item) => {
             const size = await this.sizesService.getById(item.productSize.idSize);
-            const prodSize = item.productSize;
+            const prodSize = {
+                ...item.productSize,
+                extraPrice: item.productSize.extraPrice
+            }
             return { size, prodSize };
         }));
 

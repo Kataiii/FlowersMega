@@ -62,4 +62,17 @@ export class CategoriesProductsService {
     async create(dto: CreateCategoriesProductDto) {
         return await this.categoriesProductsRepository.create(dto);
     }
+
+    async update(categories: Category[], productId: number){
+        const categoriesData = await this.categoriesProductsRepository.findAll({where: {idProduct: productId}});
+        const categoriesDublicates = categories.map(item => item.id).filter(item => categoriesData.map(item => item.idCategory).includes(item));
+        
+        categoriesData.forEach(async(item) => {
+            if(!categoriesDublicates.find(el => el === item.idCategory)) await this.categoriesProductsRepository.destroy({where: {id: item.id}});
+        })
+
+        categories.forEach(async(item) => {
+            if(!categoriesDublicates.find(el => el === item.id)) await this.categoriesProductsRepository.create({idCategory: item.id, idProduct: productId});
+        })
+    }
 }

@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Product } from 'src/products/products.model';
 import { AllSizesDto } from './dto/allSizes.dto';
-import { CreateFullProductSizeDto } from './dto/createFullProduct.dto';
+import { CreateFullProductSizeDto, UpdareFullProductSizeDto } from './dto/createFullProduct.dto';
 import { CreateProductSizeDto, CreateProductSizeInfoDto } from './dto/createProductsSizes.dto';
 import { FullProductSizeDto } from './dto/fullProductsSizes.dto';
 import { GetPaginationProductSizeDto } from './dto/getPagination.dto';
@@ -101,6 +101,87 @@ export class ProductsSizesController {
         return await this.productsSizesFullService.createFullProduct(dto, photo);
     }
 
+    @ApiBearerAuth('access-token')
+    @Roles("admin")
+    @UseGuards(JwtAuthGuard, RolesAuthGuard)
+    @ApiOperation({ summary: "Update full product" })
+    @ApiResponse({ status: 200, type: Product })
+    @Patch('/full-product')
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                id: { type: 'number' },
+                name: { type: 'string' },
+                type: { type: 'number' },
+                description: { type: 'string' },
+                structure: { type: 'string' },
+                photo: {
+                    type: 'string',
+                    format: 'binary'
+                },
+                productSize: {
+                    type: 'array',
+                    items:
+                    {
+                        type: 'object',
+                        format: 'object',
+                        properties: {
+                            idSize: { type: 'number' },
+                            prise: { type: 'number' },
+                            paramsSize: { type: 'string' }
+                        }
+                    }
+                },
+                categories: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        format: 'object',
+                        properties: {
+                            id: { type: 'number' },
+                            name: { type: 'string' },
+                            photo: { type: 'string' }
+                        }
+                    }
+                },
+
+                filters: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        format: 'object',
+                        properties: {
+                            id: { type: 'number' },
+                            name: { type: 'string' },
+                            idFilter: { type: 'number' }
+                        }
+                    }
+                }
+
+            }
+        }
+    })
+    @UseInterceptors(FileInterceptor('photo'))
+    async patchFullProduct(@Body() dto: UpdareFullProductSizeDto, @UploadedFile() photo) {
+        console.log(dto);
+        console.log(photo);
+        const product = await this.productsSizesFullService.updateFullProduct(dto, photo);
+        console.log(product.images[0], 'UUUUUUUUUUUUUUUUUUUUUUUUUUUUU');
+        return product;
+    }
+
+    @UseGuards(JwtAuthGuard, RolesAuthGuard)
+    @ApiOperation({ summary: "Trigger for update data" })
+    @ApiResponse({ status: 200, type: Product })
+    @Post('/full-product/update')
+    @ApiBearerAuth('access-token')
+    @Roles("admin")
+    async triggerUpdateData() {
+        return;
+    }
+
     @ApiOperation({ summary: 'Get all products sizes' })
     @ApiResponse({ status: 200, type: [ProductSize] })
     @ApiResponse({ status: 404, description: "Products sizes not fount" })
@@ -135,6 +216,7 @@ export class ProductsSizesController {
     @ApiResponse({ status: 404, description: "Product size not fount" })
     @Get("/:id")
     async getById(@Param("id") id: number) {
+        console.log(id, 'asasasa');
         return await this.productsSizesService.getById(id);
     }
 
@@ -150,6 +232,7 @@ export class ProductsSizesController {
     @ApiResponse({ status: 200, type: FullProductSizeDto })
     @Get("/full-product/:id")
     async getProductSizeForCardById(@Param("id") id: number) {
+        if (isNaN(id)) return null;
         return await this.productsSizesFullService.getFullById(id);
     }
 
@@ -161,9 +244,6 @@ export class ProductsSizesController {
     @ApiQuery({ name: 'category', required: false })
     @Get("/full-products-cards/:page/:limit")
     async getByCategotyIdWithPagination(@Param("page") page: number, @Param("limit") limit: number, @Query("search") search?: string, @Query("filterItems") filterItems?: string, @Query("minPrice") minPrice?: number, @Query("maxPrice") maxPrice?: number, @Query("category") category?: number) {
-
-        console.log(category, "CATEGORY");
-        console.log(search, "SEARCHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         const arrayFilters: number[] = filterItems !== undefined && filterItems !== "" ? filterItems.split(',').map(item => Number(item)) : [];
         return await this.productsSizesFullService.getProductsSizesForCardPagination(page, limit, search, arrayFilters, minPrice, maxPrice, category);
     }
@@ -200,7 +280,7 @@ export class ProductsSizesController {
     @Get("/category/:name")
     async getCategoryIdByName(@Param("name") name: string) {
         console.log(name, "CATEGORYPPPPPPPP");
-        if (name === "null") { console.log("DWNIJWENIJEWNIJNWEIJGNIWENGIJWENGNEWGNWENGINEER"); return -1 };
+        if (name === "null" || name === null) { console.log("DWNIJWENIJEWNIJNWEIJGNIWENGIJWENGNEWGNWENGINEER"); return -1 };
         const response = await this.categoriesService.getCategoryByName(name);
         // console.log(response);
         return response.id;
