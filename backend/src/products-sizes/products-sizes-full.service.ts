@@ -432,9 +432,9 @@ export class ProductsSizesFullService {
             );
         }
 
-        console.log("AAAAAAAAAAAAAAAAAAAAA");
+        // console.log("AAAAAAAAAAAAAAAAAAAAA");
         const resCardInfo = await this.calculatePrices(countAndProducts.rows);
-        console.log(resCardInfo, "EXTRA PRICE CHECK VALUE")
+        // console.log(resCardInfo, "EXTRA PRICE CHECK VALUE")
         return {
             count: countAndProducts.count,
             products: resCardInfo,

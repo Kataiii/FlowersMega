@@ -19,8 +19,19 @@ export class OrderService {
 
     async create(dto: CreateOrderDto) {
         console.log(dto);
-        const dateOrder = new Date(dto.dateOrder);
-        const dateDelivery = new Date(dto.dateDelivery);
+        const parseDateTime = (dateTimeString: string): Date => {
+            const [datePart, timePart] = dateTimeString.split(', ');
+            const [day, month, year] = datePart.split('.').map(Number);
+            if (timePart) {
+                const [hours, minutes, seconds] = timePart.split(':').map(Number);
+                return new Date(year, month - 1, day, hours, minutes, seconds);
+            }
+            return new Date(year, month - 1, day);
+        };
+        const dateOrder = parseDateTime(dto.dateOrder);
+        const dateDelivery = parseDateTime(dto.dateDelivery);
+        console.log(dateOrder, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        console.log(dateDelivery, 'IIIIIIIIIIIIIIIIIIIIIIIIIIIII')
         const order = await this.ordersRepository.create({
             name: dto.name,
             dateOrder: dateOrder,
@@ -64,41 +75,42 @@ export class OrderService {
         })
         this.tgBotService.sendMessage(
             `
-Flower's Mega ${dto.addressDelivery.split(',')[0]}
-Новый заказ: #${order.id}
+        Flower's Mega ${dto.addressDelivery.split(',')[0]}
+        Новый заказ: #${order.id}
+        
+        ЗАКАЗЧИК
+        Имя заказчика: ${dto.nameCustomer}
+        Телефон заказчика: ${dto.phoneCustomer}
+        E-mail заказчика: ${dto.emailCustomer}
+        
+        ПОЛУЧАТЕЛЬ 
+        Имя получателя: ${dto.nameRecipient} 
+        Телефон получателя: ${dto.phoneRecipient} 
+        Адрес доставки: ${dto.addressDelivery}
+        Дата доставки: ${dateDelivery.toLocaleDateString()} ${dto.startTimeDelivery} - ${dto.endTimeDelivery}
+        
+        ДЕТАЛИ ЗАКАЗА
+        ${productsSizes.map((item, index) => {
+                let result = `"${item.product.name}" (${item.size.name}) × 
+            ${dto.itemsOrder[index].count} : ${item.productSize.prise * dto.itemsOrder[index].count} руб.\n`;
 
-ЗАКАЗЧИК
-Имя заказчика: ${dto.nameCustomer}
-Телефон заказчика: ${dto.phoneCustomer}
-E-mail заказчика: ${dto.emailCustomer}
+                if (textPostcards.length > 0) {
+                    textPostcards.forEach(postcard => {
+                        if (Number(postcard.productSizeId) === item.productSize.id) {
+                            result += `Добавить подпись к открытке: \n${postcard.text}\n`;
+                            textPostcards = textPostcards.filter(item => item.id !== postcard.id);
+                        }
+                    });
+                }
 
-ПОЛУЧАТЕЛЬ 
-Имя получателя: ${dto.nameRecipient} 
-Телефон получателя: ${dto.phoneRecipient} 
-Адрес доставки: ${dto.addressDelivery}
-Дата доставки: ${dateDelivery.toLocaleDateString()} ${dto.startTimeDelivery} - ${dto.endTimeDelivery}
-
-ДЕТАЛИ ЗАКАЗА
-${productsSizes.map((item, index) => {
-                return `"${item.product.name}" (${item.size.name}) × 
-    ${dto.itemsOrder[index].count} : ${item.productSize.prise * dto.itemsOrder[index].count} руб.\n
-    ${textPostcards.forEach(postcard => {
-                    if (Number(postcard.productSizeId) === item.productSize.id) {
-                        `Добавить подпись к открытке: \n
-                        ${postcard.text}
-                    `
-                        textPostcards = textPostcards.filter(item => item.id !== postcard.id)
-                    }
-                })}
-    
-    `  }).toString().split(",").join("\n")
-            }
-
-${dto.comment !== undefined
+                return result;
+            }).toString().split(",").join("\n")}
+        
+        ${dto.comment !== undefined
                 ? `Примечания к заказу: ${dto.comment}`
                 : ""}
-
-ИТОГО: ${order.cost} руб.
+        
+        ИТОГО: ${order.cost} руб.
             `
         );
 
