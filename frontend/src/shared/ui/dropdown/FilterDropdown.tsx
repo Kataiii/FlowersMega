@@ -30,7 +30,7 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(e.target.value);
     };
-
+    console.log(disabled, "xddd")
     useEffect(() => {
         setFilters(value || [])
     }, [value])
@@ -101,6 +101,7 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
 
 
     const handleRemoveFilter = (filter: FilterWithItems) => {
+        if (disabled) return;
         setFilters(filters.filter(f => f.filter.name !== filter.name));
         if (filter === activeFilter) {
             setActiveFilter(null);
@@ -240,6 +241,7 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
                                 </Checkbox>
                             </div>
                             <CloseOutlined
+
                                 style={{ paddingLeft: "3px" }}
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -311,10 +313,6 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
                         <span>{filterObj.filter.name}:</span>
                         <span style={{ marginLeft: '8px', border: "1px solid #1890ff", borderRadius: '4px', padding: '2px 4px', backgroundColor: '#fff', color: '#1890ff' }}>
                             {filterObj.tags.map(tag => tag.name).join(', ')}
-                            <>
-                                {console.log(filterObj, "")}
-                            </>
-
                         </span>
 
                         {/* <EditOutlined
@@ -324,10 +322,14 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
                                 setDropdownOpen(false);
                             }}
                         /> */}
+
                         <CloseOutlined
+                            disabled={disabled}
                             onClick={() => handleRemoveFilter(filterObj.filter)}
                             style={{ marginLeft: '8px', cursor: 'pointer' }}
                         />
+
+
                     </div>
                 ))}
             </div>

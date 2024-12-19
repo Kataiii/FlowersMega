@@ -370,13 +370,6 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
               style={{ alignSelf: "flex-start" }}
               label={<ValueText>Фотография</ValueText>}
             >
-              {
-                <>
-
-                  {// @ts-ignore
-                    console.log(data && data?.images[0], "TATATAATATATATTATA")}
-                </>
-              }
               {/* @ts-ignore */}
               {disabled && locate.pathname !== "/admin/product/create" ? (
                 // @ts-ignore

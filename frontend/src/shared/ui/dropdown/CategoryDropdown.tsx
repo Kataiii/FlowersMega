@@ -55,7 +55,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   useEffect(() => {
     setSelectedCategories(value ?? []);
   }, [value])
-    console.log("VAAAAAAAAAAAAAAAAAAAAAAAAAA ", value);
+  console.log("VAAAAAAAAAAAAAAAAAAAAAAAAAA ", value);
   // const formattedItems = useMemo(() => data.map((item) => ({
   //   id: item.id,
   //   name: item.name,
@@ -129,6 +129,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
 
   const handleRemoveItem = async (categoryId: number) => {
     try {
+      if (disabled) return;
       await deleteCategory({ id: categoryId }).unwrap();
       console.log(`Фильтр с id ${categoryId} успешно удален.`);
     } catch (error) {
@@ -137,6 +138,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   };
 
   const handleRemoveCategory = (categoryId: number) => {
+    if (disabled) return;
     const newSelectedCategories = selectedCategories.filter((item) => item.id !== categoryId);
     setSelectedCategories(newSelectedCategories);
     if (onChange) {
@@ -264,7 +266,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
                     {item.name}
                     {selectedCategories.some((cat) => cat.id === item.id)}
                   </div>
-                  <CloseOutlined style={{ paddingLeft: "3px" }} onClick={() => handleRemoveItem(item.id!)} />
+                  <CloseOutlined disabled={disabled} style={{ paddingLeft: "3px" }} onClick={() => handleRemoveItem(item.id!)} />
                 </div>
               ))}
             </div>
