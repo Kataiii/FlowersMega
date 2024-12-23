@@ -5,7 +5,7 @@ import { Text } from "../../shared/ui/forAdditionalPages/Content";
 import { Title } from "../../shared/ui/forAdditionalPages/Title";
 import { useFiltersControllerGetAllWithMaxPriceQuery } from "../../store/filter";
 import { ReactComponent as Arrow } from "../../shared/assets/arrow.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../store/store";
 import { addMaxPrice, addMinPrice } from "../../entities/filter/redux/slice";
 import ClearFilters from "../../features/clear-filters/ClearFilters";
@@ -68,6 +68,15 @@ const FiltersPanel: React.FC = () => {
     const [isReset, setIsReset] = useState<boolean>(false);
     const dispatch = useAppDispatch();
 
+    useEffect(() => {
+        if (isReset) {
+            const timeout = setTimeout(() => {
+                setIsReset(false);
+            }, 0);
+            return () => clearTimeout(timeout);
+        }
+    }, [isReset]);
+
     const clearPrice = () => {
         dispatch(addMinPrice(0));
         dispatch(addMaxPrice(data?.maxPrice ?? -1));
@@ -92,7 +101,7 @@ const FiltersPanel: React.FC = () => {
                                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                             <TitleSegment>Цена</TitleSegment>
                                             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                                                <Button onClick={() => { clearPrice(); setIsReset(true); setIsReset(false) }}>Сброс</Button>
+                                                <Button onClick={() => { clearPrice() }}>Сброс</Button>
                                                 <Arrow
                                                     fill="#73D982"
                                                     style={{

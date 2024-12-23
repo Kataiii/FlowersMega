@@ -34,7 +34,7 @@ const Catalog: React.FC = () => {
     const handlePageChange = (newPage: number, newPageSize?: number) => {
         setPage(newPage);
     };
-
+    console.log(data, "data")
     return (
         <div style={{ display: "flex", justifyContent: "center", padding: "25px 0" }}>
             <Container>
@@ -49,15 +49,18 @@ const Catalog: React.FC = () => {
                             gridColumnGap: "5px",
                             gap: "10px"
                         }}>
-                            {
-                                isLoading
-                                    ? <p>Загрузка...</p>
-                                    : data && data.products.map((item, index) => 
-                                            <SmartProductCard key={`productSizes-${index}`} product={item} />
-                                    )
-                            }
+                            {isLoading ? (
+                                <p>Загрузка...</p>
+                            ) : (
+                                data && data.count === 0 ? (
+                                    <h1 style={{ width: "420px", fontFamily: "Inter", fontSize: 32, fontWeight: 600, color: "var(--secondary-text-color)" }}>Нет подходящих товаров</h1>
+                                ) : (
+                                    data?.products.map((item, index) => (
+                                        <SmartProductCard key={`productSizes-${index}`} product={item} />
+                                    ))
+                                )
+                            )}
                         </div>
-
                     </div>
                 </div>
                 <div style={{ width: "100%" }}>

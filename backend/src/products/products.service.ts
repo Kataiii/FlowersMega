@@ -26,7 +26,7 @@ export class ProductsService {
             idTypeProduct: dto.idTypeProduct,
             structure: dto.structure
         });
-        if(images && images.length > 0){
+        if (images && images.length > 0) {
             images.forEach(async (item) => {
                 await this.imagesService.create({
                     idProduct: product.id,
@@ -39,7 +39,7 @@ export class ProductsService {
 
     async update(dto: UpdateProductDto, images: File[]) {
         await this.productsRepository.update(dto, { where: { id: dto.id } });
-        if(images && images.length > 0){
+        if (images && images.length > 0) {
             await this.imagesService.update({
                 idProduct: dto.id,
                 images: images
@@ -68,6 +68,7 @@ export class ProductsService {
                 }]
             }
         );
+        console.log(product.id, "LLLLLLLLLLLLL");
         return product;
     }
 

@@ -347,99 +347,92 @@ export class ProductsSizesFullService {
         console.log(filterItems, "filterItems");
         console.log(category, "LMAO uAPL");
         console.log(search, "search");
+
         const filtersProductsTmp =
-            filterItems.length > 0
-            && (
-                await this.productsItemsFilterService.getProductsByFilterIdArray(
-                    filterItems
-                )
-            ).map((item) => item.idProduct)
+            filterItems?.length > 0 &&
+            (
+                await this.productsItemsFilterService.getProductsByFilterIdArray(filterItems)
+            ).map((item) => item.idProduct);
         console.log("filtersIds ", filtersProductsTmp);
+
         const filtersProducts = filtersProductsTmp && Array.from(new Set(filtersProductsTmp.flat()));
 
         console.log("filtersProducts ", filtersProducts);
 
         const whereCondition: any = {};
+
         if (minPrice >= 0) {
             whereCondition.extraPrice = { [Op.gte]: minPrice };
         }
 
-        console.log("whereCondition ", whereCondition);
         if (maxPrice >= 0) {
             whereCondition.extraPrice = {
-                ...whereCondition.prise,
+                ...whereCondition.extraPrice,
                 [Op.lte]: maxPrice,
             };
         }
 
-        console.log("whereCondition ", whereCondition);
-
-        if (filtersProducts.length > 0) {
+        if (filtersProducts?.length > 0) {
             console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
             whereCondition.idProduct = {
                 [Op.in]: filtersProducts,
             };
         }
 
-        console.log("search ", search);
+        console.log("whereCondition ", whereCondition);
 
         let countAndProducts: {
             rows: ProductSize[];
             count: number;
         } = {
             rows: [],
-            count: 0
+            count: 0,
         };
 
         if (category) {
-            countAndProducts = await this.productsSizesRepository.findAndCountAll(
-                {
-                    where: whereCondition,
-                    limit: limit,
-                    offset: (page - 1) * limit,
-                    include: [
-                        {
-                            model: CategoriesProductsSizes,
-                            where: {
-                                idCategory: category,
-                            },
+            countAndProducts = await this.productsSizesRepository.findAndCountAll({
+                where: whereCondition,
+                limit: limit,
+                offset: (page - 1) * limit,
+                include: [
+                    {
+                        model: CategoriesProductsSizes,
+                        where: {
+                            idCategory: category,
                         },
-                        {
-                            model: Product,
-                            where: {
-                                name: { [Op.like]: search ? `%${search}%` : `%` },
-                            },
+                    },
+                    {
+                        model: Product,
+                        where: {
+                            name: { [Op.like]: search ? `%${search}%` : `%` },
                         },
-                    ],
-                }
-            );
-        }
-        else {
-            countAndProducts = await this.productsSizesRepository.findAndCountAll(
-                {
-                    where: whereCondition,
-                    limit: limit,
-                    offset: (page - 1) * limit,
-                    include: [
-                        {
-                            model: Product,
-                            where: {
-                                name: { [Op.like]: search ? `%${search}%` : `%` },
-                            },
+                    },
+                ],
+            });
+        } else {
+            countAndProducts = await this.productsSizesRepository.findAndCountAll({
+                where: whereCondition,
+                limit: limit,
+                offset: (page - 1) * limit,
+                include: [
+                    {
+                        model: Product,
+                        where: {
+                            name: { [Op.like]: search ? `%${search}%` : `%` },
                         },
-                    ],
-                }
-            );
+                    },
+                ],
+            });
         }
 
-        // console.log("AAAAAAAAAAAAAAAAAAAAA");
         const resCardInfo = await this.calculatePrices(countAndProducts.rows);
-        // console.log(resCardInfo, "EXTRA PRICE CHECK VALUE")
+
         return {
             count: countAndProducts.count,
             products: resCardInfo,
         };
     }
+
 
     async calculatePrices(products: ProductSize[]) {
         const extraPriceForCategories =
