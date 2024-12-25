@@ -35,7 +35,7 @@ export const beforeUpload = (file: FileType) => {
 const TryPhoto: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>();
-  const [ file, setFile ] = useState<File | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const token = useAppSelector(selectToken);
   const dispatch = useAppDispatch();
 
@@ -70,50 +70,52 @@ const TryPhoto: React.FC = () => {
     const response = (await axios.postForm<ResponseDto>(`${API_URL}/users/avatar`, {
       file: file
     },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
-      withCredentials: true
-    })).data;
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        withCredentials: true
+      })).data;
     dispatch(addCredentialsUser(response));
   }
 
-  const deleteButton = async() => {
-    const response = (await axios.postForm<ResponseDto>(`${API_URL}/users/avatar`, {
+  const deleteButton = async () => {
+    const response = await axios.postForm<ResponseDto>(`${API_URL}/users/avatar`, {
       file: null
-    },
-    {
+    }, {
       headers: {
         Authorization: `Bearer ${token}`
       },
       withCredentials: true
-    })).data;
-    dispatch(addCredentialsUser(response));
-  }
+    });
+    dispatch(addCredentialsUser(response.data));
+
+    setImageUrl(undefined);
+    setFile(null);
+  };
 
   return (
     <>
-    <Flex gap="middle" wrap>
-      <AvatarUploader>
-        <Upload
-          style={{width: 180}}
-          name="avatar"
-          listType="picture-circle"
-          showUploadList={false}
-          beforeUpload={beforeUpload}
-          onChange={handleChange}
-          //@ts-ignore
-          customRequest={uploadRequest}
-        >
-          {imageUrl ? <img src={imageUrl} alt="avatar" /> : uploadButton}
-        </Upload>
-      </AvatarUploader>
-    </Flex>
-    <div style={{display: "flex", gap: 15, paddingTop: 20}}>
-      <Button buttonContent="Сохранить аватар" clickHandler={loadPhotoButton}/>
-      <SecondaryButton buttonContent="Удалить аватар" clickHandler={deleteButton}/>
-    </div>
+      <Flex gap="middle" wrap>
+        <AvatarUploader>
+          <Upload
+            style={{ width: 180 }}
+            name="avatar"
+            listType="picture-circle"
+            showUploadList={false}
+            beforeUpload={beforeUpload}
+            onChange={handleChange}
+            //@ts-ignore
+            customRequest={uploadRequest}
+          >
+            {imageUrl ? <img src={imageUrl} alt="avatar" /> : uploadButton}
+          </Upload>
+        </AvatarUploader>
+      </Flex>
+      <div style={{ display: "flex", gap: 15, paddingTop: 20 }}>
+        <Button buttonContent="Сохранить аватар" clickHandler={loadPhotoButton} />
+        <SecondaryButton buttonContent="Удалить аватар" clickHandler={deleteButton} />
+      </div>
     </>
   );
 };
