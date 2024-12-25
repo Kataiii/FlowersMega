@@ -102,11 +102,19 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
 
     const handleRemoveFilter = (filter: FilterWithItems) => {
         if (disabled) return;
-        setFilters(filters.filter(f => f.filter.name !== filter.name));
+
+        const updatedFilters = filters.filter(f => f.filter.name !== filter.name);
+        setFilters(updatedFilters);
+
         if (filter === activeFilter) {
             setActiveFilter(null);
         }
+
+        if (onChange) {
+            onChange(updatedFilters);
+        }
     };
+
 
     const handleCloseMenu = () => {
         if (activeFilter) {

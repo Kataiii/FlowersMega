@@ -40,7 +40,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
             ? JSON.parse(order.postcards)
             : [];
     return (
-        <div style={{ width: "100%", border: "1px solid var(--primary-bg-color)", padding: 16, borderRadius: 6 }}>
+        <div style={{ width: "100%", border: "1px solid var(--primary-bg-color)", padding: 16, borderRadius: 6, marginBottom: 6 }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
                     <div style={{ display: "flex", gap: 8, alignItems: "center" }}>

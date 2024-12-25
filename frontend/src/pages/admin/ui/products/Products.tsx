@@ -185,6 +185,8 @@ const Products: React.FC = () => {
                         options={[
                             { value: "updatedAt ASC", label: "Дата (старые)" },
                             { value: "updatedAt DESC", label: "Дата (новые)" },
+                            { value: "id ASC", label: "По ID (по возрастанию)" },
+                            { value: "id DESC", label: "По ID (по убыванию)" },
                         ]}
                         placeholder="Выбрать"
                         value={sortOrder}
@@ -192,30 +194,25 @@ const Products: React.FC = () => {
                     />
                 </div>
                 <>
-                {
-                    isProductsPaginationLoading || isSizesLoading
-                    ? <p>Загрузка...</p>
-                    : <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px" }}>
-                            {productSizedPag?.products.map((product) => ({
-                                ...product
-                            })).map((product, index) => (
-                                <ProductAdminCard
-                                    key={product.products.id}
-                                    product={product}
-                                    sizes={sizes}
-                                    type={productType?.find((type) => product.products.idTypeProduct === type.id)?.name}
-                                />
-                            ))}
-                        </div>
-                }
+                    {
+                        isProductsPaginationLoading || isSizesLoading
+                            ? <p>Загрузка...</p>
+                            : <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px" }}>
+                                {productSizedPag?.products.map((product) => ({
+                                    ...product
+                                })).map((product, index) => (
+                                    <ProductAdminCard
+                                        key={product.products.id}
+                                        product={product}
+                                        sizes={sizes}
+                                        type={productType?.find((type) => product.products.idTypeProduct === type.id)?.name}
+                                    />
+                                ))}
+                            </div>
+                    }
                 </>
                 {/* @ts-ignore */}
                 <Pagination showLessItems={true} current={page} pageSize={pageSize} total={productSizedPag?.count || 0} onChange={handlePageChange} style={{ marginTop: "16px", textAlign: "center" }} />
-                <>
-                    {console.log('Total count:', categoriesData)}
-                    {console.log('categories:', categoriesData)}
-                    {console.log('filters:', filtersData)}
-                </>
             </OrderContainer>
         </Container>
     );

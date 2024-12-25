@@ -33,6 +33,7 @@ import axios from "axios";
 import { useAppSelector } from "../../../../store/store";
 import { selectToken } from "../../../../entities/credential/redux/selectors";
 import Error from "../../../../shared/assets/no-image.png";
+import { selectAllFilters } from "../../../../entities/filter/redux/slice";
 
 interface ProductProps {
   onCatChange?: (categories: any[]) => void;
@@ -190,42 +191,45 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
   };
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && data) {
       const filterMap = new Map<
         number,
         { filter: { id: number; name: string }; tags: any[] }
       >();
-      // @ts-ignore
-      data.filters.forEach((productFilter) => {
-        const matchingFilter = filtersData?.find(
-          (filter) => filter.id === productFilter.idFilter
-        );
 
-        if (matchingFilter) {
-          if (!filterMap.has(productFilter.idFilter)) {
-            filterMap.set(productFilter.idFilter, {
-              filter: {
-                id: productFilter.idFilter,
-                name: matchingFilter.name,
-              },
-              tags: [],
-            });
-          }
-          const filterEntry = filterMap.get(productFilter.idFilter);
-          const tags = (matchingFilter.items || []).filter(
-            (tag) => tag.id === productFilter.id
+      // @ts-ignore
+      if (data.filters) {
+        // @ts-ignore
+        data.filters.forEach((productFilter) => {
+          const matchingFilter = filtersData?.find(
+            (filter) => filter.id === productFilter.idFilter
           );
 
-          if (tags.length > 0 && filterEntry) {
-            filterEntry.tags.push(...tags);
-          }
-        }
-      });
-      const mappedFilters = Array.from(filterMap.values());
+          if (matchingFilter) {
+            if (!filterMap.has(productFilter.idFilter)) {
+              filterMap.set(productFilter.idFilter, {
+                filter: {
+                  id: productFilter.idFilter,
+                  name: matchingFilter.name,
+                },
+                tags: [],
+              });
+            }
+            const filterEntry = filterMap.get(productFilter.idFilter);
+            const tags = (matchingFilter.items || []).filter(
+              (tag) => tag.id === productFilter.id
+            );
 
-      // @ts-ignore
+            if (tags.length > 0 && filterEntry) {
+              filterEntry.tags.push(...tags);
+            }
+          }
+        });
+      }
+
+      const mappedFilters = Array.from(filterMap.values());
       setFilters(mappedFilters);
-      //@ts-ignore
+      // @ts-ignore
       const variationsS = data.productSizes.flatMap(
         (variation: ProductSize) => ({
           idSize: variation.idSize,
@@ -233,7 +237,7 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
           paramsSize: variation.paramsSize,
         })
       );
-      //@ts-ignore
+      // @ts-ignore
       const categoriesS = data?.categories.map((category) => {
         return {
           id: category.id,
@@ -243,58 +247,20 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
       }) ?? [];
       setSelectedCategories(prev => categoriesS);
       setVariations(variationsS);
+
       if (onCatChange) {
         onCatChange(selectedCategories);
       }
       if (onFilterChange) {
         onFilterChange(filters);
       }
+
+      setDisabled(true);
+    } else {
+      setDisabled(false);
     }
+  }, [isLoading, data, filtersData, onCatChange, onFilterChange]);
 
-    data ? setDisabled(true) : setDisabled(false);
-  }, [isLoading]);
-
-  // const handlePhotoDelete = async () => {
-  //   try {
-  //     console.log("11111111111111111111111111111111111");
-  //     // @ts-ignore
-  //     if (data?.images?.[0]?.url) {
-  //       // @ts-ignore
-  //       await axios.delete(`${API_URL}/products/images/${data.id}/${data.images[0].url}`, {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //         withCredentials: true,
-  //       });
-  //       console.log("Image deleted successfully.");
-  //     } else {
-  //       console.log("No image to delete.");
-  //     }
-  //     setFile(null); // Очистить локальное состояние
-  //   } catch (error) {
-  //     console.error("Error deleting image:", error);
-  //   }
-  // };
-  // const handleDeletePhoto = async () => {
-  //   const updatedProductData = {
-  //     ...data, 
-  //     photo: null,
-  //   };
-  //   try {
-  //     await createProductWithDetails({ body: updatedProductData }).unwrap();
-  //     console.log('Фото успешно удалено');
-  //   } catch (err) {
-  //     console.error('Ошибка при удалении фото', err);
-  //   }
-  // };
-  // const handleDeleteImage = () => {
-  //   // @ts-ignore
-  //   if (data?.images?.[0]) {
-  //     // @ts-ignore
-  //     data.images[0].url = ""; // Очищаем URL изображения
-  //   }
-  //   setFile(null); // Убираем загруженный файл
-  // };
 
   return (
     <Container>

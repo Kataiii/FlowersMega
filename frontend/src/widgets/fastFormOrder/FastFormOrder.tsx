@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 import { useEffect, useMemo, useState } from "react";
 import TextArea from "antd/es/input/TextArea";
-import { errorMessageEmail, regExEmail } from "../../shared/utils/validationConstants";
+import { errorMessageCity, errorMessageEmail, errorMessageName, errorMessageStreet, regExEmail, regExName } from "../../shared/utils/validationConstants";
 import { useAppSelector } from "../../store/store";
 import { selectUser } from "../../entities/credential/redux/selectors";
 import Button from "../../shared/ui/button/Button";
@@ -213,7 +213,9 @@ const FastFormOrder: React.FC<FastFormOrderProps> = ({ item }) => {
 
                         isRecipientCustomer
                             ? <p style={{ fontSize: 16 }}>Данные возьмутся автоматически из полей об отправителе</p>
-                            : <Form.Item style={{ marginBottom: 8 }} label="ФИО получателя" name="nameRecipient" rules={[{ required: true, message: "Введите ФИО" }]}>
+                            : <Form.Item style={{ marginBottom: 8 }} label="ФИО получателя" name="nameRecipient" rules={[{ required: true, message: "Введите ФИО" },
+                            { pattern: regExName, message: errorMessageName }
+                            ]}>
                                 <Input size="large" value={isRecipientCustomer ? user?.firstname : ""} placeholder="Иванов Иван Иванович" />
                             </Form.Item>
                     }
@@ -254,7 +256,9 @@ const FastFormOrder: React.FC<FastFormOrderProps> = ({ item }) => {
                         }}
                         block
                     />
-                    <Form.Item style={{ marginBottom: 8 }} label="Область, населенный пункт" initialValue={isExsistingCity && city ? city.name : ""} name="addressArea" rules={[{ required: true, message: "Введите населенный пункт" }]}>
+                    <Form.Item style={{ marginBottom: 8 }} label="Область, населенный пункт" initialValue={isExsistingCity && city ? city.name : ""} name="addressArea" rules={[
+                        { required: true, message: "Введите населенный пункт" },
+                        { pattern: regExName, message: errorMessageCity }]}>
                         {
                             isExsistingCity
                                 ? <Input size="large" placeholder="Населенный пункт" />
@@ -263,25 +267,46 @@ const FastFormOrder: React.FC<FastFormOrderProps> = ({ item }) => {
                     </Form.Item>
 
                     <div style={{ display: "flex", gap: 15 }}>
-                        <Form.Item style={{ flexGrow: 4, marginBottom: 8 }} label="Улица" name="addressStreet" rules={[{ required: true, message: "Введите улицу" }]}>
+                        <Form.Item style={{ flexGrow: 4, marginBottom: 8 }} label="Улица" name="addressStreet" rules={[{ required: true, message: "Введите улицу" }, { pattern: regExName, message: errorMessageStreet }]}>
                             <Input size="large" placeholder="Улица" />
                         </Form.Item>
-                        <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Дом" name="addressHouse" rules={[{ required: true, message: "Введите дом" }]}>
-                            <Input size="large" placeholder="Дом" />
+                        <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Дом" name="addressHouse" rules={[{ required: true, message: "Введите номер дома" }]}>
+                            <Input size="large" placeholder="Дом" onKeyPress={(event) => {
+                                if (!/[0-9]/.test(event.key)) {
+                                    event.preventDefault();
+                                }
+                            }} />
                         </Form.Item>
                     </div>
                     <div style={{ display: "flex", gap: 15 }}>
                         <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Корпус" name="addressCorpus">
-                            <Input size="large" placeholder="Корпус" />
+                            <Input size="large" placeholder="Корпус" onKeyPress={(event) => {
+                                if (!/[0-9]/.test(event.key)) {
+                                    event.preventDefault();
+                                }
+                            }} />
                         </Form.Item>
                         <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Подъезд" name="addressEntrance">
-                            <Input size="large" placeholder="Подьезд" />
+                            <Input size="large" placeholder="Подьезд" onKeyPress={(event) => {
+                                if (!/[0-9]/.test(event.key)) {
+                                    event.preventDefault();
+                                }
+                            }} />
                         </Form.Item>
                         <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Этаж" name="addressFloor">
-                            <Input size="large" placeholder="Этаж" />
+                            <Input size="large" placeholder="Этаж" onKeyPress={(event) => {
+                                if (!/[0-9]/.test(event.key)) {
+                                    event.preventDefault();
+                                }
+                            }} />
                         </Form.Item>
-                        <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Квартира" name="addressFlat">
-                            <Input size="large" placeholder="Квартира" />
+                        <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Квартира" name="addressFlat" rules={[
+                            { required: true, message: "Введите но  мер квартиры" }]}>
+                            <Input size="large" placeholder="Квартира" onKeyPress={(event) => {
+                                if (!/[0-9]/.test(event.key)) {
+                                    event.preventDefault();
+                                }
+                            }} />
                         </Form.Item>
                     </div>
                 </div>

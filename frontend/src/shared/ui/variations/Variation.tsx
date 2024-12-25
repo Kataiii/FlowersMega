@@ -63,12 +63,19 @@ const Variation: React.FC<VariationProps> = ({ variation, onRemove, onChange, di
                         value={price}
                         placeholder="Введите стоимость товара в рублях..."
                         style={{ width: "480px" }}
-                        onChange={(e) => { handlePriceChange(e); setPrice(Number(e.target.value)); }}
+                        onChange={(e) => {
+                            const newPrice = Number(e.target.value);
+                            if (newPrice > 0 || e.target.value === '') {
+                                setPrice(newPrice);
+                            }
+                        }}
                         onKeyPress={(event) => {
+                            // Разрешаем ввод только цифр
                             if (!/[0-9]/.test(event.key)) {
                                 event.preventDefault();
                             }
                         }}
+                        min="0"
                     />
                 </Form.Item>
                 <Button

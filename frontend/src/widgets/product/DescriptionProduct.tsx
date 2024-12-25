@@ -4,7 +4,7 @@ import { isInCartSelector } from "../../entities/cart/redux/selectors";
 import { addOneToCart } from "../../entities/cart/redux/slice";
 import ListStructureProduct from "../../entities/product/ui/listStructureProduct/ListStrucureProduct";
 import ProductPageCountController from "../../features/product-page-count-controller/ProductPageCountController";
-import { PRODUCT_PATH } from "../../shared/utils/constants";
+import { PRODUCT_PATH, API_URL } from "../../shared/utils/constants";
 import { Product, ProductSize, useCategoryControllerGetIdByNameQuery, useProductsSizesControllerGetAllSizesByProductIdQuery } from "../../store/product"
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import ts from "typescript";
@@ -18,7 +18,9 @@ import Additions from "./Additions";
 import DecorsAddition from "./DecorsAddition";
 import CardCategory from "../../entities/category/ui/cardCategory/CardCategory";
 import { useCategoriesControllerGetByIdQuery } from "../../store/category";
-
+import { Title } from "../../shared/ui/forAdditionalPages/Title";
+import { Text } from "../../shared/ui/forAdditionalPages/Content";
+import FastFormOrder from "../fastFormOrder/FastFormOrder";
 type DescriptionProductProps = {
     product: Product & { productSize: ProductSize };
 }
@@ -50,10 +52,10 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
     const { data: ToppersAddition } = useCategoriesControllerGetByIdQuery({ id: Number(categoryIdDataC) });
     const { data: DecorsAdditionCat } = useCategoriesControllerGetByIdQuery({ id: Number(categoryIdDatA) });
     const { data: PostcardAddition } = useCategoriesControllerGetByIdQuery({ id: Number(categoryIdData) });
-
+    const [isOpen, setIsOpen] = useState(false);
     console.log(location)
     // @ts-ignore
-    // console.log(product.categories[0].id === Number(categoryIdData), "66666666666666666666666666")
+    console.log(`${API_URL}/products/images/${product?.productSize.idProduct}/${product?.images[0].url}`)
     return (
         <>
 
@@ -124,7 +126,7 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
                                         product.categories[0].id === Number(categoryIdDataB) ? (
                                         null
                                     ) : ( */}
-                                <button style={{ width: "49%", cursor: "pointer", minWidth: 380, height: 55, backgroundColor: "var(--block-bg-color)", border: "1px solid #FF749F", borderRadius: 6, fontFamily: "Inter", fontWeight: 400, fontSize: 20, color: "var(--primary-bg-color)" }}>
+                                <button onClick={() => setIsOpen(true)} style={{ width: "49%", cursor: "pointer", minWidth: 380, height: 55, backgroundColor: "var(--block-bg-color)", border: "1px solid #FF749F", borderRadius: 6, fontFamily: "Inter", fontWeight: 400, fontSize: 20, color: "var(--primary-bg-color)" }}>
                                     Купить в 1 клик
                                 </button>
                                 {/* )} */}
@@ -147,7 +149,19 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
                 )
             )}
 
-
+            <ModalEmpty isOpen={isOpen} setIsOpen={() => setIsOpen(false)} >
+                <>
+                    <Title style={{ fontSize: 24, margin: 0 }}>Быстрый заказ</Title>
+                    <Text style={{ fontWeight: 400, fontSize: 14, color: "var(--text-modal)", margin: 0 }}>для позиции</Text>
+                    <div style={{ margin: "15px 0 0", display: 'flex', gap: 24, alignItems: "center", border: "1px solid var(--primary-bg-color)", width: "100%", borderRadius: 4, padding: 8 }}>
+                        {/* @ts-ignore */}
+                        {/* <Image width={30} height={30} style={{ borderRadius: 4 }} src={`${API_URL}/products/images/${product?.productSize.idProduct}/${product?.images[0].url}`} /> */}
+                        <Title style={{ fontWeight: 700, fontSize: 16, color: "var(--primary-bg-color)" }}>{product.name} </Title>
+                    </div>
+                    {/* {`(${product.productSize.size.name})`} */}
+                    <FastFormOrder item={{ ...product.productSize, count: 1, product: { ...product, id: product.productSize.idProduct, structure: "" } }} />
+                </>
+            </ModalEmpty>
         </>
     );
 };

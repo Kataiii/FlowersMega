@@ -49,7 +49,7 @@ export const StyledVarBlock = styled.div`
     border: 1px solid var(--primary-bg-color);
     border-radius: 8px;
     margin: 4px 0;
-    padding: 8px;
+    padding:   8px 8px 0 8px;
 `
 
 export const StyledCategoriesFiltersBlock = styled.div`

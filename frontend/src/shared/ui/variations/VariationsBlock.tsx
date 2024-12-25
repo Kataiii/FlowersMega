@@ -45,7 +45,7 @@ const VariationsBlock: React.FC<Props> = ({ onVariationsChange, disabled, value 
 
     return (
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-            <div style={{ height: "180px", overflowX: "hidden", overflowY: "auto", marginBottom: "10px", scrollbarWidth: "thin", scrollbarColor: "var(--primary-bg-color) var(--block-bg-color)" }}>
+            <div style={{ height: "190px", overflowX: "hidden", overflowY: "auto", marginBottom: "10px", scrollbarWidth: "thin", scrollbarColor: "var(--primary-bg-color) var(--block-bg-color)" }}>
                 {variations.map((variation, index) => (
                     <Variation
                         key={index}
@@ -56,7 +56,7 @@ const VariationsBlock: React.FC<Props> = ({ onVariationsChange, disabled, value 
                     />
                 ))}
             </div>
-            <Button disabled={disabled} onClick={handleAddVariation}>
+            <Button disabled={disabled} onClick={handleAddVariation} style={{ margin: 0 }}>
                 <ButtonText>Добавить вариацию <PlusCircleOutlined style={{ color: "var(--primary-bg)" }} /></ButtonText>
             </Button>
         </div>
