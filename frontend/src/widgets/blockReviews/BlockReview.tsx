@@ -6,6 +6,7 @@ import { FullReviewDto, useReviewsControllerGetAllWithPaginationQuery } from "..
 import { ReactComponent as Arrow } from "../../shared/assets/sliderArrow.svg";
 import { CarouselRef } from "antd/es/carousel";
 import ReviewCardMain from "../../entities/review/ui/reviewCardMain/ReviewCardMain";
+import CenteredSpin from "../../shared/ui/spinner/CenteredSpin";
 
 const BlockReviews: React.FC = () => {
     const [page, setPage] = useState<number>(1);
@@ -56,7 +57,7 @@ const BlockReviews: React.FC = () => {
             <Container>
                 <TitleSection content="Отзывы клиентов" />
                 {isLoading ? (
-                    <p>Загрузка...</p>
+                    <CenteredSpin />
                 ) : (
                     <>
                         <div style={{ position: "relative", display: "flex", flexDirection: "row", gap: "6px" }}>

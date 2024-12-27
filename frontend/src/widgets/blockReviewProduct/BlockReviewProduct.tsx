@@ -5,10 +5,11 @@ import Button, { ButtonStyle } from "../../shared/ui/button/Button";
 import { Title } from "../../shared/ui/forAdditionalPages/Title";
 import { Numerals } from "../../shared/utils/numerals";
 import { FullReviewDto, useReviewsProductSizeControllerGetByProductIdQuery } from "../../store/review";
-import {ReactComponent as Arrow} from "../../shared/assets/sliderArrow.svg";
+import { ReactComponent as Arrow } from "../../shared/assets/sliderArrow.svg";
 import { CarouselRef } from "antd/es/carousel";
 import AddReview from "../../features/add-review/AddReview";
 import ReviewCardProduct from "../../entities/review/ui/reviewCardProduct/ReviewCardProduct";
+import CenteredSpin from "../../shared/ui/spinner/CenteredSpin";
 
 type BlockReviewProductProps = {
     idProductSize: number;
@@ -64,7 +65,7 @@ const BlockReviewProduct: React.FC<BlockReviewProductProps> = ({ idProductSize }
             <Title style={{ fontSize: 32 }}>Отзывы к товару</Title>
             {
                 isLoading
-                    ? <p>Загрузка...</p>
+                    ? <CenteredSpin />
                     : <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                         {
                             isOpen
@@ -101,7 +102,7 @@ const BlockReviewProduct: React.FC<BlockReviewProductProps> = ({ idProductSize }
                                 data?.count === 0 ? null :
                                     <div style={{ width: "100%", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: "0 25px" }}>
                                         {
-                                            page === Math.ceil((data?.count ?? 0) / pageSize) ? null : <Arrow style={{width: 50, height: 50, position: "absolute", zIndex: 10, top: "50%", left: "100%", transform: "translate(-50%, 0) rotate(180deg)", cursor: "pointer"}} onClick={() => setPage(prev => prev + 1)} />
+                                            page === Math.ceil((data?.count ?? 0) / pageSize) ? null : <Arrow style={{ width: 50, height: 50, position: "absolute", zIndex: 10, top: "50%", left: "100%", transform: "translate(-50%, 0) rotate(180deg)", cursor: "pointer" }} onClick={() => setPage(prev => prev + 1)} />
                                         }
                                         {
                                             data?.reviews.map((item, index) => {
@@ -109,7 +110,7 @@ const BlockReviewProduct: React.FC<BlockReviewProductProps> = ({ idProductSize }
                                             })
                                         }
                                         {
-                                            page === 1 ? null : <Arrow style={{width: 50, height: 50, position: "absolute", zIndex: 10, top: "50%", left: 0, transform: "translate(-50%, 0) rotate(0)", cursor: "pointer"}} onClick={() => setPage(prev => prev - 1)} />
+                                            page === 1 ? null : <Arrow style={{ width: 50, height: 50, position: "absolute", zIndex: 10, top: "50%", left: 0, transform: "translate(-50%, 0) rotate(0)", cursor: "pointer" }} onClick={() => setPage(prev => prev - 1)} />
                                         }
                                     </div>
                             }

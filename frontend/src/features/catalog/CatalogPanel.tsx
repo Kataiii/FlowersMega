@@ -5,6 +5,7 @@ import { Title } from "../../shared/ui/forAdditionalPages/Title";
 import RadioButton from "../../shared/ui/radioButton/RadioButton";
 import { useOutsideClick } from "../../shared/utils/hooks/useOutsideClick";
 import { Category, useCategoriesControllerGetAllQuery } from "../../store/category";
+import CenteredSpin from "../../shared/ui/spinner/CenteredSpin";
 
 const Container = styled.div`
     width: 100%;
@@ -46,7 +47,7 @@ const CatalogPanel: React.FC<CatalogPanelProps> = ({ onClose }) => {
     return (
         <Container ref={panelRef}>
             {isLoading ? (
-                <p>Загрузка...</p>
+                <CenteredSpin />
             ) : (
                 <div style={{ width: "25%" }}>
                     {data &&

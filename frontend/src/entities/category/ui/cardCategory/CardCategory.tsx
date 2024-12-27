@@ -1,3 +1,4 @@
+import CenteredSpin from "../../../../shared/ui/spinner/CenteredSpin";
 import { API_URL } from "../../../../shared/utils/constants";
 import { Numerals } from "../../../../shared/utils/numerals";
 import { Category } from "../../../../store/category";
@@ -61,7 +62,7 @@ const CardCategory: React.FC<CardCategoryProps> = ({ category, clickHandler }) =
                 }}
             >
                 {isLoading
-                    ? "Загрузка..."
+                    ? <CenteredSpin />
                     : `${data === 0 ? " " : data + " " + Numerals.numeralsProducts(Number(data))}`}
             </p>
         </div >

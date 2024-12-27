@@ -7,6 +7,7 @@ import { Title } from "../../../../shared/ui/forAdditionalPages/Title";
 import { Text } from "../../../../shared/ui/forAdditionalPages/Content";
 import PostcardAddBlock from "../../../../widgets/postcard/PostcardAddBlock";
 import PostcardBlock from "../../../../widgets/postcard/PostcardBlock";
+import CenteredSpin from "../../../../shared/ui/spinner/CenteredSpin";
 
 type CardOrderProductProps = {
     orderItem: ItemOrder;
@@ -23,7 +24,7 @@ const CardOrderProduct: React.FC<CardOrderProductProps> = ({ orderItem, postcard
         <div style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 10px" }}>
             {
                 isLoading
-                    ? <p>Загрузка...</p>
+                    ? <CenteredSpin />
                     : <>
                         {/* @ts-ignore */}
                         {data.categories[0].id === categoryIdData ? (

@@ -6,6 +6,7 @@ import TitleSection from "../../shared/ui/titleSection/TitleSection";
 import { FullProductSizeDto, ProductSize, useProductsSizesControllerGetByCategotyIdWithPaginationQuery, useProductsSizesControllerGetPaginationQuery } from "../../store/product";
 import { SmartProductCard } from "../product/SmartProductCart";
 import { useSizeContollerGetByNameQuery } from "../../store/size";
+import CenteredSpin from "../../shared/ui/spinner/CenteredSpin";
 
 const Wrapper = styled.div`
     padding: 24px;
@@ -52,11 +53,11 @@ const BlockProducts: React.FC = () => {
                 <BlockGrid>
                     {
                         isLoading
-                            ? <p>Загрузка...</p>
+                            ? <CenteredSpin />
                             : data && productsSizes.map((item, index) =>
                                 item.productSize.idSize !== postcardId ? (
                                     <>
-                                        {console.log(1)}
+
                                         <SmartProductCard key={`productSizes-${index}`} product={item} />
 
                                     </>

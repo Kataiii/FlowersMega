@@ -9,6 +9,7 @@ import { useCategoriesControllerGetByIdQuery } from "../../store/category";
 import { useEffect, useState } from "react";
 import AdditionProductCard from "../../entities/product/ui/AdditionProductCard/AdditionProductCard";
 import { Title } from "../../shared/ui/forAdditionalPages/Title";
+import CenteredSpin from "../../shared/ui/spinner/CenteredSpin";
 
 type GaleryPhotoProductProps = {
     product?: Product;
@@ -36,7 +37,7 @@ const GaleryPhotoProduct: React.FC<GaleryPhotoProductProps> = ({ product }) => {
     }, [countBalloons, countToys])
     return (
         <>
-            {isLoading ? (<p>Загрузка....</p>)
+            {isLoading ? (<CenteredSpin />)
                 : (
                     <div style={{ display: "flex", flexDirection: "column", gap: 20, width: "45%" }}>
                         {/* @ts-ignore */}

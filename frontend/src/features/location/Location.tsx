@@ -9,6 +9,7 @@ import ModalEmpty from "../../shared/ui/modalEmpty/ModalEmpty";
 import PrimaryText from "../../shared/ui/primaryText/PrimaryText";
 import { useCitiesControllerGetByNameQuery } from "../../store/city";
 import { useAppDispatch, useAppSelector } from "../../store/store";
+import CenteredSpin from "../../shared/ui/spinner/CenteredSpin";
 
 const Container = styled.div`
     background-color: var(--block-bg-color);
@@ -24,24 +25,24 @@ const Container = styled.div`
 
 const Location: React.FC = () => {
     const dispatch = useAppDispatch();
-    const [ isOpen, setIsOpen ] = useState<boolean>(false);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
     const activeCity = useAppSelector(selectActiveCity);
-    const { isLoading, data } = useCitiesControllerGetByNameQuery({name: "Москва"});
+    const { isLoading, data } = useCitiesControllerGetByNameQuery({ name: "Москва" });
 
     useEffect(() => {
-        if(!isLoading && activeCity === null){
+        if (!isLoading && activeCity === null) {
             dispatch(addCity(data ?? null));
         }
     }, [isLoading]);
 
-    return(
+    return (
         <>
             <Container onClick={() => setIsOpen(true)}>
-                <LocationIcon/>
-                <PrimaryText>{isLoading ? "Загрузка..." : activeCity?.name}</PrimaryText>
+                <LocationIcon />
+                <PrimaryText>{isLoading ? <CenteredSpin /> : activeCity?.name}</PrimaryText>
             </Container>
             <ModalEmpty isOpen={isOpen} setIsOpen={setIsOpen}>
-                <CityPanel activeCity={activeCity}/>
+                <CityPanel activeCity={activeCity} />
             </ModalEmpty>
         </>
     )

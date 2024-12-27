@@ -21,6 +21,7 @@ import { useCategoriesControllerGetByIdQuery } from "../../store/category";
 import { Title } from "../../shared/ui/forAdditionalPages/Title";
 import { Text } from "../../shared/ui/forAdditionalPages/Content";
 import FastFormOrder from "../fastFormOrder/FastFormOrder";
+import CenteredSpin from "../../shared/ui/spinner/CenteredSpin";
 type DescriptionProductProps = {
     product: Product & { productSize: ProductSize };
 }
@@ -60,7 +61,7 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
         <>
 
             {isLoading ? (
-                <p>Загрузка...</p>
+                <CenteredSpin />
             ) : (
                 // @ts-ignore
                 product.categories[0].id === Number(categoryIdData) ? (

@@ -13,7 +13,7 @@ import { errorMessageEmail, regExEmail } from "../../shared/utils/validationCons
 import SecondaryButton from "../../shared/ui/button/SecondaryButton";
 import { API_URL } from "../../shared/utils/constants";
 
-const ChangeButtonForm = styled(ButtonStyle)<{ $primary?: boolean; }>`
+const ChangeButtonForm = styled(ButtonStyle) <{ $primary?: boolean; }>`
   background-color: ${props => props.$primary ? "var(--primary-bg-color)" : "var(--secondary-bg-color)"};
   color: var(--primary-text-color);
   cursor: pointer;
@@ -35,28 +35,28 @@ type ProfileFormProps = {
     buttonDeleteProfile: React.ReactElement;
 }
 
-const ProfileForm: React.FC<ProfileFormProps> = ({buttonLoadPhoto, buttonChangePassword, buttonDeleteProfile}) => {
-    const [ formDisable, setFormDisable ] = useState<boolean>(true);
+const ProfileForm: React.FC<ProfileFormProps> = ({ buttonLoadPhoto, buttonChangePassword, buttonDeleteProfile }) => {
+    const [formDisable, setFormDisable] = useState<boolean>(true);
     const user = useAppSelector(selectUser);
     const [form] = Form.useForm();
     const dispatch = useAppDispatch();
 
-    const [ updateUser, {isLoading, data, isError, isSuccess}] = useUsersControllerUpdateMutation();
-    
+    const [updateUser, { isLoading, data, isError, isSuccess }] = useUsersControllerUpdateMutation();
+
 
     const changeFormHandler = () => {
-        if(!formDisable){
+        if (!formDisable) {
             form.submit();
         }
         setFormDisable(prev => !prev);
     }
 
     const finishFormHandler = (values: FormValues) => {
-        updateUser({updateUserDto: { firstname: values.name, phone: values.phone, email: values.email }});
+        updateUser({ updateUserDto: { firstname: values.name, phone: values.phone, email: values.email } });
     }
 
     useEffect(() => {
-        if(!isLoading && isSuccess && data){
+        if (!isLoading && isSuccess && data) {
             dispatch(addCredentialsUser(data));
         }
     }, [isLoading, isSuccess]);
@@ -122,10 +122,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({buttonLoadPhoto, buttonChangeP
                         </Form>
                         <div style={{ display: "flex", gap: 15, paddingTop: 25 }}>
                             <div style={{ flexGrow: 1 }}>
-                                { buttonChangePassword }
+                                {buttonChangePassword}
                             </div>
                             <div style={{ flexGrow: 1 }}>
-                                { buttonDeleteProfile }
+                                {buttonDeleteProfile}
                             </div>
                         </div>
                     </div>

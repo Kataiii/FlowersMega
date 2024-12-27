@@ -7,6 +7,7 @@ import Container from "../../shared/ui/containerMain/ContainerMain";
 import TitleSection from "../../shared/ui/titleSection/TitleSection";
 import { CATALOG_PATH, CATEGORY_PATH } from "../../shared/utils/constants";
 import { Category, useCategoriesControllerGetPaginationQuery } from "../../store/category";
+import CenteredSpin from "../../shared/ui/spinner/CenteredSpin";
 
 const ContainerCategories = styled.div`
     display: grid;
@@ -65,7 +66,7 @@ const BlockCategories: React.FC = () => {
             <>
                 {
                     isLoading
-                        ? <p>Загрузка...</p>
+                        ? <CenteredSpin />
                         :
                         <Wrapper>
                             <ContainerCategories>

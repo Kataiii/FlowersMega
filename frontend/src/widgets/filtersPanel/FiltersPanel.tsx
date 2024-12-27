@@ -11,6 +11,7 @@ import { addMaxPrice, addMinPrice } from "../../entities/filter/redux/slice";
 import ClearFilters from "../../features/clear-filters/ClearFilters";
 import { useSearchParams } from "react-router-dom";
 import { useCategoryControllerGetIdByNameQuery } from "../../store/product";
+import CenteredSpin from "../../shared/ui/spinner/CenteredSpin";
 
 const ContainerFilter = styled.div`
     padding: 24px 16px;
@@ -87,11 +88,11 @@ const FiltersPanel: React.FC = () => {
         <>
             {
                 isCategoriesLoading
-                    ? <p>Загрузка...</p>
+                    ? <CenteredSpin />
                     : <ContainerFilter>
                         {
                             isLoading
-                                ? <p>Загрузка...</p>
+                                ? <CenteredSpin />
                                 : <>
                                     <section style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                         <Title style={{ fontSize: 32 }}>Фильтры</Title>

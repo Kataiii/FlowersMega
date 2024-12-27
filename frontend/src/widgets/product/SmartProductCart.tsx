@@ -3,6 +3,7 @@ import CardProduct from "../../entities/product/ui/cardProduct/CardProduct"
 import { AddToCartButton } from "../../features/add-to-cart/AddToCartButton"
 import { ToggleFavoritesButton } from "../../features/toggle-favorite/ToggleFavoriteButton"
 import { FullProductSizeDto, useProductsControllerGetByIdQuery } from "../../store/product"
+import CenteredSpin from "../../shared/ui/spinner/CenteredSpin"
 
 type SmartProductCardProps = {
     product: FullProductSizeDto,
@@ -10,21 +11,21 @@ type SmartProductCardProps = {
 
 export const SmartProductCard: React.FC<SmartProductCardProps> = ({ product }) => {
 
-    const { isLoading, data } = useProductsControllerGetByIdQuery({ id: product.productSize.idProduct});
+    const { isLoading, data } = useProductsControllerGetByIdQuery({ id: product.productSize.idProduct });
     // const responseSize = useSizesControllerGetByIdQuery({id: size.idSize});
 
-    if(data == null) return null;
+    if (data == null) return null;
     return (
         <>
-        {
-            isLoading
-            ?   <p>Загрузка...</p>
-            :   <CardProduct
+            {
+                isLoading
+                    ? <CenteredSpin />
+                    : <CardProduct
                         product={product}
-                        addToCartButton={<AddToCartButton product={{...product.productSize, product: data}} />}
+                        addToCartButton={<AddToCartButton product={{ ...product.productSize, product: data }} />}
                         addToFavorites={<ToggleFavoritesButton item={product} />}
                     />
-        }
+            }
         </>
 
     )

@@ -1,9 +1,10 @@
 import { useLocation, useParams } from "react-router-dom";
 import Container from "../../../shared/ui/containerMain/ContainerMain";
-import {  useProductsControllerGetByIdQuery, useProductsSizesControllerGetByProductIdAndSizeIdQuery } from "../../../store/product";
+import { useProductsControllerGetByIdQuery, useProductsSizesControllerGetByProductIdAndSizeIdQuery } from "../../../store/product";
 import GaleryPhotoProduct from "../../../widgets/product/GaleryPhotoProduct";
 import DescriptionProduct from "../../../widgets/product/DescriptionProduct";
 import BlockReviewProduct from "../../../widgets/blockReviewProduct/BlockReviewProduct";
+import CenteredSpin from "../../../shared/ui/spinner/CenteredSpin";
 
 const Product: React.FC = () => {
     const { name, size } = useParams();
@@ -16,7 +17,7 @@ const Product: React.FC = () => {
         <>
             {
                 isLoading || productSize.isLoading
-                    ? <p>Загрузка...</p>
+                    ? <CenteredSpin />
                     : <div style={{ display: "flex", justifyContent: "center", padding: "25px 0" }}>
                         <Container>
                             <h1 style={{ fontFamily: "Inter", fontSize: 32, fontWeight: 600, color: "var(--secondary-text-color)" }}>{data?.name}</h1>

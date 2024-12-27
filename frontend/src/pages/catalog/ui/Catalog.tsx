@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useProductContext } from "../../../shared/ui/secondHeader/ProductContext";
 import { useSizeContollerGetByNameQuery } from "../../../store/size";
+import CenteredSpin from "../../../shared/ui/spinner/CenteredSpin";
 
 const Catalog: React.FC = () => {
     const filters = useAppSelector(selectFilters)
@@ -50,7 +51,7 @@ const Catalog: React.FC = () => {
                             gap: "10px"
                         }}>
                             {isLoading ? (
-                                <p>Загрузка...</p>
+                                <CenteredSpin />
                             ) : (
                                 data && data.count === 0 ? (
                                     <h1 style={{ width: "420px", fontFamily: "Inter", fontSize: 32, fontWeight: 600, color: "var(--secondary-text-color)" }}>Нет подходящих товаров</h1>

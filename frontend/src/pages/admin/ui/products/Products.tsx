@@ -16,6 +16,7 @@ import ExtraPriceBlock from "../../../../widgets/extraPrice/ExtraPriceBlock";
 import PostcardAddBlock from "../../../../widgets/postcard/PostcardAddBlock";
 import { Debouncer } from "../../../../shared/utils/debounce";
 import { useSizesControllerGetAllQuery } from "../../../../store/size";
+import CenteredSpin from "../../../../shared/ui/spinner/CenteredSpin";
 
 
 
@@ -196,7 +197,7 @@ const Products: React.FC = () => {
                 <>
                     {
                         isProductsPaginationLoading || isSizesLoading
-                            ? <p>Загрузка...</p>
+                            ? <CenteredSpin />
                             : <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "8px" }}>
                                 {productSizedPag?.products.map((product) => ({
                                     ...product
