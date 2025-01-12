@@ -13,7 +13,7 @@ interface Props {
 const Additions: React.FC<Props> = ({ isOpen, setIsOpen, categoryName }) => {
     const { data: categoryIdData } = useCategoryControllerGetIdByNameQuery({ name: categoryName });
     const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(4);
+    const [pageSize, setPageSize] = useState(12);
     const { data, isLoading } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({
         page: page,
         limit: pageSize,
@@ -53,7 +53,7 @@ const Additions: React.FC<Props> = ({ isOpen, setIsOpen, categoryName }) => {
                 <div style={{
                     width: '100%',
                     display: 'grid',
-                    gridTemplateColumns: "repeat(minmax(260px, 1fr) )",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
                     gridGap: '5px',
                 }}>
                     {data && data.products.map((item, index) => (

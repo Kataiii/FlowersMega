@@ -18,13 +18,17 @@ const Variation: React.FC<VariationProps> = ({ variation, onRemove, onChange, di
 
         onChange({
             ...variation,
-            idSize: value !== undefined ? value : 0
+            idSize: value !== undefined ? value : 0,
         });
     };
 
     const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-
-        onChange({ ...variation, prise: Number(e.target.value) });
+        let newPrice = Number(e.target.value);
+        if (newPrice <= 0 || e.target.value === '') {
+            newPrice = 0;
+        }
+        onChange({ ...variation, prise: newPrice });
+        setPrice(newPrice);
     };
 
     const handleDetailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,12 +67,7 @@ const Variation: React.FC<VariationProps> = ({ variation, onRemove, onChange, di
                         value={price}
                         placeholder="Введите стоимость товара в рублях..."
                         style={{ width: "480px" }}
-                        onChange={(e) => {
-                            const newPrice = Number(e.target.value);
-                            if (newPrice > 0 || e.target.value === '') {
-                                setPrice(newPrice);
-                            }
-                        }}
+                        onChange={handlePriceChange}
                         onKeyPress={(event) => {
                             // Разрешаем ввод только цифр
                             if (!/[0-9]/.test(event.key)) {

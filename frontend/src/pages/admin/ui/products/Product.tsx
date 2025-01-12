@@ -123,6 +123,8 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
         photo: category.photo,
       }));
 
+    console.log("variations ", variations);
+
     const productSizes = variations.map((variation: any) => ({
       idSize: variation.idSize,
       prise: variation.prise,
@@ -374,9 +376,9 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
             <StyledVarBlock>
               <VariationsBlock
                 value={variations}
-                onVariationsChange={(newVariations) =>
+                onVariationsChange={(newVariations) => {
                   setVariations(newVariations)
-                }
+                }}
                 disabled={disabled}
               />
             </StyledVarBlock>

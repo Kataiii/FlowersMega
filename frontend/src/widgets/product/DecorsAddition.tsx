@@ -13,7 +13,7 @@ const DecorsAddition: React.FC<Props> = ({ isOpen, setIsOpen }) => {
     const { data: categoryIdDatA } = useCategoryControllerGetIdByNameQuery({ name: "Мягкие игрушки" });
     const { data: categoryIdDataB } = useCategoryControllerGetIdByNameQuery({ name: "Шары" });
     const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(4);
+    const [pageSize, setPageSize] = useState(12);
     const { data: toys, isLoading: isToysLoading } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({
         page: page,
         limit: pageSize,
@@ -68,7 +68,7 @@ const DecorsAddition: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                     style={{
                         width: "100%",
                         display: "grid",
-                        gridTemplateColumns: "repeat(4, 1fr)",
+                        gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
                         gridGap: "5px",
                     }}
                 >

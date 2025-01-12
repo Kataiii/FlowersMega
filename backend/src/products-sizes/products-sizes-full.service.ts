@@ -93,7 +93,7 @@ export class ProductsSizesFullService {
     ) { }
 
     // async onModuleInit() {
-    //     await this.seeds("../backend/static/products/FLOWERS.txt");
+    //     await this.seeds("../backend/static/products/Flowers21.txt");
     // }
 
     async seeds(filePath: string): Promise<void> {
@@ -157,7 +157,7 @@ export class ProductsSizesFullService {
 
             const sizesProduct = sizesStr.split(",").map((sizeStr, idx) => {
                 const cleanedSizeStr = sizeStr.replace(/["']/g, "").trim();
-                const [label, dimensions] = cleanedSizeStr.split(":");
+                const [label, dimensions] = cleanedSizeStr.indexOf(":") === -1 ? `${cleanedSizeStr}: `.split(":") : cleanedSizeStr.split(":");
                 const sizeId = sizes.find((el) => el.name === label.trim()).id;
 
                 if (!sizeId || !prices[idx]) return null;
