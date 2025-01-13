@@ -70,9 +70,7 @@ const ReviewCardMain: React.FC<ReviewCardMainProps> = ({ review }) => {
                         <Title>{review.product.name}</Title>
                     </>
                 ) : (
-
                     <>
-                        {console.log(review, "LALALLLLALA")}
                         <Title>Товар</Title>
                     </>
                 )}

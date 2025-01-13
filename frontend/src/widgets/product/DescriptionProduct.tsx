@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from "../../store/store";
 import ts from "typescript";
 import { ignore } from "antd/es/theme/useToken";
 import PostcardAddBlock from "../postcard/PostcardAddBlock";
-import { Modal } from "antd";
+import { Modal, Skeleton } from "antd";
 import ModalRoute from "../../shared/ui/modalRoute/ModalRoute";
 import ModalEmpty from "../../shared/ui/modalEmpty/ModalEmpty";
 import { SetStateAction, useState } from "react";
@@ -61,7 +61,7 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
         <>
 
             {isLoading ? (
-                <CenteredSpin />
+                <Skeleton active />
             ) : (
                 // @ts-ignore
                 product.categories[0].id === Number(categoryIdData) ? (
@@ -77,7 +77,7 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
                 ) : (
                     <>
 
-                        <div style={{ height: "fit-content", width: "50%", backgroundColor: "var(--block-bg-color)", padding: "24px 16px 50px", borderRadius: 6, display: "flex", flexDirection: "column", gap: 24 }}>
+                        <div style={{ height: "fit-content", width: "50%", backgroundColor: "var(--block-bg-color)", padding: "24px 16px 50px", borderRadius: 6, display: "flex", flexDirection: "column", gap: 24, }}>
                             <div style={{ display: "flex", gap: 16 }}>
                                 {/* @ts-ignore */}
                                 {(data?.sizes.length > 1) ? data?.sizes.map((item, index) => (
@@ -110,11 +110,11 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
                                 )}
 
 
-                            <div style={{ display: "flex", gap: 10 }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "49% 49%", gap: "1%", alignItems: "center", justifyContent: "space-around" }}>
                                 {isInCart ? (
                                     <ProductPageCountController id={product.productSize.id ?? -1} />
                                 ) : (
-                                    <button onClick={() => dispatch(addOneToCart({ ...product.productSize, product }))} style={{ width: "49%", cursor: "pointer", minWidth: 380, height: 55, backgroundColor: "var(--primary-bg-color)", border: "1px solid #FF749F", borderRadius: 6, fontFamily: "Inter", fontWeight: 400, fontSize: 20, color: "var(--primary-text-color)" }}>
+                                    <button onClick={() => dispatch(addOneToCart({ ...product.productSize, product }))} style={{ width: "100%", cursor: "pointer", minWidth: "95%", height: 55, backgroundColor: "var(--primary-bg-color)", border: "1px solid #FF749F", borderRadius: 6, fontFamily: "Inter", fontWeight: 400, fontSize: 20, color: "var(--primary-text-color)" }}>
                                         Заказать
                                     </button>
                                 )}
@@ -127,7 +127,7 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
                                         product.categories[0].id === Number(categoryIdDataB) ? (
                                         null
                                     ) : ( */}
-                                <button onClick={() => setIsOpen(true)} style={{ width: "49%", cursor: "pointer", minWidth: 380, height: 55, backgroundColor: "var(--block-bg-color)", border: "1px solid #FF749F", borderRadius: 6, fontFamily: "Inter", fontWeight: 400, fontSize: 20, color: "var(--primary-bg-color)" }}>
+                                <button onClick={() => setIsOpen(true)} style={{ width: "100%", cursor: "pointer", minWidth: "95%", height: 55, backgroundColor: "var(--block-bg-color)", border: "1px solid #FF749F", borderRadius: 6, fontFamily: "Inter", fontWeight: 400, fontSize: 20, color: "var(--primary-bg-color)" }}>
                                     Купить в 1 клик
                                 </button>
                                 {/* )} */}

@@ -143,7 +143,7 @@ const Reviews: React.FC = () => {
                     ))}
                 </div>
                 <Pagination
-                    style={{ marginTop: "16px", textAlign: "center" }}
+                    style={{ marginTop: "16px", textAlign: "center", display: "block" }}
                     current={page}
                     total={reviews?.count}
                     pageSize={pageSize}

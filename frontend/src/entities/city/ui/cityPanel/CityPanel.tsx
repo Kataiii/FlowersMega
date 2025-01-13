@@ -1,11 +1,11 @@
-import { Input, Spin } from "antd";
+import { Input, Skeleton, Spin } from "antd";
 import { useMemo, useState } from "react";
 import { styled } from "styled-components";
 import { Title } from "../../../../shared/ui/forAdditionalPages/Title";
 import { City, useCitiesControllerGetAllQuery } from "../../../../store/city";
 import { useAppDispatch } from "../../../../store/store";
 import { addCity } from "../../redux/slice";
-import { ReactComponent as Search} from "../../../../shared/assets/search.svg";
+import { ReactComponent as Search } from "../../../../shared/assets/search.svg";
 import { Filters } from "../../../../shared/utils/filters";
 
 const RadioButton = styled.div<{ $primary?: boolean; }>`
@@ -31,9 +31,9 @@ type CityPanelProps = {
 const CityPanel: React.FC<CityPanelProps> = ({ activeCity }) => {
     const { isLoading, data } = useCitiesControllerGetAllQuery();
 
-    const [ city, setCity ] = useState<City | null>(activeCity);
+    const [city, setCity] = useState<City | null>(activeCity);
     const dispatch = useAppDispatch();
-    const [ search, setSearch ] = useState<string>("");
+    const [search, setSearch] = useState<string>("");
 
     const cityClickHandler = (city: City) => {
         setCity(city);
@@ -44,21 +44,21 @@ const CityPanel: React.FC<CityPanelProps> = ({ activeCity }) => {
         setSearch(e.target.value);
     }
 
-    const cities = useMemo(() => 
+    const cities = useMemo(() =>
         Filters.filtersCities(data ?? [], search)
-    , [isLoading, search])
+        , [isLoading, search])
 
     return (
         <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 32 }}>
             <Title>Город доставки</Title>
-            <Input 
+            <Input
                 size="large"
                 placeholder="Введите название города"
-                prefix={<Search/>} 
-                onChange={seachChange}/>
+                prefix={<Search />}
+                onChange={seachChange} />
             {
                 isLoading
-                    ? <Spin />
+                    ? <Skeleton active />
                     : <div style={{ maxWidth: 680, display: "flex", flexWrap: "wrap", gap: 24, padding: "10 0", border: "none" }}>
                         {
                             data && cities.map((item, index) => {

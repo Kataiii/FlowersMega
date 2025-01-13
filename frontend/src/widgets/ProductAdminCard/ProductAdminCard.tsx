@@ -42,7 +42,7 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ product, sizes, typ
     const [isExpanded, setIsExpanded] = useState(false);
 
     const dataSource = useMemo(() => {
-        if (!product || !sizes ) return [];
+        if (!product || !sizes) return [];
         return product.productsSizes.map(productSize => {
             return {
                 key: productSize.productSize.id,
@@ -72,6 +72,7 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ product, sizes, typ
     ];
 
     return (
+
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             <div
                 style={{

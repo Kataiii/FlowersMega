@@ -5,6 +5,7 @@ import GaleryPhotoProduct from "../../../widgets/product/GaleryPhotoProduct";
 import DescriptionProduct from "../../../widgets/product/DescriptionProduct";
 import BlockReviewProduct from "../../../widgets/blockReviewProduct/BlockReviewProduct";
 import CenteredSpin from "../../../shared/ui/spinner/CenteredSpin";
+import { Skeleton } from "antd";
 
 const Product: React.FC = () => {
     const { name, size } = useParams();
@@ -22,7 +23,7 @@ const Product: React.FC = () => {
                         <Container>
                             <h1 style={{ fontFamily: "Inter", fontSize: 32, fontWeight: 600, color: "var(--secondary-text-color)" }}>{data?.name}</h1>
                             <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <GaleryPhotoProduct product={data} />
+                                {isLoading || productSize.isLoading ? <Skeleton.Avatar active size={500} /> : <GaleryPhotoProduct product={data} />}
                                 <DescriptionProduct product={{ ...data!, productSize: productSize.data! }} />
                             </div>
                             <BlockReviewProduct idProductSize={productSize.data?.id ?? -1} />

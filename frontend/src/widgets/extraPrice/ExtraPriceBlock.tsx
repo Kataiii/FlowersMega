@@ -164,7 +164,7 @@ const ExtraPriceBlock: React.FC = () => {
                                                     event.preventDefault();
                                                 }
                                             }}
-                                            style={{ width: "250px" }}
+                                            style={{ width: "90%" }}
                                             value={extraValue}
                                             onChange={handleCostChange}
                                         />

@@ -46,6 +46,10 @@ export class CustomFile implements File {
         this.size = buffer.length;
         this.type = type;
     }
+    
+    bytes(): Promise<Uint8Array> {
+        throw new Error("Method not implemented.");
+    }
 
     async arrayBuffer(): Promise<ArrayBuffer> {
         return this.buffer.buffer.slice(

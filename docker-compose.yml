@@ -27,11 +27,6 @@ services:
     container_name: nest-pgadmin4
     env_file:
       - ./backend/.production.env
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
-      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
-      - PGADMIN_LISTEN_ADDRS=${PGADMIN_LISTEN_ADDRS}
-      - PGADMIN_SERVER_URL=${PGADMIN_SERVER_URL}
     ports:
       - '5050:80'
     depends_on:

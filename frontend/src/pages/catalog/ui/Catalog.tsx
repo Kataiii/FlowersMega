@@ -75,7 +75,7 @@ const Catalog: React.FC = () => {
                             handlePageChange(current, size);
                         }}
                         showSizeChanger
-                        style={{ textAlign: "center" }}
+                        style={{ display: "block", textAlign: "center" }}
                     />
                 </div>
 

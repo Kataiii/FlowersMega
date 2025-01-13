@@ -4,6 +4,7 @@ import { AddToCartButton } from "../../features/add-to-cart/AddToCartButton"
 import { ToggleFavoritesButton } from "../../features/toggle-favorite/ToggleFavoriteButton"
 import { FullProductSizeDto, useProductsControllerGetByIdQuery } from "../../store/product"
 import CenteredSpin from "../../shared/ui/spinner/CenteredSpin"
+import { Skeleton } from "antd"
 
 type SmartProductCardProps = {
     product: FullProductSizeDto,
@@ -19,7 +20,7 @@ export const SmartProductCard: React.FC<SmartProductCardProps> = ({ product }) =
         <>
             {
                 isLoading
-                    ? <CenteredSpin />
+                    ? <Skeleton active />
                     : <CardProduct
                         product={product}
                         addToCartButton={<AddToCartButton product={{ ...product.productSize, product: data }} />}
