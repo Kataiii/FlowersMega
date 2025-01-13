@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useCategoryControllerGetIdByNameQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery } from "../../store/product";
+import { FullProductSizeDto, useCategoryControllerGetIdByNameQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery } from "../../store/product";
 import { Modal, Pagination } from "antd";
 import { Title } from "../../shared/ui/forAdditionalPages/Title";
 import { Text } from "../../shared/ui/forAdditionalPages/Content";
@@ -13,23 +13,40 @@ const DecorsAddition: React.FC<Props> = ({ isOpen, setIsOpen }) => {
     const { data: categoryIdDatA } = useCategoryControllerGetIdByNameQuery({ name: "Мягкие игрушки" });
     const { data: categoryIdDataB } = useCategoryControllerGetIdByNameQuery({ name: "Шары" });
     const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(12);
+    const [pageSize, setPageSize] = useState(20);
+    const [products, setProducts] = useState<FullProductSizeDto[]>([]);
+    const [totalItems, setTotalItems] = useState(0);
+
     const { data: toys, isLoading: isToysLoading } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({
-        page: page,
-        limit: pageSize,
+        page,
+        limit: pageSize / 2,
         category: Number(categoryIdDatA),
     });
+
     const { data: baloons, isLoading: isBaloonsLoading } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({
-        page: page,
-        limit: pageSize,
+        page,
+        limit: pageSize / 2,
         category: Number(categoryIdDataB),
     });
-    const [products, setProducts] = useState(
-        toys?.products && baloons?.products ? [...toys.products, ...baloons.products] : []
-    );
+
+
+
+    useEffect(() => {
+        const totalCount = (toys?.count || 0) + (baloons?.count || 0);
+        setTotalItems(totalCount);
+    }, [toys?.count, baloons?.count]);
+
+    useEffect(() => {
+        const combinedProducts = [
+            ...(toys?.products || []),
+            ...(baloons?.products || []),
+        ];
+        setProducts(combinedProducts);
+    }, [toys?.products, baloons?.products]);
 
     const handlePageChange = (newPage: number, newPageSize?: number) => {
         setPage(newPage);
+        setProducts([]); // Сбросьте продукты при изменении страницы
         if (newPageSize) {
             setPageSize(newPageSize);
         }
@@ -39,11 +56,8 @@ const DecorsAddition: React.FC<Props> = ({ isOpen, setIsOpen }) => {
         setIsOpen(false);
     };
 
-    useEffect(() => {
-        setProducts(
-            toys?.products && baloons?.products ? [...toys.products, ...baloons.products] : []
-        );
-    }, [toys, baloons]);
+    // const totalItems = Math.min(toys?.count || 0, pageSize * page) + Math.min(baloons?.count || 0, pageSize * page);
+    console.log(totalItems, "total")
 
     return (
         (products.length === 0 && isToysLoading && isBaloonsLoading) ? (
@@ -84,8 +98,8 @@ const DecorsAddition: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                         ))}
                 </div>
                 <Pagination
-                    style={{ marginTop: "16px", textAlign: "center" }}
-                    total={products?.length}
+                    style={{ marginTop: "16px", display: 'block', textAlign: 'center' }}
+                    total={totalItems}
                     current={page}
                     pageSize={pageSize}
                     onChange={handlePageChange}

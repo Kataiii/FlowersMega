@@ -67,7 +67,7 @@ const Additions: React.FC<Props> = ({ isOpen, setIsOpen, categoryName }) => {
                     ))}
                 </div>
                 <Pagination
-                    style={{ marginTop: "16px", textAlign: "center" }}
+                    style={{ marginTop: "16px", textAlign: "center", display: 'block' }}
                     total={data?.count}
                     current={page}
                     pageSize={pageSize}

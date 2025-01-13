@@ -46,7 +46,7 @@ export class CustomFile implements File {
         this.size = buffer.length;
         this.type = type;
     }
-    
+
     bytes(): Promise<Uint8Array> {
         throw new Error("Method not implemented.");
     }
@@ -429,6 +429,8 @@ export class ProductsSizesFullService {
             });
         }
 
+        console.log("countAndProducts ", countAndProducts);
+
         const resCardInfo = await this.calculatePrices(countAndProducts.rows);
 
         return {
@@ -437,6 +439,41 @@ export class ProductsSizesFullService {
         };
     }
 
+    // async calculatePrices(products: Product[]): Promise<ProductSize[]> {
+    //     const extraPriceForCategories = await this.extraPriceService.whichOneTheBest();
+    //     let countProductsWithMarkup = 0;
+
+    //     console.log(extraPriceForCategories, "EPRIE BTW");
+
+    //     const updatedProducts = await Promise.all(products.map(async (product) => {
+    //         const productSizes = await Promise.all(product.productSizes.map(async (item) => {
+    //             const info = await this.getCardInfo(item);
+    //             return {
+    //                 id: item.id,
+    //                 idProduct: item.idProduct,
+    //                 idSize: item.idSize,
+    //                 paramsSize: item.paramsSize,
+    //                 count: item.count,
+    //                 price: item.extraPrice,
+    //                 orders: item.orders,
+    //                 size: info.size,
+    //             };
+    //         }));
+    //         const reviewsInfo = await this.reviewsService.getById(product.id);
+    //         return {
+    //             id: product.id,
+    //             name: product.name,
+    //             idTypeProduct: product.idTypeProduct,
+    //             image: product.images[0],
+    //             filters: product.filters,
+    //             categories: product.categories,
+    //             productSizes: productSizes,
+    //             reviewsInfo: reviewsInfo
+    //         };
+    //     }));
+
+    //     return updatedProducts;
+    // }
 
     async calculatePrices(products: ProductSize[]) {
         const extraPriceForCategories =
