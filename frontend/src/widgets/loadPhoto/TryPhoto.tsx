@@ -5,12 +5,12 @@ import type { GetProp, UploadProps } from 'antd';
 import Button from '../../shared/ui/button/Button';
 import SecondaryButton from '../../shared/ui/button/SecondaryButton';
 import { ResponseDto } from '../../store/user';
-import axios from 'axios';
 import { API_URL } from '../../shared/utils/constants';
 import { useAppDispatch, useAppSelector } from '../../store/store';
 import { selectToken } from '../../entities/credential/redux/selectors';
 import { addCredentialsUser } from '../../entities/credential/redux/slice';
 import { AvatarUploader } from './TryPhoto.style';
+import $api from '../../shared/utils/http';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -67,26 +67,24 @@ const TryPhoto: React.FC = () => {
   );
 
   const loadPhotoButton = async () => {
-    const response = (await axios.postForm<ResponseDto>(`${API_URL}/users/avatar`, {
+    const response = (await $api.postForm<ResponseDto>(`${API_URL}/users/avatar`, {
       file: file
     },
       {
         headers: {
           Authorization: `Bearer ${token}`
-        },
-        withCredentials: true
+        }
       })).data;
     dispatch(addCredentialsUser(response));
   }
 
   const deleteButton = async () => {
-    const response = await axios.postForm<ResponseDto>(`${API_URL}/users/avatar`, {
+    const response = await $api.postForm<ResponseDto>(`${API_URL}/users/avatar`, {
       file: null
     }, {
       headers: {
         Authorization: `Bearer ${token}`
       },
-      withCredentials: true
     });
     dispatch(addCredentialsUser(response.data));
 

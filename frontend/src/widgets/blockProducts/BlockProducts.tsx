@@ -29,23 +29,20 @@ const BlockProducts: React.FC = () => {
     const [pageSize, setPageSize] = useState<number>(5);
     const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ page: page, limit: pageSize });
     const [productsSizes, setProductSizes] = useState<FullProductSizeDto[]>([]);
-    const { data: postcardId } = useSizeContollerGetByNameQuery({ name: "-" });
-    console.log(postcardId, "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
 
     useEffect(() => {
         if (!isLoading && data?.products) {
-            setProductSizes(data.products);
+            setProductSizes(prev => [...prev, ...data.products]);
         }
     }, [data, isLoading]);
-
 
     const clickHandler = () => {
         const allPages = Math.ceil((data?.count ?? 0) / pageSize);
         if (page < allPages) {
-            setPageSize(prevPage => prevPage + 3);
+            setPage(prevPage => prevPage + 1);
         }
     };
-
+    
     return (
         <Container>
             <TitleSection content="Популярные товары" />
@@ -55,13 +52,7 @@ const BlockProducts: React.FC = () => {
                         isLoading
                             ? <CenteredSpin />
                             : data && productsSizes.map((item, index) =>
-                                item.productSize.idSize !== postcardId ? (
-                                    <>
-
-                                        <SmartProductCard key={`productSizes-${index}`} product={item} />
-
-                                    </>
-                                ) : null
+                                <SmartProductCard key={`productSizes-${index}`} product={item} />
                             )
                     }
                 </BlockGrid>

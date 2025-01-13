@@ -72,15 +72,15 @@ const CardProduct: React.FC<CardProductProps> = ({ product, addToCartButton, add
     return (
         <div style={{ width: '100%', borderRadius: "14px", padding: "8px", backgroundColor: "var(--block-bg-color)", display: "flex", flexDirection: "column", gap: "16px", position: "relative", justifyContent: "space-between" }}>
             {/* @ts-ignore*/}
-            <Image preview={{ visible: false }} style={{ width: "100%", height: "270px", borderRadius: "6px", cursor: "pointer" }} src={`${API_URL}/products/images/${product?.productSize.idProduct}/${product?.product.image.url}`} onClick={() => navigate(`${PRODUCT_PATH}/${product.product.name}/${product.size?.name}`, { state: { idProduct: product.productSize.idProduct, idSize: product.productSize.idSize } })} alt={product.product.name} />
+            <Image preview={{ visible: false }} style={{ width: "100%", height: "270px", borderRadius: "6px", cursor: "pointer", objectFit: "contain" }} src={`${API_URL}/products/images/${product?.productSize.idProduct}/${product?.product.image.url}`} onClick={() => navigate(`${PRODUCT_PATH}/${product.product.name}/${product.size?.name}`, { state: { idProduct: product.productSize.idProduct, idSize: product.productSize.idSize } })} alt={product.product.name} />
             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                 <Rate style={{ color: "var(--primary-bg-color)" }} value={product.reviewsInfo?.averageRating ?? 0} disabled />
                 <p style={{ fontFamily: "Inter", display: "inline", fontSize: 14, fontWeight: 600, color: "var(--text-modal)" }}>{product.reviewsInfo?.count === 0 ? "нет отзывов" : `${product.reviewsInfo?.count} ${Numerals.numeralsReviews((product.reviewsInfo?.count ?? -1) % 10)}`}</p>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    <p style={{ fontFamily: 'Inter', fontWeight: 400, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0, wordBreak: "break-all" }}>{product.product.name} {product.size.id !== postcardId ? (`(${product.size?.name})`) : null}</p>
-                    <p style={{ fontFamily: 'Inter', fontWeight: 400, fontSize: "14px", color: "#8B8B8B", margin: 0 }}>Размер: {product.productSize.paramsSize}</p>
+                    <p style={{ overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 1, lineClamp: 1, WebkitBoxOrient: "vertical", fontFamily: 'Inter', fontWeight: 400, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0, wordBreak: "break-all" }}>{product.product.name} {product.size.id !== postcardId ? (`(${product.size?.name})`) : null}</p>
+                    {product.productSize.paramsSize && product.productSize.paramsSize.replace(/\s+/g, " ") !== " " && <p style={{ fontFamily: 'Inter', fontWeight: 400, fontSize: "14px", color: "#8B8B8B", margin: 0 }}>Размер: {product.productSize.paramsSize}</p>}
                 </div>
                 <p style={{ fontFamily: 'Inter', fontWeight: 600, fontSize: "24px", color: "var(--secondary-text-color)", margin: 0 }}>{product.productSize.prise.toLocaleString()} ₽</p>
                 <div style={{ display: "flex", justifyContent: "space-between", gap: "10px" }}>

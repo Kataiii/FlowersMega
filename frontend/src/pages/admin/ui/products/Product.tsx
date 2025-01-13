@@ -12,7 +12,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { styled } from "styled-components";
 import { API_URL } from "../../../../shared/utils/constants";
 import TypeDropdown from "../../../../shared/ui/dropdown/TypeDropdown";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CategoryDropdown from "../../../../shared/ui/dropdown/CategoryDropdown";
 import FilterDropdown from "../../../../shared/ui/dropdown/FilterDropdown";
 import VariationsBlock from "../../../../shared/ui/variations/VariationsBlock";
@@ -29,11 +29,10 @@ import {
   StyledVarBlock,
 } from "./Product.styled";
 import ProductPhotoLoader from "../../../../widgets/loadPhoto/ProductPhotoLoader";
-import axios from "axios";
 import { useAppSelector } from "../../../../store/store";
 import { selectToken } from "../../../../entities/credential/redux/selectors";
 import Error from "../../../../shared/assets/no-image.png";
-import { selectAllFilters } from "../../../../entities/filter/redux/slice";
+import $api from "../../../../shared/utils/http";
 
 interface ProductProps {
   onCatChange?: (categories: any[]) => void;
@@ -123,6 +122,8 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
         photo: category.photo,
       }));
 
+    console.log("variations ", variations);
+
     const productSizes = variations.map((variation: any) => ({
       idSize: variation.idSize,
       prise: variation.prise,
@@ -153,19 +154,17 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
       let response;
       if (id && locate.pathname !== "/admin/product/create") {
         formData.append("id", id ?? "-1");
-        response = await axios.patchForm(`${API_URL}/products-sizes/full-product`, formData, {
+        response = await $api.patchForm(`${API_URL}/products-sizes/full-product`, formData, {
           headers: {
             Authorization: `Bearer ${token}`
-          },
-          withCredentials: true
+          }
         })
       }
       else {
-        response = await axios.postForm(`${API_URL}/products-sizes/full-product `, formData, {
+        response = await $api.postForm(`${API_URL}/products-sizes/full-product `, formData, {
           headers: {
             Authorization: `Bearer ${token}`
-          },
-          withCredentials: true
+          }
         })
       }
       await createProductWithDetails({ body: undefined });
@@ -374,9 +373,9 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
             <StyledVarBlock>
               <VariationsBlock
                 value={variations}
-                onVariationsChange={(newVariations) =>
+                onVariationsChange={(newVariations) => {
                   setVariations(newVariations)
-                }
+                }}
                 disabled={disabled}
               />
             </StyledVarBlock>

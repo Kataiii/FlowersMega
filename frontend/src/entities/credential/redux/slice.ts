@@ -8,6 +8,7 @@ import { loginThunk, registThunk, logoutThunk, refreshThunk } from "./asyncThunk
 export const addCredentialsUser = createAction<ResponseDto>('addCredentialsUser');
 export const logOut = createAction('logOut');
 export const checkPermissions = createAction<boolean>('checkPermissions');
+export const refreshToken = createAction('refreshToken');
 
 const initialState: CredentailState = {
     user: null,
@@ -33,9 +34,9 @@ const credentialSlice = createSlice({
             const payload = action.payload;
             console.log(payload);
             state.loginStatus = RequestStatus.SUCCESSFUL;
-            state.accessToken = payload.accessToken ?? null;
-            console.log(payload.user);
-            state.user = payload.user ?? null;
+            state.accessToken = payload?.accessToken ?? null;
+            console.log(payload?.user);
+            state.user = payload?.user ?? null;
             state.isAuth = true;
         }),
         builder.addCase(registThunk.pending, state => {
@@ -60,6 +61,11 @@ const credentialSlice = createSlice({
         }),
         builder.addCase(checkPermissions, (state, action) => {
             state.isAdmin = action.payload;
+        }),
+        builder.addCase(refreshToken, (state, action) => {
+            state.accessToken = action.payload.accessToken ?? '';
+            state.user = action.payload.user;
+            state.isAuth = true;
         })
     }
 })

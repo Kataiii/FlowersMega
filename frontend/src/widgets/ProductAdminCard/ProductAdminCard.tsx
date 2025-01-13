@@ -134,7 +134,7 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ product, sizes, typ
                         <Table
                             size="small"
                             pagination={false}
-                            style={{ width: "350px" }}
+                            // style={{ width: "350px" }}
                             dataSource={dataSource}
                             columns={columns}
                         />
