@@ -1,5 +1,4 @@
 import { Checkbox, ConfigProvider, Form, Input, Result } from "antd";
-import axios from "axios";
 import { useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,6 +6,7 @@ import { styled } from "styled-components";
 import Button from "../../shared/ui/button/Button";
 import ModalEmpty from "../../shared/ui/modalEmpty/ModalEmpty";
 import { API_URL, HOME_PATH } from "../../shared/utils/constants";
+import $api from "../../shared/utils/http";
 
 const Title = styled.h1`
     font-family: "Inter";
@@ -30,12 +30,10 @@ const OrderCall: React.FC = () => {
     const navigate = useNavigate();
 
     const onFinish = async(values: any) => {
-        const response = await axios.post(`${API_URL}/tg-bot/order-call`, {
+        const response = await $api.post(`${API_URL}/tg-bot/order-call`, {
             name: values.name,
             phone: values.phone,
             disabled: values.disabled
-        }, {
-            withCredentials: true
         });
 
         setIsOpen(true);

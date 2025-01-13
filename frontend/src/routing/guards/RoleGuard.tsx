@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { selectAdmin } from "../../entities/credential/redux/selectors";
 import { checkPermissions } from "../../entities/credential/redux/slice";
 import Forbidden from "../../pages/admin/ui/forbidden/Forbidden";
@@ -13,8 +14,13 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({ children }) => {
     const { data, isLoading, isError, error } = useAuthControllerCheckPermissionsQuery(null);
 
     const dispatch = useAppDispatch();
-    dispatch(checkPermissions(!isError));
     console.log("ADMIN " + data + " ", error);
+
+    useEffect(() => {
+        if (!isLoading) {
+            dispatch(checkPermissions(!isError));
+        }
+    }, [isLoading]);
 
     const isAdmin = useAppSelector(selectAdmin);
 

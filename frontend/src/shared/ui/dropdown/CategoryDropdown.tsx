@@ -4,8 +4,8 @@ import { Button, Dropdown, Input, Modal, Upload } from "antd";
 import { ItemFilter } from "../../../store/product";
 import { ButtonText } from "../../../pages/admin/ui/products/Products";
 import { useCategoriesControllerCreateMutation, useCategoriesControllerDeleteMutation } from "../../../store/category";
-import axios from "axios";
 import { API_URL } from "../../utils/constants";
+import $api from "../../utils/http";
 
 type CategoryMin = Omit<Category, "url">;
 type FilteryMin = Omit<ItemFilter, "idFilter">;
@@ -104,9 +104,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
         //     file: fileList[0].originFileObj,
         //   },
         // }).unwrap();
-        const response = (await axios.postForm<Category>(`${API_URL}/categories`, body, {
-          withCredentials: true,
-        })).data;
+        const response = (await $api.postForm<Category>(`${API_URL}/categories`, body)).data;
         const newCategory = {
           id: response.id,
           name: response.name,

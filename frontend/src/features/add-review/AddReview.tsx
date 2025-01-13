@@ -9,9 +9,8 @@ import TextArea from "antd/es/input/TextArea";
 import LoaderPhoto from "../../shared/ui/loaderPhoto/LoaderPhoto";
 import Button from "../../shared/ui/button/Button";
 import { useState } from "react";
-import { useReviewsControllerCreateMutation } from "../../store/review";
-import axios from "axios";
 import { API_URL } from "../../shared/utils/constants";
+import $api from "../../shared/utils/http";
 
 const Container = styled.div`
     padding: 10px 10px 30px;
@@ -33,7 +32,7 @@ const AddReview: React.FC<AddReviewProps> = ({ closeHandler, idProductSize }) =>
     const [fileList, setFileList] = useState<File[]>([]);
 
     const onFinish = async (values: any) => {
-        const response = await axios.postForm(`${API_URL}/reviews`, {
+        const response = await $api.postForm(`${API_URL}/reviews`, {
             rating: rating,
                 comment: values.comment, 
                 idProductSize: idProductSize,
@@ -41,7 +40,6 @@ const AddReview: React.FC<AddReviewProps> = ({ closeHandler, idProductSize }) =>
                 phone: values.phone,
                 files: fileList
         }, {
-            withCredentials: true,
             headers: {
                 Authorization: `Bearer ${token}`
             }
