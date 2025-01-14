@@ -47,15 +47,6 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
     const isInCart = useAppSelector(state => isInCartSelector(state, product.productSize));
     const { data: categoryIdData, isLoading: isCategoryDataLoading } = useCategoryControllerGetIdByNameQuery({ name: "Открытки" });
     const location = useLocation();
-    const { data: categoryIdDatA } = useCategoryControllerGetIdByNameQuery({ name: "Мягкие игрушки" });
-    const { data: categoryIdDataB } = useCategoryControllerGetIdByNameQuery({ name: "Шары" });
-    const { data: categoryIdDataC } = useCategoryControllerGetIdByNameQuery({ name: "Топперы" });
-    const { data: categoryIdDataD } = useCategoryControllerGetIdByNameQuery({ name: "Комнатные цветы" });
-    const { data: categoryIdDataE } = useCategoryControllerGetIdByNameQuery({ name: "Клубника в шоколаде" });
-
-    const { data: ToppersAddition } = useCategoriesControllerGetByIdQuery({ id: Number(categoryIdDataC) });
-    const { data: DecorsAdditionCat } = useCategoriesControllerGetByIdQuery({ id: Number(categoryIdDatA) });
-    const { data: PostcardAddition } = useCategoriesControllerGetByIdQuery({ id: Number(categoryIdData) });
     const [isOpen, setIsOpen] = useState(false);
     console.log(location)
     // @ts-ignore
@@ -123,15 +114,6 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
                                         Заказать
                                     </button>
                                 )}
-                                {/* {
-                                    // @ts-ignore
-                                    product.categories[0].id === Number(categoryIdDataC) ||
-                                        // @ts-ignore
-                                        product.categories[0].id === Number(categoryIdDatA) ||
-                                        // @ts-ignore
-                                        product.categories[0].id === Number(categoryIdDataB) ? (
-                                        null
-                                    ) : ( */}
                                 <button onClick={() => setIsOpen(true)} style={{ width: "100%", cursor: "pointer", minWidth: "95%", height: 55, backgroundColor: "var(--block-bg-color)", border: "1px solid #FF749F", borderRadius: 6, fontFamily: "Inter", fontWeight: 400, fontSize: 20, color: "var(--primary-bg-color)" }}>
                                     Купить в 1 клик
                                 </button>
@@ -148,8 +130,6 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
                         </div>
 
 
-                        {/* <ToppersAddition isToppersOpen={isToppersOpen} setIsToppersOpen={setIsToppersOpen} />
-                        <PostcardAddition isPostcardsOpen={isPostcardsOpen} setIsPostcardsOpen={setIsPostcardsOpen} /> */}
 
                     </>
                 )

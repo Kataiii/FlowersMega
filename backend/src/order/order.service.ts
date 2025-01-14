@@ -24,7 +24,6 @@ export class OrderService {
             const [day, month, year] = datePart.split('.').map(Number);
             if (timePart) {
                 const [hours, minutes] = timePart.split(':').map(Number);
-                // Set seconds to 0 to prevent automatic rounding
                 return new Date(year, month - 1, day, hours, minutes, 0);
             }
             return new Date(year, month - 1, day);
@@ -73,15 +72,12 @@ export class OrderService {
                 productSizeId: productSizeId[productSizeId.length - 1]
             };
         });
-
-        // Format date to dd.mm.yyyy
         const formatDate = (date: Date): string => {
             const day = date.getDate().toString().padStart(2, '0');
             const month = (date.getMonth() + 1).toString().padStart(2, '0');
             const year = date.getFullYear();
             return `${day}.${month}.${year}`;
         };
-
         this.tgBotService.sendMessage(`Lucky Flora ${dto.addressDelivery.split(',')[0]}
 Новый заказ: #${order.id}
     
@@ -110,7 +106,7 @@ ${productsSizes.map((item, index) => {
             }
             return result;
         }).join('\n')}
-    
+
 ${dto.comment ? `Примечания к заказу: ${dto.comment}\n` : ''}
 ИТОГО: ${order.cost} руб.`);
 
