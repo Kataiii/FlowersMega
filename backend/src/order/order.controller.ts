@@ -18,14 +18,14 @@ export class OrderController {
     @ApiResponse({ status: 201, type: Order })
     @Post()
     async create(@Body() dto: CreateOrderDto, @Req() request: Request) {
-        try{
+        try {
             const response = await ExtractToken.checkAccessToken(ExtractToken.extractTokenFromHeader(request));
             dto.idUser = response.id;
         }
-        catch{
+        catch {
             dto.idUser = undefined;
         }
-
+        console.log(dto, "AHAHAHHAHAHAHHAHAHAHAHAHAAHAHAHAHAHAHAH")
         const arrayDate = String(dto.dateDelivery).split('.');
         // dto.dateDelivery = new Date(Number(arrayDate[2]), Number(arrayDate[1]), Number(arrayDate[0]));
         const arrayDateOrder = String(dto.dateDelivery.toLocaleString()).split(',').join('.').split(':').join('.').split('.');

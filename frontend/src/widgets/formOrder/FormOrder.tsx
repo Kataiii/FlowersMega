@@ -82,10 +82,11 @@ const FormOrder: React.FC = () => {
         const tryValues = {
             ...values,
             'dateDelivery': values['dateDelivery'].format('DD.MM.YYYY'),
-            'startTimeDelivery': values['startTimeDelivery'].format('HH:MM'),
-            'endTimeDelivery': values['endTimeDelivery'].format('HH:MM')
+            'startTimeDelivery': values['startTimeDelivery'].format('HH:mm'),
+            'endTimeDelivery': values['endTimeDelivery'].format('HH:mm')
         }
-
+        console.log(tryValues.startTimeDelivery, "STAAAAAAAAAAAAAAAAAAAART");
+        console.log(tryValues.endTimeDelivery, "ENDDDDDDDDDDDDDDDDDDDDD");
         const dto: OrdersControllerCreateApiArg = {
             body: {
                 name: '',

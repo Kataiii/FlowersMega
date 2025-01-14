@@ -82,7 +82,7 @@ export class OrderService {
             return `${day}.${month}.${year}`;
         };
 
-        this.tgBotService.sendMessage(`Flower's Mega ${dto.addressDelivery.split(',')[0]}
+        this.tgBotService.sendMessage(`Lucky Flora ${dto.addressDelivery.split(',')[0]}
 Новый заказ: #${order.id}
     
 ЗАКАЗЧИК
