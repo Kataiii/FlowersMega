@@ -98,15 +98,15 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
                             </p>
                             {
                                 // @ts-ignore
-                                product.categories[0].id === Number(categoryIdDataC) ||
+                                product.productSize.paramsSize === '' ||
                                     // @ts-ignore
-                                    product.categories[0].id === Number(categoryIdDatA) ||
+                                    product.productSize.paramsSize === ' ' ||
                                     // @ts-ignore
-                                    product.categories[0].id === Number(categoryIdDataB) ||
+                                    product.productSize.paramsSize === undefined ||
                                     // @ts-ignore
-                                    product.categories[0].id === Number(categoryIdDataD) ||
+                                    product.productSize.paramsSize === null ||
                                     // @ts-ignore
-                                    product.categories[0].id === Number(categoryIdDataE) ? (
+                                    product.productSize.paramsSize === '-' ? (
                                     <></>
                                 ) : (
                                     <p style={{ fontFamily: "Inter", fontWeight: 400, fontSize: 16, color: "var(--secondary-text-color)" }}>
