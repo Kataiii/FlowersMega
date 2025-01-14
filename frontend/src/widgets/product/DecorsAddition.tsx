@@ -46,7 +46,7 @@ const DecorsAddition: React.FC<Props> = ({ isOpen, setIsOpen }) => {
 
     const handlePageChange = (newPage: number, newPageSize?: number) => {
         setPage(newPage);
-        setProducts([]); // Сбросьте продукты при изменении страницы
+        setProducts([]);
         if (newPageSize) {
             setPageSize(newPageSize);
         }

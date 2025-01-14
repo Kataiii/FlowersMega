@@ -50,6 +50,9 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
     const { data: categoryIdDatA } = useCategoryControllerGetIdByNameQuery({ name: "Мягкие игрушки" });
     const { data: categoryIdDataB } = useCategoryControllerGetIdByNameQuery({ name: "Шары" });
     const { data: categoryIdDataC } = useCategoryControllerGetIdByNameQuery({ name: "Топперы" });
+    const { data: categoryIdDataD } = useCategoryControllerGetIdByNameQuery({ name: "Комнатные цветы" });
+    const { data: categoryIdDataE } = useCategoryControllerGetIdByNameQuery({ name: "Клубника в шоколаде" });
+
     const { data: ToppersAddition } = useCategoriesControllerGetByIdQuery({ id: Number(categoryIdDataC) });
     const { data: DecorsAdditionCat } = useCategoriesControllerGetByIdQuery({ id: Number(categoryIdDatA) });
     const { data: PostcardAddition } = useCategoriesControllerGetByIdQuery({ id: Number(categoryIdData) });
@@ -99,10 +102,12 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
                                     // @ts-ignore
                                     product.categories[0].id === Number(categoryIdDatA) ||
                                     // @ts-ignore
-                                    product.categories[0].id === Number(categoryIdDataB) ? (
-                                    <p style={{ fontFamily: "Inter", fontWeight: 400, fontSize: 16, color: "var(--secondary-text-color)" }}>
-                                        Размер {product.productSize.paramsSize}
-                                    </p>
+                                    product.categories[0].id === Number(categoryIdDataB) ||
+                                    // @ts-ignore
+                                    product.categories[0].id === Number(categoryIdDataD) ||
+                                    // @ts-ignore
+                                    product.categories[0].id === Number(categoryIdDataE) ? (
+                                    <></>
                                 ) : (
                                     <p style={{ fontFamily: "Inter", fontWeight: 400, fontSize: 16, color: "var(--secondary-text-color)" }}>
                                         Размер букета {product.productSize.paramsSize}
