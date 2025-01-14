@@ -7,11 +7,13 @@ import { CART_ORDER_PATH, CATALOG_PATH } from "../../../shared/utils/constants";
 import { useAppSelector } from "../../../store/store";
 import { CartProductCard } from "../../../widgets/cart-product-card/CartProductCard";
 import { useMinOrderCostGetQuery } from "../../../store/minOrderCost";
+import { selectActiveCity } from "../../../entities/city/redux/selectors";
 
 const Cart: React.FC = () => {
     const navigate = useNavigate();
     const cartTotal = useAppSelector(selectTotalCount);
     const productsInCart = useAppSelector(cartSelectors.selectAll);
+    const activeCity = useAppSelector(selectActiveCity);
     const { data: minOrderCost, isLoading: minOrderCostLoading } = useMinOrderCostGetQuery();
     const totalCost = useMemo(
         () => productsInCart.map(p => p.count * (p.prise ?? 0)).reduce((prev, curr) => prev + curr, 0),
@@ -57,7 +59,7 @@ const Cart: React.FC = () => {
                                                 <p style={{ fontFamily: "Inter", fontWeight: 400, fontSize: 16, color: "var(--secondary-text-color)" }}>{totalCost.toLocaleString()} ₽</p>
                                             </div>
                                             <div style={{ display: "flex", padding: "12px 0", justifyContent: "space-between", borderTop: "1px solid #73D982", borderBottom: "1px solid #73D982" }}>
-                                                <p style={{ fontFamily: "Inter", fontWeight: 400, fontSize: 16, color: "var(--secondary-text-color)", display: "flex", gap: 5 }}>Доставка <p style={{ color: "var(--primary-bg-color)", borderBottom: "1px solid var(--primary-bg-color)" }}>г. Москва</p></p>
+                                                <p style={{ fontFamily: "Inter", fontWeight: 400, fontSize: 16, color: "var(--secondary-text-color)", display: "flex", gap: 5 }}>Доставка <p style={{ color: "var(--primary-bg-color)", borderBottom: "1px solid var(--primary-bg-color)" }}>г.{activeCity?.name}</p></p>
                                                 <p style={{ fontFamily: "Inter", fontWeight: 400, fontSize: 16, color: "var(--secondary-text-color)" }}>Бесплатно</p>
                                             </div>
                                             <div style={{ display: "flex", padding: "12px 0", justifyContent: "space-between" }}>
