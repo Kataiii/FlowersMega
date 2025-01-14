@@ -23,15 +23,16 @@ export class OrderService {
             const [datePart, timePart] = dateTimeString.split(', ');
             const [day, month, year] = datePart.split('.').map(Number);
             if (timePart) {
-                const [hours, minutes, seconds] = timePart.split(':').map(Number);
-                return new Date(year, month - 1, day, hours, minutes, seconds);
+                const [hours, minutes] = timePart.split(':').map(Number);
+                // Set seconds to 0 to prevent automatic rounding
+                return new Date(year, month - 1, day, hours, minutes, 0);
             }
             return new Date(year, month - 1, day);
         };
+
         const dateOrder = parseDateTime(dto.dateOrder);
         const dateDelivery = parseDateTime(dto.dateDelivery);
-        console.log(dateOrder, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-        console.log(dateDelivery, 'IIIIIIIIIIIIIIIIIIIIIIIIIIIII')
+
         const order = await this.ordersRepository.create({
             name: dto.name,
             dateOrder: dateOrder,
@@ -51,75 +52,72 @@ export class OrderService {
             comment: dto.comment,
             postcards: dto.postcards
         });
-        console.log("order ", order.id);
-        console.log("dateOrder ", dateOrder);
-        console.log("dateDelivery ", dateDelivery);
+
         dto.itemsOrder && dto.itemsOrder.forEach(async (item) => {
             await this.ordersProductsSizesService.create({
                 idOrder: order.id,
                 idProductSize: item.product.id,
                 count: item.count
-            })
+            });
         });
 
         const productsSizes = await Promise.all(dto.itemsOrder.map(async (item) => {
             return await this.productsSizesFullService.getFullById(item.product.id);
         }));
+
         let textPostcards = dto.postcards.map(item => {
             const productSizeId = item.updatedId.split('-');
             return {
                 id: item.id,
                 text: item.text,
                 productSizeId: productSizeId[productSizeId.length - 1]
+            };
+        });
+
+        // Format date to dd.mm.yyyy
+        const formatDate = (date: Date): string => {
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}.${month}.${year}`;
+        };
+
+        this.tgBotService.sendMessage(`Flower's Mega ${dto.addressDelivery.split(',')[0]}
+Новый заказ: #${order.id}
+    
+ЗАКАЗЧИК
+Имя заказчика: ${dto.nameCustomer}
+Телефон заказчика: ${dto.phoneCustomer}
+E-mail заказчика: ${dto.emailCustomer}
+    
+ПОЛУЧАТЕЛЬ
+Имя получателя: ${dto.nameRecipient}
+Телефон получателя: ${dto.phoneRecipient}
+Адрес доставки: ${dto.addressDelivery}
+Дата доставки: ${formatDate(dateDelivery)} ${dto.startTimeDelivery} - ${dto.endTimeDelivery}
+    
+ДЕТАЛИ ЗАКАЗА
+${productsSizes.map((item, index) => {
+            let result = `"${item.product.name}" (${item.size.name}) × ${dto.itemsOrder[index].count} : ${item.productSize.prise * dto.itemsOrder[index].count} руб.`;
+
+            if (textPostcards.length > 0) {
+                textPostcards.forEach(postcard => {
+                    if (Number(postcard.productSizeId) === item.productSize.id) {
+                        result += `\nДобавить подпись к открытке:\n${postcard.text}`;
+                        textPostcards = textPostcards.filter(item => item.id !== postcard.id);
+                    }
+                });
             }
-        })
-        this.tgBotService.sendMessage(
-            `
-        Flower's Mega ${dto.addressDelivery.split(',')[0]}
-        Новый заказ: #${order.id}
-        
-        ЗАКАЗЧИК
-        Имя заказчика: ${dto.nameCustomer}
-        Телефон заказчика: ${dto.phoneCustomer}
-        E-mail заказчика: ${dto.emailCustomer}
-        
-        ПОЛУЧАТЕЛЬ 
-        Имя получателя: ${dto.nameRecipient} 
-        Телефон получателя: ${dto.phoneRecipient} 
-        Адрес доставки: ${dto.addressDelivery}
-        Дата доставки: ${dateDelivery.toLocaleDateString()} ${dto.startTimeDelivery} - ${dto.endTimeDelivery}
-        
-        ДЕТАЛИ ЗАКАЗА
-        ${productsSizes.map((item, index) => {
-                let result = `"${item.product.name}" (${item.size.name}) × 
-            ${dto.itemsOrder[index].count} : ${item.productSize.prise * dto.itemsOrder[index].count} руб.\n`;
+            return result;
+        }).join('\n')}
+    
+${dto.comment ? `Примечания к заказу: ${dto.comment}\n` : ''}
+ИТОГО: ${order.cost} руб.`);
 
-                if (textPostcards.length > 0) {
-                    textPostcards.forEach(postcard => {
-                        if (Number(postcard.productSizeId) === item.productSize.id) {
-                            result += `Добавить подпись к открытке: \n${postcard.text}\n`;
-                            textPostcards = textPostcards.filter(item => item.id !== postcard.id);
-                        }
-                    });
-                }
-
-                return result;
-            }).toString().split(",").join("\n")}
-        
-        ${dto.comment !== undefined
-                ? `Примечания к заказу: ${dto.comment}`
-                : ""}
-        
-        ИТОГО: ${order.cost} руб.
-            `
-        );
-
-        return await this.ordersRepository.findOne(
-            {
-                where: { id: order.id },
-                include: [{ all: true }]
-            }
-        )
+        return await this.ordersRepository.findOne({
+            where: { id: order.id },
+            include: [{ all: true }]
+        });
     }
 
     async getAll() {
