@@ -49,7 +49,7 @@ const Order: React.FC = () => {
     </Flex>
   }
 
-  const hasPostcards = data?.postcards.length ? data?.postcards.length > 0 : false;
+  const hasPostcards = data?.postcards ? (data?.postcards.length ? data?.postcards.length > 0 : false) : null;
   console.log(data?.postcards, "NU ORDER I ORDER");
   return (
     <>
