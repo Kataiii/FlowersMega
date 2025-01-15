@@ -83,6 +83,8 @@ export class ProductsSizesFullService {
     constructor(
         @InjectModel(ProductSize)
         private productsSizesRepository: typeof ProductSize,
+        @InjectModel(Product)
+        private productsRepository: typeof Product,
         private productsService: ProductsService,
         private sizesService: SizesService,
         private reviewsService: ReviewsService,
@@ -438,6 +440,123 @@ export class ProductsSizesFullService {
             products: resCardInfo,
         };
     }
+
+    async getProductsSizesForCatalogPagination(
+        page: number,
+        limit: number,
+        search?: string,
+        filterItems?: number[],
+        minPrice?: number,
+        maxPrice?: number,
+        category?: number
+    ) {
+
+        const filtersProductsTmp =
+            filterItems?.length > 0 &&
+            (
+                await this.productsItemsFilterService.getProductsByFilterIdArray(filterItems)
+            ).map((item) => item.idProduct);
+
+        const filtersProducts = filtersProductsTmp && Array.from(new Set(filtersProductsTmp.flat()));
+
+        const whereCondition: any = {};
+
+        if (minPrice >= 0) {
+            whereCondition.extraPrice = { [Op.gte]: minPrice };
+        }
+
+        if (maxPrice >= 0) {
+            whereCondition.extraPrice = {
+                ...whereCondition.extraPrice,
+                [Op.lte]: maxPrice,
+            };
+        }
+
+        if (filtersProducts?.length > 0) {
+            whereCondition.id = {
+                [Op.in]: filtersProducts,
+            };
+        }
+
+        let countAndProducts: {
+            rows: Product[];
+            count: number;
+        };
+
+        if (category) {
+            countAndProducts = await this.productsRepository.findAndCountAll({
+                where: {
+                    ...whereCondition,
+                    name: { [Op.like]: search ? `%${search}%` : `%` },
+                },
+                limit,
+                offset: (page - 1) * limit,
+                include: [
+                    {
+                        model: CategoriesProductsSizes,
+                        where: { idCategory: category },
+                    },
+                ],
+            });
+        } else {
+            countAndProducts = await this.productsRepository.findAndCountAll({
+                where: {
+                    ...whereCondition,
+                    name: { [Op.like]: search ? `%${search}%` : `%` },
+                },
+                limit,
+                offset: (page - 1) * limit,
+            });
+        }
+
+        const products = await Promise.all(
+            countAndProducts.rows.map(async (product) => {
+                const productSizes = await this.productsSizesRepository.findAll({
+                    where: { idProduct: product.id },
+                });
+                const resultProducts = await this.calculatePrices(productSizes);
+                const filteredProductSizes = resultProducts.map((result) => ({
+                    productSize: result.productSize,
+                    size: result.size,
+                }));
+                const additionInfoProduct = await Promise.all(
+                    productSizes.map(async (size) => {
+                        const info = await this.getCardInfo(size);
+                        return {
+                            id: product.id,
+                            name: info.product.name,
+                            description: product.description,
+                            structure: product.structure,
+                            idTypeProduct: info.product.idTypeProduct,
+                            image: info.product.image,
+                            filters: info.product.filters,
+                            categories: info.product.categories,
+                            reviewInfo: info.reviewsInfo.averageRating,
+                            productSizes: filteredProductSizes,
+                        };
+                    })
+                );
+                const uniqueAdditionInfoProductMap = new Map();
+                additionInfoProduct.forEach(item => {
+                    if (!uniqueAdditionInfoProductMap.has(JSON.stringify(item))) {
+                        uniqueAdditionInfoProductMap.set(JSON.stringify(item), item);
+                    }
+                });
+
+                const uniqueAdditionInfoProduct = Array.from(uniqueAdditionInfoProductMap.values());
+                console.log(uniqueAdditionInfoProduct.length, 'HOHOHOHO')
+                return uniqueAdditionInfoProduct;
+            })
+        );
+
+        return {
+            count: countAndProducts.count,
+            products: products.flat(),
+        };
+
+    }
+
+
 
     // async calculatePrices(products: Product[]): Promise<ProductSize[]> {
     //     const extraPriceForCategories = await this.extraPriceService.whichOneTheBest();

@@ -15,6 +15,7 @@ import { CategoriesProductsService } from 'src/categories-products/categories-pr
 import { Roles } from 'src/auth/guards/decorators/roles-auth.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesAuthGuard } from 'src/auth/guards/roles-auth.guard';
+import { ProductCatalogCards } from './dto/productCatalogCards.dto';
 
 @ApiTags("Products Sizes")
 @Controller('products-sizes')
@@ -246,6 +247,19 @@ export class ProductsSizesController {
     async getByCategotyIdWithPagination(@Param("page") page: number, @Param("limit") limit: number, @Query("search") search?: string, @Query("filterItems") filterItems?: string, @Query("minPrice") minPrice?: number, @Query("maxPrice") maxPrice?: number, @Query("category") category?: number) {
         const arrayFilters: number[] = filterItems !== undefined && filterItems !== "" ? filterItems.split(',').map(item => Number(item)) : [];
         return await this.productsSizesFullService.getProductsSizesForCardPagination(page, limit, search, arrayFilters, minPrice, maxPrice, category);
+    }
+
+    @ApiOperation({ summary: 'Get products for catalog cards with pagination ' })
+    @ApiResponse({ status: 200, type: [ProductCatalogCards] })
+    @ApiResponse({ status: 404, description: "Products not fount" })
+    @ApiQuery({ name: 'search', required: false })
+    @ApiQuery({ name: 'filterItems', required: false })
+    @ApiQuery({ name: 'category', required: false })
+    @Get("/products-catalog-card/:page/:limit")
+
+    async getProductsByCategotyIdWithPagination(@Param("page") page: number, @Param("limit") limit: number, @Query("search") search?: string, @Query("filterItems") filterItems?: string, @Query("category") category?: number) {
+        const arrayFilters: number[] = filterItems !== undefined && filterItems !== "" ? filterItems.split(',').map(item => Number(item)) : [];
+        return await this.productsSizesFullService.getProductsSizesForCatalogPagination(page, limit, search, arrayFilters, category);
     }
 
     @ApiOperation({ summary: 'Get product with products size with pagination' })

@@ -1,7 +1,7 @@
 import { Pagination } from "antd";
 import { selectFilters, selectMaxPrice, selectMinPrice } from "../../../entities/filter/redux/selectors";
 import Container from "../../../shared/ui/containerMain/ContainerMain";
-import { useCategoryControllerGetIdByNameQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery } from "../../../store/product";
+import { useCategoryControllerGetIdByNameQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery, useProductsSizesControllerGetProductsCatalogWithPaginationQuery } from "../../../store/product";
 import { useAppSelector } from "../../../store/store";
 import FiltersPanel from "../../../widgets/filtersPanel/FiltersPanel";
 import FiltersTags from "../../../widgets/filtersTags/FiltersTags";
@@ -29,9 +29,11 @@ const Catalog: React.FC = () => {
     const [page, setPage] = useState(1);
     const { data: postcardId } = useSizeContollerGetByNameQuery({ name: "-" });
     const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ limit: pageSize, page: page, search: selectedProduct ? selectedProduct : '', filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: categoryD ? Number(categoryIdData) : undefined });
+    const { data: newData } = useProductsSizesControllerGetProductsCatalogWithPaginationQuery({ limit: pageSize, page: page, search: selectedProduct ? selectedProduct : '', filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: categoryD ? Number(categoryIdData) : undefined });
     console.log(postcardId, "POSTCRRD SIE ID")
     console.log(data?.products.filter(item => item.productSize.idSize === 5))
-
+    console.log(newData, 'URAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+    console.log(data, "LMAO")
     const handlePageChange = (newPage: number, newPageSize?: number) => {
         setPage(newPage);
     };
