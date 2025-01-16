@@ -11,6 +11,7 @@ import { useSearchParams } from "react-router-dom";
 import { useProductContext } from "../../../shared/ui/secondHeader/ProductContext";
 import { useSizeContollerGetByNameQuery } from "../../../store/size";
 import CenteredSpin from "../../../shared/ui/spinner/CenteredSpin";
+import { SmartProductCardCatalog } from "../../../widgets/product/SmartProductCardCatalog";
 
 const Catalog: React.FC = () => {
     const filters = useAppSelector(selectFilters)
@@ -29,7 +30,7 @@ const Catalog: React.FC = () => {
     const [page, setPage] = useState(1);
     const { data: postcardId } = useSizeContollerGetByNameQuery({ name: "-" });
     const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ limit: pageSize, page: page, search: selectedProduct ? selectedProduct : '', filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: categoryD ? Number(categoryIdData) : undefined });
-    const { data: newData } = useProductsSizesControllerGetProductsCatalogWithPaginationQuery({ limit: pageSize, page: page, search: selectedProduct ? selectedProduct : '', filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: categoryD ? Number(categoryIdData) : undefined });
+    const { data: newData, isLoading: isNewDataLoading } = useProductsSizesControllerGetProductsCatalogWithPaginationQuery({ limit: pageSize, page: page, search: selectedProduct ? selectedProduct : '', filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: categoryD ? Number(categoryIdData) : undefined });
     console.log(postcardId, "POSTCRRD SIE ID")
     console.log(data?.products.filter(item => item.productSize.idSize === 5))
     console.log(newData, 'URAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
@@ -52,14 +53,14 @@ const Catalog: React.FC = () => {
                             gridColumnGap: "5px",
                             gap: "10px"
                         }}>
-                            {isLoading ? (
+                            {isNewDataLoading ? (
                                 <CenteredSpin />
                             ) : (
-                                data && data.count === 0 ? (
+                                newData && newData.count === 0 ? (
                                     <h1 style={{ width: "420px", fontFamily: "Inter", fontSize: 32, fontWeight: 600, color: "var(--secondary-text-color)" }}>Нет подходящих товаров</h1>
                                 ) : (
-                                    data?.products.map((item, index) => (
-                                        <SmartProductCard key={`productSizes-${index}`} product={item} />
+                                    newData?.products.map((item, index) => (
+                                        <SmartProductCardCatalog key={`productSizes-${index}`} product={item} />
                                     ))
                                 )
                             )}

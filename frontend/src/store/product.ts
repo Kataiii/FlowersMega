@@ -586,12 +586,12 @@ export type ProductCatalogCard = {
   /** Unique identifier type product */
   idTypeProduct: number;
   /** Array of images */
-  images: Image[];
+  image: Image;
   /** Array of filters */
   filters: ItemFilter[];
   /** Array of categories */
   categories: Category[];
-  reviewsInfo?: number;
+  reviewInfo?: StaticticReviews;
   productSizes: [
     {
       productSize: ProductSize;

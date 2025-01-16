@@ -508,50 +508,70 @@ export class ProductsSizesFullService {
                 offset: (page - 1) * limit,
             });
         }
-
+        console.log(countAndProducts.rows.length, "XDDDD");
         const products = await Promise.all(
+
             countAndProducts.rows.map(async (product) => {
                 const productSizes = await this.productsSizesRepository.findAll({
                     where: { idProduct: product.id },
                 });
-                const resultProducts = await this.calculatePrices(productSizes);
-                const filteredProductSizes = resultProducts.map((result) => ({
-                    productSize: result.productSize,
-                    size: result.size,
-                }));
-                const additionInfoProduct = await Promise.all(
-                    productSizes.map(async (size) => {
-                        const info = await this.getCardInfo(size);
-                        return {
-                            id: product.id,
-                            name: info.product.name,
-                            description: product.description,
-                            structure: product.structure,
-                            idTypeProduct: info.product.idTypeProduct,
-                            image: info.product.image,
-                            filters: info.product.filters,
-                            categories: info.product.categories,
-                            reviewInfo: info.reviewsInfo.averageRating,
-                            productSizes: filteredProductSizes,
-                        };
-                    })
-                );
-                const uniqueAdditionInfoProductMap = new Map();
-                additionInfoProduct.forEach(item => {
-                    if (!uniqueAdditionInfoProductMap.has(JSON.stringify(item))) {
-                        uniqueAdditionInfoProductMap.set(JSON.stringify(item), item);
-                    }
-                });
 
-                const uniqueAdditionInfoProduct = Array.from(uniqueAdditionInfoProductMap.values());
-                console.log(uniqueAdditionInfoProduct.length, 'HOHOHOHO')
-                return uniqueAdditionInfoProduct;
+                // const resultProducts = await this.calculatePrices(productSizes);
+                const filteredProductSizes = Array.from(await Promise.all(productSizes.map(async (result) => {
+                    const size = await this.sizesService.getById(result.idSize);
+                    return {
+                        productSize: result,
+                        size: size
+                    }
+                }))).sort((a, b) => a.productSize.idSize - b.productSize.idSize);
+                const allReviwsRating = Array.from(await Promise.all(filteredProductSizes.map(async (item) => {
+                    const rating = await this.reviewsService.getStaticticByProductSizeId(item.productSize.id);
+                    console.log(rating, "WJFOWFOWJOIF")
+                    return rating;
+                })))
+                console.log(allReviwsRating, "AAAAAAAAAIUDHIUAHFUHAUIF")
+                const totalReviewsAndAverageRating = allReviwsRating.reduce(
+                    (acc, item) => {
+                        if (!isNaN(item.averageRating)) {
+                            acc.totalRating += item.averageRating;
+                            acc.totalCount += item.count;
+                        }
+                        return acc;
+                    },
+                    { totalCount: 0, totalRating: 0 }
+                );
+                console.log(totalReviewsAndAverageRating, "LMAODDD")
+                const averageRating = totalReviewsAndAverageRating.totalCount > 0
+                    ? totalReviewsAndAverageRating.totalRating / totalReviewsAndAverageRating.totalCount
+                    : 0;
+                console.log(averageRating, "JQOJFIJWIJFIJW")
+                const finalReviews = {
+                    averageRating: averageRating,
+                    count: totalReviewsAndAverageRating.totalCount,
+                }
+                const info = await this.getCardInfo(productSizes[0]);
+                console.log("1wwfwqfwqfwf", product)
+                const additionInfoProduct = {
+                    id: product.id,
+                    name: product.name,
+                    description: product.description,
+                    structure: product.structure,
+                    idTypeProduct: product.idTypeProduct,
+                    image: info.product.image,
+                    filters: product.filters,
+                    categories: product.categories,
+                    reviewInfo: finalReviews,
+                    productSizes: filteredProductSizes,
+                };
+
+                console.log(additionInfoProduct, "NUKAAAAAAAAAAk")
+                return additionInfoProduct;
             })
         );
-
+        console.log(products, "AHAHAHAHHAAHAHAH")
         return {
             count: countAndProducts.count,
-            products: products.flat(),
+            products: products,
         };
 
     }

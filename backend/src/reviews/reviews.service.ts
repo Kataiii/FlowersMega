@@ -136,7 +136,7 @@ export class ReviewsService {
         const reviews = await this.reviewsRepository.findAndCountAll({
             where: { idProductSize: id }
         });
-
+        console.log(reviews.rows, 'JE@IJFOEIJFOEOIF')
         let averageRating = 0;
 
         reviews.rows.forEach(item => {
