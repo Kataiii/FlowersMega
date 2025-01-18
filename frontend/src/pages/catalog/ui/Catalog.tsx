@@ -29,16 +29,14 @@ const Catalog: React.FC = () => {
     const [pageSize, setPageSize] = useState(30);
     const [page, setPage] = useState(1);
     const { data: postcardId } = useSizeContollerGetByNameQuery({ name: "-" });
-    const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ limit: pageSize, page: page, search: selectedProduct ? selectedProduct : '', filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: categoryD ? Number(categoryIdData) : undefined });
+    // const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ limit: pageSize, page: page, search: selectedProduct ? selectedProduct : '', filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: categoryD ? Number(categoryIdData) : undefined });
     const { data: newData, isLoading: isNewDataLoading } = useProductsSizesControllerGetProductsCatalogWithPaginationQuery({ limit: pageSize, page: page, search: selectedProduct ? selectedProduct : '', filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: categoryD ? Number(categoryIdData) : undefined });
     console.log(postcardId, "POSTCRRD SIE ID")
-    console.log(data?.products.filter(item => item.productSize.idSize === 5))
-    console.log(newData, 'URAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-    console.log(data, "LMAO")
+
     const handlePageChange = (newPage: number, newPageSize?: number) => {
         setPage(newPage);
     };
-    console.log(data, "data")
+
     return (
         <div style={{ display: "flex", justifyContent: "center", padding: "25px 0" }}>
             <Container>
@@ -69,7 +67,7 @@ const Catalog: React.FC = () => {
                 </div>
                 <div style={{ width: "100%" }}>
                     <Pagination
-                        total={data?.count || 0}
+                        total={newData?.count || 0}
                         pageSize={pageSize}
                         current={page}
                         onChange={handlePageChange}

@@ -19,7 +19,7 @@ const Cart: React.FC = () => {
         () => productsInCart.map(p => p.count * (p.prise ?? 0)).reduce((prev, curr) => prev + curr, 0),
         [productsInCart]
     )
-
+    console.log(productsInCart, "DAAAAAAAAAAAAAAAAAAAAa")
     const orderHandler = () => {
         navigate(CART_ORDER_PATH);
     }

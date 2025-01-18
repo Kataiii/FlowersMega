@@ -4,8 +4,12 @@ import { AddToCartButton } from "../../features/add-to-cart/AddToCartButton"
 import { ToggleFavoritesButton } from "../../features/toggle-favorite/ToggleFavoriteButton"
 import { FullProductSizeDto, ProductCatalogCard, useProductsControllerGetByIdQuery } from "../../store/product"
 import CenteredSpin from "../../shared/ui/spinner/CenteredSpin"
-import { Skeleton } from "antd"
+import { Button, Skeleton } from "antd"
+import { ReactComponent as AddCart } from '../../shared/assets/add_cart.svg';
 import CardProductCatalog from "../../entities/product/ui/cardProduct/CardProductCatalog"
+import { ButtonText } from "../../pages/admin/ui/products/Products"
+import { ButtonStyle } from "../../shared/ui/button/Button"
+import { ToggleFavoritesButtonProduct } from "../../features/toggle-favorite/ToggleFavoriteButtonProduct"
 
 type SmartProductCardProps = {
     product: ProductCatalogCard,
@@ -20,8 +24,8 @@ export const SmartProductCardCatalog: React.FC<SmartProductCardProps> = ({ produ
     return (
         <CardProductCatalog
             product={product}
-        // addToCartButton={<AddToCartButton product={{ ...product.productSize, product: data }} />}
-        // addToFavorites={<ToggleFavoritesButton item={product} />}
+            // addToCartButton={}
+            addToFavorites={<ToggleFavoritesButtonProduct item={product} />}
         />
 
 

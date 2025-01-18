@@ -445,6 +445,8 @@ export type Product = {
   structure: string;
   /** Unique identifier type product */
   idTypeProduct: number;
+
+  image: Image;
 };
 export type ProductSize = {
   /** Unique identifier */

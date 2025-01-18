@@ -5,7 +5,7 @@ import { DeleteFromCartButton } from "../../features/delete-from-cart/DeleteForm
 import { API_URL } from "../../shared/utils/constants"
 import { useCategoryControllerGetIdByNameQuery, useProductsControllerGetByIdQuery, useProductsSizesControllerGetByProductIdQuery } from "../../store/product"
 import PostcardAddBlock from "../postcard/PostcardAddBlock"
-
+import { Image } from "antd/lib"
 
 type CartProductCardProps = {
     product: CartProduct
@@ -24,7 +24,8 @@ export const CartProductCard: React.FC<CartProductCardProps> = ({ product }) => 
 
     // @ts-ignore
     const categoryMatch = productSizeData.categories?.[0]?.id === categoryIdData;
-
+    {/* @ts-ignore */ }
+    console.log(product.product.image.url, "HELLLOOOO")
     return (
         <>
             {categoryMatch ? (
@@ -42,8 +43,7 @@ export const CartProductCard: React.FC<CartProductCardProps> = ({ product }) => 
                 >
                     <div style={{ display: " flex", gap: 32 }}>
                         <div style={{ width: 106, height: 106, borderRadius: 6 }}>
-                            {/* @ts-ignore */}
-                            <img style={{ width: 106, height: 106, borderRadius: 6 }} src={`${API_URL}/products/images/${product.idProduct}/${product.product.images[0].url}`} />
+                            <Image style={{ width: 106, height: 106, borderRadius: 6 }} src={`${API_URL}/products/images/${product.idProduct}/${product.product.image.url}`} />
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 5, alignContent: "start" }}>
@@ -80,7 +80,7 @@ export const CartProductCard: React.FC<CartProductCardProps> = ({ product }) => 
                 }}>
                     <div style={{ display: " flex", gap: 32 }}>
                         {/* @ts-ignore */}
-                        <img style={{ width: 106, height: 106, borderRadius: 6 }} src={`${API_URL}/products/images/${product.idProduct}/${product.product.images[0].url}`} />
+                        <Image style={{ width: 106, height: 106, borderRadius: 6 }} src={`${API_URL}/products/images/${product.idProduct}/${product.product.image.url}`} />
 
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 5 }}>
                             <div style={{ fontFamily: "Inter", fontWeight: 400, fontSize: 20, color: "var(--secondary-text-color)" }}>

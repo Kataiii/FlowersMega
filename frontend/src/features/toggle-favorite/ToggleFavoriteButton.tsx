@@ -19,9 +19,9 @@ export const ToggleFavoritesButton: React.FC<AddToFavoritesButtonProps> = ({ ite
         e.preventDefault();
         e.stopPropagation();
         console.log('TOGGLE', isFavorite);
-        
-        if (isFavorite) dispatch(deleteFavorite(item.productSize));
-        else dispatch(addFavorite(item));
+
+        // if (isFavorite) dispatch(deleteFavorite(item.productSize));
+        // else dispatch(addFavorite(item));
     }
 
     return (
