@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { FullProductSizeDto, useCategoryControllerGetIdByNameQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery } from "../../store/product";
+import { FullProductSizeDto, ProductCatalogCard, useCategoryControllerGetIdByNameQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery, useProductsSizesControllerGetProductsCatalogWithPaginationQuery } from "../../store/product";
 import { Modal, Pagination } from "antd";
 import { Title } from "../../shared/ui/forAdditionalPages/Title";
 import { Text } from "../../shared/ui/forAdditionalPages/Content";
 import { SmartProductCard } from "./SmartProductCart";
+import { SmartProductCardCatalog } from "./SmartProductCardCatalog";
 interface Props {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,16 +15,16 @@ const DecorsAddition: React.FC<Props> = ({ isOpen, setIsOpen }) => {
     const { data: categoryIdDataB } = useCategoryControllerGetIdByNameQuery({ name: "Шары" });
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(20);
-    const [products, setProducts] = useState<FullProductSizeDto[]>([]);
+    const [products, setProducts] = useState<ProductCatalogCard[]>([]);
     const [totalItems, setTotalItems] = useState(0);
 
-    const { data: toys, isLoading: isToysLoading } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({
+    const { data: toys, isLoading: isToysLoading } = useProductsSizesControllerGetProductsCatalogWithPaginationQuery({
         page,
         limit: pageSize / 2,
         category: Number(categoryIdDatA),
     });
 
-    const { data: baloons, isLoading: isBaloonsLoading } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({
+    const { data: baloons, isLoading: isBaloonsLoading } = useProductsSizesControllerGetProductsCatalogWithPaginationQuery({
         page,
         limit: pageSize / 2,
         category: Number(categoryIdDataB),
@@ -93,7 +94,7 @@ const DecorsAddition: React.FC<Props> = ({ isOpen, setIsOpen }) => {
                                 onClick={handleCardClick}
                                 style={{ cursor: "pointer" }}
                             >
-                                <SmartProductCard product={item} />
+                                <SmartProductCardCatalog product={item} />
                             </div>
                         ))}
                 </div>

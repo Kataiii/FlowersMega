@@ -450,7 +450,6 @@ export class ProductsSizesFullService {
         maxPrice?: number,
         category?: number
     ) {
-
         const filtersProductsTmp =
             filterItems?.length > 0 &&
             (
@@ -460,17 +459,6 @@ export class ProductsSizesFullService {
         const filtersProducts = filtersProductsTmp && Array.from(new Set(filtersProductsTmp.flat()));
 
         const whereCondition: any = {};
-
-        if (minPrice >= 0) {
-            whereCondition.extraPrice = { [Op.gte]: minPrice };
-        }
-
-        if (maxPrice >= 0) {
-            whereCondition.extraPrice = {
-                ...whereCondition.extraPrice,
-                [Op.lte]: maxPrice,
-            };
-        }
 
         if (filtersProducts?.length > 0) {
             whereCondition.id = {
@@ -482,7 +470,7 @@ export class ProductsSizesFullService {
             rows: Product[];
             count: number;
         };
-
+        console.log(category, "JNNSFIJWIFIWNFI")
         if (category) {
             countAndProducts = await this.productsRepository.findAndCountAll({
                 where: {
@@ -493,8 +481,17 @@ export class ProductsSizesFullService {
                 offset: (page - 1) * limit,
                 include: [
                     {
-                        model: CategoriesProductsSizes,
-                        where: { idCategory: category },
+                        model: Category,
+                        required: true,
+                        where: { id: category },
+                    },
+                    {
+                        model: ProductSize,
+                        required: true,
+                        where: {
+                            ...(minPrice !== undefined && { extraPrice: { [Op.gte]: minPrice } }),
+                            ...(maxPrice !== undefined && { extraPrice: { [Op.lte]: maxPrice } }),
+                        },
                     },
                 ],
             });
@@ -506,31 +503,49 @@ export class ProductsSizesFullService {
                 },
                 limit,
                 offset: (page - 1) * limit,
+                include: [
+                    {
+                        model: ProductSize,
+                        required: true,
+                        where: {
+                            ...(minPrice !== undefined && { extraPrice: { [Op.gte]: minPrice } }),
+                            ...(maxPrice !== undefined && { extraPrice: { [Op.lte]: maxPrice } }),
+                        },
+                    },
+                ],
             });
         }
-        console.log(countAndProducts.rows.length, "XDDDD");
-        const products = await Promise.all(
 
+        const products = await Promise.all(
             countAndProducts.rows.map(async (product) => {
                 const productSizes = await this.productsSizesRepository.findAll({
                     where: { idProduct: product.id },
                 });
 
-                // const resultProducts = await this.calculatePrices(productSizes);
-                const filteredProductSizes = Array.from(await Promise.all(productSizes.map(async (result) => {
-                    const size = await this.sizesService.getById(result.idSize);
-                    return {
-                        productSize: result,
-                        size: size
-                    }
-                }))).sort((a, b) => a.productSize.idSize - b.productSize.idSize);
-                const allReviwsRating = Array.from(await Promise.all(filteredProductSizes.map(async (item) => {
-                    const rating = await this.reviewsService.getStaticticByProductSizeId(item.productSize.id);
-                    console.log(rating, "WJFOWFOWJOIF")
-                    return rating;
-                })))
-                console.log(allReviwsRating, "AAAAAAAAAIUDHIUAHFUHAUIF")
-                const totalReviewsAndAverageRating = allReviwsRating.reduce(
+                const filteredProductSizes = Array.from(
+                    await Promise.all(
+                        productSizes.map(async (result) => {
+                            const size = await this.sizesService.getById(result.idSize);
+                            return {
+                                productSize: result,
+                                size: size,
+                            };
+                        })
+                    )
+                ).sort((a, b) => a.productSize.idSize - b.productSize.idSize);
+
+                const allReviewsRating = Array.from(
+                    await Promise.all(
+                        filteredProductSizes.map(async (item) => {
+                            const rating = await this.reviewsService.getStaticticByProductSizeId(
+                                item.productSize.id
+                            );
+                            return rating;
+                        })
+                    )
+                );
+
+                const totalReviewsAndAverageRating = allReviewsRating.reduce(
                     (acc, item) => {
                         if (!isNaN(item.averageRating)) {
                             acc.totalRating += item.averageRating;
@@ -540,17 +555,19 @@ export class ProductsSizesFullService {
                     },
                     { totalCount: 0, totalRating: 0 }
                 );
-                console.log(totalReviewsAndAverageRating, "LMAODDD")
-                const averageRating = totalReviewsAndAverageRating.totalCount > 0
-                    ? totalReviewsAndAverageRating.totalRating / totalReviewsAndAverageRating.totalCount
-                    : 0;
-                console.log(averageRating, "JQOJFIJWIJFIJW")
+
+                const averageRating =
+                    totalReviewsAndAverageRating.totalCount > 0
+                        ? totalReviewsAndAverageRating.totalRating / totalReviewsAndAverageRating.totalCount
+                        : 0;
+
                 const finalReviews = {
                     averageRating: averageRating,
                     count: totalReviewsAndAverageRating.totalCount,
-                }
+                };
+
                 const info = await this.getCardInfo(productSizes[0]);
-                console.log("1wwfwqfwqfwf", product)
+
                 const additionInfoProduct = {
                     id: product.id,
                     name: product.name,
@@ -564,17 +581,16 @@ export class ProductsSizesFullService {
                     productSizes: filteredProductSizes,
                 };
 
-                console.log(additionInfoProduct, "NUKAAAAAAAAAAk")
                 return additionInfoProduct;
             })
         );
-        console.log(products, "AHAHAHAHHAAHAHAH")
+
         return {
             count: countAndProducts.count,
             products: products,
         };
-
     }
+
 
 
 
