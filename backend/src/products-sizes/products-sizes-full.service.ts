@@ -480,26 +480,28 @@ export class ProductsSizesFullService {
             count: number;
         };
         console.log(category, "JNNSFIJWIFIWNFI")
-        const sortedProducts = await this.productsRepository.findAll({
-            include: [
-                {
-                    model: ProductSize,
-                    as: 'productSizes',
-                    attributes: ['price'],
-                    required: true
-                }
-            ],
-            order: [
-                [ProductSize, 'price', 'ASC']
-            ]
-        });
-        console.log(sortedProducts, "AHAHAHHAHAHAHAHAHAHHA")
+        // const sortedProducts = await this.productsRepository.findAll({
+        //     include: [
+        //         {
+        //             model: ProductSize,
+        //             as: 'productSizes',
+        //             attributes: ['prise'],
+        //             required: true
+        //         }
+        //     ],
+        //     order: [
+        //         [{ model: ProductSize, as: 'productSizes' }, 'prise', 'ASC']
+        //     ]
+        // });
+        // console.log("AHAHAHHAHAHAHAHAHAHHA", sortedProducts)
         if (category) {
             countAndProducts = await this.productsRepository.findAndCountAll({
                 where: {
                     ...whereCondition,
                     name: { [Op.like]: search ? `%${search}%` : `%` },
                 },
+                distinct: true,
+                subQuery: false,
                 limit,
                 offset: (page - 1) * limit,
 
@@ -511,11 +513,16 @@ export class ProductsSizesFullService {
                     },
                     {
                         model: ProductSize,
+                        as: 'productSizes',
+                        attributes: ['prise'],
                         required: true,
-                        where: {
-                            ...(minPrice !== undefined && { extraPrice: { [Op.gte]: minPrice } }),
-                            ...(maxPrice !== undefined && { extraPrice: { [Op.lte]: maxPrice } }),
-                        },
+                        // where: {
+                        //     ...(minPrice !== undefined && { extraPrice: { [Op.gte]: minPrice } }),
+                        //     ...(maxPrice !== undefined && { extraPrice: { [Op.lte]: maxPrice } }),
+                        // },
+                        order: [
+                            [{ model: ProductSize, as: 'productSizes' }, 'prise', sortOrder]
+                        ]
                     },
                 ],
             });
@@ -526,20 +533,27 @@ export class ProductsSizesFullService {
                     name: { [Op.like]: search ? `%${search}%` : `%` },
                 },
                 limit,
+                distinct: true,
+                subQuery: false,
                 offset: (page - 1) * limit,
                 include: [
                     {
                         model: ProductSize,
+                        as: 'productSizes',
+                        attributes: ['prise'],
                         required: true,
-                        where: {
-                            ...(minPrice !== undefined && { extraPrice: { [Op.gte]: minPrice } }),
-                            ...(maxPrice !== undefined && { extraPrice: { [Op.lte]: maxPrice } }),
-                        },
+                        // where: {
+                        //     ...(minPrice !== undefined && { extraPrice: { [Op.gte]: minPrice } }),
+                        //     ...(maxPrice !== undefined && { extraPrice: { [Op.lte]: maxPrice } }),
+                        // },
+                        order: [
+                            [{ model: ProductSize, as: 'productSizes' }, 'prise', sortOrder]
+                        ]
                     },
                 ],
             });
         }
-
+        console.log("OKNWJIFNIJWNFI", countAndProducts)
         const products = await Promise.all(
             countAndProducts.rows.map(async (product) => {
                 const productSizes = await this.productsSizesRepository.findAll({
@@ -611,7 +625,7 @@ export class ProductsSizesFullService {
 
         return {
             count: countAndProducts.count,
-            products: sortedProducts,
+            products: products,
         };
     }
 
