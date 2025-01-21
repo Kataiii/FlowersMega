@@ -57,6 +57,8 @@ export class ProductSize extends Model<ProductSize, ProductSizeCreationAttrs> {
     @HasMany(() => CategoriesProductsSizes)
     categoriesProductsSizes: CategoriesProductsSizes[];
 
-    @BelongsTo(() => Product)
-    product: Product;
+    @BelongsTo(() => Product, 'idProduct')
+    product: Product
+
+
 }

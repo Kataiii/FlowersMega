@@ -448,8 +448,13 @@ export class ProductsSizesFullService {
         filterItems?: number[],
         minPrice?: number,
         maxPrice?: number,
-        category?: number
+        category?: number,
+        sort?: string,
     ) {
+        const typeSort = sort.split("_");
+        const sortField = typeSort[0];
+        const sortOrder = typeSort[1]?.toUpperCase() === "DESC" ? "DESC" : "ASC";
+        console.log("typeSort ", typeSort);
         const filtersProductsTmp =
             filterItems?.length > 0 &&
             (
@@ -466,11 +471,29 @@ export class ProductsSizesFullService {
             };
         }
 
+        const order = sortField
+            ? [sortField, sortOrder]
+            : [];
+
         let countAndProducts: {
             rows: Product[];
             count: number;
         };
         console.log(category, "JNNSFIJWIFIWNFI")
+        const sortedProducts = await this.productsRepository.findAll({
+            include: [
+                {
+                    model: ProductSize,
+                    as: 'productSizes',
+                    attributes: ['price'],
+                    required: true
+                }
+            ],
+            order: [
+                [ProductSize, 'price', 'ASC']
+            ]
+        });
+        console.log(sortedProducts, "AHAHAHHAHAHAHAHAHAHHA")
         if (category) {
             countAndProducts = await this.productsRepository.findAndCountAll({
                 where: {
@@ -479,6 +502,7 @@ export class ProductsSizesFullService {
                 },
                 limit,
                 offset: (page - 1) * limit,
+
                 include: [
                     {
                         model: Category,
@@ -587,7 +611,7 @@ export class ProductsSizesFullService {
 
         return {
             count: countAndProducts.count,
-            products: products,
+            products: sortedProducts,
         };
     }
 

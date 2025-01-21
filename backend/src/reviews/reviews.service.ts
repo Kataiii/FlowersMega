@@ -108,10 +108,10 @@ export class ReviewsService {
         //     where: ,
 
         // }));
-        // const fullReview: FullReviewDto[] = await Promise.all(reviews.map(async (item) => await this.convertReview(item)));
+        const fullReview: FullReviewDto[] = await Promise.all(reviewsCount.rows.map(async (item) => await this.convertReview(item)));
         return {
             count: reviewsCount.count,
-            reviews: reviewsCount.rows
+            reviews: fullReview
         };
 
         // const reviewsCount = (await this.reviewsRepository.findAndCountAll()).count;

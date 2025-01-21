@@ -263,6 +263,9 @@ const injectedRtkApi = api.injectEndpoints({
         if (queryArg.category) {
           params.category = queryArg.category;
         }
+        if (queryArg.sort) {
+          params.sort = queryArg.sort;
+        }
         return {
           url: `/products-sizes/products-catalog-card/${queryArg.page}/${queryArg.limit}`,
           params: params,
@@ -427,6 +430,7 @@ export type ProductsSizesControllerGetProductsCatalogWithPaginationApiArg = {
   minPrice?: number;
   maxPrice?: number;
   category?: number;
+  sort?: string;
 }
 
 export type ProductsSizesControllerGetProductsCatalogWithPaginationApiResponse = {

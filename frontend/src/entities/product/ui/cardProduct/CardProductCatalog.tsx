@@ -15,6 +15,7 @@ import { addOneToCart } from "../../../cart/redux/slice";
 import { useAppDispatch, useAppSelector } from "../../../../store/store";
 import { isInCartSelector } from "../../../cart/redux/selectors";
 import { useDispatch } from "react-redux";
+import SizeSelectionModal from "../../../../shared/ui/quickOrder/SizeSelectionModal";
 
 type CardProductProps = {
     product: ProductCatalogCard;
@@ -202,7 +203,7 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
                 </div>
             </div>
             <div style={{ position: "absolute", top: 15, right: 15 }}>{addToFavorites}</div>
-            <ModalEmpty isOpen={isOpen} setIsOpen={setIsOpen} children={
+            {/* <ModalEmpty isOpen={isOpen} setIsOpen={setIsOpen} children={
                 <div>
                     <p style={{ width: "40%", textAlign: "start", fontSize: "24px", fontFamily: "Inter", fontWeight: "600", marginBottom: "32px" }}>Выберите размер</p>
                     {
@@ -234,7 +235,8 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
                         })
                     }
                 </div>
-            } />
+            } /> */}
+            <SizeSelectionModal isOpen={isOpen} setIsOpen={setIsOpen} hoveredIndex={hoveredIndex} setHoveredIndex={setHoveredIndex} product={product} />
 
         </div>
     );
