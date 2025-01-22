@@ -16,6 +16,7 @@ import { useAppDispatch, useAppSelector } from "../../../../store/store";
 import { isInCartSelector } from "../../../cart/redux/selectors";
 import { useDispatch } from "react-redux";
 import SizeSelectionModal from "../../../../shared/ui/quickOrder/SizeSelectionModal";
+import FastClickOrder from "../../../../shared/ui/quickOrder/FastClickOrder";
 
 type CardProductProps = {
     product: ProductCatalogCard;
@@ -67,6 +68,7 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [isFastOrderOpen, setIsFastOrderOpen] = useState<boolean>(false);
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
     const mapProductSizeToCartProduct = (
@@ -75,15 +77,14 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
     ): Omit<CartProduct, 'count'> => ({
         ...productSize,
         product: {
-            id: product.id!,
+            id: product.id ?? 0,
             name: product.name,
             description: product.description,
-            structure: product.structure!,
+            structure: product.structure ?? '',
             idTypeProduct: product.idTypeProduct,
             image: product.image,
         },
     });
-
 
     return (
         <div
@@ -196,7 +197,7 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
                 <div style={{ display: "flex", justifyContent: "space-between", gap: "10px" }}>
                     <ButtonStyle style={{ display: "flex", flexDirection: 'row', gap: "2px" }} onClick={() => setIsOpen(prev => !prev)}><AddCart alt="add cart" />
                         <ButtonText>Добавить</ButtonText></ButtonStyle>
-                    <ButtonColor onClick={() => setIsOpen(true)}>
+                    <ButtonColor onClick={() => setIsFastOrderOpen(true)}>
                         <Cursor alt="cursor" />
                         В 1 клик
                     </ButtonColor>
@@ -236,8 +237,11 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
                     }
                 </div>
             } /> */}
-            <SizeSelectionModal isOpen={isOpen} setIsOpen={setIsOpen} hoveredIndex={hoveredIndex} setHoveredIndex={setHoveredIndex} product={product} />
-
+            <SizeSelectionModal isOpen={isOpen} setIsOpen={setIsOpen} hoveredIndex={hoveredIndex} setHoveredIndex={setHoveredIndex} product={product} onSizeClick={() => {
+                const cartProduct = mapProductSizeToCartProduct(product, product.productSizes[hoveredIndex ?? 0].productSize);
+                dispatch(addOneToCart(cartProduct));
+            }} />
+            <FastClickOrder isOpen={isFastOrderOpen} setIsOpen={setIsFastOrderOpen} hoveredIndex={hoveredIndex} setHoveredIndex={setHoveredIndex} product={product} />
         </div>
     );
 };

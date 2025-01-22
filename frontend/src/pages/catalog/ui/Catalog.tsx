@@ -1,7 +1,7 @@
 import { Pagination } from "antd";
 import { selectFilters, selectMaxPrice, selectMinPrice } from "../../../entities/filter/redux/selectors";
 import Container from "../../../shared/ui/containerMain/ContainerMain";
-import { useCategoryControllerGetIdByNameQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery, useProductsSizesControllerGetProductsCatalogWithPaginationQuery } from "../../../store/product";
+import { ProductCatalogCard, ProductSize, useCategoryControllerGetIdByNameQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery, useProductsSizesControllerGetProductsCatalogWithPaginationQuery } from "../../../store/product";
 import { useAppSelector } from "../../../store/store";
 import FiltersPanel from "../../../widgets/filtersPanel/FiltersPanel";
 import FiltersTags from "../../../widgets/filtersTags/FiltersTags";
@@ -13,9 +13,12 @@ import { useSizeContollerGetByNameQuery } from "../../../store/size";
 import CenteredSpin from "../../../shared/ui/spinner/CenteredSpin";
 import { SmartProductCardCatalog } from "../../../widgets/product/SmartProductCardCatalog";
 import { CatalogSort } from "../../../shared/ui/sortOrder/CatalogSort";
+import FastFormOrder from "../../../widgets/fastFormOrder/FastFormOrder";
+import { CartProduct } from "../../../entities/cart/types";
 
 
 export type SortOption = "popularity_asc" | "popularity_desc" | "price_asc" | "price_desc"
+
 
 const Catalog: React.FC = () => {
     const filters = useAppSelector(selectFilters)
@@ -39,6 +42,21 @@ const Catalog: React.FC = () => {
     // const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ limit: pageSize, page: page, search: selectedProduct ? selectedProduct : '', filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: categoryD ? Number(categoryIdData) : undefined });
     const { data: newData, isLoading: isNewDataLoading } = useProductsSizesControllerGetProductsCatalogWithPaginationQuery({ limit: pageSize, page: page, search: selectedProduct ? selectedProduct : '', filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: categoryD ? Number(categoryIdData) : undefined, sort });
     // console.log(postcardId, "POSTCRRD SIE ID")
+
+    const mapProductSizeToCartProduct = (
+        product: ProductCatalogCard,
+        productSize: ProductSize
+    ): Omit<CartProduct, 'count'> => ({
+        ...productSize,
+        product: {
+            id: product.id ?? 0,
+            name: product.name,
+            description: product.description,
+            structure: product.structure ?? '',
+            idTypeProduct: product.idTypeProduct,
+            image: product.image,
+        },
+    });
 
     useEffect(() => {
         onChange(sort)
@@ -100,6 +118,7 @@ const Catalog: React.FC = () => {
                 </div>
 
             </Container>
+
         </div>
     )
 }

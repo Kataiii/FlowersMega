@@ -11,6 +11,8 @@ interface SizeSelectionModalProps {
     product: ProductCatalogCard;
     hoveredIndex: number | null;
     setHoveredIndex: (index: number | null) => void;
+    onSizeClick: (product: ProductCatalogCard) => void;
+    onChange?: () => void;
 }
 
 const SizeSelectionModal: React.FC<SizeSelectionModalProps> = ({
@@ -19,24 +21,8 @@ const SizeSelectionModal: React.FC<SizeSelectionModalProps> = ({
     product,
     hoveredIndex,
     setHoveredIndex,
+    onSizeClick
 }) => {
-    const dispatch = useDispatch();
-
-    const mapProductSizeToCartProduct = (
-        product: ProductCatalogCard,
-        productSize: ProductSize
-    ): Omit<CartProduct, 'count'> => ({
-        ...productSize,
-        product: {
-            id: product.id ?? 0,
-            name: product.name,
-            description: product.description,
-            structure: product.structure ?? '',
-            idTypeProduct: product.idTypeProduct,
-            image: product.image,
-        },
-    });
-
 
     return (
         <ModalEmpty
@@ -62,13 +48,7 @@ const SizeSelectionModal: React.FC<SizeSelectionModalProps> = ({
                                     }}
                                     onMouseEnter={() => setHoveredIndex(index)}
                                     onMouseLeave={() => setHoveredIndex(null)}
-                                    onClick={() => {
-                                        const cartProduct = mapProductSizeToCartProduct(
-                                            product,
-                                            productSize.productSize
-                                        );
-                                        dispatch(addOneToCart(cartProduct));
-                                    }}
+                                    onClick={() => onSizeClick(product)}
                                 >
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: "4px" }}>
                                         <p style={{ fontFamily: 'Inter', fontWeight: '400', fontSize: '16px' }}>{productSize.size.name}</p>

@@ -297,11 +297,7 @@ const FormOrder: React.FC = () => {
                             <Input size="large" placeholder="Улица" />
                         </Form.Item>
                         <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Дом" name="addressHouse" rules={[{ required: true, message: "Введите номер дома" }]}>
-                            <Input size="large" placeholder="Дом" onKeyPress={(event) => {
-                                if (!/[0-9]/.test(event.key)) {
-                                    event.preventDefault();
-                                }
-                            }} />
+                            <Input size="large" placeholder="Дом" />
                         </Form.Item>
                     </div>
                     <div style={{ display: "flex", gap: 15 }}>
