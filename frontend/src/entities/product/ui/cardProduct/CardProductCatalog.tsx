@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 import { ReactComponent as Cursor } from "../../../../shared/assets/cursor.svg";
@@ -8,7 +8,7 @@ import { Numerals } from "../../../../shared/utils/numerals";
 import { ProductCatalogCard, ProductSize } from "../../../../store/product";
 import { API_URL, CART_PATH, PRODUCT_PATH } from "../../../../shared/utils/constants";
 import { ButtonText } from "../../../../pages/admin/ui/products/Products";
-import { ReactComponent as AddCart } from '../../../../shared/assets/add_cart.svg'
+import { ReactComponent as AddCartL } from '../../../../shared/assets/add_cart.svg'
 import ModalEmpty from "../../../../shared/ui/modalEmpty/ModalEmpty";
 import { CartProduct } from "../../../cart/types";
 import { addOneToCart } from "../../../cart/redux/slice";
@@ -69,7 +69,9 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
     const dispatch = useDispatch();
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isFastOrderOpen, setIsFastOrderOpen] = useState<boolean>(false);
-    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>();
+    const [prodSizeIndexCart, setProdSizeIndexCart] = useState<number>();
+    const [isInCart, setIsInCart] = useState<boolean>(false);
 
     const mapProductSizeToCartProduct = (
         product: ProductCatalogCard,
@@ -86,6 +88,19 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
         },
     });
 
+    const handleSizeClick = (product: ProductCatalogCard, index: number) => {
+        const cartProduct = mapProductSizeToCartProduct(
+            product,
+            product.productSizes[index].productSize
+        );
+        dispatch(addOneToCart(cartProduct));
+        setIsOpen(false);
+    };
+
+    const handleChangeIsInCart = (value: boolean) => {
+        setIsInCart(value);
+    };
+    console.log(isInCart, "NU KAAAAAAAAAAAAK");
     return (
         <div
             style={{
@@ -195,8 +210,23 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
                 )}
 
                 <div style={{ display: "flex", justifyContent: "space-between", gap: "10px" }}>
-                    <ButtonStyle style={{ display: "flex", flexDirection: 'row', gap: "2px" }} onClick={() => setIsOpen(prev => !prev)}><AddCart alt="add cart" />
-                        <ButtonText>Добавить</ButtonText></ButtonStyle>
+                    {isInCart ? (
+                        <ButtonStyle onClick={() => navigate(CART_PATH)}>
+                            Перейти
+                        </ButtonStyle>
+                    ) : (
+                        <ButtonStyle
+                            style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                gap: "2px",
+                            }}
+                            onClick={() => setIsOpen(true)}
+                        >
+                            <AddCartL alt="add cart" />
+                            <ButtonText>Добавить</ButtonText>
+                        </ButtonStyle>
+                    )}
                     <ButtonColor onClick={() => setIsFastOrderOpen(true)}>
                         <Cursor alt="cursor" />
                         В 1 клик
@@ -237,11 +267,16 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
                     }
                 </div>
             } /> */}
-            <SizeSelectionModal isOpen={isOpen} setIsOpen={setIsOpen} hoveredIndex={hoveredIndex} setHoveredIndex={setHoveredIndex} product={product} onSizeClick={() => {
-                const cartProduct = mapProductSizeToCartProduct(product, product.productSizes[hoveredIndex ?? 0].productSize);
-                dispatch(addOneToCart(cartProduct));
-            }} />
-            <FastClickOrder isOpen={isFastOrderOpen} setIsOpen={setIsFastOrderOpen} hoveredIndex={hoveredIndex} setHoveredIndex={setHoveredIndex} product={product} />
+            <SizeSelectionModal
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                product={product}
+                hoveredIndex={hoveredIndex ?? 0}
+                setHoveredIndex={setHoveredIndex}
+                onSizeClick={handleSizeClick}
+                onChange={handleChangeIsInCart}
+            />
+            <FastClickOrder isOpen={isFastOrderOpen} setIsOpen={setIsFastOrderOpen} hoveredIndex={hoveredIndex ?? 0} setHoveredIndex={setHoveredIndex} product={product} />
         </div>
     );
 };
