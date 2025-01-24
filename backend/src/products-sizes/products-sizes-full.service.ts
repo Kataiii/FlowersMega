@@ -684,7 +684,8 @@ export class ProductsSizesFullService {
                         idSize: item.idSize,
                         paramsSize: item.paramsSize,
                         count: item.count,
-                        prise: item.extraPrice,
+                        prise: item.prise,
+                        extraPrice: item.extraPrice,
                         orders: item.orders,
                     },
                     size: info.size,
@@ -785,7 +786,13 @@ export class ProductsSizesFullService {
                 return { products: item, productsSizes: resultProducts };
             })
         );
-        // console.log(productSizesTmp, "productSizesTmp");
+        productSizesTmp.map((item) => {
+            item.productsSizes.map((item) => {
+                console.log(item, "productSizesTmp");
+            });
+
+        })
+
         return { count: paginationResult.count, products: productSizesTmp };
     }
 

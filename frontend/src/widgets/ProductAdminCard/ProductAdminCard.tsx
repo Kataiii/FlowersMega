@@ -44,10 +44,12 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ product, sizes, typ
     const dataSource = useMemo(() => {
         if (!product || !sizes) return [];
         return product.productsSizes.map(productSize => {
+            console.log(productSize.productSize, "NUALOOOO")
             return {
                 key: productSize.productSize.id,
                 sizeName: sizes?.find((s) => s.id == productSize.productSize.idSize)?.name,
                 paramsSize: productSize.productSize.paramsSize,
+                extraPrice: productSize.productSize.extraPrice,
                 price: productSize.productSize.prise,
             };
         }).sort((a, b) => a.price - b.price)
@@ -60,9 +62,14 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ product, sizes, typ
             key: "sizeName",
         },
         {
-            title: "Цена",
+            title: "Цена, ₽",
             dataIndex: "price",
             key: "price",
+        },
+        {
+            title: "Цена с наценкой, ₽",
+            dataIndex: "extraPrice",
+            key: "extraPrice",
         },
         {
             title: "Уточнение",
