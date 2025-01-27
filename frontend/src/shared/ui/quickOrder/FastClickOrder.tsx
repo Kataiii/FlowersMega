@@ -64,6 +64,7 @@ const FastClickOrder: React.FC<FastClickOrderProps> = ({
     setHoveredIndex,
 }) => {
     const [isRecipientCustomer, setIsRecipientCustomer] = useState<boolean>(false);
+    const [isPrivateHouse, setIsPrivateHouse] = useState<boolean>(false);
     const [isExsistingCity, setIsExsistingCity] = useState<boolean>(true);
     const [form] = Form.useForm();
     const [selectedSize, setSelectedSize] = useState<string>("");
@@ -146,6 +147,10 @@ const FastClickOrder: React.FC<FastClickOrderProps> = ({
         }
 
         createOrder(dto);
+    };
+
+    const changePrivateHouse: CheckboxProps['onChange'] = (e) => {
+        setIsPrivateHouse(e.target.checked);
     };
 
     const handleSizeSelection = (size: {
@@ -359,43 +364,57 @@ const FastClickOrder: React.FC<FastClickOrderProps> = ({
                             </Form.Item>
 
                             <div style={{ display: "flex", gap: 15 }}>
-                                <Form.Item style={{ flexGrow: 4, marginBottom: 8 }} label="Улица" name="addressStreet" rules={[{ required: true, message: "Введите улицу" }, { pattern: regExName, message: errorMessageStreet }]}>
+                                <Form.Item style={{ flexGrow: 4, marginBottom: 8 }} label="Улица" name="addressStreet" rules={[
+                                    { required: true, message: "Введите улицу" },
+                                    { pattern: regExName, message: errorMessageStreet }]}>
                                     <Input size="large" placeholder="Улица" />
                                 </Form.Item>
+
+                            </div>
+                            <div style={{ display: "flex", gap: 15, alignItems: "flex-end" }}>
                                 <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Дом" name="addressHouse" rules={[{ required: true, message: "Введите номер дома" }]}>
                                     <Input size="large" placeholder="Дом" />
                                 </Form.Item>
+                                <Form.Item initialValue={false} style={{ flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "flex-end", height: "100%", marginBottom: 8 }} label="" name="privateHouse" valuePropName="checked">
+                                    <Checkbox onChange={changePrivateHouse}>Частный дом</Checkbox>
+                                </Form.Item>
                             </div>
                             <div style={{ display: "flex", gap: 15 }}>
-                                <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Корпус" name="addressCorpus">
-                                    <Input size="large" placeholder="Корпус" onKeyPress={(event) => {
-                                        if (!/[0-9]/.test(event.key)) {
-                                            event.preventDefault();
-                                        }
-                                    }} />
-                                </Form.Item>
-                                <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Подъезд" name="addressEntrance">
-                                    <Input size="large" placeholder="Подьезд" onKeyPress={(event) => {
-                                        if (!/[0-9]/.test(event.key)) {
-                                            event.preventDefault();
-                                        }
-                                    }} />
-                                </Form.Item>
-                                <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Этаж" name="addressFloor">
-                                    <Input size="large" placeholder="Этаж" onKeyPress={(event) => {
-                                        if (!/[0-9]/.test(event.key)) {
-                                            event.preventDefault();
-                                        }
-                                    }} />
-                                </Form.Item>
-                                <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Квартира" name="addressFlat" rules={[
-                                    { required: true, message: "Введите но  мер квартиры" }]}>
-                                    <Input size="large" placeholder="Квартира" onKeyPress={(event) => {
-                                        if (!/[0-9]/.test(event.key)) {
-                                            event.preventDefault();
-                                        }
-                                    }} />
-                                </Form.Item>
+                                {
+                                    isPrivateHouse ? null
+                                        : <>
+                                            <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Корпус" name="addressCorpus">
+                                                <Input size="large" placeholder="Корпус" onKeyPress={(event) => {
+                                                    if (!/[0-9]/.test(event.key)) {
+                                                        event.preventDefault();
+                                                    }
+                                                }} />
+                                            </Form.Item>
+                                            <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Подъезд" name="addressEntrance">
+                                                <Input size="large" placeholder="Подьезд" onKeyPress={(event) => {
+                                                    if (!/[0-9]/.test(event.key)) {
+                                                        event.preventDefault();
+                                                    }
+                                                }} />
+                                            </Form.Item>
+                                            <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Этаж" name="addressFloor">
+                                                <Input size="large" placeholder="Этаж" onKeyPress={(event) => {
+                                                    if (!/[0-9]/.test(event.key)) {
+                                                        event.preventDefault();
+                                                    }
+                                                }} />
+                                            </Form.Item>
+                                            <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Квартира" name="addressFlat" rules={[
+                                                { required: false, message: "Введите номер квартиры" }]}>
+                                                <Input size="large" placeholder="Квартира" onKeyPress={(event) => {
+                                                    if (!/[0-9]/.test(event.key)) {
+                                                        event.preventDefault();
+                                                    }
+                                                }} />
+                                            </Form.Item>
+                                        </>
+                                }
+
                             </div>
                         </div>
 

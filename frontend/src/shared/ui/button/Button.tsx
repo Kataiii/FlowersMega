@@ -3,7 +3,7 @@ import "../../utils/cssConstants.css"
 import { CSSProperties } from "styled-components";
 
 export interface ButtonProps {
-    buttonContent: string;
+    buttonContent: any;
     clickHandler: () => void;
     disabled?: boolean;
     style?: CSSProperties;
