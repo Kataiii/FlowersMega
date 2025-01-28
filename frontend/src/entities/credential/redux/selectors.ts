@@ -21,3 +21,8 @@ export const selectAdmin = createSelector(
     [(state: RootState) => state.credentialReducer.isAdmin],
     (isAdmin) => isAdmin
 )
+
+export const selectIsRemember = createSelector(
+    [(state: RootState) => state.credentialReducer.isRemember],
+    (isRemember) => isRemember
+);

@@ -68,6 +68,7 @@ import { AuthGuard } from "./guards/AuthGuard";
 import { RoleGuard } from "./guards/RoleGuard";
 import Review from "../pages/admin/ui/reviews/Review";
 import Login from "../pages/admin/ui/login/Login";
+import LogoutOnClose from "../features/logout-on-close/LogoutOnClose";
 
 const Router: React.FC = () => {
     const location = useLocation();
@@ -77,13 +78,13 @@ const Router: React.FC = () => {
     return (
         <>
             <Routes location={previousLocation || location}>
-                <Route path={ADMIN_PATH} element={<AuthGuard><RoleGuard><AdminMain /></RoleGuard></AuthGuard>}>
+                <Route path={ADMIN_PATH} element={<><LogoutOnClose/><AuthGuard><RoleGuard><AdminMain /></RoleGuard></AuthGuard></>}>
                     <Route index element={<AdminOrders />} />
                     <Route path={ADMIN_PRODUCTS_PATH} element={<AdminProducts />} />
                     <Route path={ADMIN_REVIEWS_PATH} element={<AdminReviews />} />
                 </Route>
-                <Route path={ADMIN_LOGIN} element={<Login />} />
-                <Route path={HOME_PATH} element={<App />}>
+                <Route path={ADMIN_LOGIN} element={<><LogoutOnClose/><Login /></>} />
+                <Route path={HOME_PATH} element={<><LogoutOnClose/><App /></>}>
                     <Route path={HOME_PATH} element={<Main />} />
                     <Route path={CATALOG_PATH} element={<Catalog />}>
                         <Route path={`${CATALOG_PATH}${SEARCH_PATH}`} element={<Catalog />} />
@@ -117,15 +118,15 @@ const Router: React.FC = () => {
             {
                 previousLocation && (
                     <Routes>
-                        <Route path={REGIST_PATH} element={<ModalRoute prevLocation={HOME_PATH}>
+                        <Route path={REGIST_PATH} element={<><LogoutOnClose/><ModalRoute prevLocation={HOME_PATH}>
                             <Regist />
-                        </ModalRoute>} />
-                        <Route path={AUTH_PATH} element={<ModalRoute prevLocation={HOME_PATH}>
+                        </ModalRoute></>} />
+                        <Route path={AUTH_PATH} element={<><LogoutOnClose/><ModalRoute prevLocation={HOME_PATH}>
                             <Auth />
-                        </ModalRoute>} />
-                        <Route path={RECOVERY_PASSWORD_PATH} element={<ModalRoute prevLocation={previousLocation}>
+                        </ModalRoute></>} />
+                        <Route path={RECOVERY_PASSWORD_PATH} element={<><LogoutOnClose/><ModalRoute prevLocation={previousLocation}>
                             <RecoveryPassword />
-                        </ModalRoute>} />
+                        </ModalRoute></>} />
                         <Route path={EMAIL_PATH} element={<Portal children={<Portal children={
                             <Modal title="Новый пароль был выслан на ваш E-mail"
                                 buttonContent="Вернуться на главную"
