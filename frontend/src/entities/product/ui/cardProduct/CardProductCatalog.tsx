@@ -17,6 +17,7 @@ import { isInCartSelector } from "../../../cart/redux/selectors";
 import { useDispatch } from "react-redux";
 import SizeSelectionModal from "../../../../shared/ui/quickOrder/SizeSelectionModal";
 import FastClickOrder from "../../../../shared/ui/quickOrder/FastClickOrder";
+import { addPostcard } from "../../../postcard/redux/slice";
 
 type CardProductProps = {
     product: ProductCatalogCard;
@@ -222,8 +223,18 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
                                 gap: "2px",
                             }}
                             onClick={() => {
-                                if(product.productSizes.length > 1) setIsOpen(true);
-                                else handleSizeClick(product, 0);
+                                const hasCategoryWithId5 = product.categories?.some(category => category.id === 5);
+                                if (hasCategoryWithId5) {
+                                    handleSizeClick(product, 0);
+                                    const text = "";
+                                    dispatch(addPostcard({ text }));
+                                } else {
+                                    if (product.productSizes.length > 1) {
+                                        setIsOpen(true);
+                                    } else {
+                                        handleSizeClick(product, 0);
+                                    }
+                                }
                             }}
                         >
                             <AddCartL alt="add cart" />
