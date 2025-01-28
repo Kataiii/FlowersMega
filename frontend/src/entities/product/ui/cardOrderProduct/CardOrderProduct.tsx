@@ -19,7 +19,7 @@ const CardOrderProduct: React.FC<CardOrderProductProps> = ({ orderItem, postcard
     const { isLoading, data } = useProductsControllerGetByIdQuery({ id: orderItem.idProduct });
     const { data: categoryIdData } = useCategoryControllerGetIdByNameQuery({ name: "Открытки" });
     {/* @ts-ignore */ }
-    console.log(postcards, "POSSSSSSSSSSSSSSSSSSSSSSSS");
+    console.log(orderItem, "POSSSSSSSSSSSSSSSSSSSSSSSS");
     return (
         <div style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 10px" }}>
             {
@@ -47,11 +47,11 @@ const CardOrderProduct: React.FC<CardOrderProductProps> = ({ orderItem, postcard
                                     <div style={{ display: 'flex', flexDirection: 'row', alignItems: "center" }}>
                                         <Text style={{ fontSize: 16, fontWeight: 400 }}>
                                             {/* @ts-ignore */}
-                                            {orderItem.prise.toLocaleString()} ₽ × {orderItem.OrderProductSize.count} шт.
+                                            {orderItem.extraPrice.toLocaleString()} ₽ × {orderItem.OrderProductSize.count} шт.
                                         </Text>
                                         <Text style={{ fontSize: 16, fontWeight: 600 }}>
                                             {/* @ts-ignore */}
-                                            {" "} = {orderItem.prise * orderItem.OrderProductSize.count} ₽
+                                            {" "} = {orderItem.extraPrice * orderItem.OrderProductSize.count} ₽
                                         </Text>
                                     </div>
                                 </div>
@@ -71,9 +71,9 @@ const CardOrderProduct: React.FC<CardOrderProductProps> = ({ orderItem, postcard
                                 </div>
                                 <div>
                                     {/* @ts-ignore */}
-                                    <Text style={{ display: "inline", fontSize: 16, fontWeight: 400 }}>{orderItem.prise.toLocaleString()} ₽ × {orderItem.OrderProductSize.count} шт.</Text>
+                                    <Text style={{ display: "inline", fontSize: 16, fontWeight: 400 }}>{orderItem.extraPrice.toLocaleString()} ₽ × {orderItem.OrderProductSize.count} шт.</Text>
                                     {/* @ts-ignore */}
-                                    <Text style={{ display: "inline", fontSize: 16, fontWeight: 600 }}> = {orderItem.prise * orderItem.OrderProductSize.count} ₽</Text>
+                                    <Text style={{ display: "inline", fontSize: 16, fontWeight: 600 }}> = {orderItem.extraPrice * orderItem.OrderProductSize.count} ₽</Text>
                                 </div>
                             </>
                         )}

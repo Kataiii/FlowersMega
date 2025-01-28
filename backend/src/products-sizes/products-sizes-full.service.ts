@@ -684,28 +684,29 @@ export class ProductsSizesFullService {
       await this.extraPriceService.whichOneTheBest();
     let countProductsWithMarkup = 0;
 
-    console.log(extraPriceForCategories, "EPRIE BTW");
-    const productsCardInfo = await Promise.all(
-      products.map(async (item) => {
-        const info = await this.getCardInfo(item);
-        return {
-          productSize: {
-            id: item.id,
-            idProduct: item.idProduct,
-            idSize: item.idSize,
-            paramsSize: item.paramsSize,
-            count: item.count,
-            prise: item.extraPrice,
-            orders: item.orders,
-          },
-          size: info.size,
-          product: info.product,
-          reviewsInfo: info.reviewsInfo,
-        };
-      })
-    );
-    const updatedProducts = productsCardInfo.map((item) => {
-      const productSize = { ...item.productSize };
+        console.log(extraPriceForCategories, "EPRIE BTW");
+        const productsCardInfo = await Promise.all(
+            products.map(async (item) => {
+                const info = await this.getCardInfo(item);
+                return {
+                    productSize: {
+                        id: item.id,
+                        idProduct: item.idProduct,
+                        idSize: item.idSize,
+                        paramsSize: item.paramsSize,
+                        count: item.count,
+                        prise: item.prise,
+                        extraPrice: item.extraPrice,
+                        orders: item.orders,
+                    },
+                    size: info.size,
+                    product: info.product,
+                    reviewsInfo: info.reviewsInfo,
+                };
+            })
+        );
+        const updatedProducts = productsCardInfo.map((item) => {
+            const productSize = { ...item.productSize };
 
       return {
         ...item,
@@ -775,30 +776,36 @@ export class ProductsSizesFullService {
 
     // console.log(finalFIlterCategories, " const");
 
-    const paginationResult = await this.productsService.getCountAndPagination(
-      page,
-      limit,
-      search,
-      field,
-      type,
-      finalFIlterCategories
-    );
-    // console.log(paginationResult, "paginationResult");
-    const productSizesTmp = await Promise.all(
-      paginationResult.products.map(async (item) => {
-        const productSizes = await this.productsSizesRepository.findAll({
-          where: { idProduct: item.id },
-        });
-        const resultProducts = await this.calculatePrices(productSizes);
-        // const productWithSizes = await Promise.all(productSizes.map(async (item) => {
-        //     return await this.getProductSizeInfo(item.id);
-        // }))
-        return { products: item, productsSizes: resultProducts };
-      })
-    );
-    // console.log(productSizesTmp, "productSizesTmp");
-    return { count: paginationResult.count, products: productSizesTmp };
-  }
+        const paginationResult = await this.productsService.getCountAndPagination(
+            page,
+            limit,
+            search,
+            field,
+            type,
+            finalFIlterCategories
+        );
+        // console.log(paginationResult, "paginationResult");
+        const productSizesTmp = await Promise.all(
+            paginationResult.products.map(async (item) => {
+                const productSizes = await this.productsSizesRepository.findAll({
+                    where: { idProduct: item.id },
+                });
+                const resultProducts = await this.calculatePrices(productSizes);
+                // const productWithSizes = await Promise.all(productSizes.map(async (item) => {
+                //     return await this.getProductSizeInfo(item.id);
+                // }))
+                return { products: item, productsSizes: resultProducts };
+            })
+        );
+        productSizesTmp.map((item) => {
+            item.productsSizes.map((item) => {
+                console.log(item, "productSizesTmp");
+            });
+
+        })
+
+        return { count: paginationResult.count, products: productSizesTmp };
+    }
 
   async createFullProduct(dto: CreateFullProductSizeDto, photo: File) {
     const prosuctsSizes = JSON.parse(

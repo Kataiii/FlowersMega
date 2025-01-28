@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux"
 import { CartProduct } from "../../../entities/cart/types"
 import ModalEmpty from "../modalEmpty/ModalEmpty"
 import { addOneToCart } from "../../../entities/cart/redux/slice"
+import { useAppSelector } from "../../../store/store"
+import { isInCartSelector } from "../../../entities/cart/redux/selectors"
 
 interface SizeSelectionModalProps {
     isOpen: boolean;
@@ -11,8 +13,8 @@ interface SizeSelectionModalProps {
     product: ProductCatalogCard;
     hoveredIndex: number | null;
     setHoveredIndex: (index: number | null) => void;
-    onSizeClick: (product: ProductCatalogCard) => void;
-    onChange?: () => void;
+    onSizeClick: (product: ProductCatalogCard, index: number) => void;
+    onChange?: (isInCart: boolean) => void;
 }
 
 const SizeSelectionModal: React.FC<SizeSelectionModalProps> = ({
@@ -21,8 +23,24 @@ const SizeSelectionModal: React.FC<SizeSelectionModalProps> = ({
     product,
     hoveredIndex,
     setHoveredIndex,
-    onSizeClick
+    onSizeClick,
+    onChange
 }) => {
+
+    const mapProductSizeToCartProduct = (
+        product: ProductCatalogCard,
+        productSize: ProductSize
+    ): Omit<CartProduct, 'count'> => ({
+        ...productSize,
+        product: {
+            id: product.id ?? 0,
+            name: product.name,
+            description: product.description,
+            structure: product.structure ?? '',
+            idTypeProduct: product.idTypeProduct,
+            image: product.image,
+        },
+    });
 
     return (
         <ModalEmpty
@@ -35,7 +53,11 @@ const SizeSelectionModal: React.FC<SizeSelectionModalProps> = ({
                     </p>
                     {
                         product.productSizes.map((productSize, index) => {
+                            const cartProduct = mapProductSizeToCartProduct(product, productSize.productSize);
+                            const isInCart = useAppSelector(state => isInCartSelector(state, cartProduct));
                             const isHovered = hoveredIndex === index;
+                            console.log(isInCart, "LALALALAL");
+                            isInCart === true ? onChange?.(isInCart) : null;
                             return (
                                 <div
                                     key={index}
@@ -48,7 +70,7 @@ const SizeSelectionModal: React.FC<SizeSelectionModalProps> = ({
                                     }}
                                     onMouseEnter={() => setHoveredIndex(index)}
                                     onMouseLeave={() => setHoveredIndex(null)}
-                                    onClick={() => onSizeClick(product)}
+                                    onClick={() => { onSizeClick(product, index) }}
                                 >
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: "4px" }}>
                                         <p style={{ fontFamily: 'Inter', fontWeight: '400', fontSize: '16px' }}>{productSize.size.name}</p>
