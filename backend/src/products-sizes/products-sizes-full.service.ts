@@ -472,8 +472,8 @@ export class ProductsSizesFullService {
       ? `AND (${filterItems.map(filter => `pif."idItemFilter" = ${filter}`).join(' OR ')})`
       : '';
 
-    const sortString = sortField === "prise" 
-      ? `(SELECT max(psd."extraPrice") 
+    const sortString = sortField === "price" 
+      ? `(SELECT ${sortOrder === "ASC" ? `min(psd."extraPrice")` : `max(psd."extraPrice")`} 
           FROM products_sizes_data psd
           WHERE psd."idProduct" = pd.id)`
       : `(w.review_info_data->>'count')::int`;
@@ -669,13 +669,14 @@ export class ProductsSizesFullService {
       WHERE ri."idProduct" = pd.id
     ) as w(review_info_data)
     ORDER BY ${sortString} ${sortOrder}
-    LIMIT ${limit} OFFSET ${page};
     `)
+
+    const productPagination = products[0].slice((page - 1) * limit, page * limit);
 
     return {
         count: Number(count[0][0].total_count),
         //@ts-ignore
-        products: products[0].map(item => item.product),
+        products: productPagination.map(item => item.product),
     };
   }
 

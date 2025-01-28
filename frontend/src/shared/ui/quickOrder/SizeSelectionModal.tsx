@@ -1,9 +1,7 @@
-import { Dispatch, SetStateAction, useState } from "react"
-import { Product, ProductCatalogCard, ProductSize } from "../../../store/product"
-import { useDispatch } from "react-redux"
+import { Dispatch, SetStateAction } from "react"
+import { ProductCatalogCard, ProductSize } from "../../../store/product"
 import { CartProduct } from "../../../entities/cart/types"
 import ModalEmpty from "../modalEmpty/ModalEmpty"
-import { addOneToCart } from "../../../entities/cart/redux/slice"
 import { useAppSelector } from "../../../store/store"
 import { isInCartSelector } from "../../../entities/cart/redux/selectors"
 

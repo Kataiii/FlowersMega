@@ -78,7 +78,11 @@ const Catalog: React.FC = () => {
                     <FiltersPanel />
                     <div style={{ display: "flex", flexDirection: "column", gap: 10, width: "100%" }}>
                         <FiltersTags />
-                        <div>
+                        <div style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 15
+                        }}>
                             <CatalogSort onChange={onChange} />
                             <div style={{
                                 display: "grid",

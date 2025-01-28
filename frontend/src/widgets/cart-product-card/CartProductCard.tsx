@@ -25,7 +25,7 @@ export const CartProductCard: React.FC<CartProductCardProps> = ({ product }) => 
     // @ts-ignore
     const categoryMatch = productSizeData.categories?.[0]?.id === categoryIdData;
     {/* @ts-ignore */ }
-    console.log(product.extraPrice, "HELLLOOOO")
+    console.log(product.prise, "HELLLOOOO")
     return (
         <>
             {categoryMatch ? (
@@ -38,7 +38,6 @@ export const CartProductCard: React.FC<CartProductCardProps> = ({ product }) => 
                         padding: '15px 0',
                         borderTop: "1px solid var(--secondary-bg-color)",
                         borderBottom: "1px solid var(--secondary-bg-color)",
-                        margin: '5px 0',
                     }}
                 >
                     <div style={{ display: " flex", gap: 32 }}>
@@ -59,10 +58,10 @@ export const CartProductCard: React.FC<CartProductCardProps> = ({ product }) => 
                     <div style={{ display: "flex", gap: 8, padding: "0 8px", alignItems: "center", justifyContent: 'end' }}>
                         <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
                             <p style={{ fontFamily: "Inter", fontSize: 15, fontWeight: 400, color: "var(--secondary-text-color)" }}>
-                                {product.extraPrice.toLocaleString()} ₽ × {product.count} шт. =
+                                {product.prise.toLocaleString()} ₽ × {product.count} шт. =
                             </p>
                             <p style={{ fontFamily: "Inter", fontSize: 24, fontWeight: 400, color: "var(--secondary-text-color)" }}>
-                                {(product.extraPrice * product.count).toLocaleString()} ₽
+                                {(product.prise * product.count).toLocaleString()} ₽
                             </p>
                         </div>
                         <DeleteFromCartButton id={product.id} />
@@ -95,10 +94,10 @@ export const CartProductCard: React.FC<CartProductCardProps> = ({ product }) => 
                     <div style={{ display: "flex", gap: 8, padding: "0 8px", alignItems: "center" }}>
                         <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
                             <p style={{ fontFamily: "Inter", fontSize: 15, fontWeight: 400, color: "var(--secondary-text-color)" }}>
-                                {product.extraPrice.toLocaleString()} ₽ × {product.count} шт. =
+                                {product.prise.toLocaleString()} ₽ × {product.count} шт. =
                             </p>
                             <p style={{ fontFamily: "Inter", fontSize: 24, fontWeight: 400, color: "var(--secondary-text-color)" }}>
-                                {(product.extraPrice * product.count).toLocaleString()} ₽
+                                {(product.prise * product.count).toLocaleString()} ₽
                             </p>
                         </div>
                         <DeleteFromCartButton id={product.id} />

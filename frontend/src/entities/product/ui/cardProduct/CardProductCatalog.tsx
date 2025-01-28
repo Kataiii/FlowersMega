@@ -221,7 +221,10 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
                                 flexDirection: "row",
                                 gap: "2px",
                             }}
-                            onClick={() => setIsOpen(true)}
+                            onClick={() => {
+                                if(product.productSizes.length > 1) setIsOpen(true);
+                                else handleSizeClick(product, 0);
+                            }}
                         >
                             <AddCartL alt="add cart" />
                             <ButtonText>Добавить</ButtonText>
