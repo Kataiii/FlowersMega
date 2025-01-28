@@ -78,7 +78,7 @@ const SizeSelectionModal: React.FC<SizeSelectionModalProps> = ({
                                             Параметры размера: {productSize.productSize.paramsSize}
                                         </p>
                                     </div>
-                                    <p style={{ fontFamily: 'Inter', fontWeight: '600', fontSize: '16px' }}>{productSize.productSize.extraPrice} ₽</p>
+                                    <p style={{ fontFamily: 'Inter', fontWeight: '600', fontSize: '16px' }}>{productSize.productSize.prise} ₽</p>
                                 </div>
                             );
                         })

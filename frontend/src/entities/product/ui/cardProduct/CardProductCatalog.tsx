@@ -156,7 +156,7 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
                             margin: 0,
                         }}
                     >
-                        {product.name}
+                        {product.name ?? ""}
                     </p>
                     {product.productSizes.some(
                         size => size.productSize.paramsSize && size.productSize.paramsSize.trim() !== ''
@@ -204,8 +204,8 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
                         }}
                     >
                         {product.productSizes.length === 1
-                            ? `Цена: ${product.productSizes[0]?.productSize.extraPrice} ₽`
-                            : `Цена: от ${product.productSizes[0]?.productSize.extraPrice} ₽`}
+                            ? `Цена: ${product.productSizes[0]?.productSize.prise} ₽`
+                            : `Цена: от ${product.productSizes[0]?.productSize.prise} ₽`}
                     </p>
                 )}
 
@@ -234,39 +234,6 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
                 </div>
             </div>
             <div style={{ position: "absolute", top: 15, right: 15 }}>{addToFavorites}</div>
-            {/* <ModalEmpty isOpen={isOpen} setIsOpen={setIsOpen} children={
-                <div>
-                    <p style={{ width: "40%", textAlign: "start", fontSize: "24px", fontFamily: "Inter", fontWeight: "600", marginBottom: "32px" }}>Выберите размер</p>
-                    {
-                        product.productSizes.map((productSize, index) => {
-                            const isHovered = hoveredIndex === index;
-                            return (
-
-                                <div style={{
-                                    display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '8px', border: "1px solid var(--primary-bg-color)", marginBottom: "8px", borderRadius: "4px", alignItems: 'center', backgroundColor: isHovered ? "var(--main-bg-color)" : "transparent", cursor: "pointer", transition: "background-color 0.3s ease",
-                                }}
-                                    onMouseEnter={() => setHoveredIndex(index)}
-                                    onMouseLeave={() => setHoveredIndex(null)}
-                                    onClick={() => {
-                                        const cartProduct = mapProductSizeToCartProduct(
-                                            product,
-                                            productSize.productSize
-                                        );
-                                        dispatch(addOneToCart(cartProduct));
-                                    }}
-                                    key={index}>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: "4px" }}>
-                                        <p style={{ fontFamily: 'Inter', fontWeight: '400', fontSize: '16px' }}>{productSize.size.name}</p>
-                                        <p style={{ fontFamily: 'Inter', fontWeight: '400', fontSize: '12px', color: "var(--text-modal)" }}>Параметры размера: {productSize.productSize.paramsSize}</p>
-                                    </div>
-                                    <p style={{ fontFamily: 'Inter', fontWeight: '600', fontSize: '16px' }}>{productSize.productSize.extraPrice} ₽</p>
-                                </div>
-                            )
-
-                        })
-                    }
-                </div>
-            } /> */}
             <SizeSelectionModal
                 isOpen={isOpen}
                 setIsOpen={setIsOpen}

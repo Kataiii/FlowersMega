@@ -9,12 +9,14 @@ export const addCredentialsUser = createAction<ResponseDto>('addCredentialsUser'
 export const logOut = createAction('logOut');
 export const checkPermissions = createAction<boolean>('checkPermissions');
 export const refreshToken = createAction('refreshToken');
+export const changeRemember = createAction<boolean>('changeRemember');
 
 const initialState: CredentailState = {
     user: null,
     accessToken: null,
     isAuth: false,
     isAdmin: false,
+    isRemember: false,
     loginStatus: RequestStatus.NEVER,
     registerStatus: RequestStatus.NEVER
 };
@@ -66,6 +68,9 @@ const credentialSlice = createSlice({
             state.accessToken = action.payload.accessToken ?? '';
             state.user = action.payload.user;
             state.isAuth = true;
+        }),
+        builder.addCase(changeRemember, (state, action) => {
+            state.isRemember = action.payload;
         })
     }
 })
