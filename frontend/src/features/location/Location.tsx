@@ -38,7 +38,7 @@ const Location: React.FC = () => {
     return (
         <>
             <Container onClick={() => setIsOpen(true)}>
-                <LocationIcon />
+                <LocationIcon fill="#73D982"/>
                 <PrimaryText>{isLoading ? <CenteredSpin /> : activeCity?.name}</PrimaryText>
             </Container>
             <ModalEmpty isOpen={isOpen} setIsOpen={setIsOpen}>

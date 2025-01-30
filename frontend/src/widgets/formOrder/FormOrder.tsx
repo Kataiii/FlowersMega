@@ -303,7 +303,7 @@ const FormOrder: React.FC = () => {
                                 ? <Space.Compact block style={{}}>
                                     <Input size="large" placeholder="Населенный пункт" value={activeCity?.name} />
                                     <Button type="primary" size="large" onClick={() => setIsCityOpen(prev => !prev)} style={{ borderTopLeftRadius: '0', borderBottomLeftRadius: '0', color: "white" }}>
-                                        <LocationIcon />
+                                        <LocationIcon fill="#FFFFFF"/>
                                     </Button>
                                 </Space.Compact>
                                 : <Input size="large" placeholder="Область, населенный пункт" />
