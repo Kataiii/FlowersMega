@@ -37,9 +37,8 @@ const CardOrderProduct: React.FC<CardOrderProductProps> = ({ orderItem, postcard
                                     </div>
                                 </div>
                                 <div style={{ display: "flex", flex: 1, justifyContent: "center", alignItems: "center" }}>
-                                    {postcards && postcards.length > 0 ? (
-                                        <PostcardBlock value={postcards || []} />
-                                    ) : (
+                                    {/* @ts-ignore */}
+                                    {postcards && postcards.length > 0 ? (<PostcardBlock idProduct={`${orderItem.idProduct}`} value={postcards || []} />) : (
                                         <p>Нет открыток</p>
                                     )}
                                 </div>

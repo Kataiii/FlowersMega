@@ -98,6 +98,24 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
         setIsOpen(false);
     };
 
+    const handleOnClick = () => {
+        const hasCategoryWithId5 = product.categories?.some(category => category.id === 5);
+        if (hasCategoryWithId5) {
+            handleSizeClick(product, 0);
+            if (product.id === undefined)
+                return new Error("product.id is undefined");
+            const text = "";
+            const prodId = product.id.toString()
+            dispatch(addPostcard({ text, productId: prodId }));
+        } else {
+            if (product.productSizes.length > 1) {
+                setIsOpen(true);
+            } else {
+                handleSizeClick(product, 0);
+            }
+        }
+    }
+
     const handleChangeIsInCart = (value: boolean) => {
         setIsInCart(value);
     };
@@ -222,20 +240,7 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
                                 flexDirection: "row",
                                 gap: "2px",
                             }}
-                            onClick={() => {
-                                const hasCategoryWithId5 = product.categories?.some(category => category.id === 5);
-                                if (hasCategoryWithId5) {
-                                    handleSizeClick(product, 0);
-                                    const text = "";
-                                    dispatch(addPostcard({ text }));
-                                } else {
-                                    if (product.productSizes.length > 1) {
-                                        setIsOpen(true);
-                                    } else {
-                                        handleSizeClick(product, 0);
-                                    }
-                                }
-                            }}
+                            onClick={handleOnClick}
                         >
                             <AddCartL alt="add cart" />
                             <ButtonText>Добавить</ButtonText>

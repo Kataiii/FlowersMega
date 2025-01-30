@@ -10,14 +10,12 @@ import { addOneToCart, deleteOneFromCart } from "../../entities/cart/redux/slice
 import { nanoid } from "@reduxjs/toolkit";
 import { ProductSize, useProductsControllerGetByIdQuery } from "../../store/product";
 import { CartProduct } from "../../entities/cart/types";
-
+import { useEffect } from "react";
 interface PostcardAddBlockProps {
     product: Omit<CartProduct, 'count'>,
     style?: React.CSSProperties,
     showHeader?: boolean,
 }
-
-import { useEffect } from "react";
 
 const PostcardAddBlock: React.FC<PostcardAddBlockProps> = ({ product, style, showHeader }) => {
     const dispatch = useDispatch();
@@ -25,13 +23,13 @@ const PostcardAddBlock: React.FC<PostcardAddBlockProps> = ({ product, style, sho
     const { isLoading, data } = useProductsControllerGetByIdQuery({ id: product.idProduct });
 
     const handleAddPostcard = () => {
-        const text = "";
-        dispatch(addPostcard({ text }));
+        if (product.id === undefined)
+            return new Error("product.id is undefined");
+        dispatch(addPostcard({
+            text: "",
+            productId: product.product.id.toString()
+        }));
         dispatch(addOneToCart(product));
-    };
-
-    const handleUpdatePostcard = (id: string, updatedText: string) => {
-        dispatch(updatePostcard({ id, text: updatedText }));
     };
 
     const handleRemovePostcard = (id: string) => {
@@ -39,16 +37,12 @@ const PostcardAddBlock: React.FC<PostcardAddBlockProps> = ({ product, style, sho
         dispatch(deleteOneFromCart(product));
     };
 
-    useEffect(() => {
-
-        postcards.forEach((postcard) => {
-            const newId = `${postcard.id}-productSize-${product.id}`;
-            if (postcard.updatedId !== newId) {
-                dispatch(updatePostcardId({ oldId: postcard.id, newId }));
-            }
-        });
-    }, [product.id, postcards, dispatch]);
-
+    const currentPostcards = postcards.filter(postcard =>
+        postcard.updatedId.endsWith(`-productSize-${product.product.id}`)
+    );
+    console.log(currentPostcards, "currentPostcards");
+    console.log(postcards, "postcards");
+    // console.log(product, "postcards")
     return (
         <div
             style={{
@@ -88,11 +82,11 @@ const PostcardAddBlock: React.FC<PostcardAddBlockProps> = ({ product, style, sho
                     scrollbarWidth: "thin",
                 }}
             >
-                {postcards.map((postcard, index) => (
+                {currentPostcards.map((postcard, index) => (
                     <Postcard
-                        key={postcard.updatedId || postcard.id}
+                        key={postcard.updatedId}
                         value={{ postcard, pos: index }}
-                        onChange={(updatedText) => handleUpdatePostcard(postcard.id, updatedText)}
+                        onChange={(text) => dispatch(updatePostcard({ id: postcard.id, text }))}
                         onRemove={() => handleRemovePostcard(postcard.id)}
                     />
                 ))}

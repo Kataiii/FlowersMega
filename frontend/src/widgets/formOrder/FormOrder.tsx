@@ -68,10 +68,12 @@ const FormOrder: React.FC = () => {
     const dispatch = useDispatch();
     const postcards = useSelector(postcardsSelectors.selectAll);
     const productsInCart = useAppSelector(cartSelectors.selectAll);
+    console.log(productsInCart, 'KKKDKDKDKDKDKD')
     const totalCost = useMemo(
-        () => productsInCart.map(p => p.count * (p.extraPrice ?? 0)).reduce((prev, curr) => prev + curr, 0),
+        () => productsInCart.map(p => p.count * (p.prise ?? 0)).reduce((prev, curr) => prev + curr, 0),
         [productsInCart]
     )
+    console.log(totalCost, 'HOW SI TI POSSIBLE')
     const handleOrderSubmit = () => {
         dispatch(clearStore());
     };

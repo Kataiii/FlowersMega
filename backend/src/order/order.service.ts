@@ -94,7 +94,7 @@ E-mail заказчика: ${dto.emailCustomer}
     
 ДЕТАЛИ ЗАКАЗА
 ${productsSizes.map((item, index) => {
-            let result = `"${item.product.name}" (${item.size.name}) × ${dto.itemsOrder[index].count} : ${item.productSize.prise * dto.itemsOrder[index].count} руб.`;
+            let result = `"${item.product.name}" (${item.size.name}) × ${dto.itemsOrder[index].count} : ${item.productSize.extraPrice * dto.itemsOrder[index].count} руб.`;
 
             if (textPostcards.length > 0) {
                 textPostcards.forEach(postcard => {

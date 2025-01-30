@@ -61,7 +61,7 @@ const Order: React.FC = () => {
               <div style={{ width: "350px", display: "flex", justifyContent: "start", flexWrap: "nowrap", gridGap: "15px", margin: "8px 0", padding: "8px", borderRadius: "6px", border: "1px solid var(--primary-bg-color)" }}>
                 <div style={{ borderRight: "solid 1px var(--primary-bg-color)" }}>
                   <OrderInfoText style={{ color: "var(--unactive-text-color)" }}>
-                    Получатель
+                    Отправитель
                   </OrderInfoText>
                   <Text style={{ width: "160px", overflowWrap: "break-word" }}>
                     {data?.nameCustomer}
@@ -101,7 +101,7 @@ const Order: React.FC = () => {
                   Получатель
                 </OrderInfoText>
                 <Text style={{ width: "160px", overflowWrap: "break-word" }}>
-                  {data?.nameCustomer}
+                  {data?.nameRecipient}
                 </Text>
               </div>
               <div style={{ borderRight: "solid 1px var(--primary-bg-color)" }}>
@@ -109,7 +109,7 @@ const Order: React.FC = () => {
                   Номер
                 </OrderInfoText>
                 <Text style={{ width: "170px", paddingRight: "10px" }}>
-                  {data?.phoneCustomer ? formatPhoneNumber(data?.phoneCustomer) : "Неизвестный номер"}
+                  {data?.phoneRecipient ? formatPhoneNumber(data?.phoneRecipient) : "Неизвестный номер"}
                 </Text>
               </div>
               <div style={{ borderRight: "solid 1px var(--primary-bg-color)" }}>
@@ -150,7 +150,7 @@ const Order: React.FC = () => {
               <div style={{ width: "350px", display: "flex", justifyContent: "start", flexWrap: "nowrap", gridGap: "15px", margin: "8px 0", padding: "8px", borderRadius: "6px", border: "1px solid var(--primary-bg-color)" }}>
                 <div style={{ borderRight: "solid 1px var(--primary-bg-color)" }}>
                   <OrderInfoText style={{ color: "var(--unactive-text-color)" }}>
-                    Получатель
+                    Отправитель
                   </OrderInfoText>
                   <Text style={{ width: "160px", overflowWrap: "break-word" }}>
                     {data?.nameCustomer}
@@ -190,7 +190,7 @@ const Order: React.FC = () => {
                   Получатель
                 </OrderInfoText>
                 <Text style={{ width: "160px", overflowWrap: "break-word" }}>
-                  {data?.nameCustomer}
+                  {data?.nameRecipient}
                 </Text>
               </div>
               <div style={{ borderRight: "solid 1px var(--primary-bg-color)" }}>
@@ -198,7 +198,7 @@ const Order: React.FC = () => {
                   Номер
                 </OrderInfoText>
                 <Text style={{ width: "170px", paddingRight: "10px" }}>
-                  {data?.phoneCustomer ? formatPhoneNumber(data?.phoneCustomer) : "Неизвестный номер"}
+                  {data?.phoneRecipient ? formatPhoneNumber(data?.phoneRecipient) : "Неизвестный номер"}
                 </Text>
               </div>
               <div style={{ borderRight: "solid 1px var(--primary-bg-color)" }}>
