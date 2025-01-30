@@ -81,7 +81,7 @@ const ElementSizeSelection: React.FC<ElementSizeSelectionProps> = ({
       }}
     >
       <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-        <p style={{ fontFamily: "Inter", fontWeight: "400", fontSize: "16px" }}>
+        <p style={{ fontFamily: "Inter", fontWeight: "400", fontSize: "16px", color: "var(--secondary-text-color)" }}>
           {productSize.size.name}
         </p>
         <p
@@ -95,7 +95,7 @@ const ElementSizeSelection: React.FC<ElementSizeSelectionProps> = ({
           Параметры размера: {productSize.productSize.paramsSize}
         </p>
       </div>
-      <p style={{ fontFamily: "Inter", fontWeight: "600", fontSize: "16px" }}>
+      <p style={{ fontFamily: "Inter", fontWeight: "600", fontSize: "16px", color: "var(--secondary-text-color)" }}>
         {productSize.productSize.prise} ₽
       </p>
     </div>

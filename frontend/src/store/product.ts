@@ -594,9 +594,9 @@ export type ProductCatalogCard = {
   /** Array of images */
   image: Image;
   /** Array of filters */
-  filters: ItemFilter[];
+  filters?: ItemFilter[];
   /** Array of categories */
-  categories: Category[];
+  categories?: Category[];
   reviewInfo?: StaticticReviews;
   productSizes: [
     {

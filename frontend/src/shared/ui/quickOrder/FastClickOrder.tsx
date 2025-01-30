@@ -81,13 +81,11 @@ const FastClickOrder: React.FC<FastClickOrderProps> = ({
     const user = useAppSelector(selectUser);
     const city = useAppSelector(selectActiveCity);
     const [createOrder, { isSuccess }] = useOrdersControllerCreateMutation();
-    // const onFinish = async (values: any) => {
-    //     console.log("Form submitted:", { ...values, productSize: fullSizeInfo, product: fullProductInfo });
-    //     setIsOpen(false);
-    // };
+
     useEffect(() => {
         if (isSuccess) setIsOpen(false);
     }, [isSuccess]);
+
     const onFinish = async (values: FormValues) => {
         const tryValues = {
             ...values,
@@ -169,8 +167,46 @@ const FastClickOrder: React.FC<FastClickOrderProps> = ({
         return false;
     }
 
+    useEffect(() => {
+        if(product.productSizes.length === 1) handleSizeSelection(product.productSizes[0], product);
+    }, [product, product.productSizes])
+
+    useEffect(() => {
+        if(!isSizeModalOpen && selectedSize === ""){
+            form.validateFields(['size']);
+        }
+    }, [isSizeModalOpen, selectedSize])
+
     return (
         <ModalEmpty isOpen={isOpen} setIsOpen={setIsOpen}>
+            <ConfigProvider
+            locale={locale}
+            theme={{
+                token: {
+                    fontFamily: "Inter",
+                    colorText: "var(--text-modal)",
+                    colorTextDescription: "var(--text-modal)",
+                    fontSize: 12,
+                    colorTextTertiary: "var(--text-modal)",
+                    colorTextLabel: "var(--text-modal)",
+                    colorBorder: "var(--primary-bg-color)"
+                },
+                components: {
+                    Segmented: {
+                        itemSelectedBg: "var(--primary-bg-color)",
+                        itemSelectedColor: "var(--primary-text-color)",
+                        trackBg: "var(--block-bg-color)",
+                        itemHoverBg: "var(--block-bg-color-hover)",
+                        colorText: "var(--primary-bg-color)",
+                        colorBorder: "var(--primary-bg-color)"
+                    },
+                    Input: {
+                        colorText: "var(--secondary-text-color)",
+                        borderRadius: 4,
+                        borderRadiusLG: 4
+                    }
+                }
+            }}>
             <Form
                 form={form}
                 onFinish={onFinish}
@@ -181,9 +217,24 @@ const FastClickOrder: React.FC<FastClickOrderProps> = ({
                     emailCustomer: "",
                     size: '',
                 }}
+
+                labelCol={{
+                    span: 24,
+                }}
+
+                style={{
+                    backgroundColor: "var(--block-bg-color)",
+                    borderRadius: 8,
+                    padding: 16,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 15,
+                    width: "100%",
+                    textAlign: "start"
+                }}
             >
                 <div style={{ padding: "32px" }}>
-                    <p style={{ fontFamily: "Inter", fontSize: "24px", fontWeight: "600" }}>Быстрый заказ</p>
+                    <p style={{ fontFamily: "Inter", fontSize: "24px", fontWeight: "600", color: "var(--secondary-text-color)" }}>Быстрый заказ</p>
                     <p style={{ fontFamily: "Inter", fontSize: "14px", fontWeight: "400", color: "var(--text-modal)", marginBottom: "8px" }}>
                         для позиции
                     </p>
@@ -217,6 +268,7 @@ const FastClickOrder: React.FC<FastClickOrderProps> = ({
                                     alignItems: "center",
                                     width: "55%",
                                     gap: "24px",
+                                    flexGrow: 1
                                     // justifyContent: "space-around",
                                 }}
                             >
@@ -240,7 +292,13 @@ const FastClickOrder: React.FC<FastClickOrderProps> = ({
                             </div>
 
                             <button
-                                onClick={() => setSizeModalOpen(true)}
+                                onClick={() => {
+                                    if(product.productSizes.length > 1) { 
+                                        setSizeModalOpen(true);
+                                        console.log("PRODUCT ", "CLICK")
+                                    }
+                                }}
+                                type="button"
                                 style={{
                                     fontFamily: "Inter",
                                     fontSize: "16px",
@@ -251,25 +309,14 @@ const FastClickOrder: React.FC<FastClickOrderProps> = ({
                                     background: "none",
                                     border: "none",
                                     padding: "4px 0",
-                                    cursor: "pointer",
+                                    cursor: product.productSizes.length > 1 ? "pointer" : "default",
                                 }}
+                                disabled={product.productSizes.length === 1}
                             >
-                                {selectedSize || "Не выбран размер"}
+                                {selectedSize !== "-" ? selectedSize || "Не выбран размер" : ""}
                             </button>
                         </div>
                     </Form.Item>
-
-                    <ConfigProvider
-                        locale={locale}
-                        theme={{
-                            token: {
-                                fontFamily: "Inter",
-                                colorText: "var(--text-modal)",
-                                fontSize: 12,
-                                colorBorder: "var(--primary-bg-color)",
-                            },
-                        }}
-                    >
                         <div>
                             <TitleForm>Отправитель</TitleForm>
                             <Form.Item style={{ marginBottom: 8, color: "var(--text-modal)" }} initialValue={user !== null ? user.firstname : ""} label="Ваше ФИО" name="nameCustomer" rules={[{ required: true, message: "Введите ФИО" }]}>
@@ -425,7 +472,7 @@ const FastClickOrder: React.FC<FastClickOrderProps> = ({
                                     className={styles.WrapDate}
                                     label="Дата доставки"
                                     name="dateDelivery"
-                                    style={{ flexGrow: 1, display: "flex" }}
+                                    style={{ flexGrow: 1 }}
                                     rules={[{ type: 'object' as const, required: true, message: 'Выберите дату доставки' }]}>
                                     <DatePicker style={{ width: "100%" }} size="large" disabledDate={disabledDate} format={"DD.MM.YYYY"} />
                                 </Form.Item>
@@ -479,9 +526,8 @@ const FastClickOrder: React.FC<FastClickOrderProps> = ({
                         </div>
 
                         <div style={{ width: "50%", margin: "0 auto", paddingTop: 20, paddingBottom: 30 }}>
-                            <Button buttonContent="Оформить заказ" clickHandler={() => { }} />
+                            <Button type="submit" buttonContent="Оформить заказ" clickHandler={() => { }} />
                         </div>
-                    </ConfigProvider>
                 </div>
 
                 {isSizeModalOpen && (
@@ -499,6 +545,7 @@ const FastClickOrder: React.FC<FastClickOrderProps> = ({
                     />
                 )}
             </Form>
+            </ConfigProvider>
         </ModalEmpty>
     );
 };

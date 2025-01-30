@@ -39,15 +39,15 @@ const PostcardAddBlock: React.FC<PostcardAddBlockProps> = ({ product, style, sho
         dispatch(deleteOneFromCart(product));
     };
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        postcards.forEach((postcard) => {
-            const newId = `${postcard.id}-productSize-${product.id}`;
-            if (postcard.updatedId !== newId) {
-                dispatch(updatePostcardId({ oldId: postcard.id, newId }));
-            }
-        });
-    }, [product.id, postcards, dispatch]);
+    //     postcards.forEach((postcard) => {
+    //         const newId = `${postcard.id}-productSize-${product.id}`;
+    //         if (postcard.updatedId !== newId) {
+    //             dispatch(updatePostcardId({ oldId: postcard.id, newId }));
+    //         }
+    //     });
+    // }, [product.id, postcards, dispatch]);
 
     return (
         <div

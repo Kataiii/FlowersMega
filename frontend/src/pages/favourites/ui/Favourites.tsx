@@ -5,7 +5,6 @@ import Container from "../../../shared/ui/containerMain/ContainerMain"
 import { CATALOG_PATH } from "../../../shared/utils/constants";
 import { useAppSelector } from "../../../store/store";
 import { BlockGrid } from "../../../widgets/blockProducts/BlockProducts";
-import { SmartProductCard } from "../../../widgets/product/SmartProductCart";
 import { SmartProductCardCatalog } from "../../../widgets/product/SmartProductCardCatalog";
 
 const Favourites: React.FC = () => {

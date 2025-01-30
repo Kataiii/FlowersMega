@@ -459,7 +459,7 @@ export class ProductsSizesFullService {
     category?: number,
     sort?: string
   ) {
-    const typeSort = sort.split("_");
+    const typeSort = sort ? sort.split("_") : "id_ASC".split("_");
     const sortField: string = typeSort[0];
     const sortOrder: string = typeSort[1]?.toUpperCase();
 

@@ -5,7 +5,6 @@ import { ProductCatalogCard, ProductSize, useCategoryControllerGetIdByNameQuery,
 import { useAppSelector } from "../../../store/store";
 import FiltersPanel from "../../../widgets/filtersPanel/FiltersPanel";
 import FiltersTags from "../../../widgets/filtersTags/FiltersTags";
-import { SmartProductCard } from "../../../widgets/product/SmartProductCart";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useProductContext } from "../../../shared/ui/secondHeader/ProductContext";
@@ -13,7 +12,6 @@ import { useSizeContollerGetByNameQuery } from "../../../store/size";
 import CenteredSpin from "../../../shared/ui/spinner/CenteredSpin";
 import { SmartProductCardCatalog } from "../../../widgets/product/SmartProductCardCatalog";
 import { CatalogSort } from "../../../shared/ui/sortOrder/CatalogSort";
-import FastFormOrder from "../../../widgets/fastFormOrder/FastFormOrder";
 import { CartProduct } from "../../../entities/cart/types";
 
 

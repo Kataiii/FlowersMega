@@ -39,6 +39,7 @@ const SizeSelectionModal: React.FC<SizeSelectionModalProps> = ({
               fontFamily: "Inter",
               fontWeight: "600",
               marginBottom: "32px",
+              color: "var(--secondary-text-color)"
             }}
           >
             Выберите размер

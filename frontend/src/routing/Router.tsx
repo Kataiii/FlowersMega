@@ -43,7 +43,6 @@ import {
     CITIES_PATH,
     CONTACTS_PATH,
     EMAIL_PATH,
-    FAST_BUY_PATH,
     FAVOURITES_PATH,
     FILTERS_PATH,
     HELP_PATH,
@@ -61,7 +60,6 @@ import {
 } from "../shared/utils/constants";
 import Auth from "../widgets/auth/ui/Auth";
 import Cities from "../widgets/cities/ui/Cities";
-import FastBuy from "../widgets/fastBuy/ui/FastBuy";
 import RecoveryPassword from "../widgets/recoveryPassword/ui/RecoveryPassword";
 import Regist from "../widgets/regist/ui/Regist";
 import { AuthGuard } from "./guards/AuthGuard";
@@ -133,7 +131,6 @@ const Router: React.FC = () => {
                                 clickHandler={() => navigate(HOME_PATH)} />
                         } />} />} />
                         <Route path={CITIES_PATH} element={<Portal children={<Cities />} />} />
-                        <Route path={FAST_BUY_PATH} element={<Portal children={<FastBuy />} />} />
                         <Route path={ORDER_SUCCESS_PATH} element={<Portal children={
                             <Modal title="Ваш заказ принят"
                                 content="Мы свяжемся с вами в кротчайшее время"

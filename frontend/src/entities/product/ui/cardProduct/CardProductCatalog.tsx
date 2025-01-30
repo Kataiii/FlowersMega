@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import { ReactComponent as Cursor } from "../../../../shared/assets/cursor.svg";
@@ -101,7 +101,15 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
     const handleChangeIsInCart = (value: boolean) => {
         setIsInCart(value);
     };
-    console.log(isInCart, "NU KAAAAAAAAAAAAK");
+
+    const inCart = useAppSelector((state) =>isInCartSelector(state, mapProductSizeToCartProduct(product, product.productSizes[0].productSize)));
+
+    useEffect(() => {
+        if(product.productSizes.length === 1){
+            if(inCart === true) setIsInCart(true);
+        }
+    }, [inCart])
+
     return (
         <div
             style={{
@@ -228,7 +236,8 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
                                     handleSizeClick(product, 0);
                                     const text = "";
                                     dispatch(addPostcard({ text }));
-                                } else {
+                                } 
+                                else {
                                     if (product.productSizes.length > 1) {
                                         setIsOpen(true);
                                     } else {

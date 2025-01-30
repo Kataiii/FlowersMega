@@ -7,6 +7,7 @@ export interface ButtonProps {
     clickHandler: () => void;
     disabled?: boolean;
     style?: CSSProperties;
+    type?:"button" | "submit" | "reset";
 }
 
 export const ButtonStyle = styled.button`
@@ -25,9 +26,9 @@ export const ButtonStyle = styled.button`
     }
 `
 
-const Button: React.FC<ButtonProps> = ({ buttonContent, clickHandler, disabled, style }) => {
+const Button: React.FC<ButtonProps> = ({ buttonContent, clickHandler, disabled, style, type }) => {
     return (
-        <ButtonStyle style={style} disabled={disabled} onClick={clickHandler}>{buttonContent}</ButtonStyle>
+        <ButtonStyle type={type} style={style} disabled={disabled} onClick={clickHandler}>{buttonContent}</ButtonStyle>
     )
 }
 

@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { FullProductSizeDto, ProductCatalogCard, useCategoryControllerGetIdByNameQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery, useProductsSizesControllerGetProductsCatalogWithPaginationQuery } from "../../store/product";
+import { ProductCatalogCard, useCategoryControllerGetIdByNameQuery, useProductsSizesControllerGetProductsCatalogWithPaginationQuery } from "../../store/product";
 import { Modal, Pagination } from "antd";
 import { Title } from "../../shared/ui/forAdditionalPages/Title";
 import { Text } from "../../shared/ui/forAdditionalPages/Content";
-import { SmartProductCard } from "./SmartProductCart";
 import { SmartProductCardCatalog } from "./SmartProductCardCatalog";
 interface Props {
     isOpen: boolean;

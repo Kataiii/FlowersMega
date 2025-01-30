@@ -3,7 +3,6 @@ import { useCategoryControllerGetIdByNameQuery, useProductsSizesControllerGetByC
 import { Modal, Pagination } from "antd";
 import { Title } from "../../shared/ui/forAdditionalPages/Title";
 import { Text } from "../../shared/ui/forAdditionalPages/Content";
-import { SmartProductCard } from "./SmartProductCart";
 import { SmartProductCardCatalog } from "./SmartProductCardCatalog";
 interface Props {
     isOpen: boolean;

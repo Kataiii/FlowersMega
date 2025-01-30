@@ -59,13 +59,9 @@ const Footer: React.FC = () => {
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <h4 style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0 }}>Каталог</h4>
-                            {data && data.map((filter) => (
-                                <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => { navigate(CATALOG_PATH); handleSelectAll(filter?.items || []) }}>{filter?.name}</p>
+                            {data && data.map((filter, index) => (
+                                <p key={index} style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => { navigate(CATALOG_PATH); handleSelectAll(filter?.items || []) }}>{filter?.name}</p>
                             ))}
-                            {/* <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(CATALOG_PATH)}>Цветы</p>
-                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(CATALOG_PATH)}>Кому подарок</p>
-                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(CATALOG_PATH)}>Повод</p>
-                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(CATALOG_PATH)}>Стиль</p> */}
                         </div>
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>

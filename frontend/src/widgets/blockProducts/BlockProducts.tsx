@@ -3,9 +3,7 @@ import { styled } from "styled-components";
 import SecondaryButton from "../../shared/ui/button/SecondaryButton";
 import Container from "../../shared/ui/containerMain/ContainerMain";
 import TitleSection from "../../shared/ui/titleSection/TitleSection";
-import { FullProductSizeDto, ProductCatalogCard, ProductSize, useProductsSizesControllerGetByCategotyIdWithPaginationQuery, useProductsSizesControllerGetPaginationQuery, useProductsSizesControllerGetProductsCatalogWithPaginationQuery } from "../../store/product";
-import { SmartProductCard } from "../product/SmartProductCart";
-import { useSizeContollerGetByNameQuery } from "../../store/size";
+import { ProductCatalogCard, useProductsSizesControllerGetProductsCatalogWithPaginationQuery } from "../../store/product";
 import CenteredSpin from "../../shared/ui/spinner/CenteredSpin";
 import { SmartProductCardCatalog } from "../product/SmartProductCardCatalog";
 
