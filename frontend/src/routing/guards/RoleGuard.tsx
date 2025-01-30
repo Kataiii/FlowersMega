@@ -12,12 +12,12 @@ type RoleGuardProps = {
 
 export const RoleGuard: React.FC<RoleGuardProps> = ({ children }) => {
     const { data, isLoading, isError, error } = useAuthControllerCheckPermissionsQuery(null);
-
     const dispatch = useAppDispatch();
 
     useEffect(() => {
         if (!isLoading) {
-            dispatch(checkPermissions(!isError));
+            //@ts-ignore
+            dispatch(checkPermissions(data ? data.status : false));
         }
     }, [isLoading]);
 

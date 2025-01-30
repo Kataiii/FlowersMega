@@ -43,7 +43,6 @@ const baseQueryWithInterceptors = async (args: any, api: any, extraOptions: any)
   else {
     isRetry = false;
   }
-  console.log("result ", result);
   return result;
 };
 
