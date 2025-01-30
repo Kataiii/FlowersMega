@@ -5,15 +5,19 @@ import { Input } from "antd"
 interface PostcardBlockProps {
     value?: Postcard[];
     style?: React.CSSProperties;
+    idProduct?: string;
 }
 
-const PostcardBlock: React.FC<PostcardBlockProps> = ({ value = [], style }) => {
+const PostcardBlock: React.FC<PostcardBlockProps> = ({ value = [], style, idProduct }) => {
     const transformPostcards = JSON.parse(JSON.stringify(value));
     const isArray = Array.isArray(value);
     console.log(isArray, 'isArray')
     console.log(transformPostcards, 'TRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR')
     const [postcards, setPostcards] = useState<Postcard[]>(transformPostcards);
-
+    const currentPostcards = postcards.filter(postcard =>
+        postcard.updatedId.endsWith(`-productSize-${idProduct}`)
+    );
+    console.log(currentPostcards, 'cuurr')
     return (
         <div
             style={{
@@ -32,7 +36,7 @@ const PostcardBlock: React.FC<PostcardBlockProps> = ({ value = [], style }) => {
 
             }}
         >
-            {postcards.map((postcard, index) => (
+            {currentPostcards.map((postcard, index) => (
                 <div key={postcard.id}>
                     <div
                         style={{
