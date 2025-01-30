@@ -51,7 +51,6 @@ const BlockReviews: React.FC = () => {
         setPage(newPage);
 
     };
-    console.log(data, 'XDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD')
     return (
         data?.count === 0 ? null : (
             <Container>

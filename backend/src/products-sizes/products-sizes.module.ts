@@ -15,12 +15,13 @@ import { TypesProductModule } from 'src/types-product/types-product.module';
 import { CategoriesProductssizesModule } from 'src/categories-productssizes/categories-productssizes.module';
 import { CategoriesModule } from 'src/categories/categories.module';
 import { ItemsFilterModule } from 'src/items-filter/items-filter.module';
+import { Product } from 'src/products/products.model';
 
 @Module({
   providers: [ProductsSizesService, ProductsSizesFullService],
   controllers: [ProductsSizesController],
   imports: [
-    SequelizeModule.forFeature([ProductSize]),
+    SequelizeModule.forFeature([ProductSize, Product]),
     ProductsModule,
     forwardRef(() => ExtraPriceModule),
     SizesModule,

@@ -47,7 +47,6 @@ export class ProductsSizesService {
 
     async updatePrices() {
         const bestPrices = await this.extraPriceForCategories.whichOneTheBest();
-        console.log(bestPrices, "BEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEST AHAHHAHAHAHAHHA")
         const allProductSizes = await this.productsSizesRepository.findAll({
             include: [{ all: true }]
         });
@@ -70,7 +69,6 @@ export class ProductsSizesService {
         }));
         const updatedProductSizes = productsCardInfo.map(async (sample) => {
             const categories = sample.product?.categories || [];
-            // console.log(categories, "NU CATEGORIII VRODE")
             let priceMultiplier = bestPrices.get('all') || 0;
 
             if (categories.length === 0) {
@@ -147,40 +145,6 @@ export class ProductsSizesService {
             }
 
         }));
-        // console.log(productsCardInfo, "WANNA CHECK");
-
-        // const updatedProducts = productsCardInfo.map(item => {
-
-        //     const productSize = { ...item.productSize };
-
-        //     const categories = item.product.categories || [];
-        //     let priceMultiplier = extraPriceForCategories.get('all') || 0;
-
-        //     if (categories.length === 0) {
-        //         priceMultiplier = extraPriceForCategories.get('all') || priceMultiplier;
-        //     } else if (categories.length === 1) {
-        //         priceMultiplier = extraPriceForCategories.get(categories[0].id.toString()) || priceMultiplier;
-        //     } else {
-        //         const multipliers = categories.map(cat => extraPriceForCategories.get(cat.id.toString()) || priceMultiplier);
-        //         priceMultiplier = Math.max(...multipliers);
-        //     }
-        //     // console.log("Old price:", productSize.prise);
-        //     // console.log("Price multiplier:", priceMultiplier);
-
-        //     const updatedPrice = Math.floor(productSize.prise + (productSize.prise / 100) * priceMultiplier);
-
-        //     // console.log("New price:", updatedPrice);
-        //     return {
-        //         ...item,
-        //         productSize: {
-        //             ...productSize,
-        //             prise: updatedPrice,
-        //         }
-        //     };
-        // });
-        // // console.log(updatedProducts, "LMAO?");
-        // if (productsSizes === null) throw new HttpException("Products sizes not found", HttpStatus.NOT_FOUND);
-        // return updatedProducts;
         return productsCardInfo;
     }
 
@@ -231,20 +195,13 @@ export class ProductsSizesService {
             }
         });
         const productSizesUpd = await this.getByProductId(productSize.idProduct);
-        // console.log(productSizesUpd, "YAAAAAAAAAAAAAAa");
-        // console.log(productSize, "PROOOOOOOOOOOOOOOOOOOOOOOOD");
 
         const updatedProductSize = productSizesUpd.find(
             (item) => {
-                // console.log(item.productSize.idSize, "HHHH");
-                // console.log(Number(idSize), "IDSIIIIIIIIIZE");
                 const isMatch = item.productSize.idSize === Number(idSize) && item.productSize.idProduct === Number(idProduct);
-                // console.log(isMatch, "LLLLLLLL");
                 return isMatch;
             }
         );
-
-        // console.log(updatedProductSize, "WWWWWWWWWWWWWWWWWWWWWWwwww");
         return updatedProductSize.productSize
     }
 }

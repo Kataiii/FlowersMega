@@ -1,4 +1,4 @@
-import { Checkbox, CheckboxProps, ConfigProvider, DatePicker, Form, Input, Result, Segmented, Tabs, TabsProps, TimePicker } from "antd";
+import { Button, Checkbox, CheckboxProps, ConfigProvider, DatePicker, Form, Input, Result, Segmented, Space, Tabs, TabsProps, TimePicker } from "antd";
 import PhoneInput from "react-phone-input-2";
 import { styled } from "styled-components";
 import locale from 'antd/locale/ru_RU';
@@ -9,7 +9,7 @@ import TextArea from "antd/es/input/TextArea";
 import { errorMessageCity, errorMessageEmail, errorMessageName, errorMessageStreet, regExEmail, regExName } from "../../shared/utils/validationConstants";
 import { useAppSelector } from "../../store/store";
 import { selectUser } from "../../entities/credential/redux/selectors";
-import Button from "../../shared/ui/button/Button";
+import ButtonL from "../../shared/ui/button/Button";
 import { selectActiveCity } from "../../entities/city/redux/selectors";
 import styles from "./FormOrder.module.css";
 import Transforms from "../../shared/utils/transforms";
@@ -23,6 +23,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteAllFromCart } from "../../entities/cart/redux/slice";
 import { postcardsSelectors } from "../../entities/postcard/redux/selectors";
 import { clearStore } from "../../entities/postcard/redux/slice";
+import { ReactComponent as LocationIcon } from "../../shared/assets/location.svg";
+import CityPanel from "../../entities/city/ui/cityPanel/CityPanel";
+
 
 const TitleForm = styled.h4`
     font-family: "Inter";
@@ -54,11 +57,13 @@ type FormValues = {
 
 const FormOrder: React.FC = () => {
     const [isRecipientCustomer, setIsRecipientCustomer] = useState<boolean>(false);
+    const [isPrivateHouse, setIsPrivateHouse] = useState<boolean>(false);
     const [isExsistingCity, setIsExsistingCity] = useState<boolean>(true);
     const [createOrder, { isSuccess }] = useOrdersControllerCreateMutation();
     const user = useAppSelector(selectUser);
     const city = useAppSelector(selectActiveCity);
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [isCityOpen, setIsCityOpen] = useState<boolean>(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const postcards = useSelector(postcardsSelectors.selectAll);
@@ -70,6 +75,7 @@ const FormOrder: React.FC = () => {
     const handleOrderSubmit = () => {
         dispatch(clearStore());
     };
+    const activeCity = useAppSelector(selectActiveCity);
     // const getUpdatedPostcards = () => {
     //     return postcards.map((postcard) => {
     //         const newId = `${postcard.id}-productSize-${product.id}`;
@@ -82,8 +88,8 @@ const FormOrder: React.FC = () => {
         const tryValues = {
             ...values,
             'dateDelivery': values['dateDelivery'].format('DD.MM.YYYY'),
-            'startTimeDelivery': values['startTimeDelivery'].format('HH:MM'),
-            'endTimeDelivery': values['endTimeDelivery'].format('HH:MM')
+            'startTimeDelivery': values['startTimeDelivery'].format('HH:mm'),
+            'endTimeDelivery': values['endTimeDelivery'].format('HH:mm')
         }
 
         const dto: OrdersControllerCreateApiArg = {
@@ -142,10 +148,20 @@ const FormOrder: React.FC = () => {
         setIsRecipientCustomer(e.target.checked);
     };
 
+    const changePrivateHouse: CheckboxProps['onChange'] = (e) => {
+        setIsPrivateHouse(e.target.checked);
+    };
+
     const disabledDate = (date: dayjs.Dayjs) => {
         if (date.toDate() < new Date(new Date().setDate(new Date().getDate() - 1))) return true;
         return false;
     }
+
+    useEffect(() => {
+        form.setFieldsValue({
+            addressArea: isExsistingCity && city ? city.name : "",
+        });
+    }, [city, isExsistingCity, form]);
 
     useEffect(() => {
         if (isSuccess) setIsOpen(true);
@@ -284,7 +300,12 @@ const FormOrder: React.FC = () => {
                         { pattern: regExName, message: errorMessageCity }]}>
                         {
                             isExsistingCity
-                                ? <Input size="large" placeholder="Населенный пункт" />
+                                ? <Space.Compact block style={{}}>
+                                    <Input size="large" placeholder="Населенный пункт" value={activeCity?.name} />
+                                    <Button type="primary" size="large" onClick={() => setIsCityOpen(prev => !prev)} style={{ borderTopLeftRadius: '0', borderBottomLeftRadius: '0', color: "white" }}>
+                                        <LocationIcon />
+                                    </Button>
+                                </Space.Compact>
                                 : <Input size="large" placeholder="Область, населенный пункт" />
                         }
                     </Form.Item>
@@ -295,44 +316,52 @@ const FormOrder: React.FC = () => {
                             { pattern: regExName, message: errorMessageStreet }]}>
                             <Input size="large" placeholder="Улица" />
                         </Form.Item>
+
+                    </div>
+                    <div style={{ display: "flex", gap: 15, alignItems: "flex-end" }}>
                         <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Дом" name="addressHouse" rules={[{ required: true, message: "Введите номер дома" }]}>
-                            <Input size="large" placeholder="Дом" onKeyPress={(event) => {
-                                if (!/[0-9]/.test(event.key)) {
-                                    event.preventDefault();
-                                }
-                            }} />
+                            <Input size="large" placeholder="Дом" />
+                        </Form.Item>
+                        <Form.Item initialValue={false} style={{ flexGrow: 1, display: "flex", flexDirection: "column", justifyContent: "flex-end", height: "100%", marginBottom: 8 }} label="" name="privateHouse" valuePropName="checked">
+                            <Checkbox onChange={changePrivateHouse}>Частный дом</Checkbox>
                         </Form.Item>
                     </div>
                     <div style={{ display: "flex", gap: 15 }}>
-                        <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Корпус" name="addressCorpus">
-                            <Input size="large" placeholder="Корпус" onKeyPress={(event) => {
-                                if (!/[0-9]/.test(event.key)) {
-                                    event.preventDefault();
-                                }
-                            }} />
-                        </Form.Item>
-                        <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Подъезд" name="addressEntrance">
-                            <Input size="large" placeholder="Подьезд" onKeyPress={(event) => {
-                                if (!/[0-9]/.test(event.key)) {
-                                    event.preventDefault();
-                                }
-                            }} />
-                        </Form.Item>
-                        <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Этаж" name="addressFloor">
-                            <Input size="large" placeholder="Этаж" onKeyPress={(event) => {
-                                if (!/[0-9]/.test(event.key)) {
-                                    event.preventDefault();
-                                }
-                            }} />
-                        </Form.Item>
-                        <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Квартира" name="addressFlat" rules={[
-                            { required: true, message: "Введите номер квартиры" }]}>
-                            <Input size="large" placeholder="Квартира" onKeyPress={(event) => {
-                                if (!/[0-9]/.test(event.key)) {
-                                    event.preventDefault();
-                                }
-                            }} />
-                        </Form.Item>
+                        {
+                            isPrivateHouse ? null
+                                : <>
+                                    <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Корпус" name="addressCorpus">
+                                        <Input size="large" placeholder="Корпус" onKeyPress={(event) => {
+                                            if (!/[0-9]/.test(event.key)) {
+                                                event.preventDefault();
+                                            }
+                                        }} />
+                                    </Form.Item>
+                                    <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Подъезд" name="addressEntrance">
+                                        <Input size="large" placeholder="Подьезд" onKeyPress={(event) => {
+                                            if (!/[0-9]/.test(event.key)) {
+                                                event.preventDefault();
+                                            }
+                                        }} />
+                                    </Form.Item>
+                                    <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Этаж" name="addressFloor">
+                                        <Input size="large" placeholder="Этаж" onKeyPress={(event) => {
+                                            if (!/[0-9]/.test(event.key)) {
+                                                event.preventDefault();
+                                            }
+                                        }} />
+                                    </Form.Item>
+                                    <Form.Item style={{ flexGrow: 1, marginBottom: 8 }} label="Квартира" name="addressFlat" rules={[
+                                        { required: false, message: "Введите номер квартиры" }]}>
+                                        <Input size="large" placeholder="Квартира" onKeyPress={(event) => {
+                                            if (!/[0-9]/.test(event.key)) {
+                                                event.preventDefault();
+                                            }
+                                        }} />
+                                    </Form.Item>
+                                </>
+                        }
+
                     </div>
                 </div>
 
@@ -397,7 +426,7 @@ const FormOrder: React.FC = () => {
                 </div>
 
                 <div style={{ width: "50%", margin: "0 auto", paddingTop: 20, paddingBottom: 30 }}>
-                    <Button buttonContent="Оформить заказ" clickHandler={() => { setTimeout(handleOrderSubmit), 2000 }} />
+                    <ButtonL buttonContent="Оформить заказ" clickHandler={() => { setTimeout(handleOrderSubmit), 2000 }} />
                 </div>
             </Form>
             {
@@ -408,12 +437,15 @@ const FormOrder: React.FC = () => {
                             title="Ваш заказ создан!"
                             subTitle="Скоро с вами свяжется менеджер для подтверждения заказа"
                             extra={[
-                                <Button buttonContent="Вернуться в каталог" clickHandler={() => navigate(CATALOG_PATH)} />
+                                <ButtonL buttonContent="Вернуться в каталог" clickHandler={() => navigate(CATALOG_PATH)} />
                             ]}
                         />
                     </ModalEmpty>
                     : null
             }
+            <ModalEmpty isOpen={isCityOpen} setIsOpen={setIsCityOpen}>
+                <CityPanel activeCity={activeCity} />
+            </ModalEmpty>
         </ConfigProvider>
     )
 }

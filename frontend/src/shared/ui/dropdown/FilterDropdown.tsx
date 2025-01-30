@@ -30,7 +30,6 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(e.target.value);
     };
-    console.log(disabled, "xddd")
     useEffect(() => {
         setFilters(value || [])
     }, [value])
@@ -92,8 +91,6 @@ const FilterComponent: React.FC<FilterDropdownProps> = ({ disabled, onChange, da
     const handleRemoveItemFilter = async (tagId: number) => {
         try {
             await deleteTag({ id: tagId }).unwrap();
-
-            // console.log(`Тег с id ${tagId} успешно удален.`);
         } catch (error) {
             console.error('Ошибка при удалении тега:', error);
         }

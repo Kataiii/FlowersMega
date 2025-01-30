@@ -11,6 +11,7 @@ export type CredentailState = {
     accessToken: string | null;
     isAuth: boolean;
     isAdmin: boolean;
+    isRemember: boolean;
     loginStatus: RequestStatus,
     registerStatus: RequestStatus
 }

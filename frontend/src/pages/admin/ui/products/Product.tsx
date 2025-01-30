@@ -122,8 +122,6 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
         photo: category.photo,
       }));
 
-    console.log("variations ", variations);
-
     const productSizes = variations.map((variation: any) => ({
       idSize: variation.idSize,
       prise: variation.prise,
@@ -135,9 +133,7 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
     formData.append("type", values.type);
     formData.append("description", values.description);
     formData.append("structure", values.structure);
-    console.log(file, 'NUUUUUUUUUUUUUUUUUUUUUUUUUU GILE')
-    // @ts-ignore
-    console.log(data?.images?.[0]?.url, "NUUUUUUUUUUUUUUUUUUUUUUUUUU")
+
     // Проверяем состояние изображения
     if (file) {
       formData.append("photo", file);
@@ -149,7 +145,6 @@ const Product: React.FC<ProductProps> = ({ onCatChange, onFilterChange }) => {
     formData.append("productSize", JSON.stringify(productSizes).slice(1, JSON.stringify(productSizes).length - 1));
     formData.append("categories", JSON.stringify(categoriesString).slice(1, JSON.stringify(categoriesString).length - 1));
     formData.append("filters", JSON.stringify(filtersString).slice(1, JSON.stringify(filtersString).length - 1));
-    console.log(formData, "FINAL DATA FOR SENDING")
     try {
       let response;
       if (id && locate.pathname !== "/admin/product/create") {

@@ -6,7 +6,7 @@ import { ItemFilter } from "src/items-filter/items-filter.model";
 export class CreateProductSizeSmallDto {
     idSize: number;
     prise: number;
-    paramsSize: string;
+    paramsSize?: string;
 }
 
 export class UpdateProductSizeSmallDto {

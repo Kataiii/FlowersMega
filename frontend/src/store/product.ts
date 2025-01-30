@@ -110,9 +110,6 @@ const injectedRtkApi = api.injectEndpoints({
         if (queryArg.category) {
           params.category = queryArg.category;
         }
-        console.log(queryArg.search, "HHHHHHHHHHHMMMMMMMMMMMMMMMMMMMMMMMMMM")
-        console.log('CATEGORY', queryArg.category);
-        console.log('Request params:', queryArg);
         return {
           url: `/products-sizes/full-products-cards/${queryArg.page}/${queryArg.limit}`,
           params: params,
@@ -171,7 +168,6 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => {
         const params: Record<string, any> = {};
-        console.log(queryArg.page);
         if (queryArg.search) {
           params.search = queryArg.search;
         }
@@ -234,13 +230,42 @@ const injectedRtkApi = api.injectEndpoints({
       CategoryControllerGetIdByNameApiArg
     >({
       query: (queryArg) => {
-        console.log(queryArg.name, "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
         return {
           url: `/products-sizes/category/${queryArg.name}`,
           method: "GET",
         };
 
       },
+    }),
+    productsSizesControllerGetProductsCatalogWithPagination: build.query<
+      ProductsSizesControllerGetProductsCatalogWithPaginationApiResponse,
+      ProductsSizesControllerGetProductsCatalogWithPaginationApiArg
+    >({
+      query: (queryArg) => {
+        const params: Record<string, any> = {};
+        if (queryArg.search) {
+          params.search = queryArg.search;
+        }
+        if (queryArg.filterItems) {
+          params.filterItems = queryArg.filterItems;
+        }
+        if (queryArg.minPrice) {
+          params.minPrice = queryArg.minPrice;
+        }
+        if (queryArg.maxPrice) {
+          params.maxPrice = queryArg.maxPrice;
+        }
+        if (queryArg.category) {
+          params.category = queryArg.category;
+        }
+        if (queryArg.sort) {
+          params.sort = queryArg.sort;
+        }
+        return {
+          url: `/products-sizes/products-catalog-card/${queryArg.page}/${queryArg.limit}`,
+          params: params,
+        }
+      }
     }),
 
   }),
@@ -392,6 +417,22 @@ export type ProductsControllerGetProductSizesCountApiArg = {
   id: number;
 }
 
+export type ProductsSizesControllerGetProductsCatalogWithPaginationApiArg = {
+  page: number;
+  limit: number;
+  search?: string;
+  filterItems?: number[];
+  minPrice?: number;
+  maxPrice?: number;
+  category?: number;
+  sort?: string;
+}
+
+export type ProductsSizesControllerGetProductsCatalogWithPaginationApiResponse = {
+  count: number;
+  products: ProductCatalogCard[];
+}
+
 export type Product = {
   /** Unique identifier */
   id: number;
@@ -403,6 +444,8 @@ export type Product = {
   structure: string;
   /** Unique identifier type product */
   idTypeProduct: number;
+
+  image: Image;
 };
 export type ProductSize = {
   /** Unique identifier */
@@ -531,6 +574,32 @@ export type ProductWithSizes = {
 
   productsSizes: ProductSizeInfo[];
 };
+
+export type ProductCatalogCard = {
+  /** Unique identifier */
+  id?: number;
+  /** Name */
+  name: string;
+  /** Description */
+  description?: string;
+
+  structure?: string;
+  /** Unique identifier type product */
+  idTypeProduct: number;
+  /** Array of images */
+  image: Image;
+  /** Array of filters */
+  filters?: ItemFilter[];
+  /** Array of categories */
+  categories?: Category[];
+  reviewInfo?: StaticticReviews;
+  productSizes: [
+    {
+      productSize: ProductSize;
+      size: Size;
+    }
+  ]
+};
 export type Number = {};
 export const {
   useProductsControllerCreateMutation,
@@ -554,5 +623,6 @@ export const {
   useProductsControllerCreateWithDetailsMutation,
   useProductsControllerDeleteByIdMutation,
   useProductsControllerGetProductSizesCountQuery,
-  useCategoryControllerGetIdByNameQuery
+  useCategoryControllerGetIdByNameQuery,
+  useProductsSizesControllerGetProductsCatalogWithPaginationQuery
 } = injectedRtkApi;

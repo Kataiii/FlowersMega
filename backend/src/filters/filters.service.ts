@@ -52,14 +52,12 @@ export class FiltersService {
     }
 
     async getAllFIltersWithMAxPrice(idCategory?: number) {
-        console.log(idCategory, "CHECK CATEGORY");
         const filters = await this.filterRepository.findAll({
             order: [["name", "ASC"]],
             include: [{ all: true }]
         });
         if (filters.length === 0) throw new HttpException("Filters not fount", HttpStatus.NOT_FOUND);
         const maxPrice = await this.productSizesFullService.getMaxPrice(idCategory);
-        // console.log(maxPrice, "SHOUD BE");
         return {
             maxPrice: maxPrice,
             filters: filters

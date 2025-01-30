@@ -26,14 +26,12 @@ export class ProductsItemsFilterService {
     }
 
     async getProductsByFilterIdArray(ids: number[]) {
-        console.log("tmp ", ids);
         const filters = await this.productsItemsFilterRepository.findAll({
             where: { idItemFilter: {
                 [Op.in]: ids
               } 
             }
         })
-        console.log("Filters ", filters)
         return filters;
     }
 
@@ -48,7 +46,6 @@ export class ProductsItemsFilterService {
             return null;
         }
 
-        // console.log(itemFilter, "ITEM FILTER OBJECT");
         return itemFilter;
     }
 
@@ -64,7 +61,6 @@ export class ProductsItemsFilterService {
             if(!filtersDublicates.find(el => el === item.idItemFilter)) await this.productsItemsFilterRepository.destroy({where: {id: item.id}});
         }))
         await Promise.all(filters.map(async(item) => {
-            console.log("item ", item.id);
             if(!filtersDublicates.find(el => el === item.id)) await this.productsItemsFilterRepository.create({idItemFilter: item.id, idProduct: productId});
         }))
     }

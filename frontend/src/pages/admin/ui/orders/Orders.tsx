@@ -137,8 +137,6 @@ const Orders: React.FC = () => {
     // setShouldFetch(true);
   };
 
-  // { console.log('5555', lastMinimalCost[0]) }
-
   const handleSortChange = (value: string) => {
     setSortOrder(value);
     setPage(1);
@@ -288,9 +286,9 @@ const Orders: React.FC = () => {
           </Flex>
         ) : (
 
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-            <Table dataSource={dataSource} columns={columns} pagination={false} />
-            <Pagination current={page} total={initialData?.count} pageSize={pageSize} onChange={handlePageChange} style={{ alignItems: "center" }} />
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+            <Table dataSource={dataSource} columns={columns} pagination={false} style={{ width: "100%" }} />
+            <Pagination current={page} total={initialData?.count} pageSize={pageSize} onChange={handlePageChange} style={{ alignItems: "center", display: "block" }} />
           </div>
         )}
 

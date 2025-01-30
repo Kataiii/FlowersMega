@@ -12,8 +12,6 @@ const FiltersTags: React.FC = () => {
         dispatch(deleteOneFromFilters(filter));
     }
 
-    console.log(filters);
-
     return (
         <>
             <ConfigProvider

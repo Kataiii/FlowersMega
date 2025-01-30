@@ -42,12 +42,13 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ product, sizes, typ
     const [isExpanded, setIsExpanded] = useState(false);
 
     const dataSource = useMemo(() => {
-        if (!product || !sizes ) return [];
+        if (!product || !sizes) return [];
         return product.productsSizes.map(productSize => {
             return {
                 key: productSize.productSize.id,
                 sizeName: sizes?.find((s) => s.id == productSize.productSize.idSize)?.name,
                 paramsSize: productSize.productSize.paramsSize,
+                extraPrice: productSize.productSize.extraPrice,
                 price: productSize.productSize.prise,
             };
         }).sort((a, b) => a.price - b.price)
@@ -60,9 +61,14 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ product, sizes, typ
             key: "sizeName",
         },
         {
-            title: "Цена",
+            title: "Цена, ₽",
             dataIndex: "price",
             key: "price",
+        },
+        {
+            title: "Цена с наценкой, ₽",
+            dataIndex: "extraPrice",
+            key: "extraPrice",
         },
         {
             title: "Уточнение",
@@ -72,6 +78,7 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ product, sizes, typ
     ];
 
     return (
+
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             <div
                 style={{
@@ -116,7 +123,7 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ product, sizes, typ
                     <Button
                         style={{ backgroundColor: "var(--primary-bg-color)" }}
                         type="primary"
-                        onClick={() => { setIsExpanded(!isExpanded); console.log(sizes) }}
+                        onClick={() => { setIsExpanded(!isExpanded); }}
                     >
                         <ButtonText>
                             {product.productsSizes && product.productsSizes.length > 0

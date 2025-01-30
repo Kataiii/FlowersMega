@@ -10,7 +10,7 @@ import { Size } from "src/sizes/sizes.model";
 export interface ProductSizeCreationAttrs {
     idProduct: number;
     idSize: number;
-    paramsSize: string;
+    paramsSize?: string;
     count?: number;
     prise: number;
     extraPrice: number;
@@ -32,9 +32,9 @@ export class ProductSize extends Model<ProductSize, ProductSizeCreationAttrs> {
     @ForeignKey(() => Size)
     idSize: number;
 
-    @ApiProperty({ example: '40 см x 30 см', description: 'Params for size', required: true })
-    @Column({ type: DataType.STRING, allowNull: false })
-    paramsSize: string;
+    @ApiProperty({ example: '40 см x 30 см', description: 'Params for size', required: false })
+    @Column({ type: DataType.STRING, allowNull: true })
+    paramsSize?: string;
 
     @ApiProperty({ example: 100, description: 'Count of product', required: false })
     @Column({ type: DataType.INTEGER, unique: false, allowNull: true })
@@ -57,6 +57,8 @@ export class ProductSize extends Model<ProductSize, ProductSizeCreationAttrs> {
     @HasMany(() => CategoriesProductsSizes)
     categoriesProductsSizes: CategoriesProductsSizes[];
 
-    @BelongsTo(() => Product)
-    product: Product;
+    @BelongsTo(() => Product, 'idProduct')
+    product: Product
+
+
 }

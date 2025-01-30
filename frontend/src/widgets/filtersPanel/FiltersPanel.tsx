@@ -12,6 +12,7 @@ import ClearFilters from "../../features/clear-filters/ClearFilters";
 import { useSearchParams } from "react-router-dom";
 import { useCategoryControllerGetIdByNameQuery } from "../../store/product";
 import CenteredSpin from "../../shared/ui/spinner/CenteredSpin";
+import { Skeleton } from "antd";
 
 const ContainerFilter = styled.div`
     padding: 24px 16px;
@@ -52,10 +53,7 @@ const HideDiv = styled.div<{ $isOpen?: boolean; }>`
 const FiltersPanel: React.FC = () => {
     const [searchParams] = useSearchParams();
     const category = searchParams.get('category');
-    console.log(category, "CATEGORYLLLL");
     const decodedCategory = category ? decodeURIComponent(category) : '';
-    console.log(decodedCategory, "DECODED CATEGORY");
-    // const decodedCategory = category ? decodeURIComponent(category) : '';
     const { data: categoryIdData, isLoading: isCategoriesLoading } = useCategoryControllerGetIdByNameQuery(
         { name: decodedCategory },
     );
@@ -64,7 +62,6 @@ const FiltersPanel: React.FC = () => {
         { idCategory: Number(categoryIdData) },
     );
 
-    console.log(data?.maxPrice, "MAX PRICE");
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isReset, setIsReset] = useState<boolean>(false);
     const dispatch = useAppDispatch();
@@ -83,7 +80,6 @@ const FiltersPanel: React.FC = () => {
         dispatch(addMaxPrice(data?.maxPrice ?? -1));
         setIsReset(true)
     }
-    console.log(data?.maxPrice, "MAX PRICE from DATAAAA");
     return (
         <>
             {
@@ -92,7 +88,7 @@ const FiltersPanel: React.FC = () => {
                     : <ContainerFilter>
                         {
                             isLoading
-                                ? <CenteredSpin />
+                                ? <Skeleton active />
                                 : <>
                                     <section style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                         <Title style={{ fontSize: 32 }}>Фильтры</Title>

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useCategoryControllerGetIdByNameQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery } from "../../store/product";
+import { useCategoryControllerGetIdByNameQuery, useProductsSizesControllerGetByCategotyIdWithPaginationQuery, useProductsSizesControllerGetProductsCatalogWithPaginationQuery } from "../../store/product";
 import { Modal, Pagination } from "antd";
 import { Title } from "../../shared/ui/forAdditionalPages/Title";
 import { Text } from "../../shared/ui/forAdditionalPages/Content";
-import { SmartProductCard } from "./SmartProductCart";
+import { SmartProductCardCatalog } from "./SmartProductCardCatalog";
 interface Props {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,7 +14,7 @@ const Additions: React.FC<Props> = ({ isOpen, setIsOpen, categoryName }) => {
     const { data: categoryIdData } = useCategoryControllerGetIdByNameQuery({ name: categoryName });
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(12);
-    const { data, isLoading } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({
+    const { data, isLoading } = useProductsSizesControllerGetProductsCatalogWithPaginationQuery({
         page: page,
         limit: pageSize,
         category: Number(categoryIdData)
@@ -62,12 +62,12 @@ const Additions: React.FC<Props> = ({ isOpen, setIsOpen, categoryName }) => {
                             onClick={handleCardClick}
                             style={{ cursor: 'pointer' }}
                         >
-                            <SmartProductCard product={item} />
+                            <SmartProductCardCatalog product={item} />
                         </div>
                     ))}
                 </div>
                 <Pagination
-                    style={{ marginTop: "16px", textAlign: "center" }}
+                    style={{ marginTop: "16px", textAlign: "center", display: 'block' }}
                     total={data?.count}
                     current={page}
                     pageSize={pageSize}

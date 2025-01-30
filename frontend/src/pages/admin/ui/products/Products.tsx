@@ -65,7 +65,6 @@ const Products: React.FC = () => {
             filters: filters,
         }
     );
-    console.log(productSizedPag, "PIPYAOOOOOOO");
     const debouncer = new Debouncer();
 
     const debouncedSearch = useCallback(
@@ -213,7 +212,7 @@ const Products: React.FC = () => {
                     }
                 </>
                 {/* @ts-ignore */}
-                <Pagination showLessItems={true} current={page} pageSize={pageSize} total={productSizedPag?.count || 0} onChange={handlePageChange} style={{ marginTop: "16px", textAlign: "center" }} />
+                <Pagination showLessItems={true} current={page} pageSize={pageSize} total={productSizedPag?.count || 0} onChange={handlePageChange} style={{ marginTop: "16px", textAlign: "center", display: "block" }} />
             </OrderContainer>
         </Container>
     );

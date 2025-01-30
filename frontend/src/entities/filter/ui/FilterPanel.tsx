@@ -6,7 +6,7 @@ import { createSearchParams, useNavigate } from "react-router-dom";
 import { CATALOG_PATH, CATEGORY_PATH } from "../../../shared/utils/constants";
 import { useDispatch } from "react-redux";
 import { addAllToFilters, addOneToFilters } from "../redux/slice";
-import { Button } from "antd";
+import { Button, Skeleton } from "antd";
 
 
 type FilterPanelProps = {
@@ -17,7 +17,6 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ category }) => {
     const { isLoading, data } = useFiltersControllerGetAllQuery();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    console.log(data, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaa")
 
     const handleSelectAll = (filterItems: ItemFilter[]) => {
         dispatch(addAllToFilters(filterItems));
@@ -38,7 +37,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ category }) => {
     return (
         <Container>
             {isLoading ? (
-                <p>Loading...</p>
+                <Skeleton active />
             ) : (
                 <div
                     style={{

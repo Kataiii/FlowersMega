@@ -33,7 +33,6 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
     //@ts-ignore
     const [countItemOrders, _] = useState<number>(order.itemsOrder.reduce((count, currentItem) => { return count + (currentItem.OrderProductSize.count ?? -1); }, 0));
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    console.log(order.postcards, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa")
     const postcardsArray = Array.isArray(order.postcards)
         ? order.postcards
         : typeof order.postcards === "string"

@@ -8,7 +8,7 @@ interface Postcard {
     updatedId: string
 }
 
-export const addPostcard = createAction<Pick<Postcard, "text">>("postcards/addPostcard");
+export const addPostcard = createAction<{ text: string; productId: string }>("postcards/addPostcard")
 export const removePostcard = createAction<{ id: string }>("postcards/removePostcard");
 export const updatePostcard = createAction<{ id: string; text: string }>("postcards/updatePostcard");
 export const updatePostcardId = createAction<{ oldId: string; newId: string }>("postcards/updatePostcardId");
@@ -24,12 +24,10 @@ const postcardSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(addPostcard, (state, action) => {
-                const newPostcard = {
-                    id: nanoid(),
-                    text: action.payload.text,
-                    updatedId: '',
-                };
-                postcardsEntityAdapter.addOne(state, newPostcard);
+                const { text, productId } = action.payload;
+                const id = nanoid();
+                const updatedId = `${id}-productSize-${productId}`;
+                postcardsEntityAdapter.addOne(state, { id, text, updatedId });
             })
             .addCase(removePostcard, (state, action) => {
                 postcardsEntityAdapter.removeOne(state, action.payload.id);

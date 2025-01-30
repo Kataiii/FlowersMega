@@ -11,7 +11,6 @@ const $api = axios.create({
 $api.interceptors.response.use((response) => {
     return response;
 }, (async (error) => {
-    console.log('Проблема');
     const origrnalRequest = error.config;
     if(error.responce.status == 401 && error.config && !error.config._isRetry){
         origrnalRequest._isRetry = true;

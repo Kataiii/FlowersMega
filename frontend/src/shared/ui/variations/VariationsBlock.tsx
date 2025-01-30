@@ -33,7 +33,6 @@ const VariationsBlock: React.FC<Props> = ({ onVariationsChange, disabled, value 
         const updatedVariations = variations.map((v, i) =>
             i === index ? updatedVariation : v
         );
-        console.log("updatedVariations ", updatedVariations);
         setVariations(updatedVariations);
         onVariationsChange(updatedVariations);
     };

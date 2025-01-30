@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react";
 import ExtraPriceVar from "./ExtraPriceVar";
 import { ButtonText } from "../../pages/admin/ui/products/Products";
 import { useExtraPriceControllerCreateMutation, useExtraPriceControllerDeleteMutation, useExtraPriceControllerGetAllQuery, useExtraPriveControllerGetByCategoryIdQuery } from "../../store/extrPrice";
-import { useCategoriesControllerGetByIdQuery } from "../../store/category";
 import { Debouncer } from "../../shared/utils/debounce";
 
 interface ExtraPriveVar {
@@ -22,9 +21,7 @@ const ExtraPriceBlock: React.FC = () => {
     const [createExtra] = useExtraPriceControllerCreateMutation();
     const [extraValue, setExtraValue] = useState<number>(extraPriceToAll?.value ? extraPriceToAll?.value : 0);
     const [variations, setVariations] = useState<any[]>(extraItems || []);
-    // console.log(extraItems, "EXTRA")
-    // console.log(variations, "DADADADADADADADA")
-    console.log(extraPriceToAll, "EXTRA VAL")
+
     const debouncer = new Debouncer();
     useEffect(() => {
         if (!isExtraLoading && extraItems) {
@@ -164,7 +161,7 @@ const ExtraPriceBlock: React.FC = () => {
                                                     event.preventDefault();
                                                 }
                                             }}
-                                            style={{ width: "250px" }}
+                                            style={{ width: "90%" }}
                                             value={extraValue}
                                             onChange={handleCostChange}
                                         />

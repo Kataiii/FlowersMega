@@ -32,7 +32,6 @@ export class AuthService {
 
     async checkIsAdmin(accessToken: string){
         const payload = await this.usersService.checkAccountData(accessToken);
-        console.log(payload);
         if(!payload) return null;
         const role = payload.roles.find(item => item.name === "admin");
         return role;
@@ -72,7 +71,6 @@ export class AuthService {
     async refresh(refreshToken, ip) {
         const accountData = await this.tokensService.validateRefreshToken(refreshToken);
         const tokenData = await this.tokensService.findRefreshToken(refreshToken);
-        // console.log('token data ', tokenData);
         if (!accountData || !tokenData) {
             throw new UnauthorizedException;
         }

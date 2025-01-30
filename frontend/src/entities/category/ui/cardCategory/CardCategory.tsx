@@ -1,3 +1,4 @@
+import { Skeleton } from "antd";
 import CenteredSpin from "../../../../shared/ui/spinner/CenteredSpin";
 import { API_URL } from "../../../../shared/utils/constants";
 import { Numerals } from "../../../../shared/utils/numerals";
@@ -62,7 +63,7 @@ const CardCategory: React.FC<CardCategoryProps> = ({ category, clickHandler }) =
                 }}
             >
                 {isLoading
-                    ? <CenteredSpin />
+                    ? <Skeleton active />
                     : `${data === 0 ? " " : data + " " + Numerals.numeralsProducts(Number(data))}`}
             </p>
         </div >

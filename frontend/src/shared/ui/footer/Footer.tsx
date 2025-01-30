@@ -34,7 +34,7 @@ const Footer: React.FC = () => {
 
     return (
         <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-            <div style={{ backgroundColor: "var(--block-bg-color)", padding: "24px 0 40px", width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <div itemScope itemType="http://schema.org/Organization" style={{ backgroundColor: "var(--block-bg-color)", padding: "24px 0 40px", width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <Container>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -42,11 +42,11 @@ const Footer: React.FC = () => {
                             <h4 style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0 }}>Наши контакты</h4>
                             <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                                 <Phone alt="phone" />
-                                <p style={{ fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0 }}>{PHONE}</p>
+                                <p itemProp="telephone" style={{ fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0 }}>{PHONE}</p>
                             </div>
                             <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                                 <Mail alt="mail" />
-                                <p style={{ fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0 }}>{EMAIL}</p>
+                                <p itemProp="email" style={{ fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0 }}>{EMAIL}</p>
                             </div>
                         </div>
 
@@ -59,13 +59,9 @@ const Footer: React.FC = () => {
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <h4 style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0 }}>Каталог</h4>
-                            {data && data.map((filter) => (
-                                <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => { navigate(CATALOG_PATH); handleSelectAll(filter?.items || []) }}>{filter?.name}</p>
+                            {data && data.map((filter, index) => (
+                                <p key={index} style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => { navigate(CATALOG_PATH); handleSelectAll(filter?.items || []) }}>{filter?.name}</p>
                             ))}
-                            {/* <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(CATALOG_PATH)}>Цветы</p>
-                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(CATALOG_PATH)}>Кому подарок</p>
-                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(CATALOG_PATH)}>Повод</p>
-                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(CATALOG_PATH)}>Стиль</p> */}
                         </div>
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>

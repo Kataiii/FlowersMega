@@ -13,6 +13,7 @@ const ContainerButtons = styled.div`
     border: 1px solid var(--primary-bg-color);
     border-radius: 4px;
     display: flex;
+    height: 55px;
 `;
 
 const Button = styled.button`
@@ -39,11 +40,11 @@ const ProductPageCountController: React.FC<ProductPageCountControllerProps> = ({
 
     return(
         <ContainerButtons>
-            <Button onClick={decrement}><Minus alt="minus"/></Button>
+            <Button style={{cursor: "pointer"}} onClick={decrement}><Minus alt="minus"/></Button>
             <div style={{padding: "8px 20px", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <input style={{width: "40px", textAlign: "center", outline: "none", border: "none",fontFamily: "Inter", fontSize: 20, fontWeight: 400, color: "var(--secondary-text-color)"}} value={cartProduct.count}/>
             </div>
-            <Button onClick={increment}><Plus alt="plus"/></Button>
+            <Button style={{cursor: "pointer"}} onClick={increment}><Plus alt="plus"/></Button>
         </ContainerButtons>
     )
 }

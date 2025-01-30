@@ -33,7 +33,7 @@ const Auth: React.FC = () => {
                 setIsSucces(true);
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     };
 

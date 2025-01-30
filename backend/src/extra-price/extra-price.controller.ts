@@ -34,7 +34,6 @@ export class ExtraPriceController {
     @ApiResponse({ status: 200, description: 'Extra price list' })
     @Get()
     async getAll(@Req() request: Request) {
-        // console.log(request);
         return await this.extraPriceService.getAll();
     }
 
@@ -46,7 +45,6 @@ export class ExtraPriceController {
     @ApiResponse({ status: 400, description: 'Extra price not found' })
     @Get("/:id")
     async getById(@Param("id") idCategory: string) {
-        // console.log(idCategory);
         return await this.extraPriceService.getByCategoryId(idCategory);
     }
 
@@ -58,7 +56,6 @@ export class ExtraPriceController {
     @ApiResponse({ status: 400, description: 'Extra price not found' })
     @Delete('/:id')
     async deleteById(@Param('id') idCategory: string) {
-        // console.log(idCategory, "idCategory");
         if (!idCategory) {
             throw new Error('idCategory is required');
         }

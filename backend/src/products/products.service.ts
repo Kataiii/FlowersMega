@@ -68,7 +68,6 @@ export class ProductsService {
                 }]
             }
         );
-        console.log(product.id, "LLLLLLLLLLLLL");
         return product;
     }
 
@@ -99,7 +98,6 @@ export class ProductsService {
     }
 
     async getCountAndPagination(page: number, limit: number, search?: string, field?: string, type?: string, idProduct?: number[]) {
-        console.log(idProduct, "idProduct");
 
         const whereContidion = {
             name: { [Op.like]: search ? `%${search}%` : `%` },
@@ -114,13 +112,6 @@ export class ProductsService {
             offset: (page - 1) * limit,
         }
         ));
-        // console.log(countTmp, "CountTMOP");
-
-        // console.log(idProductsCount, "idPrd");
-        // const resultCount = idProductsCount.map(item => item.count).reduce((a, b) => a + b, 0);
-        // const resultProducts = idProductsCount.map(item => item.rows).flat();
-        // console.log('count: ', resultCount);
-        // console.log('products: ', resultProducts);
 
         return { count: countTmp.count, products: countTmp.rows };
 
