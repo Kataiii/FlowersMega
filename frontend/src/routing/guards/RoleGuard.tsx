@@ -14,7 +14,6 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({ children }) => {
     const { data, isLoading, isError, error } = useAuthControllerCheckPermissionsQuery(null);
 
     const dispatch = useAppDispatch();
-    console.log("ADMIN " + data + " ", error);
 
     useEffect(() => {
         if (!isLoading) {

@@ -19,7 +19,6 @@ const Cart: React.FC = () => {
         () => productsInCart.map(p => p.count * (p.prise ?? 0)).reduce((prev, curr) => prev + curr, 0),
         [productsInCart]
     )
-    console.log(productsInCart, "DAAAAAAAAAAAAAAAAAAAAa")
     const orderHandler = () => {
         navigate(CART_ORDER_PATH);
     }
@@ -43,8 +42,8 @@ const Cart: React.FC = () => {
                                 </div>
                             </div>
                             : <div>
-                                {productsInCart.map(product => (
-                                    <CartProductCard product={product} />
+                                {productsInCart.map((product, index) => (
+                                    <CartProductCard key={`CartProductCard-${index}`} product={product} />
                                 ))}
 
                                 <div style={{ padding: "15px 0 25px", display: "flex", flexDirection: "column", gap: 20 }}>

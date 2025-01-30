@@ -295,7 +295,6 @@ const FastClickOrder: React.FC<FastClickOrderProps> = ({
                                 onClick={() => {
                                     if(product.productSizes.length > 1) { 
                                         setSizeModalOpen(true);
-                                        console.log("PRODUCT ", "CLICK")
                                     }
                                 }}
                                 type="button"

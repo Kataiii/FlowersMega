@@ -60,12 +60,10 @@ const ProductPhotoLoader: React.FC<ProductPhotoLoaderProps> = ({
     fileList: newFileList,
   }) => {
     setFileList(newFileList);
-    console.log("NEW FILE ", newFileList);
     // При выборе файла конвертируем его в base64
     const file = newFileList[0]?.originFileObj as RcFile;
     if (file) {
       const base64 = await getBase64(file);
-      console.log(base64);
       onUploadSuccess(base64ToFile(base64, "image.png")); // Передаем base64 строку в родительский компонент
     }
   };
@@ -94,7 +92,7 @@ const ProductPhotoLoader: React.FC<ProductPhotoLoaderProps> = ({
       ]);
     }
   }, []);
-  console.log(previewUrl, "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+
   return (
     <>
       <Upload

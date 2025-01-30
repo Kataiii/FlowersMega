@@ -8,7 +8,6 @@ export class TelegramUsersService {
     constructor(@InjectModel(TelegramUser) private telegramUsersRepository: typeof TelegramUser){}
 
     async auth(user_tag: string, chat_id: number, access_key: string) {
-        console.log(user_tag, ' ', access_key, ' ', process.env.TELEGRAM_BOT_AUTH_TOKEN, ' в сервисе');
         if (access_key == process.env.TELEGRAM_BOT_AUTH_TOKEN) {
             const existingUser = await this.telegramUsersRepository.findOne({ where: { chat_id: chat_id } });
             if (!existingUser) {

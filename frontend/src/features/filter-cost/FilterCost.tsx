@@ -59,7 +59,6 @@ const FilterCost: React.FC<FilterCostProps> = ({ maxPrice, onReset }) => {
         }, 2000),
         []
     );
-    console.log(minPriceValue, "MINNNWALUEEEE")
     return (
         <div>
             <div style={{ display: "flex", justifyContent: "space-between", gap: 15 }}>

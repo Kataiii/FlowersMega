@@ -54,7 +54,6 @@ export class ExtraPriceService {
     }
 
     async getByCategoryId(idCategory: string) {
-        console.log(idCategory, "HAHAHAH");
         return this.extraPriceRepository.findOne({
             where: { idCategory },
         });
@@ -62,7 +61,6 @@ export class ExtraPriceService {
 
     async deleteByCategoryId(idCategory: string) {
         await this.productsSizesService.updatePrices();
-        // console.log(idCategory, "IN SERVICE deleteByCategoryId");
         return await this.extraPriceRepository.destroy({
             where: { idCategory }
         });
@@ -72,11 +70,9 @@ export class ExtraPriceService {
         const generalExtra = await this.extraPriceRepository.findOne({
             where: { idCategory: 'all' }
         })
-        // console.log(generalExtra, "GENERAL EXTRA")
         const otherCategoriesExtras = await this.extraPriceRepository.findAll({
             where: { idCategory: { [Op.ne]: 'all' } }
         })
-        // console.log(otherCategoriesExtras, "OTHER CATEGORIES EXTRAS");
 
         const resultMap = otherCategoriesExtras.reduce((map, item) => {
             const existingValue = map.get(item.idCategory) || generalExtra.value;
@@ -85,7 +81,6 @@ export class ExtraPriceService {
 
             return map;
         }, new Map([[generalExtra.idCategory, generalExtra.value]]));
-        // console.log(resultMap, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         return resultMap;
     }
 

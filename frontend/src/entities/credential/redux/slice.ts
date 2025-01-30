@@ -34,10 +34,8 @@ const credentialSlice = createSlice({
         }),
         builder.addCase(loginThunk.fulfilled, (state, action) => {
             const payload = action.payload;
-            console.log(payload);
             state.loginStatus = RequestStatus.SUCCESSFUL;
             state.accessToken = payload?.accessToken ?? null;
-            console.log(payload?.user);
             state.user = payload?.user ?? null;
             state.isAuth = true;
         }),

@@ -68,12 +68,10 @@ const FormOrder: React.FC = () => {
     const dispatch = useDispatch();
     const postcards = useSelector(postcardsSelectors.selectAll);
     const productsInCart = useAppSelector(cartSelectors.selectAll);
-    console.log(productsInCart, 'KKKDKDKDKDKDKD')
     const totalCost = useMemo(
         () => productsInCart.map(p => p.count * (p.prise ?? 0)).reduce((prev, curr) => prev + curr, 0),
         [productsInCart]
     )
-    console.log(totalCost, 'HOW SI TI POSSIBLE')
     const handleOrderSubmit = () => {
         dispatch(clearStore());
     };
@@ -93,8 +91,7 @@ const FormOrder: React.FC = () => {
             'startTimeDelivery': values['startTimeDelivery'].format('HH:mm'),
             'endTimeDelivery': values['endTimeDelivery'].format('HH:mm')
         }
-        console.log(tryValues.startTimeDelivery, "STAAAAAAAAAAAAAAAAAAAART");
-        console.log(tryValues.endTimeDelivery, "ENDDDDDDDDDDDDDDDDDDDDD");
+
         const dto: OrdersControllerCreateApiArg = {
             body: {
                 name: '',

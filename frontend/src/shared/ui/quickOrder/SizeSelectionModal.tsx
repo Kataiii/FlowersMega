@@ -47,6 +47,7 @@ const SizeSelectionModal: React.FC<SizeSelectionModalProps> = ({
           {product.productSizes.map((element, index) => {
             return (
               <ElementSizeSelection
+                key={index}
                 product={product}
                 productSize={element}
                 hoveredIndex={hoveredIndex}

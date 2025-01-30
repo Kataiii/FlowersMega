@@ -120,7 +120,7 @@ const CardProductCatalog: React.FC<CardProductProps> = ({ product, addToCartButt
         setIsInCart(value);
     };
 
-    const inCart = useAppSelector((state) =>isInCartSelector(state, mapProductSizeToCartProduct(product, product.productSizes[0].productSize)));
+    const inCart = useAppSelector((state) =>isInCartSelector(state, mapProductSizeToCartProduct(product, product?.productSizes[0].productSize)));
 
     useEffect(() => {
         if(product.productSizes.length === 1){

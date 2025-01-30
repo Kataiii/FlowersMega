@@ -44,7 +44,6 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ product, sizes, typ
     const dataSource = useMemo(() => {
         if (!product || !sizes) return [];
         return product.productsSizes.map(productSize => {
-            console.log(productSize.productSize, "NUALOOOO")
             return {
                 key: productSize.productSize.id,
                 sizeName: sizes?.find((s) => s.id == productSize.productSize.idSize)?.name,
@@ -124,7 +123,7 @@ const ProductAdminCard: React.FC<ProductAdminCardProps> = ({ product, sizes, typ
                     <Button
                         style={{ backgroundColor: "var(--primary-bg-color)" }}
                         type="primary"
-                        onClick={() => { setIsExpanded(!isExpanded); console.log(sizes) }}
+                        onClick={() => { setIsExpanded(!isExpanded); }}
                     >
                         <ButtonText>
                             {product.productsSizes && product.productsSizes.length > 0

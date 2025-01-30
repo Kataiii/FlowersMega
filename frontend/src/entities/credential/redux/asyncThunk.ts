@@ -12,7 +12,6 @@ export const loginThunk = createAsyncThunk(
             })).data;
             return response;
         } catch (error: any) {
-            console.log(error, "XD?");
             if (error?.response?.status === 401 && error?.response?.data?.message === "Invalid password or login") {
                 return rejectWithValue("Such an account not exists");
             }
@@ -30,7 +29,6 @@ export const registThunk = createAsyncThunk(
             })).data;
             return response;
         } catch (error: any) {
-            // console.log(error, "XD?");
             if (error?.response?.status === 400 && error?.response?.data?.message === "Such an account already exists") {
                 return rejectWithValue("Such an account already exists");
             }

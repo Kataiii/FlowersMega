@@ -43,8 +43,6 @@ const App: React.FC = () => {
 
     if (arrayPaths.find(element => element === "product")) arrayPaths.pop();
 
-    console.log(arrayPaths);
-
     arrayBreads.push(
       {
         title: <a href={HOME_PATH}>{mapBreads.get(HOME_PATH)}</a>
@@ -89,12 +87,9 @@ const App: React.FC = () => {
         <ContainerHeaders>
           {isMobile ? (
             <>
-
-              {/* {console.log("SSSS", x.matches)} */}
             </>
           ) : (
             <>
-              {/* {console.log("555", x.matches)} */}
               <Header />
               <SecondHeader />
 

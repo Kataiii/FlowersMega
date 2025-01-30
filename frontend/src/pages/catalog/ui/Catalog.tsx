@@ -34,12 +34,7 @@ const Catalog: React.FC = () => {
     const [pageSize, setPageSize] = useState(30);
     const [sort, setSort] = useState<string>('price_asc');
     const [page, setPage] = useState(1);
-    console.log(categoryD, "DDDDDDDDDDD")
-    console.log(categoryIdData, "IDDDDDDDDDAAAAAAAA")
-    const { data: postcardId } = useSizeContollerGetByNameQuery({ name: "-" });
-    // const { isLoading, data } = useProductsSizesControllerGetByCategotyIdWithPaginationQuery({ limit: pageSize, page: page, search: selectedProduct ? selectedProduct : '', filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: categoryD ? Number(categoryIdData) : undefined });
     const { data: newData, isLoading: isNewDataLoading } = useProductsSizesControllerGetProductsCatalogWithPaginationQuery({ limit: pageSize, page: page, search: selectedProduct ? selectedProduct : '', filterItems: filters, minPrice: minPrice, maxPrice: maxPrice, category: categoryD ? Number(categoryIdData) : undefined, sort });
-    // console.log(postcardId, "POSTCRRD SIE ID")
 
     const mapProductSizeToCartProduct = (
         product: ProductCatalogCard,
@@ -63,11 +58,9 @@ const Catalog: React.FC = () => {
     const onChange = (sort: string) => {
         setSort(sort);
     }
-    console.log(sort, "SORT")
     const handlePageChange = (newPage: number, newPageSize?: number) => {
         setPage(newPage);
     };
-    console.log(newData?.count)
     return (
         <div style={{ display: "flex", justifyContent: "center", padding: "25px 0" }}>
             <Container>

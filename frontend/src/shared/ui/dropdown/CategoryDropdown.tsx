@@ -55,36 +55,6 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
   useEffect(() => {
     setSelectedCategories(value ?? []);
   }, [value])
-  console.log("VAAAAAAAAAAAAAAAAAAAAAAAAAA ", value);
-  // const formattedItems = useMemo(() => data.map((item) => ({
-  //   id: item.id,
-  //   name: item.name,
-  // })), [data]);
-
-  // useEffect(() => {
-  //   if (data) {
-
-  //     const mappedSelectedCategories = value?.map((item) => ({
-  //       id: item.id,
-  //       name: item.name,
-  //       photo: item.photo,
-  //     }));
-
-  //     // setItems((prevItems) => {
-  //     //   if (JSON.stringify(prevItems) !== JSON.stringify(mappedItems)) {
-  //     //     return mappedItems;
-  //     //   }
-  //     //   return prevItems;
-  //     // });
-
-  //     setSelectedCategories(prevSelectedCategories => {
-  //       if (JSON.stringify(prevSelectedCategories) !== JSON.stringify(mappedSelectedCategories)) {
-  //         return mappedSelectedCategories ?? [];
-  //       }
-  //       return prevSelectedCategories;
-  //     });
-  //   }
-  // }, []);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -97,13 +67,7 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
           name: newCategoryName,
           file: fileList[0].originFileObj,
         };
-        console.log(body);
-        // const response = await addCategory({
-        //   body: {
-        //     name: newCategoryName,
-        //     file: fileList[0].originFileObj,
-        //   },
-        // }).unwrap();
+        
         const response = (await $api.postForm<Category>(`${API_URL}/categories`, body)).data;
         const newCategory = {
           id: response.id,
@@ -165,7 +129,6 @@ const CategoryDropdown: React.FC<CategoryDropdownProps> = ({
       if (onChange) {
         onChange(newSelectedCategories);
       }
-      console.log(newSelectedCategories);
     }
 
   };

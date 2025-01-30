@@ -86,7 +86,7 @@ const OrderCall: React.FC = () => {
 
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <Form.Item>
-                        <Button buttonContent={"Заказать звонок"} clickHandler={() => console.log()}></Button>
+                        <Button buttonContent={"Заказать звонок"} clickHandler={() => {}}></Button>
                     </Form.Item>
                 </div>
             </Form>

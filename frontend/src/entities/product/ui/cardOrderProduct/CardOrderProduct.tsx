@@ -18,8 +18,6 @@ const CardOrderProduct: React.FC<CardOrderProductProps> = ({ orderItem, postcard
     //@ts-ignore
     const { isLoading, data } = useProductsControllerGetByIdQuery({ id: orderItem.idProduct });
     const { data: categoryIdData } = useCategoryControllerGetIdByNameQuery({ name: "Открытки" });
-    {/* @ts-ignore */ }
-    console.log(orderItem, "POSSSSSSSSSSSSSSSSSSSSSSSS");
     return (
         <div style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 10px" }}>
             {

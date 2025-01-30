@@ -40,9 +40,7 @@ const PostcardAddBlock: React.FC<PostcardAddBlockProps> = ({ product, style, sho
     const currentPostcards = postcards.filter(postcard =>
         postcard.updatedId.endsWith(`-productSize-${product.product.id}`)
     );
-    console.log(currentPostcards, "currentPostcards");
-    console.log(postcards, "postcards");
-    // console.log(product, "postcards")
+
     return (
         <div
             style={{

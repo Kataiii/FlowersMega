@@ -89,7 +89,6 @@ export class ReviewsService {
 
     async getReviewsAllWithPagination(page: number, limit: number, search?: string, field?: string, type?: string) {
         const whereContidion = { firstname: { [Op.like]: search ? `%${search}%` : `%` } }
-        console.log(limit, "LIMIT");
         const reviewsCount = (await this.reviewsRepository.findAndCountAll({
 
             where: whereContidion,
@@ -136,7 +135,6 @@ export class ReviewsService {
         const reviews = await this.reviewsRepository.findAndCountAll({
             where: { idProductSize: id }
         });
-        console.log(reviews.rows, 'JE@IJFOEIJFOEOIF')
         let averageRating = 0;
 
         reviews.rows.forEach(item => {

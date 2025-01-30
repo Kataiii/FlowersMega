@@ -56,9 +56,6 @@ const DecorsAddition: React.FC<Props> = ({ isOpen, setIsOpen }) => {
         setIsOpen(false);
     };
 
-    // const totalItems = Math.min(toys?.count || 0, pageSize * page) + Math.min(baloons?.count || 0, pageSize * page);
-    console.log(totalItems, "total")
-
     return (
         (products.length === 0 && isToysLoading && isBaloonsLoading) ? (
             <Modal

@@ -50,7 +50,7 @@ const Order: React.FC = () => {
   }
 
   const hasPostcards = data?.postcards ? (data?.postcards.length ? data?.postcards.length > 0 : false) : null;
-  console.log(data?.postcards, "NU ORDER I ORDER");
+
   return (
     <>
       {hasPostcards ? (

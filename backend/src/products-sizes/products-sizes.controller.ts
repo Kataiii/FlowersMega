@@ -166,10 +166,7 @@ export class ProductsSizesController {
     })
     @UseInterceptors(FileInterceptor('photo'))
     async patchFullProduct(@Body() dto: UpdareFullProductSizeDto, @UploadedFile() photo) {
-        console.log(dto);
-        console.log(photo);
         const product = await this.productsSizesFullService.updateFullProduct(dto, photo);
-        console.log(product.images[0], 'UUUUUUUUUUUUUUUUUUUUUUUUUUUUU');
         return product;
     }
 
@@ -217,7 +214,6 @@ export class ProductsSizesController {
     @ApiResponse({ status: 404, description: "Product size not fount" })
     @Get("/:id")
     async getById(@Param("id") id: number) {
-        console.log(id, 'asasasa');
         return await this.productsSizesService.getById(id);
     }
 
@@ -259,7 +255,6 @@ export class ProductsSizesController {
 
     async getProductsByCategotyIdWithPagination(@Param("page") page: number, @Param("limit") limit: number, @Query("search") search?: string, @Query("filterItems") filterItems?: string, @Query("minPrice") minPrice?: number, @Query("maxPrice") maxPrice?: number, @Query("category") category?: number, @Query("sort") sort?: string) {
         const arrayFilters: number[] = filterItems !== undefined && filterItems !== "" ? filterItems.split(',').map(item => Number(item)) : [];
-        console.log(sort, "NUUUKAK")
         return await this.productsSizesFullService.getProductsSizesForCatalogPagination(page, limit, search, arrayFilters, minPrice, maxPrice, category, sort);
     }
 
@@ -272,7 +267,6 @@ export class ProductsSizesController {
     @ApiQuery({ name: 'search', required: false })
     @Get("/products-with-pagination/:page/:limit?")
     async getProductWithProductSizeWithPagination(@Param("page") page: number, @Param("limit") limit: number, @Query("search") search?: string, @Query("field") field?: string, @Query("type") type?: string, @Query("categories") categories?: string, @Query("filters") filters?: string) {
-        // console.log(categories, "CATEGORY");
         const arrayCategories: number[] = categories !== undefined && categories !== "" ? categories.split(',').map(item => Number(item)) : [];
         const arrayFilters: number[] = filters !== undefined && filters !== "" ? filters.split(',').map(item => Number(item)) : [];
         return await this.productsSizesFullService.getProductsWithPagination(page, limit, search, field, type, arrayCategories, arrayFilters);
@@ -295,10 +289,8 @@ export class ProductsSizesController {
     @ApiResponse({ status: 404, description: "Category not fount" })
     @Get("/category/:name")
     async getCategoryIdByName(@Param("name") name: string) {
-        console.log(name, "CATEGORYPPPPPPPP");
-        if (name === "null" || name === null) { console.log("DWNIJWENIJEWNIJNWEIJGNIWENGIJWENGNEWGNWENGINEER"); return -1 };
+        if (name === "null" || name === null) return -1;
         const response = await this.categoriesService.getCategoryByName(name);
-        // console.log(response);
         return response.id;
     }
 
@@ -308,8 +300,6 @@ export class ProductsSizesController {
     @ApiQuery({ name: 'search', required: false })
     @Get("/search/:search")
     async getCategoriesAndProductsBySearch(@Param("search") search: string) {
-        console.log(search, "SEARCH");
         return await this.productsSizesFullService.getCategoryProductsSizesBySearch(search);
     }
-
 }

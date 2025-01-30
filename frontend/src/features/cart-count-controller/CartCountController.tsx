@@ -22,7 +22,7 @@ export const CartCountController: React.FC<CartCountControllerProps> = ({id}) =>
 
     return (
         <div style={{display: 'flex', alignItems: "center"}}>
-            <div style={{display: 'flex', flexDirection: 'row', gap: 10, height: 40, alignItems: "center", borderRadius: 6, border: "1px solid #8B8B8B66", padding: "0 8px"}}>
+            <div style={{display: 'flex', minWidth: 115, flexDirection: 'row', gap: 10, height: 40, justifyContent: "space-between", alignItems: "center", borderRadius: 6, border: "1px solid #8B8B8B66", padding: "0 8px"}}>
                 <button style={{
                     backgroundColor: "var(--block-bg-color)", 
                     fontFamily: "Inter", 

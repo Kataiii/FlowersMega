@@ -110,9 +110,6 @@ const injectedRtkApi = api.injectEndpoints({
         if (queryArg.category) {
           params.category = queryArg.category;
         }
-        console.log(queryArg.search, "HHHHHHHHHHHMMMMMMMMMMMMMMMMMMMMMMMMMM")
-        console.log('CATEGORY', queryArg.category);
-        console.log('Request params:', queryArg);
         return {
           url: `/products-sizes/full-products-cards/${queryArg.page}/${queryArg.limit}`,
           params: params,
@@ -171,7 +168,6 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: (queryArg) => {
         const params: Record<string, any> = {};
-        console.log(queryArg.page);
         if (queryArg.search) {
           params.search = queryArg.search;
         }
@@ -234,7 +230,6 @@ const injectedRtkApi = api.injectEndpoints({
       CategoryControllerGetIdByNameApiArg
     >({
       query: (queryArg) => {
-        console.log(queryArg.name, "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
         return {
           url: `/products-sizes/category/${queryArg.name}`,
           method: "GET",

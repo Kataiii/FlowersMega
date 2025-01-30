@@ -137,8 +137,6 @@ const Orders: React.FC = () => {
     // setShouldFetch(true);
   };
 
-  // { console.log('5555', lastMinimalCost[0]) }
-
   const handleSortChange = (value: string) => {
     setSortOrder(value);
     setPage(1);

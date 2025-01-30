@@ -203,8 +203,6 @@ export class ProductsSizesFullService {
         [filePromise]
       );
 
-      console.log("productId ", product.id);
-
       const productSizes = await Promise.all(
         validSizes.map(async (item) => {
           return await this.productsSizesRepository.create({
@@ -271,13 +269,11 @@ export class ProductsSizesFullService {
   }
 
   private async getCardInfo(productSize: ProductSize) {
-    // console.log(productSize, "PRODUCT SIZE")
     const size = await this.sizesService.getById(productSize.idSize);
     const product = await this.productsService.getById(productSize.idProduct);
     const reviewsInfo = await this.reviewsService.getStaticticByProductSizeId(
       productSize.id
     );
-    // console.log(product, "product");
     return {
       size: size,
       product: {
@@ -305,12 +301,8 @@ export class ProductsSizesFullService {
   }
 
   async getCategoryProductsSizesBySearch(search?: string) {
-    console.log(search, "NUUUUUUUUU LYAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-
     const sizeId = await this.sizesService.getSizeByName("-");
-
     if (search && search.includes("all")) {
-      console.log("HAHAHAHAHA?");
 
       const categories = await this.categoriesProductService.getTopCategories();
 
@@ -328,8 +320,6 @@ export class ProductsSizesFullService {
     }
 
     if (search !== null && search !== undefined) {
-      console.log("KAAAAAAAAAAAAAAAAAAK?");
-
       const categories =
         await this.categoriesProductService.getSearchCategoryByName(search);
       const products = await this.productsService.searchProducts(search);
@@ -355,10 +345,6 @@ export class ProductsSizesFullService {
     maxPrice?: number,
     category?: number
   ) {
-    console.log(filterItems, "filterItems");
-    console.log(category, "LMAO uAPL");
-    console.log(search, "search");
-
     const filtersProductsTmp =
       filterItems?.length > 0 &&
       (
@@ -366,12 +352,8 @@ export class ProductsSizesFullService {
           filterItems
         )
       ).map((item) => item.idProduct);
-    console.log("filtersIds ", filtersProductsTmp);
-
     const filtersProducts =
       filtersProductsTmp && Array.from(new Set(filtersProductsTmp.flat()));
-
-    console.log("filtersProducts ", filtersProducts);
 
     const whereCondition: any = {};
 
@@ -387,14 +369,10 @@ export class ProductsSizesFullService {
     }
 
     if (filtersProducts?.length > 0) {
-      console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAa");
       whereCondition.idProduct = {
         [Op.in]: filtersProducts,
       };
     }
-
-    console.log("whereCondition ", whereCondition);
-
     let countAndProducts: {
       rows: ProductSize[];
       count: number;
@@ -439,8 +417,6 @@ export class ProductsSizesFullService {
       });
     }
 
-    console.log("countAndProducts ", countAndProducts);
-
     const resCardInfo = await this.calculatePrices(countAndProducts.rows);
 
     return {
@@ -462,11 +438,6 @@ export class ProductsSizesFullService {
     const typeSort = sort ? sort.split("_") : "id_ASC".split("_");
     const sortField: string = typeSort[0];
     const sortOrder: string = typeSort[1]?.toUpperCase();
-
-    console.log("search ", search);
-    console.log("category ", category);
-    console.log("filterItems ", filterItems);
-    console.log("sort ", sortField + " " + sortOrder);
 
     const filtersString: string = filterItems && filterItems.length > 0
       ? `AND (${filterItems.map(filter => `pif."idItemFilter" = ${filter}`).join(' OR ')})`
@@ -576,8 +547,6 @@ export class ProductsSizesFullService {
       SELECT * FROM total_count;
     `) as [{total_count: string}[], unknown];
 
-    console.log("COUNT COUNT COUNT ", count[0][0].total_count);
-
     const products = await this.productsRepository.sequelize.query(`
     WITH product_data AS (
       SELECT DISTINCT 
@@ -685,7 +654,6 @@ export class ProductsSizesFullService {
       await this.extraPriceService.whichOneTheBest();
     let countProductsWithMarkup = 0;
 
-        console.log(extraPriceForCategories, "EPRIE BTW");
         const productsCardInfo = await Promise.all(
             products.map(async (item) => {
                 const info = await this.getCardInfo(item);
@@ -735,7 +703,6 @@ export class ProductsSizesFullService {
     categories?: number[],
     filters?: number[]
   ) {
-    // console.log(categories, "categories");
     const categoriesProductsTmp =
       categories.length > 0
         ? await Promise.all(
@@ -749,7 +716,6 @@ export class ProductsSizesFullService {
           )
         : (await this.productsService.getAll()).map((item) => item.id);
 
-    // console.log(categoriesProductsTmp, "categTNM");
     const filtersProductsTmp =
       filters.length > 0
         ? await Promise.all(
@@ -762,20 +728,15 @@ export class ProductsSizesFullService {
             })
           )
         : (await this.productsService.getAll()).map((item) => item.id);
-    // console.log(filtersProductsTmp, "filterTNM");
 
     const categoriesProducts = Array.from(
       new Set(categoriesProductsTmp.flat())
     );
-    // console.log(categoriesProducts);
     const filtersProducts = Array.from(new Set(filtersProductsTmp.flat()));
-    // console.log(filtersProducts);
 
     const finalFIlterCategories = categoriesProducts.filter((item) =>
       filtersProducts.includes(item)
     );
-
-    // console.log(finalFIlterCategories, " const");
 
         const paginationResult = await this.productsService.getCountAndPagination(
             page,
@@ -785,7 +746,6 @@ export class ProductsSizesFullService {
             type,
             finalFIlterCategories
         );
-        // console.log(paginationResult, "paginationResult");
         const productSizesTmp = await Promise.all(
             paginationResult.products.map(async (item) => {
                 const productSizes = await this.productsSizesRepository.findAll({
@@ -798,12 +758,6 @@ export class ProductsSizesFullService {
                 return { products: item, productsSizes: resultProducts };
             })
         );
-        productSizesTmp.map((item) => {
-            item.productsSizes.map((item) => {
-                console.log(item, "productSizesTmp");
-            });
-
-        })
 
         return { count: paginationResult.count, products: productSizesTmp };
     }
@@ -825,7 +779,6 @@ export class ProductsSizesFullService {
       },
       photo ? [photo] : undefined
     );
-    console.log(prosuctsSizes);
     const productSizesData = await Promise.all(
       prosuctsSizes.map(async (item) => {
         return await this.productsSizesRepository.create({
@@ -908,10 +861,8 @@ export class ProductsSizesFullService {
         });
         product.images[0].url = null; // Обнуляем URL
         await product.save();
-        console.log();
       }
     }
-    console.log(product.images[0].url, "A KAK TUT ONO OKAZALOSSSS");
     const productSizesData = await this.productsSizesRepository.findAll({
       where: { idProduct: product.id },
     });
@@ -996,7 +947,6 @@ export class ProductsSizesFullService {
           },
         ],
       });
-      console.log(productSize);
     } else {
       productSize = await this.productsSizesRepository.findOne({
         order: [["extraPrice", "DESC"]],

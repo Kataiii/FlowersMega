@@ -74,7 +74,6 @@ const ExtraPriceVar: React.FC<ExtraPriceVarProps> = ({ value, onChange, onRemove
 
     const handleDelete = async () => {
         try {
-            console.log(value.idCategory, "TRY TO DELETE");
             if (!value.idCategory) {
                 throw new Error('idCategory is missing');
             }
@@ -84,7 +83,6 @@ const ExtraPriceVar: React.FC<ExtraPriceVarProps> = ({ value, onChange, onRemove
             console.error('Error during deletion:', e);
         }
     };
-    console.log(selectedCategories[0]?.id, "SELECTED CATEGORIES");
     return (
         <>
             {

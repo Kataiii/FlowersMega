@@ -53,10 +53,7 @@ const HideDiv = styled.div<{ $isOpen?: boolean; }>`
 const FiltersPanel: React.FC = () => {
     const [searchParams] = useSearchParams();
     const category = searchParams.get('category');
-    console.log(category, "CATEGORYLLLL");
     const decodedCategory = category ? decodeURIComponent(category) : '';
-    console.log(decodedCategory, "DECODED CATEGORY");
-    // const decodedCategory = category ? decodeURIComponent(category) : '';
     const { data: categoryIdData, isLoading: isCategoriesLoading } = useCategoryControllerGetIdByNameQuery(
         { name: decodedCategory },
     );
@@ -65,7 +62,6 @@ const FiltersPanel: React.FC = () => {
         { idCategory: Number(categoryIdData) },
     );
 
-    console.log(data?.maxPrice, "MAX PRICE");
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [isReset, setIsReset] = useState<boolean>(false);
     const dispatch = useAppDispatch();
@@ -84,7 +80,6 @@ const FiltersPanel: React.FC = () => {
         dispatch(addMaxPrice(data?.maxPrice ?? -1));
         setIsReset(true)
     }
-    console.log(data?.maxPrice, "MAX PRICE from DATAAAA");
     return (
         <>
             {

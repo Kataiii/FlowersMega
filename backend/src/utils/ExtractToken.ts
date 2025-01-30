@@ -14,7 +14,6 @@ export class ExtractToken {
             throw new UnauthorizedException();
         }
         const payload = await <jwt.JwtPayload>jwt.verify(token, process.env.PRIVATE_KEY);
-        console.log(payload);
         return payload;
     }
 }

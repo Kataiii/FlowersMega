@@ -65,7 +65,6 @@ const Products: React.FC = () => {
             filters: filters,
         }
     );
-    console.log(productSizedPag, "PIPYAOOOOOOO");
     const debouncer = new Debouncer();
 
     const debouncedSearch = useCallback(

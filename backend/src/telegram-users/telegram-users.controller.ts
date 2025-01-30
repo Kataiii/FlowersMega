@@ -27,7 +27,6 @@ export class TelegramUsersController {
         @Body('chat_id') chat_id: number,
         @Body('access_key') access_key: string
     ) {
-        console.log(user_tag, ' ', access_key, ' в контроллере');
         const result = await this.telegramUsersService.auth(user_tag, chat_id, access_key);
         if (result.value) {
             return { statusCode: 200, message: `Аутентификация пройдена для ${user_tag}!` };

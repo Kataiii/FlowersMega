@@ -36,7 +36,6 @@ export class CategoriesProductsService {
             return null;
         }
 
-        // console.log(category, "CATEGORY OBJECT");
         return category;
     }
 

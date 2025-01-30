@@ -18,7 +18,6 @@ export class OrderService {
     ) { }
 
     async create(dto: CreateOrderDto) {
-        console.log(dto);
         const parseDateTime = (dateTimeString: string): Date => {
             const [datePart, timePart] = dateTimeString.split(', ');
             const [day, month, year] = datePart.split('.').map(Number);
@@ -156,7 +155,6 @@ ${dto.comment ? `Примечания к заказу: ${dto.comment}\n` : ''}
                 include: [{ all: true }],
                 order: field && type ? [[field, type]] : [["id", "ASC"]]
             }));
-            console.log(orders);
             return {
                 count: paginationResult,
                 orders: orders
@@ -173,7 +171,6 @@ ${dto.comment ? `Примечания к заказу: ${dto.comment}\n` : ''}
         })
 
         if (orders.length === 0) throw new HttpException("Orders not found", HttpStatus.NOT_FOUND);
-        console.log(orders);
         return {
             count: ordersCount,
             orders: orders

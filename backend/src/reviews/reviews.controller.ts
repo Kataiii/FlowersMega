@@ -46,7 +46,6 @@ export class ReviewsController {
   @UseInterceptors(FilesInterceptor('files'))
   @Post()
   async create(@Body() dto: CreateReviewDto, @UploadedFiles() files) {
-    console.log(files);
     return await this.reviewsService.create(dto, files);
   }
 

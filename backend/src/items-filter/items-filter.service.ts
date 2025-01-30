@@ -77,7 +77,6 @@ export class ItemsFilterService {
             return null;
         }
 
-        // console.log(itemFilter, "ITEM FILTER OBJECT");
         return itemFilter;
     }
 

@@ -23,18 +23,13 @@ export class CategoriesService {
         const lines = fileContent.split('\n');
         let index = 0;
 
-        console.log(lines);
-
         for (let i: number = 0; i < lines.length; i++) {
             const [categoryName, imageUrl] = lines[i].split(';');
-            // console.log(categoryName);
             if (!categoryName || !imageUrl) {
                 console.log(`Invalid line format: ${lines[i]}`);
             }
             else {
                 try {
-                    console.log("sdadasda");
-                    console.log(path.resolve(__dirname, "..", '..', 'static', 'products', 'categories', `flowers${index + 1}.jpg`));
                     const fileBuffer = fs.readFileSync(path.resolve(__dirname, "..", '..', 'static', 'products', 'categories', `flowers${index + 1}.jpg`));
                     await this.create({ name: categoryName.trim() }, new CustomFile(fileBuffer, `${categoryName.trim()}.jpg`, "image/jpeg"));
                 }
@@ -43,27 +38,6 @@ export class CategoriesService {
                 }
             }
         };
-        // (const line of lines) {
-
-
-        // try {
-
-        //     const fileBuffer = await fetch(imageUrl.trim())
-        //         .then(response => {
-        //             if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`);
-        //             return response.arrayBuffer();
-        //         })
-        //         .then(arrayBuffer => Buffer.from(arrayBuffer))
-        //         .then(buffer => new CustomFile(buffer, `${categoryName.trim()}.jpg`, "image/jpeg"));
-        //     console.log(fileBuffer, "CATEGORY PHOTO")
-
-        //     await this.create({ name: categoryName.trim() }, fileBuffer);
-
-        //     console.log(`Category "${categoryName.trim()}" processed successfully.`);
-        // } catch (error) {
-        //     console.error(`Error processing category "${categoryName.trim()}":`, error);
-        // }
-        // }
     }
 
 
