@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import Button from "../../shared/ui/button/Button";
 import ModalEmpty from "../../shared/ui/modalEmpty/ModalEmpty";
-import { API_URL, HOME_PATH } from "../../shared/utils/constants";
+import { API_URL, HOME_PATH, POLITICS_PATH } from "../../shared/utils/constants";
 import $api from "../../shared/utils/http";
 
 const Title = styled.h1`
@@ -29,7 +29,7 @@ const OrderCall: React.FC = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const navigate = useNavigate();
 
-    const onFinish = async(values: any) => {
+    const onFinish = async (values: any) => {
         const response = await $api.post(`${API_URL}/tg-bot/order-call`, {
             name: values.name,
             phone: values.phone,
@@ -49,8 +49,8 @@ const OrderCall: React.FC = () => {
                 }
             }}
         >
-            <Form 
-                style={{ display: "flex", flexDirection: "column", gap: 28 }} 
+            <Form
+                style={{ display: "flex", flexDirection: "column", gap: 28 }}
                 layout="vertical"
                 form={form}
                 name="control-hooks"
@@ -69,40 +69,63 @@ const OrderCall: React.FC = () => {
                         <PhoneInput
                             specialLabel=""
                             inputStyle={{
-                            fontFamily: "Inter",
-                            width: "100%",
-                            height: 32,
-                            border: "1px solid var(--primary-bg-color)",
-                            borderRadius: 4,
-                            padding: "0 11px",
-                            outline: "none"
-                        }} placeholder="+7(XXX)XXX-XX-XX" onlyCountries={['ru']}/>
+                                fontFamily: "Inter",
+                                width: "100%",
+                                height: 32,
+                                border: "1px solid var(--primary-bg-color)",
+                                borderRadius: 4,
+                                padding: "0 11px",
+                                outline: "none"
+                            }} placeholder="+7(XXX)XXX-XX-XX" onlyCountries={['ru']} />
                     </Form.Item>
                 </div>
 
-                <Form.Item label="" name="disabled"  initialValue={false} valuePropName="checked" rules={[{ required: true, message: "Обязательное поле" }]}>
-                    <Checkbox><Content style={{color: "var(--secondary-text-color)"}}>Я согласен на <Link style={{color: "var(--primary-bg-color)"}} to={'#'}>обработку персональных данных</Link></Content></Checkbox>
+                <Form.Item
+                    name="allowTerm" valuePropName="checked"
+                    rules={[
+                        {
+                            required: true,
+                            message: "Необходимо согласие на обработку персональных данных",
+                            validator: async (_, checked) => {
+                                if (!checked) {
+                                    return Promise.reject(
+                                        new Error("you must accept to deposit 10% of the sale price"),
+                                    );
+                                }
+                            },
+                        },
+                    ]}
+                >
+                    <Checkbox>
+                        <Content style={{ color: "var(--secondary-text-color)" }}>
+                            Я согласен на{" "}
+                            <Link style={{ color: "var(--primary-bg-color)" }} to={`${POLITICS_PATH}`}>
+                                обработку персональных данных
+                            </Link>
+                        </Content>
+                    </Checkbox>
                 </Form.Item>
+
 
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                     <Form.Item>
-                        <Button buttonContent={"Заказать звонок"} clickHandler={() => {}}></Button>
+                        <Button buttonContent={"Заказать звонок"} clickHandler={() => { }}></Button>
                     </Form.Item>
                 </div>
             </Form>
             {
                 isOpen
-                ? <ModalEmpty isOpen={isOpen} setIsOpen={()  => setIsOpen(false)}>
+                    ? <ModalEmpty isOpen={isOpen} setIsOpen={() => setIsOpen(false)}>
                         <Result
                             status="success"
                             title="Ваш запрос создан!"
                             subTitle="Скоро с вами свяжется менеджер"
                             extra={[
-                                <Button buttonContent="Вернуться на главную" clickHandler={() => navigate(HOME_PATH)}/>
+                                <Button buttonContent="Вернуться на главную" clickHandler={() => navigate(HOME_PATH)} />
                             ]}
                         />
                     </ModalEmpty>
-                : null
+                    : null
             }
         </ConfigProvider>
     )
