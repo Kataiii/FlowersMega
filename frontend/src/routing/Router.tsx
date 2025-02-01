@@ -122,7 +122,7 @@ const Router: React.FC = () => {
                         <Route path={AUTH_PATH} element={<><LogoutOnClose/><ModalRoute prevLocation={HOME_PATH}>
                             <Auth />
                         </ModalRoute></>} />
-                        <Route path={RECOVERY_PASSWORD_PATH} element={<><LogoutOnClose/><ModalRoute prevLocation={previousLocation}>
+                        <Route path={RECOVERY_PASSWORD_PATH} element={<><LogoutOnClose/><ModalRoute prevLocation={HOME_PATH}>
                             <RecoveryPassword />
                         </ModalRoute></>} />
                         <Route path={EMAIL_PATH} element={<Portal children={<Portal children={

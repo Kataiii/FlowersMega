@@ -32,8 +32,8 @@ export const ADMIN_REVIEWS_PATH = "/admin/reviews";
 export const ADMIN_REVIEW_PATH = "/admin/review/:id";
 export const ADMIN_LOGIN = "/admin/login";
 
-// export const API_URL = "http://luckyflora.ru/api/";
-export const API_URL = "http://localhost:5000";
+export const API_URL = "http://luckyflora.ru/api/";
+// export const API_URL = "http://localhost:5000";
 
 export const PHONE = "8 986 986 99 96";
 export const EMAIL = "info.luckyflora@mail.ru";
