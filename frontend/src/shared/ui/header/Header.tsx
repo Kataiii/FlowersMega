@@ -30,22 +30,22 @@ const Header: React.FC = () => {
         {
             content: "Доставка и оплата",
             href: PAYMENT_DELIVERY_PATH,
-            target: targetA._blank
+            target: targetA._self
         },
         {
             content: "О нас",
             href: ABOUT_PATH,
-            target: targetA._blank
+            target: targetA._self
         },
         {
             content: "Контакты",
             href: CONTACTS_PATH,
-            target: targetA._blank
+            target: targetA._self
         },
         {
             content: "Помощь",
             href: HELP_PATH,
-            target: targetA._blank
+            target: targetA._self
         },
     ], []);
 
