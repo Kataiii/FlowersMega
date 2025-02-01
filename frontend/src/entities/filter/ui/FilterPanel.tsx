@@ -29,8 +29,12 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ category }) => {
         ).toString();
 
         navigate({
-            pathname: `${CATALOG_PATH}`,
-            // search: searchParams,
+            pathname: `${CATALOG_PATH}${CATEGORY_PATH}`,
+            search: createSearchParams({
+                category: category.id ? category.name.toString() : "",
+                //     filterId: filter.id.toString(),
+                //     itemId: item.id.toString(),
+            }).toString(),
         });
     };
 
@@ -56,7 +60,6 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ category }) => {
                                 key={filter?.id}
                                 style={{
                                     borderRadius: "4px",
-                                    cursor: "pointer",
                                     width: "32%",
                                     minWidth: "310px",
                                 }}
