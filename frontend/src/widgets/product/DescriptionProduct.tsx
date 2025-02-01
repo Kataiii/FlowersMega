@@ -185,7 +185,20 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
               ) : (
                 <button
                   onClick={() =>
-                    dispatch(addOneToCart({ ...product.productSize, product }))
+                    dispatch(
+                      addOneToCart({
+                        ...product.productSize,
+                        product: {
+                          id: product.id,
+                          description: product.description,
+                          idTypeProduct: product.idTypeProduct,
+                          name: product.name,
+                          structure: product.structure,
+                          //@ts-ignore
+                          image: product.images[0]
+                        },
+                      })
+                    )
                   }
                   style={{
                     flexGrow: 1,
@@ -252,7 +265,7 @@ const DescriptionProduct: React.FC<DescriptionProductProps> = ({ product }) => {
           product={{
             id: product.id,
             name: product.name,
-            description: product.description, 
+            description: product.description,
             structure: product.structure,
             idTypeProduct: product.idTypeProduct,
             // @ts-ignore
