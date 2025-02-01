@@ -31,6 +31,10 @@ const Footer: React.FC = () => {
         });
     };
 
+    const handleNavigation = (path: string) => {
+        window.scrollTo(0, 0);
+        navigate(path);
+    };
 
     return (
         <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -38,7 +42,7 @@ const Footer: React.FC = () => {
                 <Container>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                            <Logo style={{ cursor: "pointer", width: "278px" }} alt="logo" onClick={() => navigate(HOME_PATH)} />
+                            <Logo style={{ cursor: "pointer", width: "278px" }} alt="logo" onClick={() => handleNavigation(HOME_PATH)} />
                             <h4 style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0 }}>Наши контакты</h4>
                             <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                                 <Phone alt="phone" />
@@ -52,23 +56,23 @@ const Footer: React.FC = () => {
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <h4 style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0 }}>Компания</h4>
-                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(ABOUT_PATH)}>О нас</p>
-                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(PAYMENT_DELIVERY_PATH)}>Доставка</p>
-                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(PAYMENT_DELIVERY_PATH)}>Оплата</p>
+                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => handleNavigation(ABOUT_PATH)}>О нас</p>
+                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => handleNavigation(PAYMENT_DELIVERY_PATH)}>Доставка</p>
+                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => handleNavigation(PAYMENT_DELIVERY_PATH)}>Оплата</p>
                         </div>
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <h4 style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0 }}>Каталог</h4>
                             {data && data.map((filter, index) => (
-                                <p key={index} style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => { navigate(CATALOG_PATH); handleSelectAll(filter?.items || []) }}>{filter?.name}</p>
+                                <p key={index} style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => { handleNavigation(CATALOG_PATH); handleSelectAll(filter?.items || []) }}>{filter?.name}</p>
                             ))}
                         </div>
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                             <h4 style={{ fontFamily: "Inter", fontWeight: 600, fontSize: "16px", color: "var(--secondary-text-color)", margin: 0 }}>Клиентам</h4>
-                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(CONTACTS_PATH)}>Контакты</p>
-                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(HELP_PATH)}>Помощь</p>
-                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => navigate(ABOUT_PATH)}>Почему мы?</p>
+                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => handleNavigation(CONTACTS_PATH)}>Контакты</p>
+                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => handleNavigation(HELP_PATH)}>Помощь</p>
+                            <p style={{ cursor: "pointer", fontFamily: "Inter", fontWeight: 400, fontSize: "16px", color: "var(--unactive-text-color)", margin: 0 }} onClick={() => handleNavigation(ABOUT_PATH)}>Почему мы?</p>
                         </div>
                     </div>
                 </Container>
